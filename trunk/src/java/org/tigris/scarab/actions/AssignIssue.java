@@ -105,12 +105,25 @@ public class AssignIssue extends BaseModifyIssue
         ParameterParser params = data.getParameters();
         StringBuffer msg = new StringBuffer();
         String[] userIds = params.getStrings(ADD_USER);
-        Map userAttributes = new HashMap();
+        Map<String,String> userAttributes = new HashMap<String,String>();
         if (userIds != null)
         {
             for (int i=0; i<userIds.length; i++)
             {
-                userAttributes.put(userIds[i], params.get("user_attr_" + userIds[i]));
+                String userId = userIds[i];
+                if(userId.length() > 0)
+                {
+                    String attributeId = params.get("user_attr_" + userId);
+                    if(attributeId == null)
+                    {
+                        attributeId = params.get("watcher_attr_" + userId);
+                    }
+                    userAttributes.put(userId, attributeId);
+                }
+                else
+                {
+                    //The user has selected the "select user..." option, which itself is empty
+                }
             }
             returnCode = addUsersToList(user, module, userAttributes, msg);        
             setGUIMessage(returnCode, scarabR, msg);

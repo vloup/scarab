@@ -9,7 +9,14 @@
 
 /* attribute specific classes */
 
-.status {
+.status,
+.status_new,
+.status_assigned,
+.status_reopened,
+.status_inreview,
+.status_processing,
+.status_closed
+ {
 	background-repeat: no-repeat;
 	position:relative;
     background-position: 0px 0px;
@@ -17,36 +24,36 @@
     font-weight:bold;
 }
 
-.status.new {
+.status_new {
  color:#888;
  padding-left:20px;
 }
 
-.status.assigned {
+.status_assigned {
  color:red;
  background-image: url(images/unassigned.png);
  padding-left:20px;
 }
  
-.status.reopened {
+.status_reopened {
  color:magenta;
  background-image: url(images/reopened.png);
  padding-left:20px;
 }
 
-.status.inreview {
+.status_inreview {
  color:blue;
  background-image: url(images/inreview.png);
  padding-left:20px;
 }
 
-.status.processing {
+.status_processing {
  color:orange;
  background-image: url(images/inprogress.png);
  padding-left:20px;
 }
 
-.status.closed {
+.status_closed {
  color:green;
  background-image: url(images/closed.png);
  padding-left:20px;

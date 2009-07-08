@@ -26,6 +26,7 @@
 #set ($assignedRMA    = "") ## to get the correct display value
 #set ($watchedAttrib  = -1) ## The attribute, which is ionterpreted as "watching userAttribute"
 #set ($watchedRMA     = "") ## to get the correct display value
+#set ($watcherIdList = [])
 
 #set ($userAttVals = $currentIssue.UserAttributeValues)
 #foreach ($attVal in $userAttVals)
@@ -35,6 +36,7 @@
     #set ($assignedAttrib = $attVal.Attribute)
     #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
   #else
+    #set ($dummy = $watcherIdList.add($attVal.UserId))
     #if ($watchedAttrib == -1)
        #set ($watchedAttrib = $attVal.Attribute)
        #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
@@ -49,9 +51,9 @@
 ## And determine the "watcher" attribute
 ## -------------------------------------------------------------------------
 
-#if ($assignedAttrib == -1)
+#if ($assignedAttrib == -1 || $watchedAttrib == -1)
   #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-    #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+    ##if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
       #if ($selectUserAttr.getMultiValue() == false)
         #set ($assignedAttrib = $selectUserAttr)
         #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
@@ -59,7 +61,7 @@
         #set ($watchedAttrib = $selectUserAttr)
         #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
       #end
-    #end
+    ##end
   #end
 #end
 
@@ -78,6 +80,95 @@
         #set ($myRMA    = $module.getRModuleAttribute($attVal.Attribute, $issueType))
     #end
 #end
+
+
+## --------------------------------------------------------------
+## Create the selection box for all assignable users
+## This macro is called from the initialisation code below.
+## --------------------------------------------------------------
+
+#macro (assignedUsers $myself $isEditAttributes)
+    #set ($users = $module.getUsers("Issue | Edit"))
+    #if ($isEditAttributes)
+
+      <input type="hidden" name="id" value="$currentIssueId" />
+      <input type="hidden" name="issue_ids" value="$currentIssueId" />
+
+      ## Create a selection box
+      #foreach ($user in $users)
+          #set ($optionName  = "user_attr_" + $user.UserId)
+          #set ($attributeId = $assignedAttrib.AttributeId)
+          <input type="hidden" name="$optionName" value="$attributeId"/>
+      #end
+      <select name="add_user">
+      #if ( $assignedUserId == -1 )
+         <option value="" #selected(true) >$l10n.Assign ...</option>
+      #end
+
+      #foreach ($user in $users)
+          #set ($selected = ($user.UserId == $assignedUserId))
+          <option value="$user.UserId" #selected($selected) >$user.Name</option> 
+      #end
+      </select>
+    #else
+      #if ( $assignedUserId != -1 )
+        $scarabU.getUser($assignedUserId).Name
+      #end
+    #end
+
+#end
+
+## ---------------------------------------------------------------------
+## Create the selection box for all Watchers (non active assigned users)
+## This macro is called from the initialisation code below.
+## ---------------------------------------------------------------------
+
+#macro (watchingUsers $myselfInList $assignedUserId $watchedRMA $watchedAttrib)
+    &nbsp; 
+    #set ($users = $module.getUsers("Issue | View"))
+    ## Create a selection box
+    #foreach ($user in $users)
+          #set ($inList=false)
+
+          #foreach ($uid in $watcherIdList)
+              #if ($uid == $user.UserId)
+                #set ($inList = true)
+                #break
+              #end
+          #end
+          
+          #if ($inList == false)
+            #set ($optionName  = "watcher_attr_" + $user.UserId)
+            #set ($attributeId = $watchedAttrib.AttributeId)
+            <input type="hidden" name="$optionName" value="$attributeId"/>
+          #end
+    #end
+    
+    <select name="add_watcher" style="position:relative; top:-1px;">
+      ##if ( $myselfInList == true )
+       <option value="" #selected(true) >$l10n.Assign ...</option>
+      ##end
+
+      #foreach ($user in $users)
+        #if ($user.UserId != $myself && $user.UserId != $assignedUserId)
+          #set ($inList=false)
+          #foreach ($uid in $watcherIdList)
+              #if ($uid == $user.UserId)
+                #set ($inList = true)
+                #break
+              #end
+          #end
+          #if ($inList == false)
+            ## If i am the active user, i cant be assigned as a watcher
+            #set ($selected = ($user.UserId == $myself))
+            <option value="$user.UserId" #selected($selected) >$user.Name</option>
+          #end
+        #end
+      #end
+    </select>&nbsp;
+    <input type="submit" name="eventSubmit_doAddwatchers" title="Hier k&ouml;nnen Sie andere Mitarbeiter als $watchedRMA.DisplayValue hinzuf&uuml;gen " value="als $watchedRMA.DisplayValue" class="button" />
+#end
+
 
 
 ## TODO: The getCopyToModules() can be expensive (PCN20967).  Add APIs
@@ -171,106 +262,107 @@
   ## Issue copy
   ## Issue remove
   ## ==========================================================================
-  <div class="functnbar2" style="white-space:nowrap;">
-    <table border="0" style="margin:0px;padding:0px;" cellspacing="0" cellpadding="0">
-      <tr>
+  <div class="functnbar2" style="white-space:nowrap;min-height:28px;height:28px; overflow:visible;">
+    <span style="float:left; margin:1px;padding:0px;">
       
-
-      
-        #if ($canEdit && ($myself != $assignedUserId))
-          #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
-
-            <td style="white-space:nowrap;">    
-              ## ============================================================================
-              ## Find all selectable User Attributes in the given context.
-              ## Note: If a userAttribute/user combination is allready in the list, 
-              ## it can not be selected anymore here.
-              ## ============================================================================
-              #set ($options = [] )
-              #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
-               #if ($selectUserAttr.MultiValue == true) ## Only allow setting of non active attributes
-                 #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
-                   #set ($attid = $selectUserAttr.AttributeId)
-                   #if ($myAttrib != $attid) ## if this attribute/user is already in list, discard it
-                     #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-                     #set ($dummy = $options.add($selectUserAttr))
-                   #end
-                 #end
-               #end
-              #end
-
-              #if ( $options.size() == 1)
-                ## Just create a button. We do not need a selector box in this case.
-                #foreach ($selectUserAttr in $options)
-                  #set ($attid = $selectUserAttr.AttributeId)
-                  #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-                  <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
-                  <input type="submit" class="buttonPassive" name="eventSubmit_doAddmyself" value="$selectUserAttrName" />
+        #if ($canEdit)
+          <span style="white-space:nowrap;margin-right:0px;margin-left:5px;">    
+            #if ($myself == $assignedUserId)
+              <input type="button" name="dummy" title ="Sie sind der aktive $myRMA.DisplayValue " value="" class="watch_on" />
+            #else
+              #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
+                ## ============================================================================
+                ## Find all selectable User Attributes in the given context.
+                ## Note: If a userAttribute/user combination is allready in the list, 
+                ## it can not be selected anymore here.
+                ## ============================================================================
+                #set ($options = [] )
+                #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+                  #if ($selectUserAttr.MultiValue == true) ## Only allow setting of non active attributes
+                    #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+                      #set ($attid = $selectUserAttr.AttributeId)
+                      #if ($myAttrib != $attid) ## if this attribute/user is already in list, discard it
+                        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                        #set ($dummy = $options.add($selectUserAttr))
+                      #end
+                    #end
+                  #end
                 #end
-         
-              #elseif ( $options.size() > 1 )
-                ## Create a selection box
-                <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself"  class="buttonPassive" />
-                <select name="myself_attribute">
+
+                #if ( $options.size() == 1)
+                  ## Just create a button. We do not need a selector box in this case.
                   #foreach ($selectUserAttr in $options)
                     #set ($attid = $selectUserAttr.AttributeId)
                     #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
-                    <option value="$selectUserAttr.AttributeId">$selectUserAttrName</option>
+                    <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
+                    <input type="submit" name="eventSubmit_doAddmyself" value="" title='Hier k&ouml;nnen Sie sich als "$selectUserAttrName" eintragen.' class="watch_off" />
                   #end
-                </select>
-              #end
-              </td>
+         
+                #elseif ( $options.size() > 1 )
+                  ## Create a selection box
+                  <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself"  class="buttonPassive" />
+                  <select name="myself_attribute">
+                    #foreach ($selectUserAttr in $options)
+                      #set ($attid = $selectUserAttr.AttributeId)
+                      #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                      <option value="$selectUserAttr.AttributeId">$selectUserAttrName</option>
+                    #end
+                  </select>
+                #end
 
-              ## ------------------------------------
-              ## Issue self remove
-              ## ------------------------------------    
-              #if ($myselfInList)
-                <td>
-                  <input type="submit" name="eventSubmit_doRemovemyself" value="$myRMA.DisplayValue" class="buttonActive" />
-                </td>
+                ## ------------------------------------
+                ## Issue self remove
+                ## ------------------------------------    
+                #if ($myselfInList)
+                  <input type="submit" name="eventSubmit_doRemovemyself"  value="" title='Ihre Zuordnung zu "$myRMA.DisplayValue" wieder entfernen.' class="watch_on" />
+                #end
               #end
-             #end
+            #end
+          </span>
+          <span style="margin:0px; margin-right:10px;padding-left:0px;margin-left:0px;">
+            #watchingUsers($myselfInList $assignedUserId $watchedRMA $watchedAttrib)
+          </span>
         #end
-              
+     </span>
+     
+     
+     <span style="float:right; margin:1px;padding:0px;">   
         ## ------------------------------------------
         ## Issue move 
         ## Issue copy
         ## Issue remove
         ## ------------------------------------------
-        <td style="align:right;color:white; width:100%;" />
         #if ($showCopyButton || $showMoveButton)
           #if ($showMoveButton)
-            <td style="align:right;color:white">
-              <input style="align:right;" type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" class="buttonActive" />
-            </td>
+            <span style="color:white">
+              <input style="align:right;" type="submit" value="$l10n.Move" name="eventSubmit_doMove" class="button" />
+            </span>
           #end
           #if ($showCopyButton)
-            <td style="align:right;color:white">
-              <input style="align:right;" type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" class="buttonActive" />
-            </td>
+            <span style="color:white">
+              <input style="align:right;" type="submit" value="$l10n.Copy" name="eventSubmit_doCopy" class="button" />
+            </span>
           #end
           #if ($hasDeletePermission)
-            <td style="align:right;color:white">
-              <input style="align:right;" type="submit" value="$l10n.DeleteIssue" name="eventSubmit_doDeleteissue" class="buttonActive" />
-            </td>
+            <span style="color:white">
+              <input style="align:right;" type="submit" value="$l10n.Delete" name="eventSubmit_doDeleteissue" class="button" />
+            </span>
           #end
         #end
-        <td style="align:right;color:white">
+        <span style="color:white; position:relative; top:-5px; margin-left:5px; margin-right:2px;">
           <a style="align:right;color:white" title="$l10n.IssueRSSFeed"
            href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
-        </td>
-        <td style="align:right;color:white" >
+        </span>
+        <span style="color:white; position:relative; top:-5px; margin-right:0px;" >
           <a style="align:right;color:white" title="$l10n.IssueATOMFeed"
            href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
-        </td>
-        <td style="align:right;color:white" >
+        </span>
+        <span style="color:white; position:relative; top:-5px; margin-right:0px;" >
           <a style="align:right;color:white" title="$l10n.BookmarkToThisIssue"
            href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
-        </td>
+        </span>
+    </span>
         
-        
-      </tr>
-    </table>
   </div>
 
 </div>

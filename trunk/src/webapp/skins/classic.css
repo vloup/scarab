@@ -142,6 +142,25 @@
     layer-background-color:white;
 }
 
+/* ======================================================= */ 
+/* the iframe fixes IE6 select overlay bug:                */
+/* http://stackoverflow.com/questions/7937/\               */
+/*        solve-the-ie-select-overlap-bug	               */
+/* ======================================================= */
+.scb_calendar iframe {
+    position: absolute;
+    z-index: -1;
+    filter: mask();
+    border: 0;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    width: 9999px;
+    height: 9999px;
+    overflow: hidden;
+}
+
 
 .hint {
 	font-size:80%;
@@ -150,49 +169,76 @@
 
 
 /* ====================================================== */
-/* Button section                                         */
+/* Button section ...                                       */
 /* ====================================================== */
 
-input.buttonActive {
-    padding-left: 5px;
-    margin-right: 5px;
+input.button, input.buttonActive, input.buttonPassive, input.buttonNotify, .watch_on, .watch_off {
+    width:auto;
+    padding-right: 5px;
+    padding-left :10px;
+    margin-right :5px;
+    overflow:visible;
     border: 0;
     color: #333;
     height: 22px;
     /* used to catch the buttonEnding */
     position: relative;
     cursor: pointer;
-    background: url(images/button_passive_begin.png) no-repeat;
 }
 
-.buttonActiveEnding {
+.buttonEnding, .buttonActiveEnding, .buttonPassiveEnding, .buttonNotifyEnding  {
     position: absolute;
     display: inline;
-    margin-left: -10px;
-    width: 10px;
+    margin-left: -12px;
+    width: 22px;
     height: 22px;
-    background: url(images/button_passive_end.png) no-repeat;
+    margin-right:10px;
 }
 
-input.buttonPassive {
-    padding-left: 5px;
-    margin-right: 5px;
-    border: 0;
-    color: #333;
+.watch_on {
+    background: url(images/watchOn.jpg) no-repeat;
+    width: 25px;
     height: 22px;
-    /* used to catch the buttonEnding */
-    position: relative;
-    cursor: pointer;
+}
+
+.watch_off {
+    background: url(images/watchOff.jpg) no-repeat;
+    width: 25px;
+    height: 22px;
+}
+
+input.button {
+    background: url(images/button_passive_begin.jpg) no-repeat;
+}
+
+input.buttonActive {
     background: url(images/button_active_begin.png) no-repeat;
 }
 
-.buttonPassiveEnding {
-    position: absolute;
-    display: inline;
+input.buttonPassive {
+    background: url(images/button_passive_begin.jpg) no-repeat;
+}
+
+input.buttonNotify {
+    background: url(images/button_passive_begin.jpg) no-repeat;
+}
+
+.buttonEnding {
     margin-left: -10px;
     width: 10px;
-    height: 22px;
-	    background: url(images/button_active_end.png) no-repeat;
+	background: url(images/button_passive_end.jpg) no-repeat;
+}
+
+.buttonActiveEnding  {
+    background: url(images/button_active_checked.png) no-repeat;
+}
+
+.buttonPassiveEnding {
+	background: url(images/button_passive_unchecked.png) no-repeat;
+}
+
+.buttonNotifyEnding {
+	background: url(images/button_end_transmit_blue.png) no-repeat;
 }
 
 

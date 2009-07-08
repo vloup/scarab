@@ -2,44 +2,6 @@
 #set ($wantEdit         = $scarabU.wantEdit($user,$currentIssue,$data))
 #set ($isEditAttributes = $canEdit && $wantEdit)
 
-## --------------------------------------------------------------
-## Create the selection box for all assignable users
-## This macro is called from the initialisation code below.
-## --------------------------------------------------------------
-
-#macro (assignedUsers $myself $isEditAttributes)
-    #set ($users = $module.getUsers("Issue | Edit"))
-    #if ($isEditAttributes)
-
-      <input type="hidden" name="id" value="$currentIssueId" />
-      <input type="hidden" name="issue_ids" value="$currentIssueId" />
-
-      ## Create a selection box
-      #foreach ($user in $users)
-          #set ($optionName  = "user_attr_" + $user.UserId)
-          #set ($attributeId = $assignedAttrib.AttributeId)
-          <input type="hidden" name="$optionName" value="$attributeId"/>
-      #end
-      <select name="add_user">
-      #if ( $assignedUserId == -1 )
-         <option value="" #selected(true) >$l10n.Assign ...</option>
-      #end
-
-      #foreach ($user in $users)
-          #set ($selected = ($user.UserId == $assignedUserId))
-          <option value="$user.UserId" #selected($selected) >$user.Name</option> 
-      #end
-      </select>
-    #else
-      #if ( $assignedUserId != -1 )
-        $scarabU.getUser($assignedUserId).Name
-      #end
-    #end
-
-#end
-
-
-
 <h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
 <div id='properties'>
 

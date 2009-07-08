@@ -53,7 +53,6 @@ import org.apache.turbine.Turbine;
 
 // Scarab Stuff
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
-import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**

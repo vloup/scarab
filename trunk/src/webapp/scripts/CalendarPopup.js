@@ -1276,7 +1276,8 @@ function CP_getCalendar() {
 		result += '<CENTER><TABLE WIDTH=100% BORDER=0 BORDERWIDTH=0 CELLSPACING=0 CELLPADDING=0>\n';
 		}
 	else {
-		result += '<TABLE CLASS="'+this.cssPrefix+'cpBorder" WIDTH=144 BORDER=1 BORDERWIDTH=1 CELLSPACING=0 CELLPADDING=1>\n';
+		// the iframe fixes IE6 select overlay bug: http://stackoverflow.com/questions/7937/solve-the-ie-select-overlap-bug	
+		result += '<IFRAME></IFRAME><TABLE CLASS="'+this.cssPrefix+'cpBorder" WIDTH=144 BORDER=1 BORDERWIDTH=1 CELLSPACING=0 CELLPADDING=1>\n';
 		result += '<TR><TD ALIGN=CENTER>\n';
 		result += '<CENTER>\n';
 		}

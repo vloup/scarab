@@ -116,6 +116,50 @@ public class ModifyIssue extends BaseModifyIssue
 
     private static enum REASON_SAVE_MODE { NONE, HISTORY, COMMENT };
     
+
+    /**
+     * This action method delegates on the doAddwatchers method from 
+     * AssignIssue action, assigning the given list of users to the issue with 
+     * the specified userattribute.
+     * 
+     * @see AssignIssue#doAddmyself(RunData, TemplateContext)
+     * @param data
+     * @param context
+     * @throws Exception
+     */
+    public void doAddwatchers(RunData data, TemplateContext context)
+        throws Exception
+    {
+        ScarabRequestTool scarabR = this.getScarabRequestTool(context);
+        
+        ScarabUser user = (ScarabUser)data.getUser();
+        Issue issue = scarabR.getIssue();
+        if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
+                               issue.getModule()))
+        {
+            // We'll set the info required by AssignIssue.doAddmyself (the)
+            // same that in doEditassignees in this same class.
+            data.getParameters().add("id", issue.getUniqueId());
+            data.getParameters().add("issue_ids", issue.getUniqueId());
+            String watcher = data.getParameters().get("add_watcher");
+            data.getParameters().remove("add_user");
+            data.getParameters().add("add_user", watcher);
+
+            scarabR.resetAssociatedUsers();
+            
+            // Lets cross-call the AssignIssue Turbine action!
+            AssignIssue assignAction = new AssignIssue();
+            assignAction.doAdd(data, context);
+            assignAction.doDone(data, context);
+        }
+        else
+        {
+            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+        }        
+    }
+    
+    
+    
     public void doSubmitattributes(RunData data, TemplateContext context)
         throws Exception
     {
