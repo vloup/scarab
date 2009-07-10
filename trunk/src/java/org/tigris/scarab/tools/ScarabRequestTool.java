@@ -598,15 +598,21 @@ public class ScarabRequestTool
      * empty, then it will try to get the defaults from the module. If anything
      * fails, it will return an empty list.
      */
-    private List getRModuleUserAttributes(ScarabUser user, Module module, IssueType issueType) {
-        List issueListColumns = null;
+    private List<RModuleAttribute> getRModuleUserAttributes(ScarabUser user, Module module, IssueType issueType) 
+    {
+        MITList currentList = user.getCurrentMITList();
+        return getRModuleUserAttributes(user, module, issueType, currentList);
+    }
+    
+    private List<RModuleAttribute> getRModuleUserAttributes(ScarabUser user, Module module, IssueType issueType, MITList currentList) 
+    {
+        List<RModuleAttribute> issueListColumns = null;
         try {
             //
             // First check whether an MIT list is currently
             // active and if so, whether it has attributes
             // associated with it.
             //
-            MITList currentList = user.getCurrentMITList();
             if (currentList != null) {
                 //
                 // Here we fetch the collection of attributes
@@ -634,14 +640,15 @@ public class ScarabRequestTool
                 // TODO looking for common default attributes.
             }
 
-            if (issueListColumns == null) {
-                issueListColumns = user.getRModuleUserAttributes(module,
-                        issueType);
-                if (issueListColumns.isEmpty()) {
-                    issueListColumns = module
-                            .getDefaultRModuleUserAttributes(issueType);
+            if (issueListColumns == null || issueListColumns.size() == 0)
+            {
+                issueListColumns = user.getRModuleUserAttributes(module, issueType);
+                if (issueListColumns.isEmpty()) 
+                {
+                    issueListColumns = module.getDefaultRModuleUserAttributes(issueType);
                 }
             }
+            
             if (issueListColumns == null)
             {
                 issueListColumns = Collections.EMPTY_LIST;
@@ -697,13 +704,68 @@ public class ScarabRequestTool
      * If it is empty, then it will try to get the defaults from the module.
      * If anything fails, it will return an empty list.
      */
-    public List getRModuleUserAttributes()
+    public List<RModuleAttribute> getRModuleUserAttributes()
     {
-        ScarabUser user = (ScarabUser)data.getUser();        
+        ScarabUser user = (ScarabUser)data.getUser();
+        Module module   = user.getCurrentModule();
+        List<RModuleAttribute> result = getRModuleUserAttributes(user, module);
+        return result;
+    }
+
+    /**
+     * Same as above, but also allows to get the Attributes set from the 
+     * query owners definition, if the current user has not defined his/her
+     * own query attribute set for this query.
+     * @param q
+     * @return
+     * @throws TorqueException
+     */
+    public List<RModuleAttribute> getRModuleUserAttributes(Query q) throws TorqueException
+    {
+        List<RModuleAttribute> result = getRModuleUserAttributes();
+        if(result.size() == 0) 
+        {
+            /*
+             * When we get here, then the current user uses a public query for which
+             * he/she has not yet created a customization (ake call s the query for the
+             * first time ever). Since we assume, that the original creator of the 
+             * query has configured the query wisely, we take a copy of the creators 
+             * customization here. Hence the new user gets a reasonable default setting.
+             * However the new user can configure the query independently from the originators
+             * customization.
+             */
+            ScarabUser me       = (ScarabUser)data.getUser();  // the userId of the current user
+            MITList currentList = q.getMITList();              // The query MIT-list
+            ScarabUser owner    = q.getScarabUser();           // The originator of the query
+            Module module       = me.getCurrentModule();       // The current module
+            IssueType theIssueType = this.getIssueType();      // The current issue Type
+            currentList = currentList.copy();                  // Here we make a physical copy
+            currentList.setUserId(owner.getUserId());          // We set the current users uid 
+
+            /*
+             * Now we recall the Userattributes of the originators customisation,
+             * but get it in to our copy. The nice side effect: The copy will be
+             * added to the database, thus it gets persistent. Subsequent calls
+             * to this method will always return the copy from the database.
+            */
+            result = getRModuleUserAttributes(owner, module, theIssueType, currentList );
+            
+        }
+        return result;
+    }
+    
+    /**
+     * Common driver function to get the current list of RModule Attributes.
+     * @param user
+     * @return
+     */
+    private List<RModuleAttribute> getRModuleUserAttributes(ScarabUser user, Module module)
+    {
         IssueType theIssueType = this.getIssueType();
 
-        if(issueListColumns == null){
-        	issueListColumns= getRModuleUserAttributes(user, user.getCurrentModule(), theIssueType);
+        if(issueListColumns == null || issueListColumns.size() == 0)
+        {
+        	issueListColumns= getRModuleUserAttributes(user, module, theIssueType);
 			if (issueListColumns == null)
 	        {
 	            issueListColumns = Collections.EMPTY_LIST;
@@ -720,6 +782,7 @@ public class ScarabRequestTool
         }
         return issueListColumns;
     }
+
 
 
     public List getValidIssueListAttributes()
@@ -1700,9 +1763,10 @@ public class ScarabRequestTool
         throws Exception
     {
         IssueSearch search = getNewSearch();
+        Query theQuery = this.getQuery();
 
         search.setLocale(getLocalizationTool().getPrimaryLocale());
-        search.setIssueListAttributeColumns(getRModuleUserAttributes());
+        search.setIssueListAttributeColumns(getRModuleUserAttributes(theQuery));
         search.setLocalizationTool(getLocalizationTool());
 
         StringValueParser parser = ScarabUtil.parseURL(query);
