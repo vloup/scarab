@@ -72,6 +72,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabLink;
 
 /**
  * This class contains common code for the use in ScarabUser implementations.
@@ -751,6 +752,30 @@ public abstract class AbstractScarabUser
     }
 
     /**
+     * Prepare the HomePageLink
+     * @param link
+     * @param module
+     * @return
+     * @throws TorqueException 
+     */
+    public  String getDefaultQueryId(Module module) throws TorqueException
+    {
+        String homePage = getHomePage(module);
+        String result;
+        if(homePage.equals("IssueList.vm"))
+        {
+            Query q = QueryPeer.getDefaultQuery(module);
+            if(q != null)
+            {
+                homePage="IssueList.vm";
+                long cnt = (q.getQueryId());
+                return Long.toString(cnt);
+            }
+        }
+        return "";
+    }
+    
+    /**
      * @see ScarabUser#getHomePage(Module)
      */
     public String getHomePage(Module module)
@@ -771,29 +796,39 @@ public abstract class AbstractScarabUser
                 {
                     homePage = "SelectModule.vm";
                 }
-                else if ("query".equals(homePage))
+                else
                 {
-                    homePage = getQueryTarget();
-                }
-                else if ("matrix".equals(homePage))
-                {
-                    homePage = getMatrixTarget();
-                }
-                // protect against removal of old screens
-                else if (homePage != null && 
-                    (homePage.endsWith("ModuleQuery.vm") ||
-                     homePage.endsWith("XModuleList.vm"))) 
-                {
-                    homePage = getQueryTarget();
-                }
-
-                int i = 0;
-                while (homePage == null || !isHomePageValid(homePage, module)) 
-                {
-                    homePage = HOME_PAGES[i++];
-                    if ("query".equals(homePage)) 
+                    
+                    Query q = QueryPeer.getDefaultQuery(module);
+                    if(q != null)
+                    {
+                        homePage="IssueList.vm";
+                    }
+                    
+                    if ("query".equals(homePage))
                     {
                         homePage = getQueryTarget();
+                    }
+                    else if ("matrix".equals(homePage))
+                    {
+                        homePage = getMatrixTarget();
+                    }
+                    // protect against removal of old screens
+                    else if (homePage != null && 
+                        (homePage.endsWith("ModuleQuery.vm") ||
+                         homePage.endsWith("XModuleList.vm"))) 
+                    {
+                        homePage = getQueryTarget();
+                    }
+    
+                    int i = 0;
+                    while (homePage == null || !isHomePageValid(homePage, module)) 
+                    {
+                        homePage = HOME_PAGES[i++];
+                        if ("query".equals(homePage)) 
+                        {
+                            homePage = getQueryTarget();
+                        }
                     }
                 }
             }
@@ -1368,7 +1403,12 @@ public abstract class AbstractScarabUser
     }
     private String getMostRecentQuery(Object key)
     {
-        setCurrentMITList(key, (MITList)mostRecentQueryMITMap.get(key));
+        MITList mostRecentQuery = (MITList)mostRecentQueryMITMap.get(key);
+        if(mostRecentQuery != null)
+        {
+            // There was a recent query, so (re-)use it ...
+            setCurrentMITList(key, mostRecentQuery);
+        }
         return (String)mostRecentQueryMap.get(key);
     }
 

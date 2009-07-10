@@ -124,7 +124,6 @@
 ## ---------------------------------------------------------------------
 
 #macro (watchingUsers $myselfInList $assignedUserId $watchedRMA $watchedAttrib)
-    &nbsp; 
     #set ($users = $module.getUsers("Issue | View"))
     ## Create a selection box
     #foreach ($user in $users)
@@ -165,7 +164,7 @@
           #end
         #end
       #end
-    </select>&nbsp;
+    </select>
     <input type="submit" name="eventSubmit_doAddwatchers" title="Hier k&ouml;nnen Sie andere Mitarbeiter als $watchedRMA.DisplayValue hinzuf&uuml;gen " value="als $watchedRMA.DisplayValue" class="button" />
 #end
 
@@ -263,7 +262,7 @@
   ## Issue remove
   ## ==========================================================================
   <div class="functnbar2" style="white-space:nowrap;min-height:28px;height:28px; overflow:visible;">
-    <span style="float:left; margin:1px;padding:0px;">
+    <span style="float:left; margin:1px;padding:0px;overflow:visible;display:inline;">
       
         #if ($canEdit)
           <span style="white-space:nowrap;margin-right:0px;margin-left:5px;">    

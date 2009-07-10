@@ -388,4 +388,44 @@ public class QueryPeer
         return crit;
     }
 
+
+    /**
+     * Return the 
+     * @param module
+     * @param user
+     * @return
+     * @throws TorqueException
+     */
+    public static Query getDefaultQuery(Module module) throws TorqueException 
+    {
+        List<Query> queries = null;
+        Object obj = QueryManager.getMethodResult()
+            .get(QUERY_PEER, GET_MODULE_QUERIES, module, "homePage");
+        if (obj == null) 
+        {
+            Criteria crit = new Criteria()
+                .add(QueryPeer.DELETED, 0);
+            crit.add(QueryPeer.HOME_PAGE, 1);
+            crit.add(QueryPeer.MODULE_ID, module.getModuleId());
+            queries = QueryPeer.doSelect(crit);
+            QueryManager.getMethodResult()
+                .put(queries, QUERY_PEER, GET_MODULE_QUERIES, module, "homePage");
+         }
+        else 
+        {
+            queries = (List)obj;
+        }
+        
+        Query result;
+        if(queries != null &&queries.size() == 1)
+        {
+            result = queries.get(0);
+        }
+        else
+        {
+            result = null;
+        }
+        return result;
+    }
+
 }

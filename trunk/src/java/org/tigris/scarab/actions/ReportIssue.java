@@ -924,6 +924,6 @@ public class ReportIssue extends RequireLoginFirstAction
             data.getParameters().remove(ScarabConstants.REPORTING_ISSUE);
             user.setReportingIssue(key, null);
         }
-        user.setHomePage("home,EnterNew.vm");
+        //user.setHomePage("home,EnterNew.vm");
     }
 }

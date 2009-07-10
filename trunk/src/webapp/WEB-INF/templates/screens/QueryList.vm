@@ -20,6 +20,7 @@
 
 #set ($queryType = $data.Parameters.getString("go"))
 #if ($queryType.equals("publicQueries"))
+   <input type="hidden" name="go" value="$queryType"/>
    #set ($queryType = "PublicQueries")
    #set ($queries = $scarabR.GlobalQueries)
    #set ($privateQueries = false)
@@ -66,6 +67,7 @@ $l10n.Click
 ##  <th>$l10n.SubscribeFrequency</th>
   <th>#sort ("name" "$l10n.Name")</th>
   <th>#sort ("desc" "$l10n.Description")</th>
+  <th>Startpage</th>
   <th>#sort ("avail" "$l10n.Availability")</th>
   #if ($privateQueries)
   <th>#sort ("module" "$l10n.Module")</th>
@@ -80,7 +82,8 @@ $l10n.Click
   #set ($rquGroup = $intake.RQueryUser.mapTo($rqu))
   #set ($canDelete = $query.canDelete($user))
   #set ($canEdit   = $query.canEdit($user))
-  #if ($canDelete) #set ($canDeleteAtLeastOne = true) #end
+  #if  ($canDelete) #set ($canDeleteAtLeastOne = true) #end
+
   #indexedRows($velocityCount)
 
   <td>
@@ -105,6 +108,15 @@ $l10n.Click
       $query.Name
     #end
   <td>#if($query.Description)  $query.Description #else &#160; #end</td>
+
+  <td>    
+    <input type="radio"
+           #if($query.HomePage)  
+           checked="checked"
+           #end
+           name="startpage" 
+           value="$query.QueryId"/> 
+  </td>
 
   <td>
   #if (!$query.Approved)
@@ -131,13 +143,27 @@ $l10n.Click
  #end
 </table>
 
-<div class="functnbar3">
+## ==============================================
+## The function bar footer
+## ==============================================
+                   
+
+<div class="functnbar3" style="white-space:nowrap;min-height:23px;height:23px; overflow:visible;">
 ## <input type="submit" value="$l10n.Save" name="eventSubmit_doSave" />&#160;
-<input type="submit" value="$l10n.CopySelected" name="eventSubmit_doCopyquery" />
-  #if ($canDeleteAtLeastOne)
-   &#160;<input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletequeries" />
-  #end
-   &#160;<input type="submit" value="$l10n.CreateNewQuery" name="eventSubmit_doGotoadvancedquery" />
+
+  <span style="float:left; margin:1px;padding:0px;overflow:visible;display:inline;">
+    <input type="submit" value="$l10n.CopySelected" name="eventSubmit_doCopyquery" class="button3"/>
+  
+      #if ($canDeleteAtLeastOne)
+       <input type="submit" value="$l10n.DeleteSelected" name="eventSubmit_doDeletequeries" class="button3"/>
+      #end
+
+      <input type="submit" value="$l10n.CreateNewQuery" name="eventSubmit_doGotoadvancedquery" class="button3"/>   
+
+      <input type="submit" value="Startpage $l10n.Save"   name="eventSubmit_doSetstartpage" class="button3"/>   
+
+  </span>
+
 </div>
 
 #end

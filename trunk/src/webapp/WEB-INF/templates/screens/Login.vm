@@ -113,9 +113,10 @@
  #if (!$module.isGlobalModule())
   #set ($currentDisplayCount = 1 + $currentDisplayCount)
   #if ($currentDisplayCount <= $scarabG.publicModulesDisplayCount)
+   #set ($query = $scarabR.getDefaultQuery($module))
    #indexedRows($velocityCount)
     <td nowrap="nowrap">
-      $modulelink.setPage("$module.ModuleId").setLabel($module.Name)
+      $modulelink.setPage("$module.ModuleId").addPathInfo("query","$query.QueryId").setLabel($module.Name)
     </td>
     <td nowrap="nowrap">
       $module.Description

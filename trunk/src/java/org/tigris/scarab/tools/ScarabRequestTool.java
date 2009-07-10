@@ -2160,6 +2160,29 @@ public class ScarabRequestTool
                null, (ScarabUser)data.getUser(),
                "name", "asc", QueryPeer.TYPE_ALL_USER);
     }
+    
+    /**
+     * Return the default query for the current module.
+     * Typical usage as home page for that module.
+     * @return
+     * @throws Exception
+     */
+    public Query getDefaultQuery() throws Exception
+    {
+        return getDefaultQuery(getCurrentModule());
+    }
+
+    /**
+     * Return the default query for the given module.
+     * Typical usage as home page for the given module.
+     * @param module
+     * @return
+     * @throws Exception
+     */
+    public Query getDefaultQuery(Module module) throws Exception
+    {
+        return QueryPeer.getDefaultQuery(module);
+    }
 
     /**
      * a report helper class

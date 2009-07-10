@@ -330,6 +330,17 @@ public interface ScarabUser extends User, Persistent
     String getHomePage(Module module)
         throws TorqueException;
 
+    
+    /**
+     * Returns the QueryId of the modules HomePage (if the HomePage is a query)
+     * Otherwise null;
+     * @param module
+     * @return
+     * @throws TorqueException
+     */
+    String getDefaultQueryId(Module module)
+        throws TorqueException;
+    
     /**
      * The template/tab to show for the home page.
      */

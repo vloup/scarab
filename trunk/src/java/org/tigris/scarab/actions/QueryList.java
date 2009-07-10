@@ -46,11 +46,13 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -190,5 +192,47 @@ public class QueryList extends RequireLoginFirstAction
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
         setTarget(data, user.getQueryTarget());
+    }
+    
+
+    /**
+     * This method is used by the "save startage" button.
+     * Note: The start page is declared per module.
+     * The declaration per user/module would be more appealing 
+     * but is not yet implemented.
+     * 
+     * @param data
+     * @param context
+     * @throws Exception 
+     */
+    public void doSetstartpage(RunData data, TemplateContext context) throws Exception
+    {
+        ParameterParser pp = data.getParameters();   
+        String queryId = pp.get("startpage");
+        
+        List<Query> globalQueries  = getScarabRequestTool(context).getGlobalQueries();
+        List<Query> privateQueries = getScarabRequestTool(context).getUserAllQueries();
+        Query newStartQuery = QueryManager.getInstance(new NumberKey(queryId), false);
+        
+        setStartpage(globalQueries, newStartQuery);
+        setStartpage(privateQueries, newStartQuery);       
+    }
+    
+    private void setStartpage(List<Query> queries, Query newStartQuery) throws TorqueException
+    {
+        Iterator<Query> iter = queries.iterator();
+        while(iter.hasNext())
+        {
+            Query query = iter.next();
+            if (query.getQueryId().equals(newStartQuery.getQueryId()))
+            {
+                query.setHomePage(true);
+            }
+            else
+            {
+                query.setHomePage(false);
+            }
+            query.save();
+        }
     }
 }

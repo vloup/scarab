@@ -41,8 +41,9 @@
 #foreach ($module in $userModules)
   #if (!($module.isGlobalModule() && $userModules.size() > 1))
   #indexedRows($velocityCount)
-   <td>
-     $modulelink.setPage("$module.ModuleId").setLabel($module.Name)
+   <td> 
+     #set ($queryId = $user.getDefaultQueryId($module))
+     $modulelink.setPage("$module.ModuleId").addPathInfo("query","$queryId").setLabel($module.Name)
    </td>
    <td>
      $module.Description

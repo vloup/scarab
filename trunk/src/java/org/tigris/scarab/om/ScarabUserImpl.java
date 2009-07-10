@@ -821,7 +821,13 @@ public class ScarabUserImpl
     {
         internalUser.setEnterIssueRedirect(templateCode);
     }
-                
+       
+    public  String getDefaultQueryId(Module module) throws TorqueException
+    {
+        return internalUser.getDefaultQueryId(module);
+    }
+
+    
     /**
      * @see ScarabUser#getHomePage()
      */

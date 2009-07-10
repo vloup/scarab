@@ -5,8 +5,9 @@
 ##
 ## TODO: Where is this template used from? Is it redundant with IssueTypeList.vm?
 ##
+
 #set ($user = $data.User)
-$user.setHomePage("matrix")
+##$user.setHomePage("matrix")
 $user.setCurrentMITList(null)
 
 <div class="app" id="xmodulelist">

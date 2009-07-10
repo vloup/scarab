@@ -122,6 +122,7 @@ function initializeTreeview() {
   collapseAll(["ol"]);
   //openBookMark();
   buttonEndings("button");
+  buttonEndings("button3");
   buttonEndings("buttonNotify");
   buttonEndings("buttonPassive");
   buttonEndings("buttonActive");

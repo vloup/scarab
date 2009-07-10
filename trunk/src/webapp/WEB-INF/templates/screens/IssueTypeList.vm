@@ -7,7 +7,7 @@
 ##
 
 #set ($user = $data.User)
-$user.setHomePage("matrix")
+##$user.setHomePage("matrix")
 
 
 <div class="app" id="xmodulelist">
