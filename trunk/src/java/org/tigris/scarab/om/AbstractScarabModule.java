@@ -47,46 +47,43 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
-import com.workingdogs.village.DataSetException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
+import org.apache.fulcrum.localization.Localization;
+import org.apache.fulcrum.security.entity.Group;
 import org.apache.regexp.RECompiler;
 import org.apache.regexp.REProgram;
 import org.apache.regexp.RESyntaxException;
-import com.workingdogs.village.Record;
-
-// Turbine classes
 import org.apache.torque.NoRowsException;
 import org.apache.torque.TorqueException;
+import org.apache.torque.manager.MethodResultCache;
+import org.apache.torque.om.BaseObject;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
-import org.apache.torque.om.BaseObject;
-import org.apache.torque.manager.MethodResultCache;
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.localization.Localization;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.reports.ReportBridge;
+import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.localization.L10NKey;
-
-// Scarab classes
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ValidationException;
-import org.tigris.scarab.util.ScarabConstants;
-import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.workflow.WorkflowFactory;
-import org.tigris.scarab.reports.ReportBridge;
+
+import com.workingdogs.village.DataSetException;
+import com.workingdogs.village.Record;
 
 /**
  * <p>
@@ -1535,6 +1532,54 @@ public abstract class AbstractScarabModule
 
         return moduleOptions;
     }
+
+    public String getOptionsTreeAsJSON(Attribute attribute, IssueType issueType, boolean activeOnly) throws TorqueException {
+    	List<RModuleOption> moduleOptions = (List<RModuleOption>) getRModuleOptions(attribute, issueType, activeOnly);
+    		if (moduleOptions == null) {
+    			return null;
+    		}    	
+    	    		
+    		StringBuffer json = new StringBuffer("{ 'optionId' : 0, 'displayValue' : 'root', '_children': [");
+    		
+			boolean first = true;
+			
+    		for (RModuleOption moduleOption : moduleOptions) {    			
+    			if (moduleOption.getAttributeOption().getAncestors().size() == 1) {
+    				if (!first) {
+    					json.append(", ");
+    				}
+					json.append(this.getModuleOptionAsJSON(moduleOption));
+    				first = false;
+    			}
+    		}
+    		
+    		json.append("]}");
+    		
+    		return json.toString();
+    }
+    
+    private String getModuleOptionAsJSON(RModuleOption moduleOption) throws TorqueException {
+    	StringBuffer json = new StringBuffer("{ 'optionId': ");
+    	json.append(moduleOption.getOptionId());
+    	json.append(", 'displayValue': '");
+    	json.append(moduleOption.getDisplayValue());
+    	json.append("', '_children': [");
+
+		boolean first = true;
+
+    	for (RModuleOption rmo : (List<RModuleOption>) moduleOption.getDescendants(moduleOption.getIssueType())) {
+			if (!first) {
+				json.append(", ");
+			}
+			json.append(this.getModuleOptionAsJSON(rmo));
+			first = false;
+    	}
+
+    	json.append("]}");
+    	
+    	return json.toString();
+    }
+    
     
     /** 
      * This method is implemented in ScarabModule

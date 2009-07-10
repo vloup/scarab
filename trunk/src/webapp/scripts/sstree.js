@@ -33,7 +33,10 @@ function collapseAll(tags) {
   var lists = getElementsByClassName(document, tags[i], "treeview");
   for (var j = 0; j < lists.length; j++)
   {
-   lists[j].style.display = "none";
+   if (lists[j].className.indexOf('root') === -1)
+   {
+	   lists[j].style.display = "none";
+   }
   }
  }
  var e = document.getElementById("root");
@@ -66,4 +69,58 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 		}
 	}
 	return (arrReturnElements)
+}
+
+
+function renderJSONTreePopup(key, value, root) {
+	document.writeln('<div id="' + key + ':Popup" class="tree_popup"><ol class="treeview root">');		
+	for (var i = 0; i < root._children.length; i++) {			
+		renderJSONTree(key, value, root._children[i]);						
+	}
+	document.writeln('</ol></div>');	
+}
+
+function renderJSONTree(key, value, root) {
+	if (root.optionId == value) {
+		document.getElementById(key + ':Display').value = root.displayValue;	
+	}	
+	
+	document.writeln('<li>');
+
+	if (root._children.length > 0) {
+		document.writeln('<a class="folder" onclick="toggle(this,\'/scarab/images\');"></a><a href="javascript:clickTree(\'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
+		document.writeln('<ol class="treeview">');			
+		for (var i = 0; i < root._children.length; i++) {			
+			renderJSONTree(key, value, root._children[i]);						
+		}
+		document.writeln('</ol>');	
+	}
+	else {
+		document.writeln('<a href="javascript:clickTree(\'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
+	}
+	
+	document.writeln('</li>');
+}
+
+function toggleTreePopup(key, caller) {
+	if (document.getElementById(key + ':Popup').style.display !== 'inline-block') {
+		var pos = getAnchorPosition(key + ':Anchor');
+
+		document.getElementById(key + ':Popup').style.display = 'inline-block';
+		document.getElementById(key + ':Popup').style.left = pos.x + 'px';
+		document.getElementById(key + ':Popup').style.top = pos.y + 'px';
+		
+		if (document.layers) {
+			document.captureEvents(Event.MOUSEUP);
+		}
+		document.onmouseup = function() { document.getElementById(key + ':Popup').style.display = 'none' };
+	}
+	else {
+		document.getElementById(key + ':Popup').style.display = 'none';
+	}
+}
+
+function clickTree(key, value, display) {
+	document.getElementById(key).value = value;
+	document.getElementById(key + ':Display').value = display;
 }

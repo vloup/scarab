@@ -58,5 +58,28 @@
  background-image: url(images/closed.png);
  padding-left:20px;
 }
-
   
+
+
+div.tree_popup {
+	background-color: white;
+	display: none;	
+	max-height: 200px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: absolute;
+	width: 300px;
+}
+
+div.tree_popup ol.treeview {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+div.tree_popup ol.treeview li {
+	font-size: x-small;
+	margin-bottom: 1px;
+	margin-top: 3px;
+	padding-left: 40px;
+}

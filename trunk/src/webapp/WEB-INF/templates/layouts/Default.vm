@@ -276,6 +276,7 @@
        #end
        <div id="bodycol">
         <!-- Scarab - App -->
+        #set ($attributeTreePopupHelper = [])
         $renderer.render("layouts", "MainContent.vm")
         <!-- Structural Elements -->
        </div>
@@ -310,7 +311,11 @@
    // commented out.[HD]
    // stickyNavigationBar();
  </script>
- 
+
+ ## render the popup used to display selection trees
+ #foreach ($attributeTreePopup in $attributeTreePopupHelper)
+  <script type="text/javascript">renderJSONTreePopup('$attributeTreePopup.get(0)', '$attributeTreePopup.get(1)', $attributeTreePopup.get(2));</script>
+ #end
  
 </body>
 </html>
