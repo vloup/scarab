@@ -121,7 +121,7 @@ $format.getNow($scarabR.DateFormat)
      #end
   </th>
   <!-- Attributes selected to be displayed -->
-  #set ($rmoduleUserAttributes = $scarabR.RModuleUserAttributes)
+  #set ($rmoduleUserAttributes = $scarabR.getRModuleUserAttributes($scarabR.Query) )
   #if (!$rmoduleUserAttributes || $rmoduleUserAttributes.size() == 0)
     <th>&nbsp;</th>
   #end
