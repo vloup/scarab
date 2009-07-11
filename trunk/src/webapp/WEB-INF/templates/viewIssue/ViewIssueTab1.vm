@@ -62,13 +62,22 @@
                 #set ($field = "Value")
               #end
               #if ($isEditAttributes)
+                #set ($fieldSize = 0)
+                #set ($fieldSize = $!attVal.Attribute.FieldSize)
+                #set ($fieldHint  = "")
+                #set ($fieldHint  = $!attVal.Attribute.Hint)
+                #set ($fieldExtraHeader = "")
+                #if  ($!attVal.Attribute.Description.startsWith("hint:"))
+                  #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
+                #end
                 <tr>
-                  <th> #if ($rma.getRequired()) #showAsterisk() #end $rma.DisplayValue</th>
+                  <th style="white-space:nowrap;"> 
+                    #if ($rma.getRequired())#showAsterisk()&nbsp;#end$rma.DisplayValue
+                    #if($fieldExtraHeader)
+                    <pre>$fieldExtraHeader</pre>
+                    #end
+                  </th>
                   <td>
-                    #set ($fieldSize = 0)
-                    #set ($fieldSize = $!attVal.Attribute.FieldSize)
-                    #set ($fieldHint  = "")
-                    #set ($fieldHint  = $!attVal.Attribute.Hint)
                     #if ($att.isOptionAttribute())
                       #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
                       #attrValueErrorMsg ($attVal $field)
