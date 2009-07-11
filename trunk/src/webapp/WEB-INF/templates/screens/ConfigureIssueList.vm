@@ -44,19 +44,19 @@
   #end
 
   <tr class="a">
-  #if ($xMITSearch)
-   <td>$attribute.Name</td>
-  #else
+  ##if ($xMITSearch)
+  ## <td>$l10n.getIgnoreMissingResource($attribute.Name)</td>
+  ##else
    <td>
    #set ($displayName = false)
    #set ($displayName = $module.getRModuleAttribute($attribute, $issueType).DisplayValue)
    #if ($displayName)
-     $displayName
+     $l10n.getIgnoreMissingResource($displayName) y
    #else
-     $attribute.Name
+     $l10n.getIgnoreMissingResource($attribute.Name) z
    #end
    </td>
-  #end
+  ##end
    <td>
       #if ($attribute.AttributeId)
       <input type="hidden" name="attid" value="$attribute.AttributeId" />
