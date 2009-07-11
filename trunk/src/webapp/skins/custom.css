@@ -83,3 +83,7 @@ div.tree_popup ol.treeview li {
 	margin-top: 3px;
 	padding-left: 40px;
 }
+
+.asterisk {
+	color:red;
+}
