@@ -51,9 +51,9 @@
    #set ($displayName = false)
    #set ($displayName = $module.getRModuleAttribute($attribute, $issueType).DisplayValue)
    #if ($displayName)
-     $l10n.getIgnoreMissingResource($displayName) y
+     $l10n.getIgnoreMissingResource($displayName)
    #else
-     $l10n.getIgnoreMissingResource($attribute.Name) z
+     $l10n.getIgnoreMissingResource($attribute.Name)
    #end
    </td>
   ##end
