@@ -980,69 +980,78 @@
       	</details>      	
       </property>
 	</group>
-	
-    <property>
-      <name>scarab.workflow.classname</name>
-      <default>org.tigris.scarab.workflow.CheapWorkflow</default>
-      <details>
-      The workflow tool to be used by Scarab.
-      </details>
-      <type>Runtime</type>
-      <file/>
-    </property>
-    
-    <property>
-      <name>scarab.notificationmanager.classname</name>
-      <default>org.tigris.scarab.notification.ScarabNotificationManager</default>
-      <details>
-      The implementation of NotificationManager to be used by Scarab.
-      </details>
-      <type>Runtime</type>
-      <comment>
-      The implementation of NotificationManager to be used by Scarab.
-      </comment>
-    </property>
 
-    <property>
-      <name>scarab.notificationmanager.issuequiettime</name>
-      <default>300000</default>
+
+    <group name="Workflow">
       <details>
-      Waiting time after which all queued notifications for an issue
-      are sent to their recipients. The waiting time is measured begining
-      from the time of last activity on the issue until the current 
-      time. Time unit is [msec], e.g. 300000 is equivalent to a
-      waiting time of 5 minutes.
+        Helper properties for the workflow.
+        Note: Some of these properties are temporary "hacks"
+        until the workf.ow engine has been improved in such a
+        way that it can be configured through the Webinterface.        
       </details>
-      <type>Runtime</type>
-      <comment>
-        Waiting time after which a queued notification is sent to recipients in [msec]
-      </comment>
-    </property>
-    
-    <property>
-      <name>scarab.instance.id</name>
-      <default>local</default>
-      <comment/>
-      <type>Runtime</type>
-       <customization modification="optional">advanced</customization>
-      <file/>
-      <details>
+		
+      <property>
+        <name>scarab.workflow.classname</name>
+        <default>org.tigris.scarab.workflow.CheapWorkflow</default>
+        <details>
+          The workflow tool to be used by Scarab.
+        </details>
+        <type>Runtime</type>
+        <file/>
+      </property>
+	    
+      <property>
+        <name>scarab.notificationmanager.classname</name>
+        <default>org.tigris.scarab.notification.ScarabNotificationManager</default>
+        <details>
+          The implementation of NotificationManager to be used by Scarab.
+        </details>
+        <type>Runtime</type>
+        <comment>
+          The implementation of NotificationManager to be used by Scarab.
+        </comment>
+      </property>
+	
+      <property>
+        <name>scarab.notificationmanager.issuequiettime</name>
+        <default>300000</default>
+        <details>
+          Waiting time after which all queued notifications for an issue
+          are sent to their recipients. The waiting time is measured begining
+          from the time of last activity on the issue until the current 
+          time. Time unit is [msec], e.g. 300000 is equivalent to a
+          waiting time of 5 minutes.
+        </details>
+        <type>Runtime</type>
+        <comment>
+          Waiting time after which a queued notification is sent to recipients in [msec]
+        </comment>
+      </property>
+	    
+      <property>
+        <name>scarab.instance.id</name>
+        <default>local</default>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
           This name will be used to distinguish specific scarab instances
           from other instances that it may interact with (in the future).
           It is the prefix to all issue ids created in response to an 
           issue entered against a module in this instance's database.
           per default this value is set to "local" .
-      </details>
-    </property>
-
-    <property>
-      <name>scarab.common.status.id</name>
-      <default>status</default>
-      <comment/>
-      <type>Runtime</type>
-       <customization modification="optional">advanced</customization>
-      <file/>
-      <details>
+        </details>
+      </property>
+	
+      <property>
+        <name>scarab.common.status.id</name>
+        <default>status</default>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
           Every issue tracking system has got an attribute, that keeps
           the current status of the handled issues, i.e. it stores whether
           an issue has been created, closed, reopened and so on.
@@ -1059,8 +1068,37 @@
           given instance. And the only place where we use this property 
           is during generation of the E-Mail headers for issue change
           notifications.
-      </details>
-    </property>
+        </details>
+      </property>
+	  
+      <property>
+        <name>scarab.common.status.sealed</name>
+        <default>closed</default>
+        <comment/>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          The given issue is recognized as sealed when the status attribute
+  		  has been set to the given value. The default behaviour is:
+  		  Issue is sealed if (status == closed)
+        </details>
+      </property>
+
+      <property>
+        <name>scarab.common.status.sealed.modifyPermission</name>
+        <default>Domain | Edit</default>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          When the given issue is in $status=$sealed (aka status=closed)
+          then the required edit permission will be determined by this
+          property (default = Domain__Edit)
+        </details>
+      </property>
+    </group>
 
     <group name="Turbine-properties">
       <details>

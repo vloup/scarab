@@ -80,6 +80,8 @@ import org.tigris.scarab.notification.Notification;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.IssueTypePeer;
 
+import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.NotificationRule;
 import org.tigris.scarab.om.NotificationRuleManager;
 import org.tigris.scarab.om.NotificationRulePeer;
@@ -211,6 +213,56 @@ public class ScarabGlobalTool
     {
         return security;
     }
+    
+    /**
+     * Determine which permission is needed to modify the given issue
+     * The result may vary depending on the issue state!
+     * Note: Currently the issue "state" is not exactly defined.
+     * Therefore this method checks for existence of an attribute
+     * named according to the system property
+     * 
+     * scarab.common.status.id=status
+     * 
+     * If such an attribute is available within the given issue, the method checks
+     * if the issue value is the same as in the given system property
+     * 
+     * scarab.common.status.sealed=closed
+     * 
+     * So if the default case applies ( status==closed)
+     * 
+     * Then the returned permission is determined by the system property:
+     * 
+     * scarab.common.status.sealed.modifyPermission=Domain__Edit
+     * 
+     * All three properties are runtime properties which can be specified
+     * in the build.properties or in the custom.properties
+     * @return
+     * @throws TorqueException 
+     */
+    public String getRequiredModifyPermission(Issue issue) throws TorqueException
+    {        
+        String editPermission = ScarabSecurity.ISSUE__EDIT;
+        
+        String status = getTurbineProperty("scarab.common.status.id");
+        if (status != null)
+        {
+            String value = getTurbineProperty("scarab.common.status.sealed");
+            if(value != null)
+            {
+                AttributeValue attval = issue.getAttributeValue(status);
+                if(attval.getValue().equals(value))
+                {
+                    String permissionString = getTurbineProperty("scarab.common.status.sealed.modifyPermission");
+                    if(permissionString != null)
+                    {
+                        editPermission = permissionString;
+                    }
+                }
+            }
+        }
+        return editPermission;
+    }
+    
 
     /**
      * holds the names of parameters that are configurable through the ui.
