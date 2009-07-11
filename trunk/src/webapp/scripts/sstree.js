@@ -104,16 +104,34 @@ function renderJSONTree(key, value, root) {
 
 function toggleTreePopup(key, caller) {
 	if (document.getElementById(key + ':Popup').style.display !== 'inline-block') {
+		var elem = document.getElementById(key + ':Popup');
+		
 		var pos = getAnchorPosition(key + ':Anchor');
 
-		document.getElementById(key + ':Popup').style.display = 'inline-block';
-		document.getElementById(key + ':Popup').style.left = pos.x + 'px';
-		document.getElementById(key + ':Popup').style.top = pos.y + 'px';
+		elem.style.display = 'inline-block';
+		elem.style.left = pos.x + 'px';
+		elem.style.top = pos.y + 'px';
 		
 		if (document.layers) {
 			document.captureEvents(Event.MOUSEUP);
 		}
-		document.onmouseup = function() { document.getElementById(key + ':Popup').style.display = 'none' };
+
+		document.onmouseup = function(event) {
+			if (!event) event = window.event;
+			 
+			var pos = getAnchorPosition(key + ':Popup');
+			var x1 = pos.x;
+			var x2 = pos.x + elem.offsetWidth;
+
+			var y1 = pos.y;
+			var y2 = pos.y + elem.offsetHeight;
+			
+			if (!((event.clientX >= x1) && (event.clientX <= x2) && (event.clientY >= y1) && (event.clientY <= y2))) {
+				elem.style.display = 'none';				
+				document.onmouseup = undefined;
+			}
+		};
+
 	}
 	else {
 		document.getElementById(key + ':Popup').style.display = 'none';
@@ -123,4 +141,6 @@ function toggleTreePopup(key, caller) {
 function clickTree(key, value, display) {
 	document.getElementById(key).value = value;
 	document.getElementById(key + ':Display').value = display;
+	document.getElementById(key + ':Popup').style.display = 'none';				
+	document.onmouseup = undefined;
 }
