@@ -47,20 +47,16 @@ package org.tigris.scarab.om;
  */ 
 
 // JDK classes
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-import java.sql.Connection;
 
-// Turbine classes
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
-
-import org.tigris.scarab.om.ModuleManager;
-import org.tigris.scarab.om.Module;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
@@ -241,6 +237,30 @@ public class RModuleOption
         }
         return descendants;
     }
+    
+    /**
+     * Gets a list of this option's direct children
+     * That are associated with this module/Issue Type
+     * Needed for treeview display
+     * @return <code>List</code> of <code>RModuleOptions</code>
+     */
+	public List<RModuleOption> getChildren(IssueType issueType) throws TorqueException {
+    	List<RModuleOption> children = new ArrayList<RModuleOption>();
+    	
+        @SuppressWarnings("unchecked")
+    	List<AttributeOption> l = (List<AttributeOption>) this.getAttributeOption().getChildren();
+    	
+    	for (AttributeOption attrOption : l) {
+    		RModuleOption rmo = getModule().getRModuleOption(attrOption, issueType);
+            if (rmo != null && rmo.getOptionId().equals(attrOption.getOptionId())) {
+            	children.add(rmo);
+            }
+    	}
+    	
+    	return children;    	
+    }
+    
+    
         
     public void delete()
          throws TorqueException, ScarabException

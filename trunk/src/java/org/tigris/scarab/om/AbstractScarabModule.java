@@ -1593,7 +1593,9 @@ public abstract class AbstractScarabModule
 
 		boolean first = true;
 
-    	for (RModuleOption rmo : (List<RModuleOption>) moduleOption.getDescendants(moduleOption.getIssueType())) {
+		moduleOption.getChildren(moduleOption.getIssueType());
+		
+    	for (RModuleOption rmo : (List<RModuleOption>) moduleOption.getChildren(moduleOption.getIssueType())) {
     		if (!AbstractScarabModule.canMakeTransitionForOption(data, fromValue, rmo, issue, false)) continue;
 			if (!first) {
 				json.append(", ");
