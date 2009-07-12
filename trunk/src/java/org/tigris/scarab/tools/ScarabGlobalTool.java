@@ -250,7 +250,7 @@ public class ScarabGlobalTool
             if(value != null)
             {
                 AttributeValue attval = issue.getAttributeValue(status);
-                if(attval.getValue().equals(value))
+                if(attval != null && attval.getValue().equals(value))
                 {
                     String permissionString = getTurbineProperty("scarab.common.status.sealed.modifyPermission");
                     if(permissionString != null)
