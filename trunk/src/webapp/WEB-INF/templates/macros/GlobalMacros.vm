@@ -94,7 +94,8 @@ $canMakeTransition
   #else
 
   <input id="$attrInput.get($optionFieldName).Key" value="$newValues" name="$attrInput.get($optionFieldName).Key" type="hidden"/>  
-  <input id="$attrInput.get($optionFieldName).Key:Display" type="text" size="20" readonly="" name="$attrInput.get($optionFieldName).Key:Display"/><a id="$attrInput.get($optionFieldName).Key:Anchor" href="javascript:toggleTreePopup('$attrInput.get($optionFieldName).Key')">show</a>
+  <input id="$attrInput.get($optionFieldName).Key:Display" type="text" size="20" readonly="" name="$attrInput.get($optionFieldName).Key:Display"/>
+  <a class="treeview_button" id="$attrInput.get($optionFieldName).Key:Anchor" href="javascript:toggleTreePopup('$attrInput.get($optionFieldName).Key')">&nbsp;&nbsp;&nbsp;&nbsp;</a>
   
   #set ($attributeTreePopup = [])
   #set ($dummy = $attributeTreePopup.add($attrInput.get($optionFieldName).Key) )

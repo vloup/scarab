@@ -60,11 +60,21 @@
 }
   
 
+.treeview_button {
+ background-image: url(images/popup_open.gif);
+ width:17px;
+ height:17px;
+ padding-left:0px;
+ position:relative;
+ left:-7px;
+ text-decoration:none;
+ background-repeat: no-repeat;
+}
 
 div.tree_popup {
 	background-color: #ffffe8;
 	display: none;	
-	max-height: 200px;
+    height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: absolute;
@@ -74,9 +84,13 @@ div.tree_popup {
 	border-color:#92b9d8;
 }
 
+div.tree_popup {
+	max-height: 200px;
+}
+
 div.tree_popup ol.treeview {
 	list-style: none;
-	padding: 0px;
+	padding: 5px;
 	margin: 0px;
 }
 
@@ -84,7 +98,7 @@ div.tree_popup ol.treeview li a.folder {
 	padding-left:0px;
 }
 
-div.tree_popup ol.treeview li {
+div.tree_popup ol.treeview li.leaf {
 	font-size: x-small;
 	margin-bottom: 1px;
 	margin-top: 3px;
@@ -95,6 +109,14 @@ div.tree_popup ol.treeview li a {
 	color:#000;
 	font-weight:bold;
 	text-decoration:none;
+}
+
+div.tree_popup ol.treeview li ol.treeview li.leaf a {
+	font-size: x-small;
+	margin-bottom: 1px;
+	margin-top: 3px;
+	padding-left: 20px;
+	color:#025dae;
 }
 
 .asterisk {

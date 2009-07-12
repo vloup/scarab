@@ -80,6 +80,7 @@ function renderJSONTreePopup(key, value, root, imgpath) {
 	document.writeln('</ol></div>');	
 }
 
+
 function renderJSONTree(attributeId, key, value, root, imgpath) {
 	if (root.optionId == value) {
 		document.getElementById(key + ':Display').value = root.displayValue;	
@@ -101,6 +102,7 @@ function renderJSONTree(attributeId, key, value, root, imgpath) {
 	
 	document.writeln('</li>');
 }
+
 
 function toggleTreePopup(key, caller) {
 	if (document.getElementById(key + ':Popup').style.display !== 'inline-block') {

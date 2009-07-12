@@ -1538,8 +1538,22 @@ public abstract class AbstractScarabModule
         return moduleOptions;
     }
 
-    public String getOptionsTreeAsJSON(RunData data, String fromValue, Attribute attribute, Issue issue, boolean activeOnly) throws TorqueException {    
-    	System.out.println(attribute.getName());
+    /**
+     * Gets a list of RModuleOptions as a Json tree structure.
+     * Needed for javascript portion of Treeview display for attributes.
+     * Note[HD]: This method should be refactored to another class.
+     * Probably we should make a new DisplayType for treeview here...
+     *
+     * @param attribute an <code>Attribute</code> value
+     * @param activeOnly a <code>boolean</code> value
+     * @return a <code>List</code> value
+     * @exception TorqueException if an error occurs
+     */
+
+    public String getOptionsTreeAsJSON(RunData data, String fromValue, Attribute attribute, Issue issue, boolean activeOnly) throws TorqueException 
+    {    
+
+        getLog().debug("Build options tree for Attribute [" + attribute.getName() + "]");
     	
     	List<RModuleOption> moduleOptions = (List<RModuleOption>) getRModuleOptions(attribute, issue.getIssueType(), activeOnly);
     		if (moduleOptions == null) {
