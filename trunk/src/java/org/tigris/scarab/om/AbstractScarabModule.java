@@ -57,6 +57,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.security.entity.Group;
 import org.apache.regexp.RECompiler;
@@ -69,10 +70,14 @@ import org.apache.torque.om.BaseObject;
 import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
+import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.ScarabGlobalTool;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -1533,22 +1538,29 @@ public abstract class AbstractScarabModule
         return moduleOptions;
     }
 
-    public String getOptionsTreeAsJSON(Attribute attribute, IssueType issueType, boolean activeOnly) throws TorqueException {
-    	List<RModuleOption> moduleOptions = (List<RModuleOption>) getRModuleOptions(attribute, issueType, activeOnly);
+    public String getOptionsTreeAsJSON(RunData data, String fromValue, Attribute attribute, Issue issue, boolean activeOnly) throws TorqueException {    
+    	System.out.println(attribute.getName());
+    	
+    	List<RModuleOption> moduleOptions = (List<RModuleOption>) getRModuleOptions(attribute, issue.getIssueType(), activeOnly);
     		if (moduleOptions == null) {
     			return null;
     		}    	
     	    		
-    		StringBuffer json = new StringBuffer("{ 'optionId' : 0, 'displayValue' : 'root', '_children': [");
+    		StringBuffer json = new StringBuffer("{ 'attributeId' : ");    		
+    		json.append(attribute.getAttributeId());
+    		json.append(", 'name' : '");
+    		json.append(attribute.getName());
+    		json.append("', '_children': [");
     		
 			boolean first = true;
 			
     		for (RModuleOption moduleOption : moduleOptions) {    			
+        		if (!AbstractScarabModule.canMakeTransitionForOption(data, fromValue, moduleOption, issue, false)) continue;
     			if (moduleOption.getAttributeOption().getAncestors().size() == 1) {
     				if (!first) {
     					json.append(", ");
     				}
-					json.append(this.getModuleOptionAsJSON(moduleOption));
+					json.append(this.getModuleOptionAsJSON(data, fromValue, attribute, issue, moduleOption));
     				first = false;
     			}
     		}
@@ -1558,7 +1570,7 @@ public abstract class AbstractScarabModule
     		return json.toString();
     }
     
-    private String getModuleOptionAsJSON(RModuleOption moduleOption) throws TorqueException {
+    private String getModuleOptionAsJSON(RunData data, String fromValue, Attribute attribute, Issue issue, RModuleOption moduleOption) throws TorqueException {
     	StringBuffer json = new StringBuffer("{ 'optionId': ");
     	json.append(moduleOption.getOptionId());
     	json.append(", 'displayValue': '");
@@ -1568,16 +1580,56 @@ public abstract class AbstractScarabModule
 		boolean first = true;
 
     	for (RModuleOption rmo : (List<RModuleOption>) moduleOption.getDescendants(moduleOption.getIssueType())) {
+    		if (!AbstractScarabModule.canMakeTransitionForOption(data, fromValue, rmo, issue, false)) continue;
 			if (!first) {
 				json.append(", ");
 			}
-			json.append(this.getModuleOptionAsJSON(rmo));
+			json.append(this.getModuleOptionAsJSON(data, fromValue, attribute, issue, rmo));
 			first = false;
     	}
 
     	json.append("]}");
     	
     	return json.toString();
+    }
+        
+    /**
+     * Implements CanMakeTransitionForOption from GlobalMacros.vm
+     * 
+     * @param fromValue
+     * @param option
+     * @param issue
+     * @param multiple
+     * @return
+     */
+    private static boolean canMakeTransitionForOption(RunData data, String fromValue, RModuleOption option, Issue issue, boolean multiple) {
+    	TemplateContext context = org.apache.turbine.modules.Module.getTemplateContext(data);
+        ScarabRequestTool scarabR = (ScarabRequestTool) context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
+    	
+    	boolean selected = false;
+    	boolean canMakeTransition = true;
+    	
+		try {
+	    	if (StringUtils.isNotEmpty(fromValue)) {
+	    		if (!multiple) {
+	    			if (issue.isTemplate()) {
+						canMakeTransition = ScarabGlobalTool.getWorkflow().canMakeTransition((ScarabUser) data.getUser(), scarabR.getAttributeOption("0"), option.getAttributeOption(), issue);
+	    			}
+	    			else {
+						canMakeTransition = ScarabGlobalTool.getWorkflow().canMakeTransition((ScarabUser) data.getUser(), scarabR.getAttributeOption(issue.isNew() ? "0" : fromValue), option.getAttributeOption(), issue);	    				
+	    			}
+	    		}
+	    	}
+	    	else {
+				canMakeTransition = ScarabGlobalTool.getWorkflow().canMakeTransition((ScarabUser) data.getUser(), scarabR.getAttributeOption("0"), option.getAttributeOption(), issue);	    		
+	    	}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+    			
+    	return canMakeTransition;
     }
     
     

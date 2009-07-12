@@ -72,31 +72,31 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 }
 
 
-function renderJSONTreePopup(key, value, root) {
+function renderJSONTreePopup(key, value, root, imgpath) {
 	document.writeln('<div id="' + key + ':Popup" class="tree_popup"><ol class="treeview root">');		
 	for (var i = 0; i < root._children.length; i++) {			
-		renderJSONTree(key, value, root._children[i]);						
+		renderJSONTree(root.attributeId, key, value, root._children[i], imgpath);						
 	}
 	document.writeln('</ol></div>');	
 }
 
-function renderJSONTree(key, value, root) {
+function renderJSONTree(attributeId, key, value, root, imgpath) {
 	if (root.optionId == value) {
 		document.getElementById(key + ':Display').value = root.displayValue;	
 	}	
 	
-	document.writeln('<li>');
-
 	if (root._children.length > 0) {
-		document.writeln('<a class="folder" onclick="toggle(this,\'/scarab/images\');"></a><a href="javascript:clickTree(\'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
+		document.writeln('<li>');
+		document.writeln('<a class="folder" onclick="toggle(this,\''+imgpath+'\');"></a><a href="javascript:clickTree(' + attributeId + ', \'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
 		document.writeln('<ol class="treeview">');			
 		for (var i = 0; i < root._children.length; i++) {			
-			renderJSONTree(key, value, root._children[i]);						
+			renderJSONTree(attributeId, key, value, root._children[i],imgpath);						
 		}
 		document.writeln('</ol>');	
 	}
 	else {
-		document.writeln('<a href="javascript:clickTree(\'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
+		document.writeln('<li class="leaf">');
+		document.writeln('<a href="javascript:clickTree(' + attributeId + ', \'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
 	}
 	
 	document.writeln('</li>');
@@ -138,7 +138,8 @@ function toggleTreePopup(key, caller) {
 	}
 }
 
-function clickTree(key, value, display) {
+function clickTree(attributeId, key, value, display) {
+	//alert(attributeId);
 	document.getElementById(key).value = value;
 	document.getElementById(key + ':Display').value = display;
 	document.getElementById(key + ':Popup').style.display = 'none';				

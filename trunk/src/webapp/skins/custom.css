@@ -62,13 +62,16 @@
 
 
 div.tree_popup {
-	background-color: white;
+	background-color: #ffffe8;
 	display: none;	
 	max-height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: absolute;
-	width: 300px;
+	width: 200px;
+	border-style:dotted;
+	border-width:1px;
+	border-color:#92b9d8;
 }
 
 div.tree_popup ol.treeview {
@@ -77,11 +80,21 @@ div.tree_popup ol.treeview {
 	margin: 0px;
 }
 
+div.tree_popup ol.treeview li a.folder {
+	padding-left:0px;
+}
+
 div.tree_popup ol.treeview li {
 	font-size: x-small;
 	margin-bottom: 1px;
 	margin-top: 3px;
-	padding-left: 40px;
+	padding-left: 15px;
+}
+
+div.tree_popup ol.treeview li a {
+	color:#000;
+	font-weight:bold;
+	text-decoration:none;
 }
 
 .asterisk {

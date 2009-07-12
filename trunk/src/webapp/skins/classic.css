@@ -252,6 +252,25 @@ input.buttonNotify {
 }
 
 
+/* ============================================================== */
+/* Issue editor                                                   */
+/* ============================================================== */
+
+#properties div.header{
+}
+#properties div.header div.group {
+	float:left;
+	display:inline;
+	padding-bottom:10px;
+}
+#properties div.header div.group th {
+	background-color: #E9F1F9;
+}
+#properties div.header div.group td {
+	font-size:0.9em;
+}
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* ==== From here on downwards the refactoring must still take place. ==== */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

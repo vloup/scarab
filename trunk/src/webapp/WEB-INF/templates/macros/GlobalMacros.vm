@@ -99,7 +99,7 @@ $canMakeTransition
   #set ($attributeTreePopup = [])
   #set ($dummy = $attributeTreePopup.add($attrInput.get($optionFieldName).Key) )
   #set ($dummy = $attributeTreePopup.add($newValues) )
-  #set ($dummy = $attributeTreePopup.add($module.getOptionsTreeAsJSON($attr, $attrValue.Issue.IssueType, false)) )
+  #set ($dummy = $attributeTreePopup.add($module.getOptionsTreeAsJSON($data, $newValues.toString(), $attr, $attrValue.Issue, false)) )
   
   #set ($dummy = $attributeTreePopupHelper.add($attributeTreePopup) )
 
