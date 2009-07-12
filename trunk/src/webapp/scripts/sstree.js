@@ -88,7 +88,7 @@ function renderJSONTree(attributeId, key, value, root, imgpath) {
 	
 	if (root._children.length > 0) {
 		document.writeln('<li>');
-		document.writeln('<a class="folder" onclick="toggle(this,\''+imgpath+'\');"></a><a href="javascript:clickTree(' + attributeId + ', \'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
+		document.writeln('<a class="folder" onclick="toggle(this,\''+imgpath+'\');"></a><a href="javascript:clickTree(\'' + attributeId + '\', \'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
 		document.writeln('<ol class="treeview">');			
 		for (var i = 0; i < root._children.length; i++) {			
 			renderJSONTree(attributeId, key, value, root._children[i],imgpath);						
@@ -104,7 +104,7 @@ function renderJSONTree(attributeId, key, value, root, imgpath) {
 }
 
 
-function toggleTreePopup(key, caller) {
+function toggleTreePopup(key) {
 	if (document.getElementById(key + ':Popup').style.display !== 'inline-block') {
 		var elem = document.getElementById(key + ':Popup');
 		
@@ -142,7 +142,7 @@ function clickTree(attributeId, key, value, display) {
 	document.getElementById(key).value = value;
 	document.getElementById(key + ':Display').value = display;
 	document.getElementById(key + ':Popup').style.display = 'none';				
-	document.onmouseup = undefined;
+	document.onmouseup = null;
 	
 	scope = ["treeview", attributeId, key, value, display];
 	observer.fire(scope);
