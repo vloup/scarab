@@ -75,7 +75,7 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 function renderJSONTreePopup(key, value, root, imgpath) {
 	document.writeln('<div id="' + key + ':Popup" class="tree_popup"><ol class="treeview root">');		
 	for (var i = 0; i < root._children.length; i++) {			
-		renderJSONTree(root.attributeId, key, value, root._children[i], imgpath);						
+		renderJSONTree(root.name, key, value, root._children[i], imgpath);						
 	}
 	document.writeln('</ol></div>');	
 }
@@ -97,7 +97,7 @@ function renderJSONTree(attributeId, key, value, root, imgpath) {
 	}
 	else {
 		document.writeln('<li class="leaf">');
-		document.writeln('<a href="javascript:clickTree(' + attributeId + ', \'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
+		document.writeln('<a href="javascript:clickTree(\'' + attributeId + '\', \'' + key + '\', \'' + root.optionId + '\', \'' + root.displayValue + '\');">' + root.displayValue + '</a>');
 	}
 	
 	document.writeln('</li>');
@@ -114,10 +114,6 @@ function toggleTreePopup(key, caller) {
 		elem.style.left = pos.x + 'px';
 		elem.style.top = pos.y + 'px';
 		
-		if (document.layers) {
-			document.captureEvents(Event.MOUSEUP);
-		}
-
 		document.onmouseup = function(event) {
 			if (!event) event = window.event;
 			 
@@ -130,7 +126,7 @@ function toggleTreePopup(key, caller) {
 			
 			if (!((event.clientX >= x1) && (event.clientX <= x2) && (event.clientY >= y1) && (event.clientY <= y2))) {
 				elem.style.display = 'none';				
-				document.onmouseup = undefined;
+				document.onmouseup = null;
 			}
 		};
 
@@ -140,10 +136,15 @@ function toggleTreePopup(key, caller) {
 	}
 }
 
+
 function clickTree(attributeId, key, value, display) {
 	//alert(attributeId);
 	document.getElementById(key).value = value;
 	document.getElementById(key + ':Display').value = display;
 	document.getElementById(key + ':Popup').style.display = 'none';				
 	document.onmouseup = undefined;
+	
+	scope = ["treeview", attributeId, key, value, display];
+	observer.fire(scope);
 }
+

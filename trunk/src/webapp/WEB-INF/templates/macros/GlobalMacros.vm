@@ -62,33 +62,34 @@ $canMakeTransition
   #set ( $count = "#AllowedTransitionsForOption ( $attrValue $optionFieldName $size $multiple )")
 
   #if ($count.trim() == "0" )
-      <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>  
+      <input id="$attVal.RModuleAttribute.DisplayValue" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>  
       $newValues
   #elseif ($count.trim() == "1" )
 
     #foreach ($option in $module.getOptionTree($attr, $issueType, false))
-     #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
+      #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
 
-     #if ($canMakeTransition.trim()=="true")
-      #if ($templateInfo || (!$required && $newValues && $newValues.toString() == ''))
-        <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
-        #if ($newValues > 0)
-          #set ($checked = "checked")
-        #end
-        #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
-	    <input type="checkbox" 
+      #if ($canMakeTransition.trim()=="true")
+        #if ($templateInfo || (!$required && $newValues && $newValues.toString() == ''))
+          <input id="$attVal.RModuleAttribute.DisplayValue" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
+          #if ($newValues > 0)
+            #set ($checked = "checked")
+          #end
+          #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
+	          <input type="checkbox" 
                name="${attrInput.get($optionFieldName).Key}_tmp" 
                onclick="$oc" ${checked} />
-      #else
-        <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
-	  #end
-	  #if ($option.Active) 
-        $option.DisplayValue
-	  #else
-        [I] $option.DisplayValue
+        #else
+          <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
+	        #end
+	        
+	        #if ($option.Active) 
+          $option.DisplayValue
+	        #else
+          [I] $option.DisplayValue
+        #end
       #end
-     #end
-   #end
+    #end
 
 
   #else
