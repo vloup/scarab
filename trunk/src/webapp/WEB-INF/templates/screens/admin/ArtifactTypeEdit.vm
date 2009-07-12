@@ -40,7 +40,11 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
 
 <h3>$l10n.IssueTypeInfo</h3>
 <div class="axial">
-    <table border="0" cellspacing="2" cellpadding="3">
+  <table border="0" cellspacing="2" cellpadding="3">
+
+    ## ==================================================
+    ## The Issue type name
+    ## ==================================================
     <tr>
     <th> * $l10n.Name</th>
     <td>
@@ -57,6 +61,11 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
       #end
     </td>
     </tr>
+
+
+    ## ==================================================
+    ## Issue type description
+    ## ==================================================
     <tr>
     <th>$l10n.Description</th>
     <td>
@@ -72,26 +81,35 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
       #end
     </td>
     </tr>
-<tr>
-  <th><a title="$l10n.BlockingWhenTooltip">$l10n.BlockingWhen</a></th>
-  <td >
-  #if ($rma.required)
-    <div class="textDisabled">
-  #else
-    <div>
-  #end
-  #if ($rmit.isConditioned())
-    #foreach ($o in $rmit.Conditions)
-      $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
-    #end
-  #else
-	  <em>$l10n.NoConditionsDefined</em>
-  #end
-  </div>
-  </td>
-</tr>     
-    </table>
+    
+    
+    ## ==================================================
+    ## Blocking when ...
+    ## ==================================================
+    <tr>
+      <th><a title="$l10n.BlockingWhenTooltip">$l10n.BlockingWhen</a></th>
+      <td >
+        #if ($rma.required)
+          <div class="textDisabled">
+        #else
+          <div>
+        #end
+
+        #if ($rmit.isConditioned())
+          #foreach ($o in $rmit.Conditions)
+            $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+          #end
+        #else
+	          <em>$l10n.NoConditionsDefined</em>
+        #end
+        </div>
+      </td>
+    </tr>
+
+
+  </table>
 </div>
+
 <div class="functnbar3">
    <input type="button" value="$l10n.EditConditions"  onClick="location.href='$link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,ArtifactTypeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.BLOCKED_MODULE_ISSUE_TYPE_OBJECT).addPathInfo("moduleId", $module.moduleId).addPathInfo("issueTypeId", $issueType.issueTypeId)'"  />   
 </div>
@@ -133,7 +151,9 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
 </div>
 *#
 
+    ## ==================================================
 ## LIST GROUPS
+    ## ==================================================
 
 <h3>$l10n.AttributeGroups</h3>
 #set ($maxNum = $groups.size())

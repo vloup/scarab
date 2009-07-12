@@ -122,3 +122,9 @@ div.tree_popup ol.treeview li ol.treeview li.leaf a {
 .asterisk {
 	color:red;
 }
+
+// experimental stuff will be removed later.
+
+.wiedervorlagedatum {
+	color:red;
+}

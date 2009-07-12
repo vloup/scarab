@@ -36,3 +36,8 @@
     - <small>$format.getDate($scarabR.getDateFormat($l10n.ShortDateTimePattern), $date)</small>
 #end
 
+#macro (userTimeStamp_td $user $date)
+    <td> <a href="mailto:$user.Email">$!user.Name</a> </td>
+    <td> <small>$format.getDate($scarabR.getDateFormat($l10n.ShortDateTimePattern), $date)</small> </td>
+#end
+

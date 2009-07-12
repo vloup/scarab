@@ -80,7 +80,7 @@
  <body marginwidth="0" 
        marginheight="0" 
        class="scb_page" 
-       #if($hide_bars || $autoresize) onload="initializeAll()" #else onload="initializeTreeview()" #end>
+       onload="initializeAll()">
 
 
   <div id="datePopupDiv" class="scb_calendar"></div>
@@ -318,4 +318,5 @@
  #end
  
 </body>
+
 </html>

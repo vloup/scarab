@@ -63,7 +63,7 @@ $canMakeTransition
 
   #if ($count.trim() == "0" )
       <input id="$attVal.RModuleAttribute.DisplayValue" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>  
-      $newValues
+      <span id="$attVal.RModuleAttribute.DisplayValue:Display">$newValues</span>
   #elseif ($count.trim() == "1" )
 
     #foreach ($option in $module.getOptionTree($attr, $issueType, false))
@@ -80,16 +80,11 @@ $canMakeTransition
                name="${attrInput.get($optionFieldName).Key}_tmp" 
                onclick="$oc" ${checked} />
         #else
-          <input type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
+        <input id="$attVal.RModuleAttribute.DisplayValue" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
 	        #end
-	        
-	        #if ($option.Active) 
-          $option.DisplayValue
-	        #else
-          [I] $option.DisplayValue
+	      #if (!$option.Active)[I]#end <span id="$attVal.RModuleAttribute.DisplayValue:Display">$option.DisplayValue</span>
         #end
       #end
-    #end
 
 
   #else
@@ -154,7 +149,7 @@ $canMakeTransition
 </select>
 #end
 
-#macro (attrValueText $attrValue $size $hint)
+#macro (attrValueText $attVal $attrValue $size $hint)
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
         #if ($attVal.Attribute.AttributeType.Name == "long-string")
            #textAreaMedium("$attrInput.Value.Key" $attrInput.Value)
@@ -199,7 +194,7 @@ $canMakeTransition
         #end
 #end
 
-#macro (templateAttrValueText $attrValue $size $templAttrValue)
+#macro (templateAttrValueText $attVal $attrValue $size $templAttrValue)
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
 #set ($value = $templAttrValue.Value)
 #set ($currentValue = "")
@@ -1055,6 +1050,7 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
  #if (!$group.Attributes.isEmpty() && $group.isVisible4User($user))
   <h4>$group.Name #asterisk()</h4>
   <table cellpadding="3" cellspacing="2" border="0" width="100%">
+    #set ($appendToNextLine = "")
   #foreach ($att in $group.Attributes)
     #set ($rma = $module.getRModuleAttribute($att, $issueType))
       #if ($rma.Active)
@@ -1072,6 +1068,12 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
           #else
             #set ($field = "Value")
           #end
+          
+          #set ($index = $attVal.RModuleAttribute.DisplayValue.indexOf(":") + 1)
+          #if ($index > 1)
+            #set ($displayValue = $attVal.RModuleAttribute.DisplayValue.substring($index))
+            #set ($appendToNextLine = [$attVal, $att, $field, $displayValue])
+          #else
           <tr>
             <th> #if ($attVal.isRequired()) #showAsterisk() #end 
                  $attVal.RModuleAttribute.DisplayValue
@@ -1096,17 +1098,60 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
             ## this may leave the previous value, if RHS is null
             #set ($templAttVal = $templ.getAttributeValue($att))
             #if ($templAttVal.Value)
-              #templateAttrValueText ( $attVal $fieldSize $templAttVal )
+              #templateAttrValueText ( $attVal $attVal $fieldSize $templAttVal )
             #else
-               #attrValueText ( $attVal $fieldSize $fieldHint)
+               #attrValueText ( $attVal $attVal $fieldSize $fieldHint)
             #end
            #else
-             #attrValueText ( $attVal $fieldSize $fieldHint)
+             #attrValueText ( $attVal $attVal $fieldSize $fieldHint)
            #end
           #end
               #attrValueErrorMsg ($attVal $field)
+
+                #if ($appendToNextLine != "")
+                  #set ($visibility="hidden")
+                  #if ($appendToNextLine.get(0).isRequired())
+                    #set ($visibility="block")
+                  #end
+                
+                  <span id="$appendToNextLine.get(3)" style="visibility:$visibility;">
+                  #if ($appendToNextLine.get(0).isRequired()) #showAsterisk() #end
+                  $appendToNextLine.get(3)
+                  &nbsp;
+                  #if ($appendToNextLine.get(0).Attribute.isOptionAttribute())
+                    #if ($templ)
+                      #set ($templAttVal = $scarabR.getNewAttributeValue($appendToNextLine.get(1), $templ))
+                      ## this may leave the previous value, if RHS is null
+                      #set ($templAttVal = $templ.getAttributeValue($appendToNextLine.get(1)))
+                      #templateAttrValueLeafSelect ($appendToNextLine.get(0) $templAttVal $field "" false)
+                    #else
+                      #attrValueLeafSelect ($appendToNextLine.get(0) $appendToNextLine.get(2) "" false $appendToNextLine.get(0).isRequired())
+                    #end
+                  #else
+                    #set ($fieldSize = 0)
+                    #set ($fieldSize = $!$appendToNextLine.get(0).Attribute.FieldSize)
+                    #set ($fieldHint = "")
+                    #set ($fieldHint = $!$appendToNextLine.get(0).Attribute.Hint)
+                    #if ($templ)
+                      #set ($templAttVal = $scarabR.getNewAttributeValue($appendToNextLine.get(1), $templ))
+                      ## this may leave the previous value, if RHS is null
+                      #set ($templAttVal = $templ.getAttributeValue($appendToNextLine.get(1)))
+                      #if ($templAttVal.Value)
+                        #templateAttrValueText ( $appendToNextLine.get(0) $appendToNextLine.get(0) $fieldSize $templAttVal )
+                      #else
+                        #attrValueText ( $appendToNextLine.get(0) $appendToNextLine.get(0) $fieldSize $fieldHint)
+                      #end
+                    #else
+                      #attrValueText ( $appendToNextLine.get(0) $appendToNextLine.get(0) $fieldSize $fieldHint)
+                    #end
+                  #end
+                  #attrValueErrorMsg ($appendToNextLine.get(0) $field)
+                  </span>
+                #end  
             </td>
           </tr>
+            #set ($appendToNextLine = "")
+          #end
         #end
       #end
   #end
