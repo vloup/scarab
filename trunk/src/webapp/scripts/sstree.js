@@ -136,6 +136,54 @@ function toggleTreePopup(key) {
 	}
 }
 
+//============================================================================================
+
+Array.prototype.forEach = function(fn, thisObj) {
+    var scope = thisObj || window;
+    for ( var i=0, j=this.length; i < j; ++i ) {
+        fn.call(scope, this[i], i, this);
+    }
+};
+
+Array.prototype.filter = function(fn, thisObj) {
+    var scope = thisObj || window;
+    var a = [];
+    for ( var i=0, j=this.length; i < j; ++i ) {
+        if ( !fn.call(scope, this[i], i, this) ) {
+            continue;
+        }
+        a.push(this[i]);
+    }
+    return a;
+};
+
+function Observer() {
+    this.fns = [];
+}
+Observer.prototype = {
+    subscribe : function(fn) {
+        this.fns.push(fn);
+    },
+    unsubscribe : function(fn) {
+        this.fns = this.fns.filter(
+            function(el) {
+                if ( el !== fn ) {
+                    return el;
+                }
+            }
+        );
+    },
+    fire : function(o, thisObj) {
+        var scope = thisObj || window;
+        this.fns.forEach(
+            function(el) {
+                el.call(scope, o);
+            }
+        );
+    }
+};  
+
+var observer = new Observer;
 
 function clickTree(attributeId, key, value, display) {
 	//alert(attributeId);
