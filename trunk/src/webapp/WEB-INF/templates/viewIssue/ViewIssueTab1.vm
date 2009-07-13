@@ -107,11 +107,11 @@
                 #set ($index = $rma.DisplayValue.indexOf(":") + 1)
                 #if ($index > 1)
                   #set ($displayValue = $rma.DisplayValue.substring($index))
-                  #set ($appendToNextLine = [$rma.getRequired(), $displayValue,  $fieldExtraHeader, $att, $attVal, $field, $fieldSize, $fieldHint, $attrInput])
+                  #set ($appendToNextLine = [$rma, $displayValue,  $fieldExtraHeader, $att, $attVal, $field, $fieldSize, $fieldHint, $attrInput])
                 #else
                   <tr>
                     <th style="white-space:nowrap;"> 
-                      #if ($rma.getRequired())#showAsterisk()#end$rma.DisplayValue
+                      #if ($rma.getRequired() || ( $field.equals("OptionId") && $rma.isRequiredIf($attVal.getOptionId()))) #showAsterisk()#end$rma.DisplayValue
                       #if($fieldExtraHeader)
                       <pre>$fieldExtraHeader</pre>
                       #end
@@ -129,12 +129,13 @@
                       #end
 
                     #if ($appendToNextLine != "")
+                      #set ($attIsRequired = ($appendToNextLine.get(0).getRequired() || ($appendToNextLine.get(0).isRequiredIf($attVal.OptionId)) ) )
                       #set ($visibility="hidden")
-                      #if ($appendToNextLine.get(0))
-                        #set ($visibility="block")
+                      #if ($attIsRequired)
+                        #set ($visibility="visible")
                       #end
                       <span id="$appendToNextLine.get(1)" style="visibility:$visibility;">
-                        #if ($appendToNextLine.get(0))#showAsterisk()#end $appendToNextLine.get(1)
+                        #if ($appendToNextLine.get(0).getRequired() || ($appendToNextLine.get(5).equals("OptionId") && $appendToNextLine.get(0).isRequiredIf($appendToNextLine.get(4).getOptionId) ) )#showAsterisk()#end $appendToNextLine.get(1)
                         #if($appendToNextLine.get(2))
                         <pre>$appendToNextLine.get(2)</pre>
                         #end
