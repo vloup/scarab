@@ -802,6 +802,39 @@ selected the radio button.
 <small>(</small><b class="asterisk">*</b> <small>$l10n.RequiredFields)</small>
 #end
 
+
+## ==============================================================================
+## [HD]Create a marker for required fields.
+## For conditioned fields the required attribute may vary dynamically.
+## Hence this method needs a way to determine the actual state.
+## Note: This method creates invisible markup when the rma is not required.
+## And it creates css ids along with the element. This will later be used
+## from javascript in order to dynamically enable/disable the "requiredMarker"
+## when the user selects options which cause an attribute to become required
+## ==============================================================================
+#macro (drawRequiredMarkupAsNeeded $user $issue $attribute)
+
+  ## Here we take care about the conditionally required attribute 
+  ## AND the static required attributes:
+
+  #set ($rma        = $module.getRModuleAttribute($attribute, $issue.IssueType) )
+  #set ($isRequired = $rma.Required )
+  #if ($isRequired)
+    #showAsterisk() ## unconditionally required.
+  #elseif ($rma.Conditions.size() > 0)
+  #set ($isRequired = $issue.isRequiredAttributeFor($attribute, $user))
+  #set ($visibility = "hidden")
+  #if  ($isRequired)
+    #set ($visibility = "visible")
+  #end
+    <b class="asterisk" id="conditional:${rma.DisplayValue}" style="visibility:$visibility;">*</b>
+  #else
+    ## atribute is neither required nor has it conditional attributres. Nothing TODO
+#end
+#end
+
+
+
 #macro (showAsterisk)
 <b class="asterisk">*</b>
 #end
@@ -1074,10 +1107,9 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
             #set ($displayValue = $attVal.RModuleAttribute.DisplayValue.substring($index))
             #set ($appendToNextLine = [$attVal, $att, $field, $displayValue])
           #else
+          
           <tr>
-            <th> #if ($attVal.isRequired()) #showAsterisk() #end 
-                 $attVal.RModuleAttribute.DisplayValue
-            </th>
+              <th> #drawRequiredMarkupAsNeeded($user $issue $att)$attVal.RModuleAttribute.DisplayValue</th>
             <td>
           #if ($attVal.Attribute.isOptionAttribute())
            #if ($templ)
@@ -1109,14 +1141,14 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
               #attrValueErrorMsg ($attVal $field)
 
                 #if ($appendToNextLine != "")
+                  #set ($AttributeIsRequired = $issue.isRequiredAttributeFor($appendToNextLine.get(1), $user))
                   #set ($visibility="hidden")
-                  #if ($appendToNextLine.get(0).isRequired())
+                  #if ($AttributeIsRequired)  
                     #set ($visibility="block")
                   #end
                 
                   <span id="$appendToNextLine.get(3)" style="visibility:$visibility;">
-                  #if ($appendToNextLine.get(0).isRequired()) #showAsterisk() #end
-                  $appendToNextLine.get(3)
+                  #drawRequiredMarkupAsNeeded($user $issue $appendToNextLine.get(1))$appendToNextLine.get(3)
                   &nbsp;
                   #if ($appendToNextLine.get(0).Attribute.isOptionAttribute())
                     #if ($templ)

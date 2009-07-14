@@ -110,10 +110,10 @@
                   #set ($appendToNextLine = [$rma, $displayValue,  $fieldExtraHeader, $att, $attVal, $field, $fieldSize, $fieldHint, $attrInput])
                 #else
                   <tr>
-                    <th style="white-space:nowrap;"> 
-                      #if ($rma.getRequired() || ( $field.equals("OptionId") && $rma.isRequiredIf($attVal.getOptionId()))) #showAsterisk()#end$rma.DisplayValue
+                    <th> 
+                      <span style="white-space:nowrap;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$rma.DisplayValue</span>
                       #if($fieldExtraHeader)
-                      <pre>$fieldExtraHeader</pre>
+                        <pre>$fieldExtraHeader</pre>
                       #end
                     </th>
                     <td>
@@ -135,7 +135,8 @@
                         #set ($visibility="visible")
                       #end
                       <span id="$appendToNextLine.get(1)" style="visibility:$visibility;">
-                        #if ($appendToNextLine.get(0).getRequired() || ($appendToNextLine.get(5).equals("OptionId") && $appendToNextLine.get(0).isRequiredIf($appendToNextLine.get(4).getOptionId) ) )#showAsterisk()#end $appendToNextLine.get(1)
+                        #set ($isReasonRequired = $appendToNextLine.get(0).getRequired() || ($appendToNextLine.get(5).equals("OptionId") && $appendToNextLine.get(0).isRequiredIf($appendToNextLine.get(4).getOptionId) ))
+                        #drawRequiredMarkupAsNeeded($user $currentIssue $appendToNextLine.get(3))$appendToNextLine.get(1)
                         #if($appendToNextLine.get(2))
                         <pre>$appendToNextLine.get(2)</pre>
                         #end
@@ -251,12 +252,16 @@
   #if ($isEditAttributes)
     #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
     #if ($reasonIsVisible)
-      #set ($reasonIsRequired = $module.isIssueReasonRequired() )    
+      #set ($reasonIsRequired = $module.isIssueReasonRequired() )
+      #set ($visibility="hidden")
+      #if  ($reasonIsRequired)
+        #set ($visibility="visible")
+      #end    
       <h4>$l10n.SaveChanges#if($reasonIsRequired) #asterisk()#end</h4>
       <div class="axial">
         <table cellpadding="3" cellspacing="2" border="0" width="100%">
           <tr>
-              <th nowrap="nowrap">#if($reasonIsRequired)#showAsterisk()#end$l10n.ReasonSavedAs</th>
+              <th nowrap="nowrap"> #if($reasonIsRequired) #showAsterisk()#end$l10n.ReasonSavedAs</th>
               <td>
                   <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
                   #if ($canAddComment)

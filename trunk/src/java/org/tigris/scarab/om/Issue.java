@@ -88,6 +88,8 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.MutableBoolean;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
+import org.tigris.scarab.util.SimpleSkipFiltering;
+import org.tigris.scarab.util.SkipFiltering;
 import org.tigris.scarab.util.word.SearchFactory;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
@@ -4167,4 +4169,94 @@ public class Issue
         if(super.getLastTransId()==null)
             super.setLastTransId(createdTransId);
     }
+    
+    /**
+     * Check if the given attribute is currently required.
+     * The required state can vary depending on conditions.
+     * @param attribute
+     * @param user
+     * @return
+     * @throws TorqueException
+     * @throws ScarabException
+     */
+    public boolean isRequiredAttributeFor(Attribute attribute, ScarabUser user) throws TorqueException, ScarabException
+    {
+        Module module         = this.getModule();
+        IssueType issueType   = this.getIssueType();
+        RModuleAttribute rma  = module.getRModuleAttribute(attribute, issueType);
+
+        boolean result = rma.getRequired();
+        if(result == false)
+        {
+            List<Condition> conditions = rma.getConditions();
+                
+            Iterator<Condition> iter = conditions.iterator();
+            while(iter.hasNext())
+            {
+                Condition condition = iter.next();
+                boolean eval = condition.evaluate(user, this);
+                result |= eval;
+            }
+        }
+        return result;
+    }
+    
+    
+    /**
+     * Create a javascript function, which can be used to check if the given
+     * attribute would become required if a specific attributeOption was set.
+     * @param attribute
+     * @return
+     * @throws TorqueException
+     * @throws ScarabException
+     */
+    public String createIssueChecker(RModuleAttribute rma, String setMarkerFunction, int indent) throws TorqueException, ScarabException
+    {
+        String result = "";
+        boolean isRequired = rma.getRequired();
+        if(!isRequired)
+        {
+            List<Condition> conditions = rma.getConditions();
+                
+            Iterator<Condition> iter = conditions.iterator();
+            while(iter.hasNext())
+            {
+                Condition condition = iter.next();
+                result += condition.createConditionCheckerScript(rma, setMarkerFunction, indent);
+            }
+        }
+        return result;
+    }
+
+    
+    public SkipFiltering createIssueChecker(String setMarkerFunction, int indent) throws TorqueException, ScarabException
+    {
+        String result = "";
+        List attributes = null;
+        Module module = getModule();
+        IssueType issueType = getIssueType();
+        attributes = issueType.getActiveAttributes(module);
+        Iterator<Attribute> iter = attributes.iterator();
+        while (iter.hasNext())
+        {
+            Attribute attribute = iter.next();
+            RModuleAttribute rma  = module.getRModuleAttribute(attribute, issueType);
+            result += createIssueChecker(rma, setMarkerFunction, indent);
+        }
+        
+        String prepend;
+        if(result.length() > 0)
+        {
+            prepend="\n";
+        }
+        else
+        {
+            prepend = "/* No conditional attributes found for this module/issueType */";
+        }
+        
+        return new SimpleSkipFiltering(prepend+result);
+    }     
+    
+    
+    
 }

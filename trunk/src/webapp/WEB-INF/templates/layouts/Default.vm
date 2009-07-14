@@ -67,8 +67,102 @@
         #if ($autoresize)
           initialRows()
         #end
-        initializeTreeview()
+        initializeTreeview();
+        observer.subscribe(conditions_observer);
+
+        ## Add your own observers below
+        ##  An observer receives a data array containing the following
+        ##  informations:
+        ##
+        ##  data[0] = observerId
+        ##  data[1] = attributeName (as defined in RModuleIssueType)
+        ##  data[2] = key           (optionId)
+        ##  data[3  = value         (optionValueId)
+        ##  data[4] = display       (DisplayName)
+        ##
+             
+                
       }
+
+     function getElementByIdCompatible (the_id) 
+     {
+         if (typeof the_id != 'string') 
+         {
+             return the_id;
+         }
+
+         if (typeof document.getElementById != 'undefined') 
+         {
+             return document.getElementById(the_id);
+         }
+         else if (typeof document.all != 'undefined') 
+         {
+             return document.all[the_id];
+         }
+         else if (typeof document.layers != 'undefined') 
+         {
+             return document.layers[the_id];
+         }
+         else
+         {
+             return null;
+         }
+      }      
+
+      // Helper array contains all RequiredMarkup elements
+      // which have already been visited form the current call of
+      // the conditions_observer. It is needed to correctly
+      // set the visibility of all visited markers.
+      
+      var visitedMarkers = {};
+      
+      /**
+      This function takes care about the "required attribute" markup.
+      It adjusts the markup dynamically while the user edits the issue.
+      */
+      function conditions_observer(data)
+      {
+        if(data[0] == "treeview")
+        {   
+            attributeName = data[1];
+            displayValue  = data[4];
+            
+            #if ($currentIssue)
+#set ($indent=12)
+$currentIssue.createIssueChecker("setMarkerValueIf", $indent)
+            #end
+            
+            visitedMarkers = {};
+
+        }
+      }
+
+      /**
+        This helper function actually makes the requiredMarkup
+        visible or hides it depending on the condition.
+        Note: Currently only OR conditions are supported here!!!
+      */      
+      function setMarkerValueIf(condAttName, isRequired)
+      {
+          cid = "conditional:"+condAttName;
+          element = getElementByIdCompatible(cid);
+          if (element != null)
+          {
+              if(isRequired)
+              {
+                visitedMarkers[condAttName] = "visible";
+              }
+              else
+              {
+                if (visitedMarkers[condAttName]==null)              
+                {
+                   visitedMarkers[condAttName] = "hidden";
+                }
+              }
+              element.style.visibility = visitedMarkers[condAttName];              
+            }
+      }      
+      
     </script>
 
   </head>

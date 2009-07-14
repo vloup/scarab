@@ -48,6 +48,8 @@ package org.tigris.scarab.om;
 
 import java.util.Map;
 import org.apache.torque.om.Persistent;
+import org.tigris.scarab.util.SimpleSkipFiltering;
+import org.tigris.scarab.util.SkipFiltering;
 
 /**
  * You should add additional methods to this class to meet the
@@ -120,4 +122,42 @@ public  class Condition
         }
         return bEval;
     }
+
+    /**
+     * Create conditionchecker as javascript snippet.
+     * Can be used to check online if a specific condition is requied.
+     * Experimental...
+     * @param user
+     * @param issue
+     * @return
+     */
+    public SkipFiltering createConditionCheckerScript(RModuleAttribute rma, String setMarkerFunction, int indent) 
+    {
+        String indents = ""; for(int i=0; i< indent; i++) indents +=" ";
+        String result = "";
+        try {
+            if (this.getAttributeOption() != null) {
+                // Old-style condition (tied to any of the attribute-options
+                // being selected)
+                Attribute requiredAttribute = this.getAttributeOption().getAttribute();
+                Integer optionId = this.getOptionId();
+                result = indents+"if(attributeName == \""
+                       + requiredAttribute.getName()
+                       + "\")"
+                       + setMarkerFunction
+                       + "(\""
+                       + rma.getDisplayValue()
+                       + "\","
+                       + "displayValue==\"" + this.getAttributeOption().getName()
+                       + "\");\n";
+            } else 
+            {
+                // New-style condition (driven by an evaluated script)
+            }
+        } catch (Exception e) {
+            this.getLog().debug("evaluate: Failed to evaluate, will return empty String. ", e);
+        }
+        return new SimpleSkipFiltering(result);
+    }
+        
 }
