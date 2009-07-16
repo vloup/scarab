@@ -82,6 +82,7 @@
         <h4>$group.Name #if ($isEditAttributes)#asterisk()#end</h4>
         <table cellpadding="3" cellspacing="2" border="0" width="100%">
           #set ($appendToNextLine = "")
+          #set ($linecount = 0)
           #foreach ($att in $attributes)
             #set ($rma = $module.getRModuleAttribute($att, $issueType))
             #if ($rma.Active)
@@ -104,61 +105,44 @@
                   #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
                 #end
 
-                #set ($index = $rma.DisplayValue.indexOf(":") + 1)
-                #if ($index > 1)
+                #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
+                #if ($linecount > 0 && $index > 6)
                   #set ($displayValue = $rma.DisplayValue.substring($index))
-                  #set ($appendToNextLine = [$rma, $displayValue,  $fieldExtraHeader, $att, $attVal, $field, $fieldSize, $fieldHint, $attrInput])
+                  <span id="${displayValue}:Container">
+                  <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
                 #else
+                  #set ($displayValue = $rma.DisplayValue)
+                  #if ($linecount > 0)
+                    </td>
+                    </tr>
+                  #end
+                  #set ($linecount = $linecount + 1)
                   <tr>
                     <th> 
-                      <span style="white-space:nowrap;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$rma.DisplayValue</span>
+                      <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
                       #if($fieldExtraHeader)
                         <pre>$fieldExtraHeader</pre>
                       #end
                     </th>
                     <td>
-                      #if ($att.isOptionAttribute())
-                        #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
-                        #attrValueErrorMsg ($attVal $field)
-                      #elseif ($att.isIntegerAttribute())
-                        #attrValueErrorMsg($attVal "NumericValue")
-                        #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
-                      #else
-                        #attrValueErrorMsg($attVal "Value")
-                        #attrValueText($attVal $attrInput.Value $fieldSize $fieldHint)
-                      #end
-
-                    #if ($appendToNextLine != "")
-                      #set ($attIsRequired = ($appendToNextLine.get(0).getRequired() || ($appendToNextLine.get(0).isRequiredIf($attVal.OptionId)) ) )
-                      #set ($visibility="hidden")
-                      #if ($attIsRequired)
-                        #set ($visibility="visible")
-                      #end
-                      <span id="$appendToNextLine.get(1)" style="visibility:$visibility;">
-                        #set ($isReasonRequired = $appendToNextLine.get(0).getRequired() || ($appendToNextLine.get(5).equals("OptionId") && $appendToNextLine.get(0).isRequiredIf($appendToNextLine.get(4).getOptionId) ))
-                        #drawRequiredMarkupAsNeeded($user $currentIssue $appendToNextLine.get(3))$appendToNextLine.get(1)
-                        #if($appendToNextLine.get(2))
-                        <pre>$appendToNextLine.get(2)</pre>
-                        #end
-                        &nbsp;
-                        #if ($appendToNextLine.get(3).isOptionAttribute())
-                          #attrValueLeafSelect ($appendToNextLine.get(4) $appendToNextLine.get(5) "" false $appendToNextLine.get(4).isRequired())
-                          #attrValueErrorMsg ($appendToNextLine.get(4) $appendToNextLine.get(4))
-                        #elseif ($appendToNextLine.get(3).isIntegerAttribute())
-                          #attrValueErrorMsg($appendToNextLine.get(4) "NumericValue")
-                          #attrValueText($appendToNextLine.get(4) $appendToNextLine.get(8).NumericValue $appendToNextLine.get(6) $appendToNextLine.get(7))
-                        #else
-                          #attrValueErrorMsg($appendToNextLine.get(4) "Value")
-                          #attrValueText($appendToNextLine.get(4) $appendToNextLine.get(8).Value $appendToNextLine.get(6) $appendToNextLine.get(7))
-                        #end
-                      </span>
-                    #end
-                    </td>
-
-                  </tr>
-                  #set ($appendToNextLine = "")
-
+                  #set ($newline = false)
                 #end
+                <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">
+                  #if ($att.isOptionAttribute())
+                    #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
+                    #attrValueErrorMsg ($attVal $field)
+                  #elseif ($att.isIntegerAttribute())
+                    #attrValueErrorMsg($attVal "NumericValue")
+                    #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
+                  #else
+                    #attrValueErrorMsg($attVal "Value")
+                    #attrValueText($attVal $attrInput.Value $fieldSize $fieldHint)
+                  #end
+                </span>
+                #if ($linecount > 0 && $index > 6)
+                  </span>
+                #end
+
               #elseif ($attVal.isSet())
 
                 #set ($displayValue = $attVal.RModuleAttribute.DisplayValue)
@@ -253,10 +237,6 @@
     #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
     #if ($reasonIsVisible)
       #set ($reasonIsRequired = $module.isIssueReasonRequired() )
-      #set ($visibility="hidden")
-      #if  ($reasonIsRequired)
-        #set ($visibility="visible")
-      #end    
       <h4>$l10n.SaveChanges#if($reasonIsRequired) #asterisk()#end</h4>
       <div class="axial">
         <table cellpadding="3" cellspacing="2" border="0" width="100%">
