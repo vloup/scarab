@@ -168,13 +168,12 @@ $canMakeTransition
                 $readonly 
                 value="$datevalue" 
                 size="20" />              
-           <a 
+           <a class="date"
                 id="dateAnchor$ref" 
                 name="dateAnchor$ref" 
                 href="javascript:;" 
                 onClick="calPopup.select(document.getElementById('$ref'),'dateAnchor$ref','$l10n.ShortDatePattern');return false;">
-                <img src="$staticLink.setPath('/images/date.gif')" border="0"/>
-           </a>
+              </a>
         #else
           #if ($attVal.Attribute.AttributeType.Name == "integer")
             #set ( $fieldName = $attrInput.NumericValue.Key )

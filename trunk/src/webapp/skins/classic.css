@@ -251,6 +251,14 @@ input.buttonNotify {
 	background: url(images/button_end_transmit_blue.png) no-repeat;
 }
 
+a.date {
+	background-image: url(images/date.gif);
+	background-repeat: no-repeat;
+	width:18px;
+	height:15px;
+	display:inline-block;
+	vertical-align:middle;
+}
 
 /* ============================================================== */
 /* Issue editor                                                   */
@@ -263,11 +271,19 @@ input.buttonNotify {
 	display:inline;
 	padding-bottom:10px;
 }
-#properties div.header div.group th {
+#properties div.header div.group th, span.displayValue {
 	background-color: #E9F1F9;
 }
 #properties div.header div.group td {
 	font-size:0.9em;
+}
+
+span.displayValue {
+	color:black;
+	text-align:right;
+	font-family:Verdana,Helvetica,Arial,sans-serif;
+	font-size:1em;
+	font-weight:bold;
 }
 
 
@@ -1006,7 +1022,18 @@ textarea.fullWidth {
 	font-weight: bold;
 }
 
-.cpDayColumnHeader,.cpYearNavigation,.cpMonthNavigation,.cpCurrentMonthDate,.cpCurrentMonthDateDisabled,.cpOtherMonthDate,.cpOtherMonthDateDisabled,.cpCurrentDate,.cpCurrentDateDisabled,.cpTodayText,.cpTodayTextDisabled,.cpText
+.cpDayColumnHeader,
+.cpYearNavigation,
+.cpMonthNavigation,
+.cpCurrentMonthDate,
+.cpCurrentMonthDateDisabled,
+.cpOtherMonthDate,
+.cpOtherMonthDateDisabled,
+.cpCurrentDate,
+.cpCurrentDateDisabled,
+.cpTodayText,
+.cpTodayTextDisabled,
+.cpText
 	{
 	font-family: arial;
 	font-size: 8pt;
