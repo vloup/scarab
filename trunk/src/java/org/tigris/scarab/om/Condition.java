@@ -136,11 +136,16 @@ public  class Condition
         String indents = ""; for(int i=0; i< indent; i++) indents +=" ";
         String result = "";
         try {
-            if (this.getAttributeOption() != null) {
+            AttributeOption ao = this.getAttributeOption();
+            if (ao != null) {
                 // Old-style condition (tied to any of the attribute-options
                 // being selected)
-                Attribute requiredAttribute = this.getAttributeOption().getAttribute();
+                Attribute requiredAttribute = ao.getAttribute();
+                Module module = rma.getModule();
+                IssueType issueType = rma.getIssueType();
                 Integer optionId = this.getOptionId();
+                RModuleOption rmo = module.getRModuleOption(ao, issueType);
+                
                 result = indents+"if(attributeName == \""
                        + requiredAttribute.getName()
                        + "\")"
@@ -148,7 +153,7 @@ public  class Condition
                        + "(\""
                        + rma.getDisplayValue()
                        + "\","
-                       + "displayValue==\"" + this.getAttributeOption().getName()
+                       + "displayValue==\"" + rmo.getDisplayValue()
                        + "\");\n";
             } else 
             {

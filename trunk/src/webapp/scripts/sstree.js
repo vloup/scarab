@@ -75,7 +75,7 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 function renderJSONTreePopup(key, value, root, imgpath) {
 	document.writeln('<div id="' + key + ':Popup" class="tree_popup"><ol class="treeview root">');		
 	for (var i = 0; i < root._children.length; i++) {			
-		renderJSONTree(root.name, key, value, root._children[i], imgpath);						
+		renderJSONTree(root.name, key, value, root._children[i], imgpath);
 	}
 	document.writeln('</ol></div>');	
 }
@@ -83,7 +83,9 @@ function renderJSONTreePopup(key, value, root, imgpath) {
 
 function renderJSONTree(attributeId, key, value, root, imgpath) {
 	if (root.optionId == value) {
-		document.getElementById(key + ':Display').value = root.displayValue;	
+		document.getElementById(key + ':Display').value = root.displayValue;
+		var data = ["treeview",attributeId, null, null, root.displayValue];
+		observer.fire(data);
 	}	
 	
 	if (root._children.length > 0) {
