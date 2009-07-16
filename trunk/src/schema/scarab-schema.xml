@@ -499,13 +499,16 @@
 			<reference local="QA_CONTACT_ID" foreign="USER_ID"/>
 		</foreign-key>
 	</table>
+	
+	
 	<table name="SCARAB_R_MODULE_ATTRIBUTE" idMethod="none" javaName="RModuleAttribute" description="Attributes that are applicable to issues of the particular module.">
 		<column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER" description="Module."/>
 		<column name="ATTRIBUTE_ID" primaryKey="true" required="true" type="INTEGER" description="Attribute."/>
 		<column name="ISSUE_TYPE_ID" primaryKey="true" required="true" type="INTEGER" description="Issue type."/>
 		<column name="DISPLAY_VALUE" required="true" type="VARCHAR" size="255" description="Value that represents the attribute in the UI."/>
-		<column name="ACTIVE" required="true" type="BOOLEANINT" default="1" javaType="primitive" description="Flag, which marks that module attribute is not used."/>
+		<column name="ACTIVE"   required="true" type="BOOLEANINT" default="1" javaType="primitive" description="Flag, which marks that module attribute is not used."/>
 		<column name="REQUIRED" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that issues entered for this module must have this attribute set."/>
+		<column name="VISIBLE"  required="false" type="BOOLEANINT" default="1" javaType="primitive" description="Flag, which marks that this attribute is only visible when required."/>
 		<column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER" javaType="primitive" description="Column order."/>
 		<column name="QUICK_SEARCH" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks this attribute as being eligible for quick search."/>
 		<column name="DEFAULT_TEXT_FLAG" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that this attribute should be used in the email subject line, when an issue is created. May be used in other contexts as well"/>
@@ -530,6 +533,7 @@
 		<column name="ISSUE_TYPE_ID" primaryKey="true" required="true" type="INTEGER" description="Issue type."/>
 		<column name="ACTIVE" required="true" type="BOOLEANINT" default="1" javaType="primitive" description="Flag, which marks that module attribute is not used."/>
 		<column name="REQUIRED" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that issues entered for this module must have this attribute set."/>
+		<column name="VISIBLE"  required="false" type="BOOLEANINT" default="1" javaType="primitive" description="Flag, which marks that this attribute is only visible when required."/>
 		<column name="PREFERRED_ORDER" javaName="Order" required="true" default="0" type="INTEGER" javaType="primitive" description="Column order."/>
 		<column name="QUICK_SEARCH" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks this attribute as being eligible for quick search."/>
 		<column name="DEFAULT_TEXT_FLAG" required="true" type="BOOLEANINT" default="0" javaType="primitive" description="Flag, which marks that this attribute should be used in the email subject line, when an issue is created. May be used in other contexts as well"/>
@@ -547,6 +551,8 @@
 			<index-column name="QUICK_SEARCH"/>
 		</index>
 	</table>
+
+
 	<table name="SCARAB_R_MODULE_OPTION" idMethod="none" javaName="RModuleOption" description="Options that are applicable to issues of the particular module.">
 		<column name="MODULE_ID" primaryKey="true" required="true" type="INTEGER" description="Module."/>
 		<column name="ISSUE_TYPE_ID" primaryKey="true" required="true" type="INTEGER" description="Issue Type."/>

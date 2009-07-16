@@ -108,7 +108,8 @@
                 #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
                 #if ($linecount > 0 && $index > 6)
                   #set ($displayValue = $rma.DisplayValue.substring($index))
-                  <span id="${displayValue}:Container">
+                  #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
+                  <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #end>
                   <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
                 #else
                   #set ($displayValue = $rma.DisplayValue)
