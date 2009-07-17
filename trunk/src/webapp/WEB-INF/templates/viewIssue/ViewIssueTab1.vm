@@ -74,9 +74,9 @@
   ## ===============================================================================
   ## The Attribute-groups area
   ## ===============================================================================
-
+  #set ($moduleAttributeGroups = $issueType.getAttributeGroups($module, true))
   <div class="axial">
-    #foreach ($group in $issueType.getAttributeGroups($module, true))
+    #foreach ($group in $moduleAttributeGroups)
       #set ($attributes = $group.Attributes)
       #if ($attributes && !$attributes.isEmpty() && $group.isVisible4User($user))
         <h4>$group.Name #if ($isEditAttributes)#asterisk()#end</h4>
@@ -86,8 +86,10 @@
           #foreach ($att in $attributes)
             #set ($rma = $module.getRModuleAttribute($att, $issueType))
             #if ($rma.Active)
+            
               #set ($attVal = $attrValues.get($att.getName().toUpperCase()))
               #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
+
               #if ($att.AttributeType.ValidationKey)
                 #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
               #elseif ($att.isOptionAttribute())
@@ -95,24 +97,43 @@
               #else
                 #set ($field = "Value")
               #end
-              #if ($isEditAttributes)
-                #set ($fieldSize = 0)
-                #set ($fieldSize = $!attVal.Attribute.FieldSize)
-                #set ($fieldHint  = "")
-                #set ($fieldHint  = $!attVal.Attribute.Hint)
-                #set ($fieldExtraHeader = "")
-                #if  ($!attVal.Attribute.Description.startsWith("hint:"))
-                  #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
-                #end
 
-                #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
+              #set ($fieldSize = 0)
+              #set ($fieldSize = $!attVal.Attribute.FieldSize)
+              #set ($fieldHint  = "")
+              #set ($fieldHint  = $!attVal.Attribute.Hint)
+              #set ($fieldStyle = "")
+              #set ($fieldStyle = $!attVal.Attribute.Style)
+              
+              #set ($fieldExtraHeader = "")
+              #if  ($!attVal.Attribute.Description.startsWith("hint:"))
+                #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
+              #end
+
+              #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
+              #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
+              #if ($linecount > 0 && $index > 6)
+                #set ($displayValue = $rma.DisplayValue.substring($index))
+              #else
+                #set ($displayValue = $rma.DisplayValue)
+              #end
+
+              #set ($display = true)
+              #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
+              #if ($isOptionAttr)
+                #set ($fieldStyle = $!attVal.AttributeOption.Style)
+                #if ($attVal.AttributeOption.Deleted.toString().equals("true"))
+                  #set ($display = false)
+                #end
+              #end
+
+              #if ($isEditAttributes)
+
                 #if ($linecount > 0 && $index > 6)
-                  #set ($displayValue = $rma.DisplayValue.substring($index))
                   #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
                   <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #end>
                   <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
                 #else
-                  #set ($displayValue = $rma.DisplayValue)
                   #if ($linecount > 0)
                     </td>
                     </tr>
@@ -128,7 +149,7 @@
                     <td>
                   #set ($newline = false)
                 #end
-                <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">
+                <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:10px;width:95%;">
                   #if ($att.isOptionAttribute())
                     #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
                     #attrValueErrorMsg ($attVal $field)
@@ -145,59 +166,60 @@
                 #end
 
               #elseif ($attVal.isSet())
-
-                #set ($displayValue = $attVal.RModuleAttribute.DisplayValue)
-                #set ($index = $displayValue.indexOf(":") + 1)
-                #if  ($index > 1)
-                  #set ($displayValue = $displayValue.substring($index))
-                #end
-                
-              
-                #set ($display = true)
-                #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
-                #set ($fieldStyle = "")
-                #set ($fieldStyle = $!attVal.Attribute.Style)
-                #if ($isOptionAttr)
-                  #set ($fieldStyle = $!attVal.AttributeOption.Style)
-                  #if ($attVal.AttributeOption.Deleted.toString().equals("true"))
-                    #set ($display = false)
-                  #end
-                #end
                 #if ($display)
-                  <tr>
-                    <th>$displayValue</th>
-                    <td $fieldStyle >
-                      #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
-                   
-                      ## Output the value of the attribute. How this is done
-                      ## depends on the attribute type.
-                      #if ($isOptionAttr)
-                        #if (!$attVal.AttributeOption)
+                  #if ($linecount > 0 && $index > 6)
+                    #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
+                    <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #end>
+                    <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">$displayValue</span>
+                  #else
+                    #if ($linecount > 0)
+                      </td>
+                      </tr>
+                    #end
+                    #set ($linecount = $linecount + 1)
+                    <tr>
+                      <th> 
+                        <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">$displayValue</span>
+                        #if($fieldExtraHeader)
+                          <pre>$fieldExtraHeader</pre>
+                        #end
+                      </th>
+                      <td $fieldStyle>
+                    #set ($newline = false)
+                  #end
+                  <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:10px;width:95%;">
+                    #if ($att.isOptionAttribute())
+                      #if (!$attVal.AttributeOption)
 	                          --
-	                        #else
+	                      #else
                           #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
                             $!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
                           #else
                            [I]$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
                           #end
-                        #end
-                      #elseif ($att.AttributeType.Name == "long-string")
-                        ## Convert the raw text to formatted HTML before
-                        ## displaying it.
-                        $!scarabG.textToHTML($attrInput.Value.toString(), $link, $scarabR.CurrentModule)
-                      #elseif ($att.AttributeType.Name == "date")
-                        $scarabR.formatDate($!attrInput.Value.value)
-                      #elseif ($att.AttributeType.Name == "integer")
-                        $!attrInput.NumericValue.value
-                      #else
-                        ## Just output the raw value directly.
-                        $!attrInput.Value
                       #end
-                    </td>
-                  </tr>
-                #end
+                    #elseif ($att.AttributeType.Name == "long-string")
+                      ## Convert the raw text to formatted HTML before
+                      ## displaying it.
+                      $!scarabG.textToHTML($attrInput.Value.toString(), $link, $scarabR.CurrentModule)
+                    #elseif ($att.isIntegerAttribute())
+                      #attrValueErrorMsg($attVal "NumericValue")
+                      #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
+                    #elseif ($att.AttributeType.Name == "date")
+                        $scarabR.formatDate($!attrInput.Value.value)
+                    #elseif ($att.AttributeType.Name == "integer")
+                      $!attrInput.NumericValue.value
+                    #else
+                      ## Just output the raw value directly.
+                      $!attrInput.Value
+                    #end
+                  </span>
+                  #if ($linecount > 0 && $index > 6)
+                    </span>
+                  #end
+                #end                
               #end
-    
+              
             #else
 	              #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
               #set ($attVal = $allAttrValues.get($att.getName().toUpperCase()))
