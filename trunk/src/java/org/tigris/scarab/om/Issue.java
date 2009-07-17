@@ -4256,7 +4256,44 @@ public class Issue
         
         return new SimpleSkipFiltering(prepend+result);
     }     
+
+    /**
+     * Check if the properties scarab.common.status.id and scarab.common.status.sealed
+     * exist and if the current value of the status attribute matches the sealed
+     * value. Return true, if the issue is in the sealed state, otherwise return false.
+     * This method is used to find out if an issue shoul dbe rendered read-only
+     * because it is in closed (sealed) state and should never be touched again.
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isSealed() throws TorqueException
+    {        
+        boolean result = false;
+        String status = getProperty("scarab.common.status.id", null);
+        if (status != null)
+        {
+            String value = getProperty("scarab.common.status.sealed", null);
+            if(value != null)
+            {
+                AttributeValue attval = getAttributeValue(status);
+                if(attval != null && attval.getValue().equals(value))
+                {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
     
+    private String getProperty(String prop, String def)
+    {
+        String result = (String)Turbine.getConfiguration().getProperty(prop);
+        if(result == null)
+        {
+            result = def;
+        }
+        return result;
+    }
     
     
 }

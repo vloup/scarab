@@ -158,6 +158,10 @@ public class ScarabUserTool
                                                   "default");
         if(behaviour.equals("smart"))
         {
+            if(issue.isSealed())
+            {
+                return false; // don't open this issue in edit mode, because it is sealed!
+            }
             // Check if user is assigned to issue.
             // If that is the case, open the issue
             // in edit mode per default.
