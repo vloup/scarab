@@ -149,7 +149,7 @@
                     <td>
                   #set ($newline = false)
                 #end
-                <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:10px;width:95%;">
+                <span style="display:inline;margin-left:0px; margin-right:10px;width:95%;">
                   #if ($att.isOptionAttribute())
                     #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
                     #attrValueErrorMsg ($attVal $field)
@@ -187,7 +187,7 @@
                       <td $fieldStyle>
                     #set ($newline = false)
                   #end
-                  <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:10px;width:95%;">
+                  <span style="display:inline;margin-left:0px; margin-right:10px;width:95%;">
                     #if ($att.isOptionAttribute())
                       #if (!$attVal.AttributeOption)
 	                          --

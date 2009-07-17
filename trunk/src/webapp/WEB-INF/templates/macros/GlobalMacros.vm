@@ -1177,7 +1177,7 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
             <td>
                     #set ($newline = false)
                 #end
-                <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:10px;width:95%;">
+                <span style="display:inline;margin-left:0px; margin-right:10px;width:95%;">
 
                 #if ($att.isOptionAttribute())
            #if ($templ)
