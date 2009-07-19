@@ -130,6 +130,7 @@
 ## ---------------------------------------------------------------------
 
 #macro (watchingUsers $myselfInList $assignedUserId $watchedRMA $watchedAttrib)
+    #set ($archivingScarabUsers = $module.getArchivingScarabUsers())
     #set ($users = $module.getUsers("Issue | View"))
     ## Create a selection box
     #foreach ($user in $users)
@@ -142,7 +143,7 @@
               #end
           #end
           
-          #if ($inList == false)
+          #if ($inList == false && !$archivingScarabUsers.contains($user))
             #set ($optionName  = "watcher_attr_" + $user.UserId)
             #set ($attributeId = $watchedAttrib.AttributeId)
             <input type="hidden" name="$optionName" value="$attributeId"/>
@@ -155,7 +156,7 @@
       ##end
 
       #foreach ($user in $users)
-        #if ($user.UserId != $myself && $user.UserId != $assignedUserId)
+        #if ($user.UserId != $myself && $user.UserId != $assignedUserId && !$archivingScarabUsers.contains($user))
           #set ($inList=false)
           #foreach ($uid in $watcherIdList)
               #if ($uid == $user.UserId)
