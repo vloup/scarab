@@ -96,10 +96,13 @@
       <input type="hidden" name="issue_ids" value="$currentIssueId" />
 
       ## Create a selection box
+      #set ($archivingScarabUsers = $module.getArchivingScarabUsers())
       #foreach ($user in $users)
+        #if (!$archivingScarabUsers.contains($user))
           #set ($optionName  = "user_attr_" + $user.UserId)
           #set ($attributeId = $assignedAttrib.AttributeId)
           <input type="hidden" name="$optionName" value="$attributeId"/>
+        #end
       #end
       <select name="add_user">
       #if ( $assignedUserId == -1 )
@@ -107,8 +110,10 @@
       #end
 
       #foreach ($user in $users)
+        #if (!$archivingScarabUsers.contains($user))
           #set ($selected = ($user.UserId == $assignedUserId))
           <option value="$user.UserId" #selected($selected) >$user.Name</option> 
+        #end
       #end
       </select>
     #else
