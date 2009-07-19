@@ -53,25 +53,35 @@
 
 #queryFunctionBar("")
 
-<h3>
-$page.Title
-<small>$l10n.format("IssueListCount", $totalCount)</small></h3>
+<h3 style="height:18px;">
 
-<div class="colbar">
-$format.getNow($scarabR.DateFormat)
-</div>
+  <span style="float:left;">
+    #if ($scarabR.Query.Name) $scarabR.Query.Name #else $page.Title #end
+    <small>$l10n.format("IssueListCount", $totalCount)</small>
 
-<div class="colbar">
-<small>
-#if ($scarabR.ValidIssueListAttributes.isEmpty())
-  #set ($noAttrs = true)
-  <p><em>$l10n.NoCommonAttributesInList</em></p>
-#else
-  #set ($noAttrs = false)
-  $link.setPage('ConfigureIssueList.vm').setLabel($l10n.AddRemoreAttributesFromView).setPathInfo('searchType', $searchType)
-#end
-</small>
-</div>
+    ## PAGINATION NAVIGATION LINKS
+    #if ($paginated)
+      <span style="margin-left:15px;margin-right:5px;">#paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)</span>
+    #end
+
+    <small>
+      #if ($scarabR.ValidIssueListAttributes.isEmpty())
+        #set ($noAttrs = true)
+          <p><em>$l10n.NoCommonAttributesInList</em></p>
+      #else
+        #set ($noAttrs = false)
+        #set ($configureLink = $link.setPage('ConfigureIssueList.vm').setPathInfo('searchType', $searchType))
+        <a class="configure_list" href="$configureLink" title="$l10n.AddRemoreAttributesFromView"></a>
+      #end
+    </small>
+
+  </span>
+
+  <span style="float:right;">
+    <small style="text-align:right;display:inline-block">$format.getNow($l10n.ShortDateTimePattern)</small>
+  </span>
+
+</h3>
 		
 #set ($sortColumn = $data.Parameters.getString('sortColumn'))
 #set ($sortInternal=$data.Parameters.getString('sortInternal'))
@@ -87,11 +97,6 @@ $format.getNow($scarabR.DateFormat)
   <input type="hidden" name="sortPolarity" value="$sortPolarity" />
 #end
 
-## PAGINATION NAVIGATION LINKS
-#if ($paginated)
-  #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
-#end
-
 #macro (prepIssueListPageLink)
  #set ($dummy = $link.setPage('IssueList.vm').setPathInfo('resultsPerPage', $resultsPerPage).setPathInfo('pageNum', $pageNum))
 #end
@@ -101,8 +106,8 @@ $format.getNow($scarabR.DateFormat)
 
 <table width="100%" border="1" cellspacing="2" cellpadding="3">
   <tr> <!-- HEADER -->
-  <th width="70">$l10n.Select</th>
-  <th>
+  <th>&nbsp;</th>
+  <th style="white-space:nowrap;">
      ## Issue ID column
      #prepIssueListPageLink()
      #if ((!$sortColumn || $sortColumn == 'null') && !$sortInternal)
@@ -183,22 +188,18 @@ $format.getNow($scarabR.DateFormat)
 </table>
 ## END of RESULTS TABLE!
 
-<div class="axial">
-  <table cellpadding="3" cellspacing="2" border="0">
-    <tr>
-       <th>$l10n.MaxPerPage</th>
- <td>
-     #resultsPerPageRadioSelect($resultsPerPage true)
-     <input type="submit" name="eventSubmit_doRefreshresultsperpage" 
-         value="$l10n.Refresh" />
-     <input type="hidden" name="oldResultsPerPage" value="$resultsPerPage" />
- </td>
-   </tr>
-  </table>
+<div class="axial" style="margin-left:2px;margin-right:2px;background-color:#abc4db;white-space:nowrap;">
+    <span style="margin-left:15px;margin-right:10px;">
+      #if ($paginated)
+        #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
+      #end
+    </span>
+    <span style="margin-left:15px;margin-right:5px;">$l10n.MaxPerPage</span>
+    #resultsPerPageRadioSelect($resultsPerPage true)
+    <input type="submit" name="eventSubmit_doRefreshresultsperpage" 
+           value="$l10n.Refresh" />
+    <input type="hidden" name="oldResultsPerPage" value="$resultsPerPage" />
 </div>
-#if ($paginated)
-  #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)
-#end
 
 #end
 

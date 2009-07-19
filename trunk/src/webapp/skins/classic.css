@@ -130,7 +130,6 @@
 }
 
 
-
 /* ====================================================== */
 /* Style for a java script calendar                       */
 /* NOTE: The calendar visibility MUST be set to invisible */
@@ -259,6 +258,35 @@ a.date {
 	display:inline-block;
 	vertical-align:middle;
 }
+
+a.configure_list {
+	margin-left:10px;
+	background-image: url(images/customize.gif);
+	background-repeat: no-repeat;
+	width:16px;
+	height:16px;
+	display:inline-block;
+	vertical-align:middle;
+}
+
+a.next_element {
+	background-image: url(images/icon_right.gif);
+	background-repeat: no-repeat;
+	width:10px;
+	height:13px;
+	display:inline-block;
+	vertical-align:middle;
+}
+
+a.previous_element {
+	background-image: url(images/icon_left.gif);
+	background-repeat: no-repeat;
+	width:10px;
+	height:13px;
+	display:inline-block;
+	vertical-align:middle;
+}
+
 
 /* ============================================================== */
 /* Issue editor                                                   */
