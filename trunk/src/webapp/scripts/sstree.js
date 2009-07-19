@@ -84,8 +84,8 @@ function renderJSONTreePopup(key, value, root, imgpath) {
 function renderJSONTree(attributeId, key, value, root, imgpath) {
 	if (root.optionId == value) {
 		document.getElementById(key + ':Display').value = root.displayValue;
-		var data = ["treeview",attributeId, null, null, root.displayValue];
-		observer.fire(data);
+		//var data = ["treeview",attributeId, null, null, root.displayValue];
+		//observer.fire(data);
 	}	
 	
 	if (root._children.length > 0) {
