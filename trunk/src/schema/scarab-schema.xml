@@ -338,6 +338,10 @@
 		<column name="COMMENTS" required="false" default="5" type="INTEGER" javaType="primitive" description="Default number of comments."/>
 		<column name="DISPLAY_NAME" required="false" type="VARCHAR" size="255" description="Value that represents the name of the issue type in the UI."/>
 		<column name="DISPLAY_DESCRIPTION" required="false" type="VARCHAR" size="255" description="Value that represents the description of the issue type in the UI."/>
+
+		<column name="ENABLE_ATTACHMENTS" javaName="EnableAttachments" required="false" type="BOOLEANINT" default="1" javaType="primitive" />
+		<column name="ENABLE_WORKFLOW"    javaName="EnableWorkflow"    required="false" type="BOOLEANINT" default="1" javaType="primitive" />
+
 		<foreign-key foreignTable="SCARAB_MODULE">
 			<reference local="MODULE_ID" foreign="MODULE_ID"/>
 		</foreign-key>

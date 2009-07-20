@@ -5,9 +5,13 @@
 #set ($groups = $issueType.getAttributeGroups($module, false))
 #set ($rmit= $module.getRModuleIssueType($issueType))
 #set ($immutable = $issueType.SystemDefined)
+
+
 #if($immutable)
 <p class="infomark"><strong>$l10n.SystemSpecifiedIssueType</strong></p>
 #end
+
+
 <div class="app" id="div2-1-4-0">
 
 #if (!$issueTypeId && $issueTypeId.length() == 0)
@@ -22,6 +26,10 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
 
 #else
 
+## ==========================================================================
+## Setup Issue Type display/edit form
+## ==========================================================================
+
 #set ($rmitGroup = $intake.RModuleIssueType.mapTo($rmit))
 #set ($modGroup = $intake.Module.mapTo($module))
 
@@ -31,12 +39,14 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
 <input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="admin,UserAttributeSelect.vm" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="admin,ManageArtifactTypes.vm" />
 
+
 <div class="functnbar">
-#if (!$issueTypeLock && !$immutable)
-  <input type="submit" value="$l10n.Done"  name="eventSubmit_doDone" />&#160;
-#end
-<input type="submit" value="$l10n.Cancel"  name="eventSubmit_doCancel" />
+  #if (!$issueTypeLock && !$immutable)
+    <input type="submit" value="$l10n.Done"  name="eventSubmit_doDone" />&#160;
+  #end
+  <input type="submit" value="$l10n.Cancel"  name="eventSubmit_doCancel" />
 </div>
+
 
 <h3>$l10n.IssueTypeInfo</h3>
 <div class="axial">
@@ -81,7 +91,24 @@ $link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.Here").
       #end
     </td>
     </tr>
+   
+    ## ==================================================
+    ## enable Attachments on new entry page
+    ## ==================================================
+
+    <tr>
+      <th>$l10n.Attachments</th>
+      <td>#booleanCheckbox($rmitGroup.EnableAttachments) ($l10n.EnableAttachmentsExplained)</td>
+    </tr>
     
+    ## ==================================================
+    ## enable user controlled workflow on new entry page
+    ## ==================================================
+    
+    <tr>
+      <th>$l10n.Workflow</th>
+      <td>#booleanCheckbox($rmitGroup.EnableWorkflow) ($l10n.EnableWorkflowExplained)</td>
+    </tr>
     
     ## ==================================================
     ## Blocking when ...

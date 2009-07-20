@@ -264,6 +264,10 @@
         </field>
         <field name="DisplayDesc" key="desc" type="String" mapToProperty="DisplayDescription">
         <rule name="maxLength" value="255">DisplayDescriptionMustBeLessThan256Characters</rule>
+		
+		<field name="EnableAttachments" mapToProperty="EnableAttachments" key="attachments" type="boolean"/>
+		<field name="EnableWorkflow"    mapToProperty="EnableWorkflow"    key="workflow"    type="boolean"/>
+		
         </field>
 </group>
 
