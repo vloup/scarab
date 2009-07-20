@@ -142,4 +142,16 @@ public class DateAttribute extends StringAttribute
             }
         }
     }
+    
+    /**
+     * Receives a value in internal date format and returns it as Date instance
+     * @param vlaue
+     * @return
+     * @throws ParseException 
+     */
+    public static Date toDate(String value) throws ParseException
+    {
+        Date result = internalFormat.parse(value);
+        return result;
+    }
 }

@@ -164,15 +164,20 @@
   </tr> <!-- END of HEADER -->
   <tr> <!-- DATA -->
   #foreach ($record in $qrIterator)
+    #set ($issue = $scarabR.getIssue($record.UniqueId))
     $qrIterator.initializeLink($link)
-    #indexedRows($velocityCount)
+    #if ($issue.isOnHold() || $issue.isSealed())
+      #indexedRows($velocityCount)
+    #else
+      #indexedRowsWithIdleHours($velocityCount $issue.HoursIdle)
+    #end
   <td>
    <input type="hidden" name="all_issue_ids" value="$record.UniqueId" />
    <input type="checkbox" name="issue_ids" value="$record.UniqueId" />
   </td>
   <td><a href="$link">$record.UniqueId</a></td>
   #if (!$record.AttributeValuesAsCSV)
-    <td>$scarabR.getIssue($record.UniqueId).DefaultText</td>
+    <td>$issue.DefaultText</td>
   #end
   #foreach ($value in $record.AttributeValuesAsCSV)
     <td>

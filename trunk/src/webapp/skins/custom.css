@@ -118,8 +118,27 @@ div.tree_popup ol.treeview li ol.treeview li.leaf a {
 	color:red;
 }
 
+// colrized issuelists
+// the schema is:
+//
+//
+
+.a_attention1 td {background: #fee378;}
+.b_attention1 td {background: #fdebad;}
+.a_attention2 td {background: #ffb573;}
+.b_attention2 td {background: #fec08e;}
+.a_attention3 td {background: #ffb573;}
+.b_attention3 td {background: #fec08e;}
+.a_attention4 td {background: #ffb573;}
+.b_attention4 td {background: #fec08e;}
+.a_attention5 td {background: #fa686b;}
+.b_attention5 td {background: #fc8689;}
+
+
 // experimental stuff will be removed later.
 
 .wiedervorlagedatum {
 	color:red;
 }
+
+

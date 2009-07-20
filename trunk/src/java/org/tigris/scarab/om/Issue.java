@@ -50,6 +50,7 @@ package org.tigris.scarab.om;
 import com.workingdogs.village.DataSetException;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -74,6 +75,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.BasePeer;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.Turbine;
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.TotalVotesAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
@@ -1574,6 +1576,62 @@ public class Issue
             }
         }
         return result;
+    }
+
+    /**
+     * Return the number of hours since last Change date (or creation date if never changed)
+     *
+     * @return a <code>ScarabUser</code> value
+     * @throws ParseException 
+     */
+    public long getHoursIdle() throws TorqueException, ParseException
+    {
+        Date now = new Date();
+        Date date = null;
+        Date onHoldUntil = null;
+        long diffHours = 0;
+
+        if (!isNew()) 
+        {
+            boolean onHold = isOnHold();
+            if(onHold)
+            {
+                onHoldUntil = getOnHoldUntil(); // on Hold until this date
+                if(onHoldUntil == null)
+                {
+                    return 0; // we are on hold but there is no end date, so we wait forever.
+                }
+                diffHours = (now.getTime() - onHoldUntil.getTime()) / (1000*60*60);
+                if(diffHours < 0)
+                {
+                    return 0; // onHoldDate not yet reached, so we are not idle by definition
+                }
+            }
+            ActivitySet t = getLastActivitySet();
+            if (t == null)
+            {
+                date = getCreatedDate();
+            }
+            else 
+            {
+                date = t.getCreatedDate();
+            }
+            
+            if(onHold)
+            {
+                if (date.before(onHoldUntil))
+                {
+                    // The date of last activity was before the onHoldUntil date
+                    // In that case we count the end of the onHold period as the
+                    // event.
+                    date = onHoldUntil;
+                }
+            }
+            
+        }
+        // Return the difference in hours between now and the last date of activities:
+        diffHours = (now.getTime() - date.getTime()) / (1000*60*60);
+        return diffHours;
     }
 
     /**
@@ -4285,6 +4343,70 @@ public class Issue
         return result;
     }
     
+    /**
+     * Check if this issue is on hold. Currently we use the attribute
+     * which has been specified by the system property 
+     * scarab.common.status.id as the relevant attribute to check. 
+     * We tell this issue is on hold when the status-attribute contains
+     * the value specified by the system property "scarab.common.status.onhold"
+     * By default an issue is onhold if attribute "status" == "onhold")
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isOnHold() throws TorqueException
+    {        
+        boolean result = false;
+        String status = getProperty("scarab.common.status.id", null);
+        if (status != null)
+        {
+            String value = getProperty("scarab.common.status.onhold", null);
+            if(value != null)
+            {
+                AttributeValue attval = getAttributeValue(status);
+                if(attval != null && attval.getValue().equals(value))
+                {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Get the date until which this issue is onhold. This method searches
+     * for the attribute specified by the system property "scarab.common.status.onhold.dateProperty"
+     * And we expect this attribute to contain a Date value.
+     * @return
+     * @throws TorqueException
+     * @throws ParseException 
+     */
+    public Date getOnHoldUntil() throws TorqueException, ParseException
+    {
+        Date date = null;
+        String attributeName = getProperty("scarab.common.status.onhold.dateProperty", null);
+        
+        if (attributeName != null)
+        {
+            AttributeValue dateValue = this.getAttributeValue(attributeName);
+            if(dateValue!=null) 
+            {
+                String value = dateValue.getValue();
+                if (value != null && value.length() > 0)
+                {
+                    date = DateAttribute.toDate(value);
+                }
+            }
+        }
+        return date;
+    }
+    
+    
+    /**
+     * helper funtion to retrieve properties from the Turbine Configuration sysstem.
+     * @param prop
+     * @param def
+     * @return
+     */
     private String getProperty(String prop, String def)
     {
         String result = (String)Turbine.getConfiguration().getProperty(prop);
