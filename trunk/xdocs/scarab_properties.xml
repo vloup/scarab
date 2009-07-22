@@ -1079,11 +1079,46 @@
          <customization modification="optional">advanced</customization>
         <file/>
         <details>
+          A sealed issue is meant to be immutable.
+          That could be because it is closed, or has put into an
+          "unchangeable" state or whatever else is required. 
           The given issue is recognized as sealed when the status attribute
   		  has been set to the given value. The default behaviour is:
   		  Issue is sealed if (status == closed)
         </details>
       </property>
+
+      <property>
+        <name>scarab.common.status.onhold</name>
+        <default>onhold</default>
+        <comment/>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          An "onhold" issue is typically an issue, which can not be processed
+          right now, but has been postponed to a later time. onHold issues
+          typically also transport a "reactivation date". Note that the here
+          used model is very simplistic: An isue is recognized as onhold when
+          its state value has been set to "onhold", i.e. for the default settings:
+          Issue is onhold if (state=="onhold")
+        </details>
+      </property>
+	  
+      <property>
+        <name>scarab.common.status.onhold.dateProperty</name>
+        <default>onhold</default>
+        <comment/>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This is the attribute which contains the attribute name of 
+          the reactivation date for "onhold" issues.          
+        </details>
+      </property>
+	  
+	  
 
       <property>
         <name>scarab.common.status.sealed.modifyPermission</name>

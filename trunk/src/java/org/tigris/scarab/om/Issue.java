@@ -4327,7 +4327,7 @@ public class Issue
     public boolean isSealed() throws TorqueException
     {        
         boolean result = false;
-        String status = getProperty("scarab.common.status.id", null);
+        String status = ScarabGlobalTool.getStatusAttributeName();
         if (status != null)
         {
             String value = getProperty("scarab.common.status.sealed", null);
@@ -4356,10 +4356,10 @@ public class Issue
     public boolean isOnHold() throws TorqueException
     {        
         boolean result = false;
-        String status = getProperty("scarab.common.status.id", null);
+        String status = ScarabGlobalTool.getStatusAttributeName();
         if (status != null)
         {
-            String value = getProperty("scarab.common.status.onhold", null);
+            String value = ScarabGlobalTool.getOnHoldAttributeOptionValue();
             if(value != null)
             {
                 AttributeValue attval = getAttributeValue(status);
@@ -4373,6 +4373,42 @@ public class Issue
     }
     
     /**
+     * Returns the attribute instance, which contains the issues status.
+     * Note:  Currently Scarab expects that the Attribute is a drop down list
+     * (i.e. its data type is AttributeOptionValue)
+     * @return
+     * @throws TorqueException
+     */
+    public Attribute getMyStatusAttribute() throws TorqueException
+    {
+        Attribute attribute = null;
+        String attributeName = ScarabGlobalTool.getStatusAttributeName();
+        if(attributeName != null)
+        {
+            attribute = Attribute.getInstance(attributeName);
+        }
+        return attribute;
+    }
+    
+    /**
+     * Returns the attribute instance, which contains the issues onHoldExpirationDate.
+     * Note:  Currently Scarab expects that the Attribute is a DateAttribute
+     * @return
+     * @throws TorqueException
+     */
+    public Attribute getMyOnHoldExpirationDate() throws TorqueException
+    {
+        Attribute attribute = null;
+        String attributeName = ScarabGlobalTool.getOnHoldExpirationDateAttributeName();
+        if(attributeName != null)
+        {
+            attribute = Attribute.getInstance(attributeName);
+        }
+        return attribute;
+    }
+
+    
+    /**
      * Get the date until which this issue is onhold. This method searches
      * for the attribute specified by the system property "scarab.common.status.onhold.dateProperty"
      * And we expect this attribute to contain a Date value.
@@ -4383,7 +4419,7 @@ public class Issue
     public Date getOnHoldUntil() throws TorqueException, ParseException
     {
         Date date = null;
-        String attributeName = getProperty("scarab.common.status.onhold.dateProperty", null);
+        String attributeName = ScarabGlobalTool.getOnHoldExpirationDateAttributeName();
         
         if (attributeName != null)
         {
@@ -4399,6 +4435,7 @@ public class Issue
         }
         return date;
     }
+
     
     
     /**

@@ -470,6 +470,51 @@ public class ScarabGlobalTool
         return WorkflowFactory.getInstance();
     }
     
+
+    /**
+     * Return the value of the AttributeOption which expresses, that the 
+     * issue is "onhold". This directly corresponds to the system property
+     * 
+     * "scarab.common.status.onhold"
+     * 
+     * If that property is not set or set to empty, then this method returns null.
+     * @return
+     */
+    public static String getOnHoldAttributeOptionValue() {
+        String value = getTurbineProperty("scarab.common.status.onhold", null);
+        return value;
+    }
+
+    /**
+     * Return the name of the Attribute which is interpreted as Issue-"status". 
+     * This directly corresponds to the system property
+     * 
+     * "scarab.common.status.id"
+     * 
+     * If that property is not set or set to empty, then this method returns null.
+     * @return
+     */
+    public static String getStatusAttributeName() 
+    {
+        String status = getTurbineProperty("scarab.common.status.id", null);
+        return status;
+    }
+
+    /**
+     * Return the name of the Attribute which is interpreted as the expiration date
+     * for an issue which is "onhold".  This directly corresponds to the system property
+     * 
+     * "scarab.common.status.onhold.dateProperty"
+     * 
+     * If that property is not set or set to empty, then this method returns null.
+     * @return
+     */
+    public static String getOnHoldExpirationDateAttributeName() {
+        String attributeName = getTurbineProperty("scarab.common.status.onhold.dateProperty", null);
+        return attributeName;
+    }    
+    
+    
     /** 
      * Returns a List of users based on the given search criteria. This method
      * is an overloaded function which returns an unsorted list of users.
@@ -961,7 +1006,7 @@ public class ScarabGlobalTool
     /**
      * @return  Return the current turbine configuration with all keys included
      */
-    public Configuration getTurbineConfiguration()
+    public static Configuration getTurbineConfiguration()
     {
         return Turbine.getConfiguration();
     }
@@ -984,26 +1029,36 @@ public class ScarabGlobalTool
      * @return Returns the string value of a turbine property. If the property
      * does not map to a String, return Object.toString() instead.
      */
-    public String getTurbineProperty(String key)
+    public static String getTurbineProperty(String key)
+    {
+        return getTurbineProperty(key, null);
+    }
+    
+    private static String getTurbineProperty(String key, String def)
     {
         String result = null;
         try
         {
-        	result = getTurbineConfiguration().getString(key);
+            result = getTurbineConfiguration().getString(key);
         }
         catch( ConversionException ce)
         {
-        	// This happens, if the Turbine Property contains data, which can
-        	// not be converted to a String. This has been seen on JBOSS.
-        	// Note: getProperty() does not resolve ${} values, so it is not an
-        	// option to use it instead of getString(). But in the case of
-        	// non convertible objects, getProperty().toString() is the best bet.
-        	// In my opinion this should be handled inside of Configuration, 
-        	// or at least we should be given a test method Configuration.isString(key)
-        	// So we could avoid this stuff here...
-        	// just my 2 cents. (hussayn dabbous)
-        	result = getTurbineConfiguration().getProperty(key).toString();
+            // This happens, if the Turbine Property contains data, which can
+            // not be converted to a String. This has been seen on JBOSS.
+            // Note: getProperty() does not resolve ${} values, so it is not an
+            // option to use it instead of getString(). But in the case of
+            // non convertible objects, getProperty().toString() is the best bet.
+            // In my opinion this should be handled inside of Configuration, 
+            // or at least we should be given a test method Configuration.isString(key)
+            // So we could avoid this stuff here...
+            // just my 2 cents. (hussayn dabbous)
+            result = getTurbineConfiguration().getProperty(key).toString();
+        }
+        if(result == null)
+        {
+            result = def;
         }
         return result;
     }
+    
 }
