@@ -5,14 +5,14 @@
 # MIME type			Extension
 application/mac-binhex40	hqx
 application/mac-compactpro	cpt
-application/msword		doc
+application/msword		doc docx
 application/octet-stream	bin dms lha lzh exe class
 application/oda			oda
 application/pdf			pdf
 application/rtf			rtf
 application/vnd.mif		mif
-application/vnd.ms-excel    xls
-application/vnd.ms-powerpoint	ppt
+application/vnd.ms-excel    xls xslx
+application/vnd.ms-powerpoint	ppt pptx pps ppsx
 application/vnd.ms-project  mpp
 application/vnd.sun.xml.writer sxw
 application/vnd.sun.xml.writer.template stw
