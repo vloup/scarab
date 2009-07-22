@@ -62,8 +62,11 @@ td.status_assigned {
  padding-left:0px;
  position:relative;
  left:-7px;
+ top:-1px;
  text-decoration:none;
  background-repeat: no-repeat;
+ display:inline-block;
+ vertical-align:middle;
 }
 
 div.tree_popup {
