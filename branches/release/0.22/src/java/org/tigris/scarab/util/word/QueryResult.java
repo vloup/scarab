@@ -164,7 +164,7 @@ public class QueryResult
 	    	if(sortValueId!=null)
 	    	{
 	    		AttributeValue sortValue = AttributeValueManager.getInstance(sortValueId);
-	    		singleValue = sortValue.getDisplayValue();	    		
+	    		singleValue = sortValue.getDisplayValue(L10N);	    		
 	    	}
 	    	else
 	    	{
@@ -176,7 +176,7 @@ public class QueryResult
 	    {
             for(int i=0;i<attributeValue.size();i++)
 		    {
-		        singleValue = ((AttributeValue)attributeValue.get(i)).getDisplayValue();
+		        singleValue = ((AttributeValue)attributeValue.get(i)).getDisplayValue(L10N);
 		        value.add( singleValue );
 		    }
 		}
