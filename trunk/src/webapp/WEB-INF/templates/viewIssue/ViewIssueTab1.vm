@@ -87,10 +87,10 @@
       #if ($onSameLine)
         #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
         #if ($currentRow==0)
-          <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #end>
+          <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #else style="visibility:visible;" #end>
           <th style="text-align:right;">
         #else
-          <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #end>
+          <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
         #end
         <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
         #if ($currentRow==0)
@@ -133,10 +133,10 @@
         #if ($onSameLine)
           #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
           #if ($currentRow==0)
-            <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #end>
+            <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #else style="visibility:visible;" #end>
             <th style="text-align:right;">
           #else
-            <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #end>
+            <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
           #end
           <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
           #if ($currentRow==0)
