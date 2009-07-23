@@ -303,6 +303,12 @@ public class Attribute
                     crit.addIn(AttributeTypePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.TEXT_PKS);
                     result = AttributeTypePeer.doSelect(crit);                
                 }
+                else if (this.isOptionAttribute())
+                {
+                    final Criteria crit = new Criteria();
+                    crit.addIn(AttributeTypePeer.ATTRIBUTE_TYPE_ID, AttributeTypePeer.OPTION_PKS);
+                    result = AttributeTypePeer.doSelect(crit);                
+                }
                 else 
                 {
                     result = Collections.EMPTY_LIST;

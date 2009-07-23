@@ -61,5 +61,8 @@ public class AttributeTypePeer
     public static final Integer USER_TYPE_KEY = new Integer(8);
     public static final Integer[] TEXT_PKS = 
         {new Integer(1), new Integer(11), new Integer(12), new Integer(13)};
+    
+    public static final Integer[] OPTION_PKS =
+        { new Integer(5), new Integer(6)};
 }
 

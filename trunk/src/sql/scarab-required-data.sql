@@ -16,6 +16,8 @@ insert into SCARAB_ATTRIBUTE_TYPE(ATTRIBUTE_TYPE_ID, ATTRIBUTE_CLASS_ID, ATTRIBU
 insert into SCARAB_ATTRIBUTE_TYPE(ATTRIBUTE_TYPE_ID, ATTRIBUTE_CLASS_ID, ATTRIBUTE_TYPE_NAME, JAVA_CLASS_NAME)
         values(5, 2, 'Dropdown list', 'org.tigris.scarab.attribute.ComboBoxAttribute');
 insert into SCARAB_ATTRIBUTE_TYPE(ATTRIBUTE_TYPE_ID, ATTRIBUTE_CLASS_ID, ATTRIBUTE_TYPE_NAME, JAVA_CLASS_NAME)
+        values(6, 2, 'Dropdown tree', 'org.tigris.scarab.attribute.ComboTreeBoxAttribute');
+insert into SCARAB_ATTRIBUTE_TYPE(ATTRIBUTE_TYPE_ID, ATTRIBUTE_CLASS_ID, ATTRIBUTE_TYPE_NAME, JAVA_CLASS_NAME)
         values(8, 4, 'user', 'org.tigris.scarab.attribute.UserAttribute');
 insert into SCARAB_ATTRIBUTE_TYPE(ATTRIBUTE_TYPE_ID, ATTRIBUTE_CLASS_ID, ATTRIBUTE_TYPE_NAME, JAVA_CLASS_NAME)
         values(11, 1, 'email', 'org.tigris.scarab.attribute.StringAttribute');

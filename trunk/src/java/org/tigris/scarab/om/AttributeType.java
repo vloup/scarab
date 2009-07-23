@@ -164,6 +164,34 @@ public class AttributeType
         }
         return result;
     }
+
+    /**
+     * returns the leaf classname of the attributeType (removes the full classPath). 
+     * Note: If you need the exact classname then use getJavaClassName() instead. 
+     * That will return the full java path.
+     * This method is used as a convenience method for velocity templates, who need to
+     * distinguish classes of the same attributeClass buit with different implementations.
+     * The first need for this distinguishing is the introduction of the ComboTreeBoxAttribute
+     * which has the same class as the ComboBoxAttribute but uses a differnet representation
+     * on the GUI level.
+     * @param type
+     * @return
+     */
+    public String getClassName()
+    {
+        String result;
+        String cn = getJavaClassName();
+        int index = cn.lastIndexOf('.');
+        if(index > -1)
+        {
+            result = cn.substring(index+1);
+        }
+        else
+        {
+            result = cn;
+        }
+        return result;
+    }
 }
 
 

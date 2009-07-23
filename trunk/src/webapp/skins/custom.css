@@ -56,12 +56,12 @@ td.status_assigned {
   
 
 .treeview_button {
- background-image: url(images/popup_open.gif);
- width:17px;
- height:17px;
+ background-image: url(images/treeview_open.gif);
+ width:19px;
+ height:14px;
  padding-left:0px;
  position:relative;
- left:-7px;
+ left:-3px;
  top:-1px;
  text-decoration:none;
  background-repeat: no-repeat;

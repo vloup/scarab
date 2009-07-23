@@ -4385,11 +4385,36 @@ public class Issue
         String attributeName = ScarabGlobalTool.getStatusAttributeName();
         if(attributeName != null)
         {
-            attribute = Attribute.getInstance(attributeName);
+            attribute = this.getAttribute(attributeName);
         }
         return attribute;
     }
-    
+
+    /**
+     * Get active Attribute by its name, if it exists for this issue.
+     * If the requested attribute does not exist, return null
+     * @param attributeName
+     * @return
+     * @throws TorqueException
+     */
+    public Attribute getAttribute(String attributeName) throws TorqueException 
+    {
+        Attribute result = null;
+        List<Attribute> attributes = this.getIssueType().getActiveAttributes(getModule());
+        Iterator<Attribute> iter = attributes.iterator();
+        while(iter.hasNext())
+        {
+            Attribute attrib = iter.next();
+            String attribName = attrib.getName();
+            if(attribName.equals(attributeName))
+            {
+                result = attrib;
+                break;
+            }
+        }
+        return result;
+    }
+
     /**
      * Returns the attribute instance, which contains the issues onHoldExpirationDate.
      * Note:  Currently Scarab expects that the Attribute is a DateAttribute
@@ -4402,7 +4427,7 @@ public class Issue
         String attributeName = ScarabGlobalTool.getOnHoldExpirationDateAttributeName();
         if(attributeName != null)
         {
-            attribute = Attribute.getInstance(attributeName);
+            attribute = this.getAttribute(attributeName);
         }
         return attribute;
     }
