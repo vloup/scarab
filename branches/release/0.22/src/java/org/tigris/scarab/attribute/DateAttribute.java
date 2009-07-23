@@ -67,8 +67,8 @@ public class DateAttribute extends StringAttribute
      * Receives the value in yyyyMMddHHmmssSS format and returns it
      * formatted according to the mask parameter.
      * If the value is not parseable, it will be returned unchanged. 
-     * @param value
-     * @param mask
+     * @param value : Value which should be parsed.
+     * @param mask : Date format.
      * @return
      */
     public static String dateFormat(String value, String mask)
