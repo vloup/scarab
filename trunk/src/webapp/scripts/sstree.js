@@ -114,7 +114,8 @@ function toggleTreePopup(key) {
 
 		elem.style.display = 'inline-block';
 		elem.style.left = pos.x + 'px';
-		elem.style.top = pos.y + 'px';
+		elem.style.top  = pos.y + 'px';
+		elem.oldMouseup = document.onmouseup;
 		
 		document.onmouseup = function(event) {
 			if (!event) event = window.event;
@@ -128,7 +129,7 @@ function toggleTreePopup(key) {
 			
 			if (!((event.clientX >= x1) && (event.clientX <= x2) && (event.clientY >= y1) && (event.clientY <= y2))) {
 				elem.style.display = 'none';				
-				document.onmouseup = null;
+				document.onmouseup = elem.oldMouseup;
 			}
 		};
 
@@ -188,11 +189,15 @@ Observer.prototype = {
 var observer = new Observer;
 
 function clickTree(attributeId, key, value, display) {
+
 	//alert(attributeId);
+
 	document.getElementById(key).value = value;
 	document.getElementById(key + ':Display').value = display;
-	document.getElementById(key + ':Popup').style.display = 'none';				
-	document.onmouseup = null;
+
+	var elem = document.getElementById(key + ':Popup');
+	elem.style.display = 'none';				
+	document.onmouseup = elem.oldMouseup;
 	
 	scope = ["treeview", attributeId, key, value, display];
 	observer.fire(scope);
