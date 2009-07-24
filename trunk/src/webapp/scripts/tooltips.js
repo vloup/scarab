@@ -2,8 +2,8 @@
 //   Tooltip support  
 // =================================
 
-  currentTooltip=null;
-  currentTimer = null;
+  var currentTooltip=null;
+  var currentTimer = null;
   //document.onmousemove = updateTooltipPosition;
 
   // =============================================================

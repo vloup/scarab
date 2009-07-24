@@ -149,7 +149,7 @@
             <input type="hidden" name="$optionName" value="$attributeId"/>
           #end
     #end
-    
+    <span>
     <select name="add_watcher" style="position:relative; top:-1px;">
       ##if ( $myselfInList == true )
        <option value="" #selected(true) >$l10n.Assign ...</option>
@@ -172,7 +172,10 @@
         #end
       #end
     </select>
-    <input type="submit" name="eventSubmit_doAddwatchers" title="Hier k&ouml;nnen Sie andere Mitarbeiter als $watchedRMA.DisplayValue hinzuf&uuml;gen " value="als $watchedRMA.DisplayValue" class="button" />
+    </span>
+    <span>
+      <input type="submit" name="eventSubmit_doAddwatchers" title="Hier k&ouml;nnen Sie andere Mitarbeiter als $watchedRMA.DisplayValue hinzuf&uuml;gen " value="als $watchedRMA.DisplayValue" class="button" />
+    </span>
 #end
 
 
@@ -269,10 +272,9 @@
   ## Issue remove
   ## ==========================================================================
   <div class="functnbar2" style="white-space:nowrap;min-height:28px;height:28px; overflow:visible;">
-    <span style="float:left; margin:1px;padding:0px;overflow:visible;display:inline;">
-      
+
+    <span style="float:left;margin-top:4px;">  
         #if ($canEdit)
-          <span style="white-space:nowrap;margin-right:0px;margin-left:5px;">    
             #if ($myself == $assignedUserId)
               <input type="button" name="dummy" title ="Sie sind der aktive $myRMA.DisplayValue " value="" class="watch_on" />
             #else
@@ -324,15 +326,16 @@
                 #end
               #end
             #end
-          </span>
-          <span style="margin:0px; margin-right:10px;padding-left:0px;margin-left:0px;">
-            #watchingUsers($myselfInList $assignedUserId $watchedRMA $watchedAttrib)
-          </span>
-        #end
+         #end
      </span>
      
+     <span style="float:left;margin-left:28px;margin-top:5px;">  
+       #if ($canEdit)
+         #watchingUsers($myselfInList $assignedUserId $watchedRMA $watchedAttrib)
+       #end
+     </span>
      
-     <span style="float:right; margin:1px;padding:0px;">   
+     <span style="float:right;margin-top:5px;">   
         ## ------------------------------------------
         ## Issue move 
         ## Issue copy
