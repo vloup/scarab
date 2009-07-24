@@ -117,12 +117,13 @@
           #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
           #attrValueErrorMsg ($attVal $field)
         #elseif ($att.isIntegerAttribute())
-          #attrValueErrorMsg($attVal "NumericValue")
           #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
+          #attrValueErrorMsg($attVal "NumericValue")
         #else
-          #attrValueErrorMsg($attVal "Value")
           #attrValueText($attVal $attrInput.Value $fieldSize $fieldHint)
-        #end          
+          #attrValueErrorMsg($attVal "Value")
+        #end
+        <span id="${displayValue}:Hint" ></span>         
       </span>
       #if ($onSameLine)
         </span>
@@ -184,6 +185,7 @@
             ## Just output the raw value directly.
             $!attrInput.Value
           #end
+          <span id="${displayValue}:Hint" ></span>         
         </span>
         #if ($onSameLine)
           </span>
@@ -198,7 +200,7 @@
     #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
     #if ($attVal.isSet() && (!$attrInput.Value.toString().trim().equals("") || !$attrInput.NumericValue))
       <tr>
-    	  <th>[I] $rma.DisplayValue</th>
+    	  <th>[I] $displayValue</th>
         <td colspan="$colspan">
           #if ($isOptionAttr)
 			            #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
@@ -211,6 +213,7 @@
           #else
             $!attrInput.Value
           #end 
+          <span id="${displayValue}:Hint" ></span>
         </td>
       </tr>
 	    #end
