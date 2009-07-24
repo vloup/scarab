@@ -6,7 +6,7 @@ function setCookieScarableftNav(name, value) {
 }
 function getCookieScarableftNav() {
   var cookie = document.cookie;
-  tag = cookie.indexOf("ScarableftNav=");
+  var tag = cookie.indexOf("ScarableftNav=");
   return cookie.substring(tag + 14, tag + 15)
 }
 
@@ -27,7 +27,7 @@ function setCookieBanner(name, value) {
 }
 function getCookieBanner() {
   var cookie = document.cookie;
-  tag = cookie.indexOf("Banner=");
+  var tag = cookie.indexOf("Banner=");
   return cookie.substring(tag + 7, tag + 8)
 }
 function hideBanner() {
@@ -50,9 +50,10 @@ function setBanner() {
     }
 }
 
-function setLeftcolAndBanner() {
-    setLeftcol()
-    setBanner()
+function setLeftcolAndBanner() 
+{
+    setLeftcol();
+    setBanner();
 }
 
 
@@ -118,14 +119,30 @@ function initialRows(area) {
     }
 }
 
-function initializeTreeview() {
+function initializeTreeview() 
+{
   collapseAll(["ol"]);
   //openBookMark();
   buttonEndings("button");
-  buttonEndings("button3");
-  buttonEndings("buttonNotify");
-  buttonEndings("buttonPassive");
-  buttonEndings("buttonActive");
+  //buttonEndings("button3");
+  //buttonEndings("buttonNotify");
+  //buttonEndings("buttonPassive");
+  //buttonEndings("buttonActive");
+  
+  if (treeviewInit != null)
+  {
+	  var len = treeviewInit.length;
+      var counter = 0;
+	  for(counter=0; counter < len; counter++)
+	  {
+		  // For each TreeView call the click Handler so that all
+		  // observers are notified about the tree view's startup optionValue
+	      treeviewInit[counter]();
+	  }
+  }
+
+  
+  
 }
 
 

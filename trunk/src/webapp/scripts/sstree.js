@@ -28,7 +28,9 @@ function toggle(elm, imgpath)
  }
 }
 
-function collapseAll(tags) {
+function collapseAll(tags) 
+{
+ var i=0;
  for (i = 0; i < tags.length; i++) {
   var lists = getElementsByClassName(document, tags[i], "treeview");
   for (var j = 0; j < lists.length; j++)
@@ -62,6 +64,7 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 	strClassName = strClassName.replace(/\-/g, "\\-");
 	var oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
 	var oElement;
+	var i=0;
 	for(var i=0; i<arrElements.length; i++){
 		oElement = arrElements[i];
 		if(oRegExp.test(oElement.className)){
@@ -77,16 +80,19 @@ function renderJSONTreePopup(key, value, root, imgpath) {
 	for (var i = 0; i < root._children.length; i++) {			
 		renderJSONTree(root.name, key, value, root._children[i], imgpath);
 	}
-	document.writeln('</ol></div>');	
+	document.writeln('</ol></div>');
 }
 
+var treeviewInit = [];
 
-function renderJSONTree(attributeId, key, value, root, imgpath) {
-	if (root.optionId == value) {
+function renderJSONTree(attributeId, key, value, root, imgpath) 
+{
+	if (root.optionId == value) 
+	{
 		document.getElementById(key + ':Display').value = root.displayValue;
-		//var data = ["treeview",attributeId, null, null, root.displayValue];
-		//observer.fire(data);
-	}	
+		var data = function(){clickTree(attributeId,key,value,root.displayValue)};
+		treeviewInit.push(data);
+	}
 	
 	if (root._children.length > 0) {
 		document.writeln('<li>');
@@ -189,17 +195,15 @@ Observer.prototype = {
 var observer = new Observer;
 
 function clickTree(attributeId, key, value, display) {
-
-	//alert(attributeId);
-
 	document.getElementById(key).value = value;
 	document.getElementById(key + ':Display').value = display;
-
 	var elem = document.getElementById(key + ':Popup');
 	elem.style.display = 'none';				
-	document.onmouseup = elem.oldMouseup;
-	
-	scope = ["treeview", attributeId, key, value, display];
+	if(elem.oldMouseup != undefined)
+	{
+      document.onmouseup = elem.oldMouseup;
+	}
+	var scope = ["treeview", attributeId, key, value, display];
 	observer.fire(scope);
 }
 
