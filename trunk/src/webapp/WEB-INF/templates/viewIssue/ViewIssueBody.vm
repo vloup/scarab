@@ -150,7 +150,7 @@
           #end
     #end
     <span>
-    <select name="add_watcher" style="position:relative; top:-1px;">
+    <select id="add_watcher" name="add_watcher" style="position:relative; top:-1px;">
       ##if ( $myselfInList == true )
        <option value="" #selected(true) >$l10n.Assign ...</option>
       ##end

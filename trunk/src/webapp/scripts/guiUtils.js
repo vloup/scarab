@@ -28,6 +28,7 @@
   	var els = node.getElementsByTagName(tag);
   	var elsLen = els.length;
   	var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
+  	var i,j;
   	for (i = 0, j = 0; i < elsLen; i++) {
   		if ( pattern.test(els[i].className) ) {
   			classElements[j] = els[i];
@@ -54,6 +55,7 @@
   	}
   	var buttons = getElementsByClass(clazz);
   	/* loop through all buttons and attach a child div */
+  	var i;
   	for (i=0; i < buttons.length; i++) {
   		var div = document.createElement("div");
   		div.className = clazz+"Ending";
