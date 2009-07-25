@@ -118,7 +118,21 @@ public class AssignIssue extends BaseModifyIssue
                     {
                         attributeId = params.get("watcher_attr_" + userId);
                     }
-                    userAttributes.put(userId, attributeId);
+                    if(attributeId == null)
+                    {
+                        // The specified userid has not been associated to any userAttribute
+                        // This happens typically if the specified userId does not exist,
+                        // or the userid has no permission to be assigned to this issue.
+                        // This can only be an application error (in the velocity templates)
+                        // Scarab drops the userID and does not assign a userAttribute
+                        // for this user to the issue.
+                        
+                        scarabR.setAlertMessage("Illegal attempt to assign user with id ["+userId+"] to a new issue. Probably this is a wrong automation setting. Please Check your javascript observers!");
+                    }
+                    else
+                    {
+                        userAttributes.put(userId, attributeId);
+                    }
                 }
                 else
                 {

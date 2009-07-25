@@ -570,11 +570,48 @@ public class ReportIssue extends RequireLoginFirstAction
                     }
                     doRedirect(data, context, templateCode, issue);
                 
-                  NotificationManagerFactory.getInstance()
+                    NotificationManagerFactory.getInstance()
                             .addActivityNotification(
                                     ActivityType.ISSUE_CREATED,
                                     activitySet, issue, user);                        
 
+                    String assignActiveUser = data.getParameters().get("add_user");
+                    if(assignActiveUser != null && assignActiveUser.length() > 0)
+                    {                      
+                        // Lets cross-call the AssignIssue Turbine action!
+                        AssignIssue assignAction = new AssignIssue();
+                        assignAction.doAdd(data, context);
+                        assignAction.doSave(data, context);
+                    }
+                  
+                    String assignWatcherUser = data.getParameters().get("add_watcher");
+                    if(assignWatcherUser != null && assignWatcherUser.length() > 0)
+                    {
+                        if (user.hasPermission(ScarabSecurity.ISSUE__ASSIGN, 
+                            issue.getModule()))
+                        {
+                            // We'll set the info required by AssignIssue.doAddmyself (the)
+                            // same that in doEditassignees in this same class.
+                            data.getParameters().add("id", issue.getUniqueId());
+                            data.getParameters().add("issue_ids", issue.getUniqueId());
+                            String watcher = data.getParameters().get("add_watcher");
+                            data.getParameters().remove("add_user");
+                            data.getParameters().add("add_user", watcher);
+                
+                            scarabR.resetAssociatedUsers();
+                            
+                            // Lets cross-call the AssignIssue Turbine action!
+                            AssignIssue assignAction = new AssignIssue();
+                            assignAction.doAdd(data, context);
+                            assignAction.doSave(data, context);
+                        }
+                        else
+                        {
+                            scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
+                        }
+                    }
+                  
+                  
                     cleanup(data, context);
                     data.getParameters().add("id", issue.getUniqueId().toString());
                     L10NMessage l10nMessage = 

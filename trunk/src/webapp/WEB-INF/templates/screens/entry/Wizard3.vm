@@ -3,15 +3,43 @@
 #set ($issueType = $issue.IssueType)
 #set ($rmit      = $module.getRModuleIssueType($issueType))
 
+#set ($watchedAttrib = -1)
+#foreach ($selectUserAttr in $module.getUserAttributes($issueType))
+  #if ($selectUserAttr.getMultiValue() == true)
+    #set ($watchedAttrib = $selectUserAttr)
+    #break;
+  #end
+#end
+
+## ======================================================
+## Create a hidden list of assignable users.
+## This list is used for Scarab automated user assigning
+## through an automation process. Note that this introduces
+## a potentially huge list. I will rework that soon, so that
+## we can auto assign users without having this list at hand.
+## ======================================================
+#macro (watchingUsers)
+    #set ($archivingScarabUsers = $module.getArchivingScarabUsers())
+    #set ($users = $module.getUsers("Issue | View"))
+    ## Create a selection box
+    #foreach ($user in $users)
+      #if (!$archivingScarabUsers.contains($user))
+        #set ($optionName  = "watcher_attr_" + $user.UserId)
+        #set ($attributeId = $watchedAttrib.AttributeId)
+        <input type="hidden" name="$optionName" value="$attributeId"/>
+      #end
+    #end
+#end
+
 <div class="app" id="div2-1-0">
 
   <h3>$l10n.format("NewIssue", $rmit.DisplayName.toLowerCase())</h3>
 
   <form method="post" name="form" action="$link.setPage("entry,Wizard3.vm")" enctype="multipart/form-data">
     <input type="hidden" name="action" value="ReportIssue" />
-
     <input type="hidden" name="issueType" value="$issueType.IssueTypeId" />
-
+    #watchingUsers()
+    
     #set ($moduleAttributeGroups = $issueType.getAttributeGroups($module, true))
     #set ($showTemplates = true)
     #if ($data.Parameters.getString("oldscreen"))

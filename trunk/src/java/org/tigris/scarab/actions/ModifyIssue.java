@@ -477,6 +477,11 @@ public class ModifyIssue extends BaseModifyIssue
             modifiedAttribute = true;
         }
         
+        String assignWatcherUser = runData.getParameters().get("add_watcher");
+        if(assignWatcherUser != null && assignWatcherUser.length() > 0)
+        {
+            doAddwatchers(runData, context);
+        }
         
         while (iter2.hasNext())
         {
