@@ -1,0 +1,21 @@
+<div id="SystemRuntimeIndex" class="app">
+
+  #if ($link.isAllowed("admin,SystemStatus.vm"))
+
+    <h3>Environment</h3>
+
+    <div class="axial">
+
+      <table cellpadding="3" cellspacing="2" border="1" width="100%">
+
+          #* default character set *#
+          <tr>
+            <th>Default Character Set</th>
+            <td>$scarabSystem.DefaultCharacterSet</td>
+          </tr>
+      </table>
+    </div>
+  #else
+    Access denied!
+  #end
+</div>

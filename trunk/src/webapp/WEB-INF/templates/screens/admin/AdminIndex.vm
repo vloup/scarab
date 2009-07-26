@@ -15,6 +15,9 @@
 #if ($link.isAllowed("admin,GlobalAttributeShow.vm"))
  <li>$link.setPage("admin,GlobalAttributeShow.vm").setLabel("$l10n.GlobalAttributes")</li>
 #end
+#if ($link.isAllowed("admin,SystemStatus.vm"))
+ <li>$link.setPage("admin,SystemStatus.vm").setLabel("$l10n.SystemRuntimeInfo")</li>
+#end
 #if ($link.isAllowed("admin,ManageModules.vm"))
  <li>$link.setPage("admin,ManageModules.vm").setLabel("$l10n.ManageModules")</li>
 #end
