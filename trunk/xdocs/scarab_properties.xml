@@ -1159,6 +1159,23 @@
          <customization modification="optional">advanced</customization>
         <file/>
       </property>
+	  
+      <property>
+        <name>services.VelocityService.input.encoding</name>
+        <default>ISO-8859-1</default>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          Normally all Velocity macros will be read in as ISO-8859-1.
+          If you want your macros to be interpreted with another encoding,
+          you can change this property here.
+          Note: It generally makes sense to set this property to UTF-8
+          when you decide to internationalize your Scarab instance!
+        </details>
+      </property>
+
 
       <property>
         <name>searchindex.path</name>
