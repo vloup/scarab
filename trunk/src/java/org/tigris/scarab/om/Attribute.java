@@ -1096,19 +1096,5 @@ public class Attribute
     	return TransitionManager.getAllTransitions(this);
     }
     
-    public boolean equals(Attribute other)
-    {
-        boolean result = super.equals(other);
-        
-        int oid = other.getAttributeId();
-        int tid = this.getAttributeId();
-        
-        if (result != (oid==tid))
-        {
-            int x=0; // very suspect...
-        }
-        
-        return result;
-    }
 
 }
