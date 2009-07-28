@@ -49,7 +49,7 @@
     #if ($isEditComments)
       #textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)
     #else
-      $scarabG.textToHTML($comment.Data, $link, $scarabR.CurrentModule)
+      $scarabG.textToHTML($l10n.getIgnoreMissingResource($comment.Data), $link, $scarabR.CurrentModule)
     #end
   #end
 
