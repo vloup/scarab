@@ -46,8 +46,11 @@ package org.tigris.scarab.notification;
  * individuals on behalf of CollabNet.
  */
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -62,10 +65,15 @@ import org.apache.turbine.Turbine;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.notification.ActivityType;
+import org.tigris.scarab.om.ActivityManager;
+import org.tigris.scarab.om.ActivitySetManager;
+import org.tigris.scarab.om.ActivitySetType;
+import org.tigris.scarab.om.ActivitySetTypePeer;
+import org.tigris.scarab.om.Attachment;
+import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.GlobalParameterManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;
@@ -81,6 +89,7 @@ import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabLink;
 
 /**
@@ -214,7 +223,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         ScarabCache.clear();
         log.debug("sendPendingNotifications(): Collect pending notifications ...");
         // It is now guaranteed, that the notifications arrive in order of CreationDate!
-        List pending = NotificationStatusPeer.getPendingNotifications();
+        List<Notification> pending = NotificationStatusPeer.getPendingNotifications();
 
         if(pending == null)
         {
@@ -380,6 +389,218 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         }
     }
 
+    /**
+     * Implementations of this method should provide the means to wakeup issues,
+     * which are currently in the "onHold state" and have timed out. Such issues
+     * shall be moved to the configured "processing state"
+     */
+    public void wakeupOnHoldTimeouts() 
+    {
+        ScarabCache.clear();
+        log.debug("wakeupOnHoldTimeouts() : Collect onHold notifications ...");
+        // It is now guaranteed, that the notifications arrive in order of CreationDate!
+        List pending = NotificationStatusPeer.getOnholdNotifications();
+
+        if(pending == null)
+        {
+            log.warn("sendPendingNotifications(): ...Could not retrieve pending notifications from Database. Try again later.");
+            return;
+        }
+        
+        Iterator<NotificationStatus> iter = pending.iterator();
+        Calendar now = new GregorianCalendar();
+        try
+        {
+            while(iter.hasNext())
+            {
+                NotificationStatus ns = iter.next();
+                Activity activity = ns.getActivity();
+                Calendar endDate = new GregorianCalendar();
+                endDate.setTime(activity.getEndDate()); // that is the onHoldExpiration date
+                if (endDate.before(now)) // onHold expired
+                {
+                    Issue issue = activity.getIssue();
+                    // onHoldTimeout reached.
+                    boolean notificationNeeded = false;
+                    
+                    Calendar changeDate = new GregorianCalendar();
+                    Date lastChangeAt = ns.getChangeDate();
+                    if(lastChangeAt == null)
+                    {
+                        // first reminder, set the change date and mark notification needed.
+                        ns.setChangeDate(now.getTime());
+                        ns.save();
+                        notificationNeeded = true;
+                    }
+                    else
+                    {
+                        int reminderPeriod = issue.getReminderPeriod();
+                        if(reminderPeriod > 0)
+                        {
+                            // Only send reminders if the reminderPeriod is set to a 
+                            // positive value
+                            // note: The reminderPeriod is declared in system property
+                            // 
+                            // "scarab.common.status.onhold.reminder.period"
+                            // 
+                            Calendar gc = new GregorianCalendar();
+                            gc.setTime(lastChangeAt);
+                            gc.add(Calendar.MINUTE, reminderPeriod); // look if we are reminderPeriod minutes after last change date.
+                            if(gc.before(now))
+                            {
+                                // wait period expired. mark for resending notification and update changeDate.
+                                ns.setChangeDate(now.getTime());
+                                ns.save();
+                                notificationNeeded = true;
+                            }
+                        }
+                    }
+                    
+                    if(notificationNeeded)
+                    {
+                        
+                        // Create a set of notifications to all observers.
+                        // Note: This hap[pens as long as the onHoldNotification remains in the database.
+                        // The only way to stop reminder notifications is to change the issue state to 
+                        // something different from the "onHoldState"!
+                        
+                        ActivitySet activitySet = activity.getActivitySet();
+                        Integer userId          = activitySet.getCreatedBy();
+                        ScarabUser user         = ScarabUserManager.getInstance(userId);
+                        createWakeupNotification(issue, user);
+                    }
+                }
+            }
+        }
+        catch(TorqueException te)
+        {
+            Log.get().warn("Can not access Database while processing wakeupOnHoldTimeouts");
+        }
+        
+    }
+    
+    private void createWakeupNotification(Issue issue, ScarabUser user) throws TorqueException
+    {
+        Date date;
+        try {
+            date = issue.getOnHoldUntil();
+        } catch (Exception e) 
+        {
+            throw new RuntimeException("Can not retrieve the onHoldUntil date from the current issue");
+        }
+            Activity activity = ActivityManager.getInstance();
+            Attribute attribute = issue.getMyStatusAttribute();
+
+            activity.setAttribute(attribute);
+            activity.setActivityType(ActivityType.ISSUE_ONHOLD.getCode());
+            activity.setDescription("WakeupFromOnHoldstate");
+            activity.setIssue(issue);
+            activity.setEndDate(date);
+            activity.setNewValue("");
+            activity.setOldValue("");
+            activity.setOldOptionId(0);
+            activity.setNewOptionId(0);
+            
+            Attachment attachment = AttachmentManager.getInstance();
+            attachment.setTextFields(user, issue,Attachment.COMMENT__PK);
+            attachment.setData("WakeupFromOnHoldstate");
+            attachment.setName("comment");
+            attachment.save();
+            
+            activity.setAttachment(attachment);
+            
+            Integer tt = ActivitySetTypePeer.EDIT_ISSUE__PK;
+            ActivitySet activitySet;
+            try {
+                activitySet = ActivitySetManager.getInstance(tt, user);
+                activitySet.addActivity(activity);
+                activitySet.save();
+                addActivityNotification(ActivityType.ISSUE_ONHOLD, activitySet, issue, user);                
+            } catch (ScarabException e) {
+                throw new RuntimeException(e);
+            }
+    }
+    
+    
+    
+    /**
+     * Create an activity and a Notification. Add the structures
+     * to the persistent storage. Note: The Notification will never be
+     * sent out. But after the expiration date has been reached, a set
+     * of "expire" notifications will be created instead once per day
+     * until the issue state is changed. See wakeupOnHoldTimeouts() and
+     * createWakeupActivity() above for further information. 
+     * 
+     * Important:The expiration end date is stored in the activity.endDate!
+     */
+    public void addOnHoldNotification(ActivitySet activitySet, Issue issue, ScarabUser user)
+    {
+        Date date;
+        try {
+            date = issue.getOnHoldUntil();
+            Activity activity = ActivityManager.getInstance();
+            Attribute attribute = issue.getMyStatusAttribute();
+            activity.setAttribute(attribute);
+            activity.setActivityType(ActivityType.ISSUE_ONHOLD.getCode());
+            activity.setIssue(issue);
+            activity.setEndDate(date);
+            activity.setNewValue("GeneratedOnHoldState");
+            activity.setOldValue("");
+            activity.setOldOptionId(0);
+            activity.setNewOptionId(0);
+            activity.setDescription("GeneratedOnHoldState");
+            activitySet.addActivity(activity);
+            activitySet.save();
+            NotificationStatus notification = new NotificationStatus(user, activity);
+            notification.setStatus(NotificationStatus.ON_HOLD);
+            NotificationStatusPeer.doInsert(notification);
+        } catch (Exception e) 
+        {
+            throw new RuntimeException("Can not retrieve the onHoldUntil date from the current issue");
+        }
+        
+    }
+    
+    /**
+     * Cancel a previously created onHoldNotification. If no such Notification exists,
+     * this method will terminate gracefully (nothing will happen). Otherwise
+     * any pending onHoldNotification for that issue will be removed.
+     * @param issue
+     */
+    public void cancelOnHoldNotification(Issue issue)
+    {
+        ScarabCache.clear();
+        log.debug("cancelOnHoldTimeouts() : Collect onHold notifications ...");
+        // It is now guaranteed, that the notifications arrive in order of CreationDate!
+        List<NotificationStatus> pending = NotificationStatusPeer.getOnholdNotifications();
+
+        if(pending == null)
+        {
+            log.error("cancelOnHoldNotification(): Could not retrieve pending notifications for Issue ["+issue.getIdCount()+"]. Maybe something wrong with the issue state ?");
+            return;
+        }
+        
+        Iterator<NotificationStatus> iter = pending.iterator();
+        Date now = new Date();
+        try
+        {
+            while(iter.hasNext())
+            {
+                NotificationStatus ns = iter.next();
+                Activity activity = ns.getActivity();
+                Issue activityIssue = activity.getIssue();
+                if(issue.equals(activityIssue))
+                {
+                    ns.delete();
+                }
+            }
+        }
+        catch(TorqueException te)
+        {
+            Log.get().warn("Can not access Database while processing wakeupOnHoldTimeouts");
+        }
+        
+    }
     
     /**
      * Return the L10NKey associated to the Attribute change.
@@ -536,12 +757,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
 
     /**
      * This method returns true, if the attribute is identified as 
-     * the "status_attribute" for the current module/issue_type combination.
-     * 
-     * NOTE: The "status_attribute" id is searched in SCARAB_GLOBAL_ATTRIBUTE
-     * first, although it currently should not find any entry there. In a future
-     * release it is intended to allow a more sophisticated controll over what
-     * a status attribute is and how it should be rendered e.g. into email subject.
+     * the "status_attribute" for the given issue.
      * 
      * @param attribute
      * @param issue
@@ -551,24 +767,12 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
     private boolean getIsStatusAttribute(Attribute attribute, Issue issue)
     throws TorqueException
     {
-        boolean result=false;
-        Module module = issue.getModule();
-        String key = "status_attribute_"+attribute.getAttributeId();
-
-        String statusId = GlobalParameterManager.getString(key,module);
-        if(!statusId.equals(""))
+        Attribute statusAttribute = issue.getMyStatusAttribute();
+        if(statusAttribute == null)
         {
-            result = true; // the attribute IS the status_attribute
+            return false;
         }
-        else
-        {
-            String name = attribute.getName().toLowerCase();
-            String globalStatusAttributeName = GlobalParameterManager.getString("scarab.common.status.id").toLowerCase();
-            if(name.equals(globalStatusAttributeName))
-            {
-                result=true;
-            }
-        }
+        boolean result = statusAttribute.equals(attribute);
         return result;
     }
     
@@ -874,6 +1078,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         typeDescriptions.put(ActivityType.DEPENDENCY_CREATED.getCode(), L10NKeySet.ActivityDependencies);
         typeDescriptions.put(ActivityType.DEPENDENCY_CHANGED.getCode(), L10NKeySet.ActivityDependencies);
         typeDescriptions.put(ActivityType.DEPENDENCY_DELETED.getCode(), L10NKeySet.ActivityDependencies);
+        typeDescriptions.put(ActivityType.ISSUE_ONHOLD.getCode(),       L10NKeySet.ActivityComments);
     } 
     
     
@@ -888,5 +1093,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         L10NKey key = (L10NKey)typeDescriptions.get(activityType.getCode());
         return key;        
     }
+
+
 
 }

@@ -93,5 +93,29 @@ public interface NotificationManager
      * @return
      */
     public Integer getManagerId();
-    
+
+    /**
+     * Implementations of this method should provide the means to wakeup issues,
+     * which are currently in the "onHold state" and have timed out. For such issues
+     * the NM should sends out "wakeup notifications" to all observers and assignees.
+     */
+    public void wakeupOnHoldTimeouts();
+
+    /**
+     * Create a new onHoldNotification. This notification will only be sent out AFTER
+     * the onHoldDate has expired! So it shall be treated differently from the "normal"
+     * notifications.
+     * @param activitySet 
+     * @param issue
+     * @param user
+     */
+    public void addOnHoldNotification(ActivitySet activitySet, Issue issue, ScarabUser user);
+
+    /**
+     * Cancel a previously created onHoldNotification. If no such Notification exists,
+     * this method will terminate gracefully (nothing will happen). Otherwise
+     * any pending onHoldNotification for that issue will be removed.
+     * @param issue
+     */
+    public void cancelOnHoldNotification(Issue issue);
 }

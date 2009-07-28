@@ -82,4 +82,21 @@ public class NotificationStatusPeer
 		}
 		return pending;
 	}
+
+    public static List getOnholdNotifications() 
+    {
+        List onholdNotificationList = null;
+        Criteria crit = new Criteria();
+        crit.add(NotificationStatusPeer.STATUS, NotificationStatus.ON_HOLD, Criteria.EQUAL);
+        crit.addAscendingOrderByColumn(NotificationStatusPeer.CREATION_DATE);
+        try 
+        {
+            onholdNotificationList = doSelect(crit);
+            //Collections.sort(pending);
+        } catch (TorqueException e) 
+        {
+            log.error("getPendingNotifications(): " + e);
+        }
+        return onholdNotificationList;
+    }
 }

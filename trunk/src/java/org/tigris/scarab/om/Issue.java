@@ -93,6 +93,7 @@ import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.SkipFiltering;
 import org.tigris.scarab.util.word.SearchFactory;
+import org.tigris.scarab.workflow.IssueState;
 import org.tigris.scarab.workflow.WorkflowFactory;
 
 import com.workingdogs.village.Record;
@@ -184,8 +185,16 @@ public class Issue
      * new issues are created only when the issuetype and module are known
      * Or by the Peer when retrieving from db
      */
+    
+    /**
+     * The associated issue status information.
+     */
+    private IssueState mystate = null;
+    
+    
     public Issue()
     {
+        mystate = new IssueState(this);
     }
 
     protected Issue(Module module, IssueType issueType)
@@ -4258,138 +4267,7 @@ public class Issue
         }
         return result;
     }
-    
-    
-    /**
-     * Create a javascript function, which can be used to check if the given
-     * attribute would become required if a specific attributeOption was set.
-     * @param attribute
-     * @return
-     * @throws TorqueException
-     * @throws ScarabException
-     */
-    public String createIssueChecker(RModuleAttribute rma, String setMarkerFunction, int indent) throws TorqueException, ScarabException
-    {
-        String result = "";
-        boolean isRequired = rma.getRequired();
-        if(!isRequired)
-        {
-            List<Condition> conditions = rma.getConditions();
-                
-            Iterator<Condition> iter = conditions.iterator();
-            while(iter.hasNext())
-            {
-                Condition condition = iter.next();
-                result += condition.createConditionCheckerScript(rma, setMarkerFunction, indent);
-            }
-        }
-        return result;
-    }
-
-    
-    public SkipFiltering createIssueChecker(String setMarkerFunction, int indent) throws TorqueException, ScarabException
-    {
-        String result = "";
-        List attributes = null;
-        Module module = getModule();
-        IssueType issueType = getIssueType();
-        attributes = issueType.getActiveAttributes(module);
-        Iterator<Attribute> iter = attributes.iterator();
-        while (iter.hasNext())
-        {
-            Attribute attribute = iter.next();
-            RModuleAttribute rma  = module.getRModuleAttribute(attribute, issueType);
-            result += createIssueChecker(rma, setMarkerFunction, indent);
-        }
         
-        String prepend;
-        if(result.length() > 0)
-        {
-            prepend="\n";
-        }
-        else
-        {
-            prepend = "/* No conditional attributes found for this module/issueType */";
-        }
-        
-        return new SimpleSkipFiltering(prepend+result);
-    }     
-
-    /**
-     * Check if the properties scarab.common.status.id and scarab.common.status.sealed
-     * exist and if the current value of the status attribute matches the sealed
-     * value. Return true, if the issue is in the sealed state, otherwise return false.
-     * This method is used to find out if an issue shoul dbe rendered read-only
-     * because it is in closed (sealed) state and should never be touched again.
-     * @return
-     * @throws TorqueException
-     */
-    public boolean isSealed() throws TorqueException
-    {        
-        boolean result = false;
-        String status = ScarabGlobalTool.getStatusAttributeName();
-        if (status != null)
-        {
-            String value = getProperty("scarab.common.status.sealed", null);
-            if(value != null)
-            {
-                AttributeValue attval = getAttributeValue(status);
-                if(attval != null && attval.getValue().equals(value))
-                {
-                    result = true;
-                }
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * Check if this issue is on hold. Currently we use the attribute
-     * which has been specified by the system property 
-     * scarab.common.status.id as the relevant attribute to check. 
-     * We tell this issue is on hold when the status-attribute contains
-     * the value specified by the system property "scarab.common.status.onhold"
-     * By default an issue is onhold if attribute "status" == "onhold")
-     * @return
-     * @throws TorqueException
-     */
-    public boolean isOnHold() throws TorqueException
-    {        
-        boolean result = false;
-        String status = ScarabGlobalTool.getStatusAttributeName();
-        if (status != null)
-        {
-            String value = ScarabGlobalTool.getOnHoldAttributeOptionValue();
-            if(value != null)
-            {
-                AttributeValue attval = getAttributeValue(status);
-                if(attval != null && attval.getValue().equals(value))
-                {
-                    result = true;
-                }
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * Returns the attribute instance, which contains the issues status.
-     * Note:  Currently Scarab expects that the Attribute is a drop down list
-     * (i.e. its data type is AttributeOptionValue)
-     * @return
-     * @throws TorqueException
-     */
-    public Attribute getMyStatusAttribute() throws TorqueException
-    {
-        Attribute attribute = null;
-        String attributeName = ScarabGlobalTool.getStatusAttributeName();
-        if(attributeName != null)
-        {
-            attribute = this.getAttribute(attributeName);
-        }
-        return attribute;
-    }
-
     /**
      * Get active Attribute by its name, if it exists for this issue.
      * If the requested attribute does not exist, return null
@@ -4415,7 +4293,71 @@ public class Issue
         return result;
     }
 
+    
     /**
+     * public accessor to the IssueState. To be used from velocity
+     * instead of the delegator methods below.
+     * @return
+     */
+    public IssueState getState()
+    {
+        return mystate;
+    }
+    
+    // ============================================================
+    // delegation methods for IssueState
+    // ============================================================
+    /**
+     * Create a javascript snippet, which can be used to check if the given
+     * attribute would become required if a specific attributeOption was set.
+     */
+    public SkipFiltering createIssueChecker(String setMarkerFunction, int indent) throws TorqueException, ScarabException
+    {
+        return mystate.createIssueChecker(setMarkerFunction, indent);
+    }     
+
+    /**
+     * Check if the properties scarab.common.status.id and scarab.common.status.sealed
+     * exist and if the current value of the status attribute matches the sealed
+     * value. Return true, if the issue is in the sealed state, otherwise return false.
+     * This method is used to find out if an issue shoul dbe rendered read-only
+     * because it is in closed (sealed) state and should never be touched again.
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isSealed() throws TorqueException
+    {        
+        return mystate.isSealed();
+    }
+    
+    /**
+     * Check if this issue is on hold. Currently we use the attribute
+     * which has been specified by the system property 
+     * scarab.common.status.id as the relevant attribute to check. 
+     * We tell this issue is on hold when the status-attribute contains
+     * the value specified by the system property "scarab.common.status.onhold"
+     * By default an issue is onhold if attribute "status" == "onhold")
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isOnHold() throws TorqueException
+    {        
+        return mystate.isOnHold();
+    }
+    
+    /**
+     * Returns the attribute instance, which contains the issues status.
+     * Note:  Currently Scarab expects that the Attribute is a drop down list
+     * (i.e. its data type is AttributeOptionValue)
+     * @return
+     * @throws TorqueException
+     */
+    public Attribute getMyStatusAttribute() throws TorqueException
+    {
+        return mystate.getStatusAttribute();
+    }
+
+   /**
      * Returns the attribute instance, which contains the issues onHoldExpirationDate.
      * Note:  Currently Scarab expects that the Attribute is a DateAttribute
      * @return
@@ -4423,15 +4365,8 @@ public class Issue
      */
     public Attribute getMyOnHoldExpirationDate() throws TorqueException
     {
-        Attribute attribute = null;
-        String attributeName = ScarabGlobalTool.getOnHoldExpirationDateAttributeName();
-        if(attributeName != null)
-        {
-            attribute = this.getAttribute(attributeName);
-        }
-        return attribute;
+        return mystate.getOnHoldExpirationDate();
     }
-
     
     /**
      * Get the date until which this issue is onhold. This method searches
@@ -4443,41 +4378,19 @@ public class Issue
      */
     public Date getOnHoldUntil() throws TorqueException, ParseException
     {
-        Date date = null;
-        String attributeName = ScarabGlobalTool.getOnHoldExpirationDateAttributeName();
-        
-        if (attributeName != null)
-        {
-            AttributeValue dateValue = this.getAttributeValue(attributeName);
-            if(dateValue!=null) 
-            {
-                String value = dateValue.getValue();
-                if (value != null && value.length() > 0)
-                {
-                    date = DateAttribute.toDate(value);
-                }
-            }
-        }
-        return date;
+        return mystate.getOnHoldUntil();
     }
-
-    
     
     /**
-     * helper funtion to retrieve properties from the Turbine Configuration sysstem.
-     * @param prop
-     * @param def
+     * If an issue is onHold and the revocation time has expired, the NotificationManager
+     * should periodically send a Notification to the Issue's Observer list. the reminderPeriod
+     * tells how long to wait between 2 reminder notifications. The unit is "hours".
+     * If this property is not set, return 0
      * @return
      */
-    private String getProperty(String prop, String def)
+    public int getReminderPeriod()
     {
-        String result = (String)Turbine.getConfiguration().getProperty(prop);
-        if(result == null)
-        {
-            result = def;
-        }
-        return result;
+        return mystate.getReminderPeriod();
     }
-    
     
 }

@@ -14,6 +14,7 @@ public class ActivityType
     LocalizationKey notificationKey = null;
     Integer notificationPriority    = null;
     
+    public static final ActivityType ISSUE_ONHOLD       = new ActivityType("issue_onhold","ActivityTypeIssueOnHold",             L10NKeySet.NotificationIssueOnHold, 18);
     public static final ActivityType ISSUE_CREATED      = new ActivityType("issue_created","ActivityTypeIssueCreated",           L10NKeySet.NotificationIssueCreated, 17);
     public static final ActivityType ISSUE_MOVED        = new ActivityType("issue_moved","ActivityTypeIssueMoved",               L10NKeySet.NotificationIssueMoved, 16);
     public static final ActivityType ISSUE_COPIED       = new ActivityType("issue_copied","ActivityTypeIssueCopied",             L10NKeySet.NotificationIssueCopied, 15);
@@ -55,6 +56,7 @@ public class ActivityType
         types.put(DEPENDENCY_CREATED.getCode(), DEPENDENCY_CREATED);
         types.put(DEPENDENCY_CHANGED.getCode(), DEPENDENCY_CHANGED);
         types.put(DEPENDENCY_DELETED.getCode(), DEPENDENCY_DELETED);
+        types.put(ISSUE_ONHOLD.getCode(), ISSUE_ONHOLD);
 
     }
 

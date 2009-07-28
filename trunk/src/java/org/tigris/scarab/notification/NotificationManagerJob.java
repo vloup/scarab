@@ -75,7 +75,10 @@ public class NotificationManagerJob implements Job {
 			if (jobContext.getScheduler().getCurrentlyExecutingJobs().size() > 2)
 				log.info("Skipping call to NotificationManager.sendPendingNotifications because there's already once call waiting.");
 			else
-				NotificationManagerFactory.getInstance().sendPendingNotifications();
+			{
+                NotificationManagerFactory.getInstance().sendPendingNotifications();
+                NotificationManagerFactory.getInstance().wakeupOnHoldTimeouts();
+			}
 		} catch (SchedulerException e) {
 			log.error("execute(): " + e);
 		}

@@ -468,6 +468,7 @@ public class L10NKeySet
     public static final LocalizationKey ActivityAssociatedInfo = new L10NKey("ActivityAssociatedInfo");
     public static final LocalizationKey ActivityDependencies = new L10NKey("ActivityDependencies");
 
+    public static final LocalizationKey NotificationIssueOnHold           = new L10NKey("NotificationIssueOnHold");
     public static final LocalizationKey NotificationIssueCreated          = new L10NKey("NotificationIssueCreated");
     public static final LocalizationKey NotificationIssueMoved            = new L10NKey("NotificationIssueMoved");
     public static final LocalizationKey NotificationIssueCopied           = new L10NKey("NotificationIssueCopied");

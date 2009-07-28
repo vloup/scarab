@@ -97,7 +97,7 @@ $cr
 ${cr}-------------------------------------------------------------------------------
 #end
 #markup('b')${l10n.Comment} $not.Creator.Name#markup('b')$cr
-$not.Activity.Attachment.Data
+$l10n.getIgnoreMissingResource($not.Activity.Attachment.Data)
 #end
 #end
 ${cr}-------------------------------------------------------------------------------

@@ -1119,6 +1119,20 @@
       </property>
 	  
 	  
+      <property>
+        <name>scarab.common.status.onhold.reminder.period</name>
+        <default>1440</default>
+        <comment/>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager how long to wait
+		  between sending reminder notifications for issues in state onhold.
+		  the unit is minutes. The default setting is 1440 (1 day)
+        </details>
+      </property>
+	  	  
 
       <property>
         <name>scarab.common.status.sealed.modifyPermission</name>

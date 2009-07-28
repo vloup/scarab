@@ -74,6 +74,7 @@ public  class NotificationStatus
     static public final Integer FAIL           = new Integer(4);
     static public final Integer SENT           = new Integer(5);
     static public final Integer MARK_DELETED   = new Integer(6);
+    static public final Integer ON_HOLD        = new Integer(7);
     
     static private final Integer ARCHIVER_ID   = new Integer(-1);
 
@@ -182,6 +183,7 @@ public  class NotificationStatus
         if (status.equals(FAIL)) return "fail";
         if (status.equals(SENT)) return "delivered";
         if (status.equals(MARK_DELETED)) return "deleted";
+        if (status.equals(ON_HOLD)) return "onhold";
         throw new RuntimeException("Database inconsistency: status ["+status+"] is not known.");
     }
 

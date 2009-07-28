@@ -460,7 +460,6 @@ public class ScarabGlobalTool
         return result;
     }
 
-    
     /**
      * Makes the workflow tool accessible.
      * @throws ScarabException 
@@ -469,51 +468,6 @@ public class ScarabGlobalTool
     {
         return WorkflowFactory.getInstance();
     }
-    
-
-    /**
-     * Return the value of the AttributeOption which expresses, that the 
-     * issue is "onhold". This directly corresponds to the system property
-     * 
-     * "scarab.common.status.onhold"
-     * 
-     * If that property is not set or set to empty, then this method returns null.
-     * @return
-     */
-    public static String getOnHoldAttributeOptionValue() {
-        String value = getTurbineProperty("scarab.common.status.onhold", null);
-        return value;
-    }
-
-    /**
-     * Return the name of the Attribute which is interpreted as Issue-"status". 
-     * This directly corresponds to the system property
-     * 
-     * "scarab.common.status.id"
-     * 
-     * If that property is not set or set to empty, then this method returns null.
-     * @return
-     */
-    public static String getStatusAttributeName() 
-    {
-        String status = getTurbineProperty("scarab.common.status.id", null);
-        return status;
-    }
-
-    /**
-     * Return the name of the Attribute which is interpreted as the expiration date
-     * for an issue which is "onhold".  This directly corresponds to the system property
-     * 
-     * "scarab.common.status.onhold.dateProperty"
-     * 
-     * If that property is not set or set to empty, then this method returns null.
-     * @return
-     */
-    public static String getOnHoldExpirationDateAttributeName() {
-        String attributeName = getTurbineProperty("scarab.common.status.onhold.dateProperty", null);
-        return attributeName;
-    }    
-    
     
     /** 
      * Returns a List of users based on the given search criteria. This method

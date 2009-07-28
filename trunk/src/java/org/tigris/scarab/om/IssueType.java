@@ -1198,7 +1198,7 @@ public  class IssueType
      *
      * @return an <code>List</code> of Attribute objects
      */
-    public List getActiveAttributes(final Module module)
+    public List<Attribute> getActiveAttributes(final Module module)
         throws TorqueException
     {
         List attributes = null;

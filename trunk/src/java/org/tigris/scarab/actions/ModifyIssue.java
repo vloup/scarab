@@ -483,6 +483,12 @@ public class ModifyIssue extends BaseModifyIssue
             doAddwatchers(runData, context);
         }
         
+        Attribute myOnHoldDateAttribute = issue.getMyOnHoldExpirationDate();
+        Attribute statusAttribute       = issue.getMyStatusAttribute();
+        boolean statusChanged = false;
+        boolean onHoldDateSet = false;
+        boolean isOnHold      = issue.isOnHold();
+
         while (iter2.hasNext())
         {
             final AttributeValue aval = (AttributeValue)modMap.get(iter2.next());
@@ -532,6 +538,16 @@ public class ModifyIssue extends BaseModifyIssue
                     group.setProperties(aval2);
                     newAttVals.put(aval.getAttributeId(), aval2);
                     modifiedAttribute = true;
+
+                    Attribute att = aval.getAttribute();
+                    if(att.equals(statusAttribute))
+                    {
+                        statusChanged = true;
+                    }
+                    else if (att.equals(myOnHoldDateAttribute))
+                    {
+                        onHoldDateSet = true;
+                    }
                 }
                 // The attribute is being undefined. 
                 else if (oldValue != null && newValue.length() == 0 && 
@@ -572,6 +588,31 @@ public class ModifyIssue extends BaseModifyIssue
                                     ActivityType.ATTRIBUTE_CHANGED,
                                     activitySet, issue, user);
                 }
+                
+                if (statusChanged)
+                {
+                    if(isOnHold)
+                    {
+                        // ok, the issue was on hold, but now the status has changed.
+                        // Hence we must cancel a previous onHoldNotification now.
+                        NotificationManagerFactory.getInstance().cancelOnHoldNotification(issue);
+                    }
+                    else if(issue.isOnHold())
+                    {
+                        // From the boolean isOnHold==false we deduce that the issue was NOT on hold
+                        // prior to this transaction. But from the issue.isOnHold()==true we deduce
+                        // that now it IS on hold. Hence the status must have changed during this transaction
+                        // from something to onHold.
+                        //
+                        // And now is the time to create another notification which will be used as wakeup
+                        // Notification when the onHoldDate expires. This information must be handled
+                        // by the NotificationManager (see the NotificationManager.wakeupOnHoldTimeouts() )
+                        NotificationManagerFactory.getInstance().addOnHoldNotification(activitySet, issue, user);
+                    }
+                }
+
+                
+                
             }
             intake.removeAll();
             scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
