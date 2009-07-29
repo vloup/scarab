@@ -39,6 +39,12 @@
   #end
 #end
 
+#macro ( activeQuery $queryId $currentQueryId )
+  #if ( $queryId && $queryId == $currentQueryId )
+    id="activeQueryLabel" class="activeQuery"
+  #end
+#end
+
 ## ====================================================================
 ## Shortcut to user home-page
 ## ====================================================================
@@ -104,7 +110,7 @@
 
     #if (!$module.isGlobalModule())
       #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
-
+        #set ($currentQueryId = $data.Parameters.go) 
         <div style="font-weight:bold;">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries ...")</div>
        
         #set ($queries = $scarabR.UserAllQueries)
@@ -112,10 +118,10 @@
         #foreach ($query in $queries)
           #set ($counter = $counter + 1 )
           #if ($counter > 7 )
-            <div class="sublist">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("...")</div>
+            <div class="sublist" >$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("...")</div>
             #break
           #else
-            <div class="sublist"><a href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Name</a></div>
+            <div class="sublist"><a #activeQuery($query.QueryId $currentQueryId) href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Name</a></div>
           #end
         #end
        
@@ -129,7 +135,7 @@
             <div class="sublist">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("...")</div>
             #break
           #else
-            <div class="sublist"><a href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Name</a></div>
+            <div class="sublist"><a #activeQuery($query.QueryId $currentQueryId) href="$link.setPathInfo("query", "$query.QueryId" ).setPage("IssueList.vm")">$query.Name</a></div>
           #end
         #end 
       #end 

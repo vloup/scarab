@@ -137,20 +137,21 @@ div.tree_popup ol.treeview li ol.treeview li.leaf a {
 .a_attention5 td {background: #fa686b;}
 .b_attention5 td {background: #fc8689;}
 
-
 // experimental stuff will be removed later.
 
 .wiedervorlagedatum {
 	color:red;
 }
 
+
+	
 a.link_button, a.link_button:visited, a.link_button:active {
 	background-color:#e9f1f9;
     border-left: 1px solid #abc4db;
     border-top: 1px solid #abc4db;
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
-    border-style: outset; 
+    border-style: outset;
     border-width:2px;
     text-decoration: none;
     padding-left:5px;
@@ -160,5 +161,7 @@ a.link_button, a.link_button:visited, a.link_button:active {
     color:black;
     font-weight:bold;
     font-size:0.8em;
-    
+}
+#navcolumn a.activeQuery, #navcolumn a.activeQuery:visited, #navcolumn a.activeQuery:active {
+    font-weight:bold;
 }
