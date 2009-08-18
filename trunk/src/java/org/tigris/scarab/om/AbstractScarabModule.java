@@ -146,6 +146,13 @@ public abstract class AbstractScarabModule
         "getAvailableIssueTypes";
     
     private static final L10NKey VALIDATION_MESSAGE = new L10NKey("ModuleValidationMessage");
+    
+    private static final List<Integer> OptionAttributeIds = new ArrayList<Integer>();
+    static
+    {
+        OptionAttributeIds.add(5); 
+        OptionAttributeIds.add(6);
+    }
 
     private List parentModules = null;
 
@@ -1134,9 +1141,8 @@ public abstract class AbstractScarabModule
         throws TorqueException
     {
         Criteria crit = new Criteria();
-        crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, 
-                AttributePeer.ATTRIBUTE_ID);
-        crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 5);
+        crit.addJoin(RModuleAttributePeer.ATTRIBUTE_ID, AttributePeer.ATTRIBUTE_ID);
+        crit.addIn(AttributePeer.ATTRIBUTE_TYPE_ID, OptionAttributeIds );
         crit.add(AttributePeer.DELETED, false);
         crit.add(RModuleAttributePeer.ACTIVE, true);
         crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
