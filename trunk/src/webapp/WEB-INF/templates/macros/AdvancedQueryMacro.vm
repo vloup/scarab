@@ -380,7 +380,7 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
     #set ( $attrInput = $intake.AttributeValue.mapTo($attVal) )
     #if ( $attVal.Attribute.AttributeType.ValidationKey )
         #set ( $field = $attVal.Attribute.AttributeType.ValidationKey )
-    #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_LIST)
+    #elseif (   $attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_LIST || $attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_TREE )
         #set ( $field = "OptionIds" )
     #else
         #set ( $field = "Value" )

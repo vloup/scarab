@@ -99,7 +99,7 @@
       <td>
         #if ($attVal.Attribute.AttributeType.ValidationKey)
           #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
-        #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_LIST)
+        #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_LIST || $attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_TREE)
           #set ($field = "OptionId")
         #else
           #set ($field = "Value")

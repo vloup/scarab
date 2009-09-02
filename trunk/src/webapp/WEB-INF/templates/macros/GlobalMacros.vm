@@ -83,6 +83,7 @@ $displayValue
   #if ($count.trim() == "0" )
       <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>  
       <span id="$cssId:Display">$newValues</span>
+
   #elseif ($count.trim() == "1" )
 
     #foreach ($option in $module.getOptionTree($attr, $issueType, false))
@@ -90,45 +91,45 @@ $displayValue
 
       #if ($canMakeTransition.trim()=="true")
         #if ($templateInfo || (!$required && $newValues && $newValues.toString() == ''))
-        <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
+          <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
           #if ($newValues > 0)
             #set ($checked = "checked")
           #end
           #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
 	          <input type="checkbox" 
-               name="${attrInput.get($optionFieldName).Key}_tmp" 
-               onclick="$oc" ${checked} />
+            name="${attrInput.get($optionFieldName).Key}_tmp" 
+            onclick="$oc" ${checked} />
         #else
-        <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
+          <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$option.optionId"/>
 	        #end
-	      #if (!$option.Active)[I]#end <span id="$cssId:Display">$option.DisplayValue</span>
-        #end
+	        #if (!$option.Active)[I]#end <span id="$cssId:Display">$option.DisplayValue</span>
       #end
-
+    #end
 
   #else
 
     #if ($attributeClassName == "ComboTreeBoxAttribute")
-  <input id="$attrInput.get($optionFieldName).Key" value="$newValues" name="$attrInput.get($optionFieldName).Key" type="hidden"/>  
+      <input id="$attrInput.get($optionFieldName).Key" value="$newValues" name="$attrInput.get($optionFieldName).Key" type="hidden"/>  
       <span style="display:inline;">
         <input id="$attrInput.get($optionFieldName).Key:Display" 
                type="text" size="$attr.FieldSize" 
                readonly="" 
                name="$attrInput.get($optionFieldName).Key:Display"/>
-    <a class="treeview_button"
-       id="$attrInput.get($optionFieldName).Key:Anchor"
-       href="javascript:toggleTreePopup('$attrInput.get($optionFieldName).Key')"
-    >&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a class="treeview_button"
+           id="$attrInput.get($optionFieldName).Key:Anchor"
+           href="javascript:toggleTreePopup('$attrInput.get($optionFieldName).Key')"
+        >&nbsp;&nbsp;&nbsp;&nbsp;</a>
       </span>
   
-  #set ($attributeTreePopup = [])
-  #set ($dummy = $attributeTreePopup.add($attrInput.get($optionFieldName).Key) )
-  #set ($dummy = $attributeTreePopup.add($newValues) )
-  #set ($dummy = $attributeTreePopup.add($module.getOptionsTreeAsJSON($data, $newValues.toString(), $attr, $attrValue.Issue, false)) )
+      #set ($attributeTreePopup = [])
+      #set ($dummy = $attributeTreePopup.add($attrInput.get($optionFieldName).Key) )
+      #set ($dummy = $attributeTreePopup.add($newValues) )
+      #set ($dummy = $attributeTreePopup.add($module.getOptionsTreeAsJSON($data, $newValues.toString(), $attr, $attrValue.Issue, false)) )
   
-  #set ($dummy = $attributeTreePopupHelper.add($attributeTreePopup) )
+      #set ($dummy = $attributeTreePopupHelper.add($attributeTreePopup) )
 
     #elseif ($attributeClassName == "ComboBoxAttribute")
+    
       <select name="$attrInput.get($optionFieldName).Key"
         #if($size.length())size="$size"#end #if($multiple.equals("true"))multiple="multiple"#end>
         #if ($size.length() == 0 && (!$required || $newValues == '' ))
@@ -156,7 +157,7 @@ $displayValue
      
 	            #if($selected)
 	              <option value="$option.OptionId"#selected($selected)>
-              	  #foreach ($i in [0..$option.Level])#if($i != 0)&nbsp;&nbsp;&nbsp;&nbsp;#end#end
+            	    #foreach ($i in [0..$option.Level])#if($i != 0)&nbsp;&nbsp;&nbsp;&nbsp;#end#end
 		                #if ($option.Active) 
                   		$option.DisplayValue
 		                #else
@@ -172,6 +173,7 @@ $displayValue
           #end
         #end
       </select>
+
     #end
 
  #end
