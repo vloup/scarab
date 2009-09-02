@@ -236,51 +236,70 @@ public class RModuleOption
     }
         
     public void delete()
-         throws TorqueException, ScarabException
+    throws TorqueException, ScarabException
     {                
-        final Module module = getModule();
+   final Module module = getModule();
 
-            final IssueType issueType = IssueTypeManager
-               .getInstance(getIssueTypeId(), false);
-            if (issueType.getLocked())
-            { 
-                throw new ScarabException(L10NKeySet.ExceptionDeleteOptionFromLockedIssueType);
-            }            
-            else
-            {
-                final Criteria c = new Criteria()
-                    .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                    .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
-                    .add(RModuleOptionPeer.OPTION_ID, getOptionId());
-                RModuleOptionPeer.doDelete(c);
-                WorkflowFactory.getInstance().deleteWorkflowsForOption(getAttributeOption(), 
-                                             module, issueType);
-                // Correct the ordering of the remaining options
-                final List optIds = new ArrayList();
-                final List rmos = module.getRModuleOptions(getAttributeOption().getAttribute(), issueType, false);
-                for (int i=0; i<rmos.size();i++)
-                {
-                    final RModuleOption rmo = (RModuleOption)rmos.get(i);
-                    optIds.add(rmo.getOptionId());
-                }
-                final Criteria c2 = new Criteria()
-                    .add(RModuleOptionPeer.MODULE_ID, getModuleId())
-                    .add(RModuleOptionPeer.ISSUE_TYPE_ID, getIssueTypeId())
-                    .addIn(RModuleOptionPeer.OPTION_ID, optIds)
-                    .add(RModuleOptionPeer.PREFERRED_ORDER, getOrder(), Criteria.GREATER_THAN);
-                final List adjustRmos = RModuleOptionPeer.doSelect(c2);
-                for (int j=0; j<adjustRmos.size();j++)
-                {
-                    final RModuleOption rmo = (RModuleOption)adjustRmos.get(j);
-                    //rmos.remove(rmo);
-                    rmo.setOrder(rmo.getOrder() -1);
-                    rmo.save();
-                    //rmos.add(rmo);
-                }
-            }
-            // notify module cache of this change
-            ((ModuleManager)Torque.getManager(ModuleManager.MANAGED_CLASS))
-                .refreshedObject(this);
+       final IssueType issueType = IssueTypeManager
+          .getInstance(getIssueTypeId(), false);
+       if (issueType.getLocked())
+       { 
+           throw new ScarabException(L10NKeySet.ExceptionDeleteOptionFromLockedIssueType);
+       }            
+       else
+       {
+           Integer moduleId    = getModuleId();
+           Integer issueTypeId = getIssueTypeId();
+           Integer optionId    = getOptionId();
+           int orderNumber     = getOrder();
+
+           // delete the option
+           final Criteria c = new Criteria()
+               .add(RModuleOptionPeer.MODULE_ID, moduleId)
+               .add(RModuleOptionPeer.ISSUE_TYPE_ID, issueTypeId)
+               .add(RModuleOptionPeer.OPTION_ID, optionId);
+           RModuleOptionPeer.doDelete(c);
+           
+           // delete associated workflow
+           WorkflowFactory.getInstance().deleteWorkflowsForOption(getAttributeOption(), 
+                                        module, issueType);
+
+           // ======================================================
+           // Correct the ordering of the remaining options
+           // ======================================================
+
+           // first retrieve the list of still available option ids
+           final List optIds = new ArrayList();
+           final List rmos = module.getRModuleOptions(getAttributeOption().getAttribute(), issueType, false);
+           for (int i=0; i<rmos.size();i++)
+           {
+               final RModuleOption rmo = (RModuleOption)rmos.get(i);
+               optIds.add(rmo.getOptionId());
+           }
+          
+           // Need to perform the correction only if the deleted option had follow up options
+           if(optIds.size() > 0)
+           {
+               // update the list
+               final Criteria c2 = new Criteria()
+                   .add(RModuleOptionPeer.MODULE_ID,       moduleId)
+                   .add(RModuleOptionPeer.ISSUE_TYPE_ID,   issueTypeId)
+                   .addIn(RModuleOptionPeer.OPTION_ID,     optIds)
+                   .add(RModuleOptionPeer.PREFERRED_ORDER, orderNumber, Criteria.GREATER_THAN);
+               final List adjustRmos = RModuleOptionPeer.doSelect(c2);
+               for (int j=0; j<adjustRmos.size();j++)
+               {
+                   final RModuleOption rmo = (RModuleOption)adjustRmos.get(j);
+                   //rmos.remove(rmo);
+                   rmo.setOrder(rmo.getOrder() -1);
+                   rmo.save();
+                   //rmos.add(rmo);
+               }
+           }
+       }
+       // notify module cache of this change
+       ((ModuleManager)Torque.getManager(ModuleManager.MANAGED_CLASS))
+           .refreshedObject(this);
     }
 
     public void save(Connection con) throws TorqueException
