@@ -267,6 +267,7 @@
         </field>
         <field name="NumericValue" key="num" type="int">
            <rule name="mask" value="[0-9]+">intake_InvalidInteger</rule>
+           <required-message>intake_ModuleRequiresDataForAttribute</required-message>
         </field>
         <field name="UserIds" key="visids" type="int" multiValued="true"/>
         <field name="Value" key="val" type="String">

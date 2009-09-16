@@ -1074,6 +1074,8 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
             #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
           #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.DROPDOWN_LIST)
             #set ($field = "OptionId")
+          #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.INTEGER)
+            #set ($field = "NumericValue")
           #else
             #set ($field = "Value")
           #end
