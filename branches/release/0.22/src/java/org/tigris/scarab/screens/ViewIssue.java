@@ -88,12 +88,8 @@ public class ViewIssue extends Default
         Issue issue = null;
         
         String id = data.getParameters().getString("id");
-        if(id != null){
-        	id = id.trim();
-        	issue = getReferredIssue(id, (ScarabModule)scarabR.getCurrentModule());
-        }
-        
-        issue = getReferredIssue(id, (ScarabModule)scarabR.getCurrentModule());
+		issue = getReferredIssue(id == null ? null : id.trim(), (ScarabModule)scarabR.getCurrentModule());
+
         boolean hasViewPermission = false;
         boolean hasDeletePermission = false;
         // Deleted issues will appear to not have existed before
