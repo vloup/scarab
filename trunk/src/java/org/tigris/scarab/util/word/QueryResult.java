@@ -46,8 +46,6 @@ package org.tigris.scarab.util.word;
  * individuals on behalf of Collab.Net.
  */ 
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -56,8 +54,6 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.torque.TorqueException;
-import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeType;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.AttributeValueManager;
 import org.tigris.scarab.om.RModuleUserAttribute;
@@ -144,7 +140,8 @@ public class QueryResult
                 }
                 else
                 {
-                    value = getAttributeValue(rmua);
+                    Integer attributeId = rmua.getAttributeId();                
+                    value = getAttributeValue(attributeId);
                 }                    
                 attributeValues.add(value);
             }                                
@@ -155,10 +152,9 @@ public class QueryResult
 	/**
 	 * @param attributeId
 	 */
-	private List getAttributeValue(RModuleUserAttribute rmua)
+	private List getAttributeValue(Integer attributeId)
         throws TorqueException
 	{
-	    Integer attributeId = rmua.getAttributeId();
         List value = new ArrayList();
         List attributeValue = getIssue().getAttributeValues(attributeId);
         String singleValue = null;
@@ -174,7 +170,6 @@ public class QueryResult
 	    	{
 	    		singleValue = "";
 	    	}
-	    	singleValue = convertToDisplayFormat(singleValue, rmua);
         	value.add(singleValue);
 	    }
 	    else
@@ -182,49 +177,12 @@ public class QueryResult
             for(int i=0;i<attributeValue.size();i++)
 		    {
 		        singleValue = ((AttributeValue)attributeValue.get(i)).getDisplayValue(L10N);
-	            singleValue = convertToDisplayFormat(singleValue, rmua);
 		        value.add( singleValue );
 		    }
 		}
 		return value;
 	}
-	
-	private String convertToDisplayFormat(String value, RModuleUserAttribute rmua) throws TorqueException
-	{
-	    String convertedValue = value;
-	    Attribute attribute = rmua.getAttribute();
-	    if(attribute != null)
-	    {
-	        // [HD]: assume that date attributes always contain SQL-representation of Date
-	        // to be verified!!!
-	        if (attribute.isDateAttribute())
-	        {
-	            String jdbcTimestamp = convertToJDBCTimestamp(value);
-	            Timestamp ts = Timestamp.valueOf(jdbcTimestamp);
-	            DateFormat df = new SimpleDateFormat(L10NKeySet.ShortDateDisplay.getMessage(L10N));
-	            convertedValue = df.format(ts);
-	        }
-	    }
-	    return convertedValue;
-	}
 
-	/**
-	 * Convert a database timestamp to JDBC-compatible format
-	 * @param value
-	 * @return
-	 */
-	private String convertToJDBCTimestamp(String value)
-	{
-	    int length = value.length();
-	    String result = value.substring(0,4);
-	    if(length>=6) result += '-' + value.substring(4,6);
-	    if(length>=8) result += '-' + value.substring(6,8);
-	    if(length>=10)result += ' ' + value.substring(8,10);
-	    if(length>=12)result += ':' + value.substring(10,12);
-	    if(length>=14)result += ':' + value.substring(12,14);
-	    return result;
-	}
-	
 	/**
 	 * @param attributeId
 	 */
