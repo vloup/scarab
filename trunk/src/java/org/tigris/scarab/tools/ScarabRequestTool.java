@@ -692,6 +692,7 @@ public class ScarabRequestTool
      * @param mitlist use a custom MITList instead of the user's current mitlist
      * @return the name to use
      * @throws TorqueException
+     * [HD] fixed bug SCB2794 (revert an API change. This method is used from velocity)
      */
     public String getRModuleAttributeDisplayName(final Attribute attribute, final MITList mitlist)
             throws TorqueException
@@ -1977,8 +1978,6 @@ public class ScarabRequestTool
         String sortPolarity = data.getParameters().getString("sortPolarity");
         String currentQueryAddition = "" + sortColumn + sortInternal + sortPolarity;
         String cachedQueryAddition = (String)data.getUser().getTemp("queryAddition");
-        if(currentQueryAddition.equals("nullnullnull"))
-            currentQueryAddition = cachedQueryAddition;
 
         List queryResult = (List)data.getUser().getTemp("queryResult");
 

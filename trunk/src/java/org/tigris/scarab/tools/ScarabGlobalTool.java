@@ -774,6 +774,9 @@ public class ScarabGlobalTool
         {
             txt = engine.render(text, context);
         }
+        else if(renderEngine.equals("html")){
+        	 txt = text;
+        }
         else
         {
             txt = "<pre>" + 

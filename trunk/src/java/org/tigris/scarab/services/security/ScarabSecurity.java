@@ -203,6 +203,13 @@ public class ScarabSecurity
      */
     public static final String USER__CHANGE_PASSWORD = 
         getService().getPermissionImpl("User__Change_Password");
+    
+	/**
+	 * Specifies that user is allowed to request a role
+	 * for any module.
+	 */
+    public static final String REQUEST__ROLE = 
+        getService().getPermissionImpl("Request__Role");
 
 
     private Configuration props;
@@ -234,6 +241,7 @@ public class ScarabSecurity
         if (allPermissions == null) 
         {
             List tmpPerms = new ArrayList();
+            addPerm(tmpPerms, ScarabSecurity.REQUEST__ROLE);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__EDIT);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__ENTER);
             addPerm(tmpPerms, ScarabSecurity.ISSUE__SEARCH);

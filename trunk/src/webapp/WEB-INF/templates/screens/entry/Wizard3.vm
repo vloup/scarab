@@ -116,9 +116,9 @@
                 #end
                 #mimeTypeOptions($mimeA)
               </select>
-              <p><small>$l10n.Other &#160;
+        <p><small>$l10n.CustomMimeType:
               <input type="text" name="$intakeAttachment.MimeTypeB.Key" 
-                                value="$intakeAttachment.MimeTypeB" />$l10n.CloseParenth</small></p>
+                          value="$intakeAttachment.MimeTypeB" /></small></p>
               #fieldErrorMsg($intakeAttachment.MimeTypeA "")
             </td>
           </tr>

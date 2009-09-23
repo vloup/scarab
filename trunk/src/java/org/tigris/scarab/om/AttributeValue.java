@@ -57,11 +57,13 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.Persistent;
 
+import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.om.Module;
@@ -660,7 +662,13 @@ Leaving here so that John can remove or fix.
         return rma;
     }
     
-    public String getDisplayValue()
+    /**
+     * Returns value for attribute in display format.
+     * @param l10n : Instance of ScarabLocalizationTool.
+     * @return : (Formatted) value of attribute.
+     * @throws TorqueException
+     */
+	public String getDisplayValue(ScarabLocalizationTool l10n)
     throws TorqueException
     {
         String displayValue = null;
@@ -682,6 +690,10 @@ Leaving here so that John can remove or fix.
         {
             displayValue = getScarabUser().getUserName();
         }
+		else if(getAttribute().isDateAttribute())
+		{
+			displayValue = DateAttribute.dateFormat(getValue(), L10NKeySet.ShortDateDisplay.getMessage(l10n));
+		}
         else
         {
             displayValue = getValue();

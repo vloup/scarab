@@ -301,4 +301,13 @@ public class Default extends TemplateSecureScreen
         return (ScarabLocalizationTool) context.get(
             ScarabConstants.LOCALIZATION_TOOL);
     }
+    
+    /**
+     * Returns the cancelTemplate to be executed. Otherwise returns null.
+     */
+    public String getCancelTemplate(RunData data)
+    {
+        return data.getParameters()
+                   .getString(ScarabConstants.CANCEL_TEMPLATE, null);
+    }
 }

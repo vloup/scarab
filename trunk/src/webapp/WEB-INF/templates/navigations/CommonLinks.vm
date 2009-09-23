@@ -83,7 +83,7 @@
       #if ($issueType.canCreateIssueInScope($user, $module))
           #set ($rmit = $module.getRModuleIssueType($issueType))
           #set ($pagelink = $scarabR.getNextEntryTemplate($issueType))
-          <div><a href="$link.setPage($pagelink).addPathInfo($scarabG.Constant.CURRENT_ISSUE_TYPE, $issueType.QueryKey).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.format('NewIssueType', $rmit.DisplayName)</a></div>
+          <div><a href="$link.setPage($pagelink).addPathInfo($scarabG.Constant.CURRENT_ISSUE_TYPE, $issueType.QueryKey).addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$rmit.DisplayName</a></div>
       #end
     #end
 

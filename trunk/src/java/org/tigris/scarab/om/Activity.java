@@ -53,6 +53,7 @@ import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
 import java.sql.Connection;
 
+import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -200,6 +201,12 @@ public class Activity
        return s.substring(0, end ) + "..."; 
     }
 
+    /**
+     * Returns old value, before activity took place.
+     * @param l10n : Instance of localization.
+     * @return : Old value.
+     * @throws Exception
+     */
     public String getOldValue(ScarabLocalizationTool l10n) 
         throws Exception
     {
@@ -220,11 +227,24 @@ public class Activity
          {
              value = getOldValue()!=null ? firstChars( getOldValue(), 50 ) : "";
          } else {
-             value = getOldValue()!=null ? getOldValue() : "";
+        	//assumption that an attribute was changed
+        	 if(getAttribute() != null && getAttribute().isDateAttribute()){
+         		value = DateAttribute.dateFormat(getOldValue()!=null ? getOldValue() : "",  L10NKeySet.ShortDateDisplay.getMessage(l10n));
+         	}
+         	else{
+         		value = getOldValue()!=null ? getOldValue() : "";
+         	}
          }
 
         return value;
     }
+    
+    /**
+     * Returns new value, after activity took place.
+     * @param l10n : Instance of localization.
+     * @return : New value.
+     * @throws Exception
+     */
     public String getNewValue(ScarabLocalizationTool l10n)
         throws Exception
     {
@@ -249,7 +269,14 @@ public class Activity
         {
             value = super.getDescription()!=null ? super.getDescription() : "";
         } else {
-            value = getNewValue()!=null ? getNewValue() : "";
+        	//assumption that an attribute was changed
+        	if(getAttribute() != null && getAttribute().isDateAttribute()){
+        		value = DateAttribute.dateFormat(getNewValue()!=null ? getNewValue() : "",  L10NKeySet.ShortDateDisplay.getMessage(l10n));
+        	}
+        	else{
+        		value = getNewValue()!=null ? getNewValue() : "";
+        	}
+            
         }
         return value;
     }

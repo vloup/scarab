@@ -64,6 +64,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.attribute.DateAttribute;
+import org.tigris.scarab.attribute.IntegerAttribute;
 import org.tigris.scarab.attribute.OptionAttribute;
 import org.tigris.scarab.attribute.UserAttribute;
 import org.tigris.scarab.notification.NotificationManagerFactory;
@@ -295,6 +296,10 @@ public class ReportIssue extends RequireLoginFirstAction
                         selectedOptions.add(fieldValue);
                     }                    
                 }
+                else if (aval instanceof IntegerAttribute) 
+                {
+                    field = group.get("NumericValue");
+                }
                 else if (aval instanceof UserAttribute) 
                 {
                     field = group.get("UserId");
@@ -385,8 +390,18 @@ public class ReportIssue extends RequireLoginFirstAction
                     intake.get("AttributeValue", aval.getQueryKey(), false);
                 if (group != null) 
                 {
-                    Field field = group.get(aval instanceof OptionAttribute ?
-                                            "OptionId" : "Value");
+                	
+                    Field field = null;
+                    if(aval instanceof OptionAttribute){
+                    	field = group.get("OptionId");
+                    }
+                    else if(aval instanceof IntegerAttribute){
+                    	field = group.get("NumericValue");
+                    } 
+                    else{
+                    	field = group.get("Value");
+                    }
+                    	
                     String value = field.toString();
 
                     if (value != null && value.length() > 0)

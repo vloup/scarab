@@ -12,7 +12,7 @@ import org.apache.torque.TorqueException;
 
 public class CachedQuery {
     private static final char DOT_REPLACEMENT_IN_JOIN_CONDITION = '#';
-	private static final int MAXIMUM_INITIAL_ROWS = 1000;
+	
 	private static final String LOGGER = "org.apache.torque";
 
     private Criteria criteria;
@@ -73,7 +73,7 @@ public class CachedQuery {
     		{
 				if(!countOnly)
 	    		{
-	    	        criteria.setLimit(MAXIMUM_INITIAL_ROWS).setOffset(0);
+	    	        criteria.setLimit(-1).setOffset(0);
 	    	    	String sql = adjustSelectSql(BasePeer.createQueryString(criteria));
 	    		    cachedRows = executeSelect(sql);
 	    		}	    		
@@ -82,7 +82,7 @@ public class CachedQuery {
 	
 	            totalRowCount = cachedRows.size(); 
     		
-			    if(countOnly || cachedRows.size()==MAXIMUM_INITIAL_ROWS)
+			    if(countOnly)
 			    {
 	    	        criteria.setLimit(-1).setOffset(0);
 	    	    	String sql = adjustSelectSql(BasePeer.createQueryString(criteria));
