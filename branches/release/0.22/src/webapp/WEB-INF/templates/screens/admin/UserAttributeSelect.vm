@@ -6,7 +6,8 @@
    <input type="submit" value="$l10n.AddSelectedToModule" name="eventSubmit_doSelectuserattribute" />
 #end
 #if ($canEditDomain)
-    ##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doCreatenewuserattribute"/>&#160;
+    ##commented for workflow reasons (SCB2737)
+	##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doCreatenewuserattribute"/>&#160;
 #end
 <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel"/>
 </div>

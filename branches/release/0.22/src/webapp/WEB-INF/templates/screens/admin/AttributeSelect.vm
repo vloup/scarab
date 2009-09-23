@@ -17,6 +17,7 @@
    <input type="submit" value="$l10n.Add" name="eventSubmit_doSelectattribute" />
 #end
 #if ($canEditDomain)
+	 ##commented for workflow reasons (SCB2737)
     ##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doCreatenewglobalattribute"/>&#160;
 #end
 <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel"/>

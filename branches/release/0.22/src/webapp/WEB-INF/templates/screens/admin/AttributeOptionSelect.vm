@@ -19,12 +19,13 @@
 
 <div class="functnbar">
 #if ($availOptions.size() > 0)
-<input type="submit" value="$l10n.Add" name="eventSubmit_doSelectattributeoption" />&#160;
+	<input type="submit" value="$l10n.Add" name="eventSubmit_doSelectattributeoption" />&#160;
 #end
 #if ($canEditDomain)
-##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoothertemplate" />&#160;
+	##commented for workflow reasons (SCB2737)
+	##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoothertemplate" />&#160;
 #end
-<input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />&#160;
+	<input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />&#160;
 </div>
 
 #if ($availOptions.size() == 0)
@@ -49,10 +50,11 @@
 
 <div class="functnbar2">
 #if ($availOptions.size() > 0)
-<input type="submit" value="$l10n.Add" name="eventSubmit_doSelectattributeoption" />&#160;
+	<input type="submit" value="$l10n.Add" name="eventSubmit_doSelectattributeoption" />&#160;
 #end
 #if ($canEditDomain)
-##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoothertemplate" />&#160;
+	##commented for workflow reasons (SCB2737)
+	##<input type="submit" value="$l10n.CreateNew" name="eventSubmit_doGotoothertemplate" />&#160;
 #end
 <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />&#160;
 </div>
