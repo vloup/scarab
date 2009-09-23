@@ -122,19 +122,51 @@ public class ViewIssue extends Default
         }
     }
     
+    /**
+     * Returns issue according to given issue id,
+     * which can be a simple number or an id including module's prefix.
+     * @param id : id of issue
+     * @param module : module for issue
+     * @return : Issue. Value is null if no issue was found.
+     */
     private Issue getReferredIssue(String id, ScarabModule module)
     {
+    	Issue issue = null;
+    	
+    	//get simple number from id
+    	StringBuffer idCount = new StringBuffer();
+    	for (int i = 0; i < id.length(); i++)
+        {
+            char c = id.charAt(i);
+            if (c >= '0' && c <= '9')
+            {
+            	idCount.append(c);
+            }
+        }
+    	
         if (module != null)
         { // Will prefix with module's code if ID is just a number
-            try
-            {
-                Integer.parseInt(id);
-                id = module.getCode().concat(id);
-            }
-            catch (NumberFormatException nfe) {}
+        	if(!idCount.toString().equals(id)){
+        		if(module.getCode().concat(idCount.toString()).equals(id)){
+        			//id is full qualified issue id (includes prefix)
+        			issue = IssueManager.getIssueById(id);
+        		}
+        		else{
+        			//invalid suffix in issue id
+        			issue = null;
+        		}
+        	}
+        	else{
+        		//id is number only
+            	issue = IssueManager.getIssueById(id, module.getCode());
+        	}
+        	
         }
-        
-        Issue issue = IssueManager.getIssueById(id);
+        else{
+        	//no module is given, business of hope
+        	issue = IssueManager.getIssueById(id);
+        }
+
         return issue;
     }
 
