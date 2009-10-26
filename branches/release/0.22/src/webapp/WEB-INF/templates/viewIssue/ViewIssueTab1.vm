@@ -1,7 +1,7 @@
 #set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
 #set ($isEditAttributes = $canEdit && $data.Parameters.getBoolean("edit_attributes"))
 
-<h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
+#tabHeading("properties" $l10n.IssueAttributesNavi)
 <div id='properties'>
 
   <div class="axial2">

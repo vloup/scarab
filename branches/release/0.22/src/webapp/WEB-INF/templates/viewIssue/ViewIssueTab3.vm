@@ -18,7 +18,7 @@
    #end
 #end
 
-<h3 onClick=smartToggleVisibility('comments')><img name="comments.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("CommentsNavi", $numComments)</h3>
+#tabHeading("comments" $l10n.format("CommentsNavi", $numComments))
 <div id='comments'>
 #if ($comments.isEmpty() && !$canAddComment)
   $l10n.NoComments

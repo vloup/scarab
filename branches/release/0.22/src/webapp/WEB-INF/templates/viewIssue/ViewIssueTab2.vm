@@ -1,5 +1,5 @@
 ### PERSONNEL
-<h3 onClick=smartToggleVisibility('personnel')><img name="personnel.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("PersonnelNavi", $numUsers)</h3>
+#tabHeading("personnel" $l10n.format("PersonnelNavi", $numUsers))
 <div id='personnel'>
   <table width="100%" border="1" cellspacing="2" cellpadding="3">
     <tr>

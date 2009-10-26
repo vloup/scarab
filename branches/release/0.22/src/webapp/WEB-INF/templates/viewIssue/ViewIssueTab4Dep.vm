@@ -269,7 +269,7 @@
 ####   dependencies
 ################################################################################
 
-<h3 onClick=smartToggleVisibility('dependencies')><img name="dependencies.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.format("RelationsNavi", $numDependencies)</h3>
+#tabHeading("dependencies" $l10n.format("RelationsNavi", $numDependencies))
 <div id='dependencies'>
   #if ($numDependencies > 0)
 
