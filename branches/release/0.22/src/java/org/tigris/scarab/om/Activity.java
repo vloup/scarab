@@ -311,6 +311,13 @@ public class Activity
         {
             name = l10n.get(L10NKeySet.Comment);
         }
+        else if(    getType().equals(ActivityType.ISSUE_COPIED)
+                || getType().equals(ActivityType.ISSUE_MOVED)
+                || getType().equals(ActivityType.ISSUE_CREATED)
+                || getType().equals(ActivityType.ISSUE_DELETED))
+	     {
+	         name = l10n.get(L10NKeySet.IssueId);
+	     }
         return name;
     }
     
