@@ -17,8 +17,8 @@
     <table width="100%">
     #foreach ($act in $activities)
         #if($currentIssue.isAttributeVisible($act.attribute, $user))
-          #set ($newValue = $act.getNewValue($l10n))
-          #set ($oldValue = $act.getOldValue($l10n))
+          #set ($newValue = $act.getNewValue($currentIssue, $l10n))
+          #set ($oldValue = $act.getOldValue($currentIssue, $l10n))
           <tr>
             <th width="14%">$act.getDisplayName($l10n)</th>
             #if( $oldValue.length()>0 )

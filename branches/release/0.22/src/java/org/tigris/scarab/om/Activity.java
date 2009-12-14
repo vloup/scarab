@@ -208,15 +208,37 @@ public class Activity
      * @throws Exception
      */
     public String getOldValue(ScarabLocalizationTool l10n) 
+    throws Exception
+	{
+	    return getOldValue(null, l10n);
+	}
+    
+    /**
+     * Returns old value, before activity took place.
+     * @param issue : Instance of current issue. Is used to evaluate dependency type.
+     * @param l10n : Instance of localization.
+     * @return : Old value.
+     * @throws Exception
+     */
+    public String getOldValue(Issue issue, ScarabLocalizationTool l10n) 
         throws Exception
     {
         String value = null;
         if(   getType().equals(ActivityType.DEPENDENCY_DELETED)
            || getType().equals(ActivityType.DEPENDENCY_CHANGED))
          {
-             value = getDepend().getIssueRelatedByObserverId().getUniqueId()
-            + " " + l10n.get(DependTypeManager.getManager().getL10nKey(getOldValue()))
-             + " " + getDepend().getIssueRelatedByObservedId().getUniqueId();             
+        	if(issue != null 
+        			&& issue.getIssueId().intValue() != getDepend().getIssueRelatedByObservedId().getIssueId().intValue()
+        			&& getOldValue().equals("blocking")){
+            	value = getDepend().getIssueRelatedByObserverId().getUniqueId()
+                + " " + l10n.get("DependsOn") //deprecated, but method is used many times in scarab.
+                + " " + getDepend().getIssueRelatedByObservedId().getUniqueId(); 
+            }
+            else{
+            	value = getDepend().getIssueRelatedByObservedId().getUniqueId()
+            	+ " " + (getOldValue().equals("blocking") ? l10n.get("PrerequisiteFor") : l10n.get(DependTypeManager.getManager().getL10nKey(getOldValue())))
+                + " " + getDepend().getIssueRelatedByObserverId().getUniqueId();  
+            }            
          } else if( getType().equals(ActivityType.ATTACHMENT_REMOVED))
          {
              value = getAttachment().getFileName();
@@ -240,21 +262,42 @@ public class Activity
     }
     
     /**
-     * Returns new value, after activity took place.
+     * Returns new value, for activity.
+     * @param l10n
+     * @return New value.
+     * @throws Exception 
+     */
+    public String getNewValue(ScarabLocalizationTool l10n) throws Exception{
+        return getNewValue(null, l10n);
+    }
+    
+    /**
+     * Returns new value, for activity.
+     * @param issue : Instance of current issue.
      * @param l10n : Instance of localization.
      * @return : New value.
      * @throws Exception
      */
-    public String getNewValue(ScarabLocalizationTool l10n)
+    public String getNewValue(Issue issue, ScarabLocalizationTool l10n)
         throws Exception
     {
         String value = null;
         if(   getType().equals(ActivityType.DEPENDENCY_CREATED)
            || getType().equals(ActivityType.DEPENDENCY_CHANGED))
         {
-            value = getDepend().getIssueRelatedByObserverId().getUniqueId()
-            + " " + l10n.get(DependTypeManager.getManager().getL10nKey(getNewValue()))
-            + " " + getDepend().getIssueRelatedByObservedId().getUniqueId();             
+        	if(issue != null 
+        			&& issue.getIssueId().intValue() != getDepend().getIssueRelatedByObservedId().getIssueId().intValue()
+        			&& getNewValue().equals("blocking")){
+            	value = getDepend().getIssueRelatedByObserverId().getUniqueId()
+                + " " + l10n.get("DependsOn") //deprecated, but method is used many times in scarab.
+            	+ " " + getDepend().getIssueRelatedByObservedId().getUniqueId(); 
+            }
+            else{
+            	value = getDepend().getIssueRelatedByObservedId().getUniqueId()
+            	+ " " + (getNewValue().equals("blocking") ? l10n.get("PrerequisiteFor") : l10n.get(DependTypeManager.getManager().getL10nKey(getNewValue())))
+                + " " + getDepend().getIssueRelatedByObserverId().getUniqueId();  
+            }	
+           
         } else if( getType().equals(ActivityType.ATTACHMENT_CREATED))
         {
             value = getAttachment().getFileName();
