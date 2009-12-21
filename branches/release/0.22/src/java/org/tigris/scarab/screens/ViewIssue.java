@@ -88,8 +88,12 @@ public class ViewIssue extends Default
         Issue issue = null;
         
         String id = data.getParameters().getString("id");
-		issue = getReferredIssue(id == null ? null : id.trim(), (ScarabModule)scarabR.getCurrentModule());
-
+		try{
+			issue = getReferredIssue(id == null ? null : id.trim(), (ScarabModule)scarabR.getCurrentModule());
+		}
+		catch(Exception e){
+			//ignore, this case will be handled later: issue == null
+		}
         boolean hasViewPermission = false;
         boolean hasDeletePermission = false;
         // Deleted issues will appear to not have existed before
@@ -144,26 +148,15 @@ public class ViewIssue extends Default
             }
         }
     	
-        if (module != null)
-        { // Will prefix with module's code if ID is just a number
-        	if(!idCount.toString().equals(id)){
-        		if(module.getCode().concat(idCount.toString()).equals(id)){
-        			//id is full qualified issue id (includes prefix)
-        			issue = IssueManager.getIssueById(id);
-        		}
-        		else{
-        			//invalid suffix in issue id
-        			issue = null;
-        		}
-        	}
-        	else{
-        		//id is number only
-            	issue = IssueManager.getIssueById(id, module.getCode());
-        	}
-        	
+        if(!idCount.toString().equals(id)){
+        	issue = IssueManager.getIssueById(id);
+        }
+        else if(module != null && idCount.toString().equals(id)){
+        	//try if id is number only
+            issue = IssueManager.getIssueById(id, module.getCode());
         }
         else{
-        	//no module is given, business of hope
+        	//business of hope
         	issue = IssueManager.getIssueById(id);
         }
 
