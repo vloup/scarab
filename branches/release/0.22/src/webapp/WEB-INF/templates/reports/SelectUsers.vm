@@ -3,7 +3,7 @@
 #set ($searchString = $data.Parameters.getString("searchString" , ""))
 #set ($searchField = $data.Parameters.getString("searchField" , ""))
 <p>
-  $l10n.ClickHereReportMessage
+  $l10n.ScrolldownReportMessage
 </p>
 
 <h3>$l10n.SelectedUsers</h3>
