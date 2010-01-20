@@ -44,7 +44,7 @@
 
 <div class="colbar">
 <ul>
-<li>$l10n.ClickHereToSelectUsersForQuery</li>
+<li>$l10n.ScrolldownToSelectUsersForQuery</li>
 <li>$l10n.ChangesSavedOnDone</li>
 </ul>
 </div>

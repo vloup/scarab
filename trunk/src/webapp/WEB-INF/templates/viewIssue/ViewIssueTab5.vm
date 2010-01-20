@@ -4,7 +4,7 @@
 #end
 
 #if (!$allActivitySets.isEmpty())
-  <h3 onClick=smartToggleVisibility('history')><img name="history.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.ChangeHistory</h3>
+#tabHeading("history" $l10n.ChangeHistory)
   <div id="history">
 
     #foreach ($activitySet in $allActivitySets)
@@ -20,8 +20,8 @@
               #set ($newValue = "")
               #set ($oldValue = "")
               #if($currentIssue.isAttributeVisible($act.attribute, $user))
-                #set ($newValue = $act.getNewValue($l10n).trim())
-                #set ($oldValue = $act.getOldValue($l10n).trim())
+                #set ($newValue = $act.getNewValue($currentIssue, $l10n).trim())
+                #set ($oldValue = $act.getOldValue($currentIssue, $l10n).trim())
                 <th style="width:12em;">$act.getDisplayName($l10n)</th>
                 #if( $oldValue.length()>0 )
                   <td>$!scarabG.textToHTML($l10n.getIgnoreMissingResource($oldValue), $link, $scarabR.CurrentModule)</td>
@@ -38,8 +38,8 @@
               #else
                 <td colspan="5">$l10n.RestrictedActivityDescription</td>
               #end
-            </tr>
-          #end
+      </tr>
+    #end
 
           #set ($reason = $activitySet.getCommentForHistory($currentIssue))
           #if($reason.length()>0)

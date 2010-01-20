@@ -188,6 +188,18 @@
 #set ($showCopyButton = $copyToModules && !$copyToModules.isEmpty())
 #set ($showMoveButton = $moveToModules && !$moveToModules.isEmpty())
 
+## Creates heading for given tab and title.
+## Toggles event handler, which makes it possible to the user
+## to switch current tab on or off.
+#macro (tabHeading $tabId $title)
+	#if($tab.equals("all"))
+		#set($imgName = $tabId.concat(".state"))
+		<h3 onClick=smartToggleVisibility('$tabId')><img name="$imgName" src="$staticLink.setPath($iconCollapse)"/>$title</h3>
+	#else
+		<h3>$title</h3>
+	#end
+#end
+
 <input type="hidden" name="action" value="ModifyIssue" />
 <input type="hidden" name="mod_ts" value="$scarabG.Now.Time" />
 <input type="hidden" name="id" value="$currentIssueId" />
@@ -211,7 +223,6 @@
 ##     #end
 ##   </div>
 ## #end
-
 
 <div class="scarab-canvas">
 

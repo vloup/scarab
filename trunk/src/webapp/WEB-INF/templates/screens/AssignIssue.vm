@@ -9,7 +9,7 @@
 #if ($singleIssue)
 <div class="colbar">
 <ul>
-<li>$l10n.format("ClickHereToSelectUsers", $issueListSize)</li>
+<li>$l10n.format("ScrolldownToSelectUsers", $issueListSize)</li>
 <li>$l10n.ChangesSavedOnDone</li>
 </ul>
 </div>
