@@ -224,7 +224,7 @@
 ## Canvas Section
 ## =========================================================================================
 
-<h3 onClick=smartToggleVisibility('properties')><img name="properties.state" src="$staticLink.setPath($iconCollapse)"/>$l10n.IssueAttributesNavi</h3>
+#tabHeading("properties" $l10n.IssueAttributesNavi)
 <div id='properties'>
 
   ## ------------------------------------------------------------------
