@@ -18,7 +18,7 @@
      NEVER change this file by hand! If you want to introduce a new property,
      please update
      
-         xdocs/scarab_properties.xml 
+         scarab_properties.xml 
      
      instead and afterwards call
      
@@ -106,7 +106,7 @@
      NEVER change this file by hand! If you want to introduce a new property,
      please update
      
-         xdocs/scarab_properties.xml 
+         scarab_properties.xml 
      
      instead and afterwards call
      
