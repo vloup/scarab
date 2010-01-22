@@ -122,21 +122,21 @@
         prereqs="set-xml-transformer">
 
         <ant:style  
-             in="scarab_properties.xml"
+             in="xdocs/scarab_properties.xml"
              out="project.properties"
              style="project.xsl">
              <outputproperty name="method" value="text"/>
         </ant:style> 
 
         <ant:style  
-             in="scarab_properties.xml"
+             in="xdocs/scarab_properties.xml"
              out="minimal.properties"
              style="minimal.xsl">
              <outputproperty name="method" value="text"/>
         </ant:style> 
 
         <ant:style  
-             in="scarab_properties.xml"
+             in="xdocs/scarab_properties.xml"
              out="wizzard.properties"
              style="wizzard.xsl">
              <outputproperty name="method" value="text"/>
@@ -269,12 +269,11 @@
         </ant:ant>
     </postGoal>
 
-	<!-- generates source file for properties guide from scarab_properties file --> 
     <postGoal name="xdoc:init"> 
         <attainGoal name="set-xml-transformer"/>
         <j:set var="genDocs" value="${maven.gen.docs}"/> 
-        <ant:style destdir="${genDocs}" in="scarab_properties.xml" out="${genDocs}/scarab_properties_final.xml"
-        style="properties.xsl" /> 
+        <ant:style basedir="xdocs/" destdir="${genDocs}" extension=".xml" 
+        style="xdocs/properties.xsl" includes="**/scarab_properties.xml" /> 
     </postGoal>
       
     <!-- ===================================================== -->

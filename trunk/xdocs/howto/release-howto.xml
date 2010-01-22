@@ -42,7 +42,7 @@
       If you find any failures or errors, <b>fix them</b> and <b>commit</b> the changes. Then <a href="#buildtest">build and run the tests again</a>.
 	</p>
 	<p>
-	  Edit scarab/scarab_properties.xml and change the 
+	  Edit scarab/xdocs/scarab_properties.xml and change the 
       property with name "version" removing the "-dev" appendix from
       the final version number for the release.<br/>
       Do the same in the &lt;currentVersion&gt; tag in project.xml file.

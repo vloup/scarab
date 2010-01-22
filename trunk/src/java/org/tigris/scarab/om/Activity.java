@@ -227,9 +227,18 @@ public class Activity
         if(   getType().equals(ActivityType.DEPENDENCY_DELETED)
            || getType().equals(ActivityType.DEPENDENCY_CHANGED))
          {
-        	 value = getDepend().getIssueRelatedByObserverId().getUniqueId()
-             + " < " + l10n.get(DependTypeManager.getManager().getL10nKey(getOldValue())) + " > "
-              + " " + getDepend().getIssueRelatedByObservedId().getUniqueId();       
+        	if(issue != null 
+        			&& issue.getIssueId().intValue() != getDepend().getIssueRelatedByObservedId().getIssueId().intValue()
+        			&& getOldValue().equals("blocking")){
+            	value = getDepend().getIssueRelatedByObserverId().getUniqueId()
+                + " " + l10n.get("DependsOn") //deprecated, but method is used many times in scarab.
+                + " " + getDepend().getIssueRelatedByObservedId().getUniqueId(); 
+            }
+            else{
+            	value = getDepend().getIssueRelatedByObservedId().getUniqueId()
+            	+ " " + (getOldValue().equals("blocking") ? l10n.get("PrerequisiteFor") : l10n.get(DependTypeManager.getManager().getL10nKey(getOldValue())))
+                + " " + getDepend().getIssueRelatedByObserverId().getUniqueId();  
+            }            
          } else if( getType().equals(ActivityType.ATTACHMENT_REMOVED))
          {
              value = getAttachment().getFileName();
