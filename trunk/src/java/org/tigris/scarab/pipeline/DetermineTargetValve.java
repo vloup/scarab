@@ -47,6 +47,7 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
@@ -81,16 +82,20 @@ public class DetermineTargetValve
         {
             String target = parameters.getString("template");
             String query  = parameters.getString("query");
-
-            if (query != null)
+            if(query==null)
             {
+                query = parameters.getString("queryId");
+            }
+
+            if (query != null && getEventKey(parameters)==null)
+            {
+                parameters.setString("eventSubmit_doSelectquery", "foo");
                 // Allows short link to public/personal queries
                 // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>                
                 if (target == null) target="IssueList.vm";
                 data.setTarget(target);
                 if (parameters.getString("tqk")      == null) parameters.setString("tqk", ""+0);
                 if (parameters.getString("action")   == null) data.setAction("Search");
-                if (parameters.getString("eventSubmit_doSelectquery") == null) parameters.setString("eventSubmit_doSelectquery", "foo");
                 if (parameters.getString("go")       == null) parameters.setString("go",query);
             }
             else if (target != null)
@@ -149,5 +154,19 @@ public class DetermineTargetValve
 
         // Pass control to the next Valve in the Pipeline
         context.invokeNext(data);
+    }
+
+    private Object getEventKey(ParameterParser parameters) 
+    {
+        Enumeration en = parameters.keys();
+        while(en.hasMoreElements())
+        {
+            Object key = en.nextElement();
+            if(key.toString().startsWith("event"))
+            {
+                return key;
+            }
+        }
+        return null;
     }
 }
