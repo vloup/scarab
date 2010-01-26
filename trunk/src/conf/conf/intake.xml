@@ -298,7 +298,7 @@
         <field name="UserIds" key="visids" type="int" multiValued="true"/>
         <field name="Value" key="val" type="String">
            <rule name="mask" value="^$|\S">intake_ModuleRequiresDataForAttribute</rule>
-           <rule name="maxLength" value="5000">intake_LengthMustBeLessThan5000CharactersUAttachmentOrComment</rule>
+           <rule name="maxLength" value="5000">         intake_LengthMustBeLessThan5000CharactersUAttachmentOrComment</rule><!-- Empty space is because of a bug of fulcrum-intake: SCB2997 -->
            <required-message>intake_ModuleRequiresDataForAttribute</required-message>
         </field>
         <field name="Url" key="url" type="String" mapToProperty="Value">

@@ -3,7 +3,7 @@
 
 <div id="wizard1" class="app">
 
-<h3>$l10n.format("NewIssue", $module.getRModuleIssueType($scarabR.CurrentIssueType).DisplayName.toLowerCase())</h3>
+<h3>$l10n.format("NewIssue", $module.getRModuleIssueType($scarabR.CurrentIssueType).DisplayName)</h3>
 
 <form method="post" name="form" action="$link.setPage("entry,Wizard1.vm").setAction("ReportIssue")">
 <input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="entry,Wizard3.vm" />
