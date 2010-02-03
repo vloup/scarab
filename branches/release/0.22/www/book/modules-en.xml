@@ -3,7 +3,7 @@
 	<title>Creating and managing modules</title>
 	<sect1>
 		<title>Creating a new module</title>
-		<simpara>From the home page, choose any module, if you have not done that already (creation of a new module cannot occur outside a context, but that is irrelevant with the task we want to perform).</simpara>
+		<simpara>From the home page, choose any module, if you have not done that already. The creation of a new module cannot occur outside a context.</simpara>
 		<screenshot>
 			<graphic fileref="images/module-creation0.png"/>
 		</screenshot>
@@ -14,7 +14,7 @@
 		<screenshot>
 			<graphic fileref="images/module-creation1b.png"/>
 		</screenshot>
-		<simpara>From there, choose Modules, Manage modules and push the Create new button.</simpara>
+		<simpara>From there, choose Global Data, Manage modules and push the Create new button.</simpara>
 		<screenshot>
 			<graphic fileref="images/module-creation2.png"/>
 		</screenshot>

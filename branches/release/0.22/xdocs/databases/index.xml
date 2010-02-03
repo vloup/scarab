@@ -33,7 +33,7 @@
         </tr>
         <tr>
           <td><a href="postgresql.html">PostgreSQL</a></td>
-          <td><font color="orange"><b>Full</b></font></td>
+          <td><font color="green"><b>Full</b></font></td>
           <td>
             <a href="mailto:jorgeuriarte@tigris.org">jorgeuriarte</a>          
             <br/><a href="pti@elex.be">ptillemans</a>
@@ -52,13 +52,14 @@
         </tr>
 
         <tr>
-          <td><a href="hypersonic.html">HSQLDB (was: Hypersonic SQL)</a></td>
-          <td><font color="red"><b>No</b></font></td>
+          <td><a href="hypersonic.html">HSQLDB</a></td>
+          <td><font color="orange"><b>Partial</b></font></td>
           <td>
             <a href="mailto:hussayn.dabbous@tigris.org">hdabbous</a>
             <br/><a href="pti@elex.be">ptillemans</a>
+			<br/><a href="mailto:opensource@memocomp.de">jhoech</a>
           </td>
-          <td>Integrated, but SQL-errors. Support deferred after release 1.0</td>
+          <td>Working, but not fully tested. Further help needed from the community to certify it works perfectly.</td>
         </tr>
 
         <tr>

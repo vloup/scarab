@@ -113,8 +113,8 @@
     <developer>
       <name>Johannes Hoechstaedter</name>
       <id>jhoech</id>
-      <email>jhoechstaedter_at_memocomp_dot_com</email>
-      <organization>memoComp</organization>
+      <email>opensource_at_memocomp_dot_de</email>
+      <organization>www.memocomp.de</organization>
     </developer> 
   </developers>
 
@@ -769,7 +769,7 @@
       <type>plugin</type>
     </dependency> 
     
-    <dependency> 
+	<dependency> 
       <groupId>statcvs</groupId> 
       <artifactId>maven-statcvs-plugin</artifactId> 
       <version>2.4</version> 
@@ -934,14 +934,14 @@
     <!--report>maven-file-activity-plugin</report-->
     <!--report>maven-javadoc-plugin</report-->
     <!--report>maven-jxr-plugin</report-->
-    <report>maven-junit-report-plugin</report>
-    <report>maven-tasklist-plugin</report>
+    <!--report>maven-junit-report-plugin</report-->
+    <!--report>maven-tasklist-plugin</report-->
   
     <!--report>maven-jcoverage-plugin</report-->
     <!--report>maven-simian-plugin</report-->
-    <report>maven-pmd-plugin</report>
-    <report>maven-tasks-plugin</report>
-    <report>maven-findbugs-plugin</report>
+    <!--report>maven-pmd-plugin</report-->
+    <!--report>maven-tasks-plugin</report-->
+    <!--report>maven-findbugs-plugin</report-->
     <!--report>maven-statcvs-plugin</report-->
   </reports>  
 </project>

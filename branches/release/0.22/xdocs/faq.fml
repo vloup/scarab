@@ -9,11 +9,7 @@
         How can I not load the Sample Data?
       </b></question>
       <answer>
-There is a LoadOrder.lst file in src/sql that you should be able to
-modify to get what you want.  Just remove the last file which is the
-sample data.  If you don't want to modify the default LoadOrder.lst, you
-can also specify a different file to use with -l or --loadorder option
-to create-db.sh.
+Remind the additional build properties, such as <code>skip.seed.data</code> for example.
       </answer>
     </faq>  
     <faq id="1">
@@ -23,7 +19,7 @@ to create-db.sh.
       </b></question>
       <answer>
 The website and use of Scarab itself are all we currently have.
-Scarab is very easy to <a href="http://scarab.tigris.org/unbranded-source/browse/*checkout*/scarab/README.txt?rev=1">install and setup</a>, 
+Scarab is very easy to install and setup, 
 so it should not take you much time to become comfortable with 
 Scarab so that you can perform your own demonstration.
       </answer>
@@ -33,8 +29,8 @@ Scarab so that you can perform your own demonstration.
         Is Scarab ready for production use?
       </b></question>
       <answer>
-Scarab is in pre-1.0 beta. It has been in development for over
-two years now and there is quite a lot of features in it. On
+Scarab is in pre-1.0 beta. It has been in development for several
+years now and there are quite a lot of features in it. On
 July 9th, 2002, we became self hosting. This means that we now
 use Scarab to track Scarab so we feel it is ready enough for
 usage. We also know that there are several large corporations
@@ -101,11 +97,10 @@ the upgrade instructions below for more information.
 
 <p>
 You may also run into various bugs or missing features within Scarab. It
-is best to first search our <a
-href="http://scarab.tigris.org/issues.html">issue database</a> and <a
-href="http://scarab.tigris.org/unbranded-source/browse/*checkout*/scarab/KNOWN_ISSUES.txt?rev=1">KNOWN_ISSUES.txt</a> file to see if we know about the
-issue. If not, please let us know by reporting it to the issue tracker.
-Whatever you do, please don't send it to the mailing lists.
+is best to first search our <a href="http://www.solitone.org/scarab/issues">issue database</a>
+to see if we know about the issue. If not, please let us know by reporting 
+it to the issue tracker. If this does not help you, feel free, to send your 
+complain to the mailing lists.
 </p>
 
 <p>
@@ -120,16 +115,7 @@ heavy development.
       </b></question>
       <answer>
 <p>
-There is three types of documentation for Scarab.
-<ol>
-<li>This page.</li>
-<li>There is <a
-href="http://scarab-gen.tigris.org/nonav/HEAD/index.html">what is available on
-the website</a> (which tends towards administration and other
-questions).</li>
-<li>There is user level documentation that is built into the
-application itself and is available in the left side navigation.</li>
-</ol>
+Checkout this site.
 </p>
       </answer>
     </faq>    
@@ -139,8 +125,7 @@ application itself and is available in the left side navigation.</li>
       </b></question>
       <answer>
 <p>
-From the <a
-href="http://scarab.tigris.org/unbranded-source/browse/*checkout*/scarab/README.txt?rev=1">README.txt</a> file:
+From the, not longer exsiting, README.txt file:
 </p>
 
 <p>
@@ -166,7 +151,7 @@ NOTE: If you get a 'Server configuration denies access to data source'
       resolved a 'Server configuration denies access to data source' connection issue.
 </p>
 <p>
-      In order to setup the right permissions in MySQL, you may wish to
+      In order to set up the right permissions in MySQL, you may wish to
       try executing this command on a Unix command line (it has been
       reported to work for one person):
 </p>
@@ -176,22 +161,19 @@ NOTE: If you get a 'Server configuration denies access to data source'
 </p>
       
 <p>
-NOTE: Sometimes it may be useful to use "ant create-db" rather than "create-db.sh"
+NOTE: Sometimes it may be useful to use "ant create-db" rather than any script
       to diagnose connection issues since ant uses jdbc and the same URL
       that Scarab does while running.
  
 </p>
       
 <p>
-      Here is a couple links to also help you solve the permissions
+      Here is a link to also help you solve the permissions
       problem:
 </p>
 
 <p>      
  <a href="http://www.mysql.com/documentation/mysql/bychapter/manual_MySQL_Database_Administration.html#Access_denied">MySQL documentation</a>
-</p>
-<p>
- <a href="http://sourceforge.net/docman/display_doc.php?docid=8968&amp;group_id=15923">MySQL driver documentation</a>
 </p>
       </answer>
     </faq>    
@@ -201,12 +183,12 @@ NOTE: Sometimes it may be useful to use "ant create-db" rather than "create-db.s
       </b></question>
       <answer>
 <p>
-How: Please see our <a href="http://scarab.tigris.org/project_members.html">Getting involved</a> document.
+How: Login into a mailinglist and let us know.
 </p>
 
 <p>
-Why: Because the need for a first class issue tracking system that 
-is open source is badly needed.
+Why: A first class issue tracking system as Scarab that 
+is open source, needs developers.
 </p>
       </answer>
     </faq>    
@@ -216,8 +198,9 @@ is open source is badly needed.
       </b></question>
       <answer>
 <p>
-Here is my configuration for the 
-<a href="http://scarab.collab.net/">Scarab Live Server</a>:
+Look into the documentation files of Scarab and Apache Webserver.
+If this does not help you, here is a configuration for the not longer 
+existing "Scarab Live Server" from scarab.collab.net:
 </p>
 
 <pre>
@@ -231,14 +214,14 @@ NameVirtualHost 157.22.245.3
 </pre>
 
 <p>
-The above might not be optimal or even correct, but it works for
+This is pretty historic. The author mentioned: 
+"The above might not be optimal or even correct, but it works for
 me. You will need to have mod_rewrite and mod_proxy enabled on your
 server. A 'faster' method of doing the same thing would be to use
 Tomcat's mod_jk/mod_webapp with some rewrite rules (to get the short
 url's), but I'm not doing that, so I don't have configuration to show
-for it. Contributions welcome.
+for it. Contributions welcome." 
 </p>
-
 <p>
 For hiding Scarab behind Apache SSL, a similar setup as above would
 work, you would just want to make sure to listen to the https port 443
@@ -253,85 +236,30 @@ and attribute options?
       </b></question>
       <answer>
 <p>
-When you first install Scarab using the ./create-db.sh -e script,
+When you first install Scarab, not using the default data for database,
 you will get an empty database that is only populated with the
-required data. Therefore, you will need to setup your installation
+required data. Therefore, you will need to set up your installation
 with new Modules, Issue types, Attributes and Attribute options.
 </p>
 
 <p>
-Login as the Scarab Administer account that you created/defined
-in your build.properties when you built Scarab.
-</p>
-
-<p>
-#1. Create a new module.<br />
-    Admin -> Modules -> Manage modules -> Create new module
-</p>
-
-<p>
-#2. Select the module by clicking the 'Modules' link in the top-left
-    of the screen.
-</p>
-
-<p>
-#3. Now, create a new global issue type.<br />
-    Admin -> Global -> Global issue types
-</p>
-
-<p>
-#4. Add the new issue type to the module.<br />
-    Admin -> Modules -> Manage issue types -> Create new
-</p>
-
-<p>
-#5. Set the issue type to be active and shown in the left hand nav.<br />
-    (should be the next screen after #4. if not, then it is:
-    Admin -> Modules -> Manage issue types)
-</p>
-
-<p>
-#6. Edit the issue type and create attributes and attribute options.<br />
-    Admin -> Modules -> Manage issue types (click the issue type name).
-</p>
-
-<p>
-#7. Add attributes to an attribute group.<br />
-    (click the attribute group name on the 'Edit issue type' screen
-    and then click the 'Add new' button. If there are no global attributes
-    to add (most likely in this case), click the 'Create new' button to
-    define a global attribute.)
-</p>
-    
-<p>
-#8. Defining an attribute and its options.<br />
-    (Set the name/description/type of the attribute and then save it.
-     If you have created a Dropdown list, then the ability to create
-     attribute options will show up below. Simply add options and click
-     Save. When you are done, click done and it will take you back to
-     step #7. The attribute should also appear in the group.)
-</p>
-
-<p>
-Continue to repeat the steps above until all of your issue types, attributes
-and attribute options have been defined.
+Create all items in global data first, apply them to your modules afterwards.
 </p>
       </answer>
     </faq>  
     <faq id="10">
       <question><b>
-        How do I setup Scarab so that it will send a copy of each issue
+        How do I set up Scarab so that it will send a copy of each issue
 change to a particular email address (ie: a mailing list or the project leader)?
       </b></question>
       <answer>
 As either the module administrator or the domain administrator user, go
 to the Admin->Modules->Manage modules screen and edit the particular
 module that you are interested in tracking issue changes in. Set the
-'Archive email' address to the email address that you want. Please note, do
-not try to do this in the Global module, only modules which are children of 
-the Global module. If you want this email to go to multiple people, setup
-a mailing list and subscribe the people to that mailing list and then
-set the 'Archive email' address to be the address of the mailing list.
+'Archive email' address to the email address that you want. If you want 
+this email to go to multiple people, set up a mailing list and subscribe 
+the people to that mailing list and then set the 'Archive email' address
+to be the address of the mailing list.
       </answer>
     </faq>  
     <faq id="11">
@@ -342,11 +270,7 @@ set the 'Archive email' address to be the address of the mailing list.
 it say the server domain name instead?
       </b></question>
       <answer>
-In order to have one fewer thing to have to configure, Scarab uses
-whatever you type into the browser url as the url that is sent in the
-emails. So, if your server name is foo.com, then going to
-http://foo.com:8080/ instead of http://localhost:8080/ will generate the
-right url in the emails.
+You have one fewer thing to configure. For example, look at Scarab's properties.
       </answer>
     </faq>  
     <faq id="12">
@@ -355,13 +279,7 @@ right url in the emails.
 issue entry?
       </b></question>
       <answer>
-Right now, that is what issue templates do. Click on the 'Templates'
-link in the left hand side navigation, create the template and it will
-then show up when you go to enter a new issue. You can create as many
-templates as you wish and just 'apply' them when you enter a new issue.
-A nice feature addition would be to have a setting on the template
-administration screen that denotes which one should be automatically
-applied.
+Right now, that is what issue templates or workflow defintions can do.
       </answer>
     </faq>  
     <faq id="13">
@@ -370,12 +288,9 @@ applied.
       </b></question>
       <answer>
 <p>      
-The  Scarab developers provide MySQL database upgrade scripts
-for each new version of Scarab. We also take contributions for other
-databases. These scripts reside in the scarab/src/sql/upgrade directory.
-Some of these scripts are .sql files and some are unix shell .sh files.
-If you are using another database or operating system, we welcome your
-contributions to port these files.
+The  Scarab developers provide database upgrade scripts
+for each new version of Scarab. These scripts reside in the scarab/src/sql/upgrade directory.
+Some of these scripts are .sql files and some might be unix shell .sh files.
 </p>
 
 <p>
@@ -412,10 +327,9 @@ version of Scarab, move the target directory into the new version of
 Scarab, cd into target/webapps/scarab/WEB-INF and backup and remove the
 following directories: classes, conf, lib, sql, src. You should be
 careful to not remove the indexes and attachments directories (if they
-exist). Once you have done that, you can build Scarab again following
-the directions in the README.txt file. You should take note to create a
-~/build.properties file which stores your changes to the Scarab settings
-so that when you build again, your settings remain intact.
+exist). Once you have done that, you can build Scarab again. You should
+take note to create a ~/build.properties file which stores your changes
+to the Scarab settings so that when you build again, your settings remain intact.
 </p>
       </answer>
     </faq>  
@@ -450,11 +364,10 @@ The fix is simple, create an A or MX record for your domain entry.
       </b></question>
       <answer>
 <p>
-If you want to use
-a Scarab instance for testing, please use this address of the instance which is
-rebuilt nightly from the latest source code: 
+It's not a big deal to set up a small testing environment. Following the given build how to's.
+Once uppon a time, there was an instance for testing on: 
 <a href="http://www.saxess.com/en/components/scarab/testserver.page">http://www.saxess.com/en/components/scarab/testserver.page</a>.<br/>
-Please note that, as it's always rebuilt from the HEAD, this instance could show bugs or errors that does not appear in the released versions.<br/>
+This was intended to be a testing instance for the actual rebuilt of the HEAD, including all bugs and still incomplete features.<br/>
 Scarab also has the self-tracker availaible but please, don't use it for testing. It should be used only for reporting of Scarab's issues.
 </p>
       </answer>
@@ -473,7 +386,7 @@ Incompatible object argument for function call
 </pre>
 
 <p>
-Tomcat has several directories setup in order to create different
+Tomcat has several directories set up in order to create different
 'levels' of classpaths. There is a classpath that is specific to Tomcat
 and a classpath that is shared by all of the webapplications that Tomcat
 is running. Since Scarab still depends on Xerces 1.x, we need to make
@@ -499,12 +412,12 @@ issue, but we are not quite there yet.
     </faq> 
     <faq id="17">
       <question><b>
-        I want the Velocity templates to be copied into the webapp directory so that
-I can deploy Scarab as a WAR.
+        I want Scarab to be deploed as a WAR.
       </b></question>
       <answer>
 <p>
-In your build.properties, add the line: <code>scarab.copy.templates=true</code>
+There are special build targets for this, e.g.:
+<code>ant war</code>
 </p>
   </answer>
     </faq> 
@@ -512,11 +425,11 @@ In your build.properties, add the line: <code>scarab.copy.templates=true</code>
       <question><b>
 What is the best way to make duplicate installations of Scarab on multiple
 machines/databases? In other words, I want to have multiple installations
-of Scarab and I don't want to have to setup each one by hand.
+of Scarab and I don't want to have to set up each one by hand.
       </b></question>
       <answer>
 <p>
-Right now, the easiest way is to setup one installation of Scarab, then
+Right now, the easiest way is to set up one installation of Scarab, then
 mysqldump the database and import it into the other database.
 Eventually, we will have the ability to export/import the Scarab
 'settings'.
@@ -558,14 +471,14 @@ invalidates a user and forces them to log in again?
       </b></question>
       <answer>
 <p>
-In your build.properties, define the following by removing the #:
+In your build.properties, define the following:
 </p>
 
 <pre>
 # This is the timeout in seconds for sessions. If the value is 
 # left commented out, the servlet container's default timeout 
 # will be left as is.
-scarab.session.timeout = # session.timeout = 1800
+session.timeout = 1800
 </pre>
 
 <p>
@@ -644,7 +557,7 @@ in order to make the interdependencies, the actual scarab issue ids must
 exist. At this time, it does not seem as though you can add dependencies 
 via the xml import update mechanism.
       </answer>
-</faq>      
+</faq>    
 <faq id="25"> 
 <question><b>
         I want to import users and attributes. Can I?

@@ -37,43 +37,6 @@ one row for use similar to the following:
     SELECT 1 FROM DUAL
 </pre>
 </p>
-<p>
-
-<h5>Database Configuration</h5>
-</p>
-<p>
-The following properties in <code>build.properties</code>
-can be used to select and customize the database.
-<ul>
-<li>
-<code>scarab.database.type</code>
-</li>
-</ul>
-</p>
-<p>
-
-
-<h5>Data Load Configuration</h5>
-</p>
-<p>
-The following properties in <code>build.properties</code>
-can be used to customize the database load.
-<ul>
-<li>
-<code>scarab.database.loadorder</code>
-</li>
-<li>
-<code>scarab.database.validationQuery</code>
-</li>
-<li>
-<code>skip.seed.data</code>
-</li>
-<li>
-<code>seed.data.sql</code>
-</li>
-</ul>
-</p>
-
   </section>
 </body>
 </document>

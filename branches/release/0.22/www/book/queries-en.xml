@@ -60,11 +60,11 @@
 	<sect1>
 		<!-- Source: UserQueryAdvanced section of the online help -->
 		<title>Advanced queries</title>
-		<para>The advanced query form provides an interface for you to unambiguously define your search criteria. You can use this form to enter values for some, all or none of the attributes available in your issue type. You can further qualify your search criteria by requesting issues within a particular number range or date range. Say you want to know all closed issues relating to the AIX operating system within the last week. You can enter a date range (use the MM/DD/YYYY format, for instance, 01/01/2002) and define specific values for the operating system and status attributes.  Click option from the Select query list on the query bar. Clicking the Submit button will run the query.</para>
+		<para>The advanced query form provides an interface for you to unambiguously define your search criteria. You can use this form to enter values for some, all or none of the attributes available in your issue type. You can further qualify your search criteria by requesting issues within a particular number range or date range. Say you want to know all closed issues relating to the AIX operating system within the last week. You can enter a date range (use the given format) and define specific values for the operating system and status attributes. Click option from the Select query list on the query bar. Clicking the Submit button will run the query.</para>
 		<para>You can define values for some, none or all of the attributes. Scarab will search the knowledge base for issues that contain all of the values you have specified. The advanced query form allows you to define fine grained search criteria. There are three types of search criteria available on the advanced query form:</para>
 		<itemizedlist>
 			<listitem>
-				<para>Search the knowledge base</para>
+				<para>Search by attribute</para>
 			</listitem>
 			<listitem>
 				<para>Searching by personnel</para>
@@ -75,9 +75,9 @@
 		</itemizedlist>
 		<para>You can use each of these sections individually or a combination to qualify your searches. If you run a query without defining any attributes all issues associated with the logged in user ID will be returned. </para>
 		<sect2>
-			<title>Search the knowledge base</title>
-			<para>The  <emphasis role="bold">Search the knowledge base</emphasis>. section provides a space for you to define values for issue attributes. Each attribute that is available to your issue type is represented here. You can define values for all, some or none of the issue attributes. You can also limit your search to a range of issues or creation dates. .</para>
-			<para>Once the issue is submitted, the database will be searched for issues containing the values for all of the attributes defined in your search criteria. To effectively find the issues you are most interested in you want to define only the attributes that will meet your criteria. If you define attributes outside of your requirements you will be less likely to find any issues that meet your criteria. For instance, jdoe is looking for issues involving database errors affecting one of the UNIX operating systems. Rather than defining a value for the operating system, jdoe can create a search that will search for text strings about the database errors. If jdoe needs to refine the search criteria further, other attributes can be defined. When defining your search criteria, you should start with the smallest set of characteristics relevant to your needs.</para>
+			<title>Search by attribute</title>
+			<para>The first section provides a space for you to define values for issue attributes. Each attribute that is available to your issue type is represented here. You can define values for all, some or none of the issue attributes. You can also limit your search to a range of issues or creation dates.</para>
+			<para>Once the values are submitted, the database will be searched for issues containing the values for all of the attributes defined in your search criteria. To effectively find the issues you are most interested in you want to define only the attributes that will meet your criteria. If you define attributes outside of your requirements you will be less likely to find any issues that meet your criteria. For instance, jdoe is looking for issues involving database errors affecting one of the UNIX operating systems. Rather than defining a value for the operating system, jdoe can create a search that will search for text strings about the database errors. If jdoe needs to refine the search criteria further, other attributes can be defined. When defining your search criteria, you should start with the smallest set of characteristics relevant to your needs.</para>
 		</sect2>
 		<sect2>
 			<title>Searching by personnel</title>

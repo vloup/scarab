@@ -246,20 +246,15 @@
         </ant:ant>
     </postGoal>
     
+	<!-- =============================================== -->
+    <!-- build docs before maven site is generated       -->
+	<!-- =============================================== -->
     <preGoal name="site">
        <attainGoal name="sdocbook"/>
 <!--        <attainGoal name="torque:doc"/> -->
        <attainGoal name="javadoc"/>
 <!--        <attainGoal name="scarab:check-locales"/> -->
     </preGoal>    
-   
-    <!-- there are inconsistencies            -->
-    <!-- Sometimes the name faq.html ist used -->
-    <!-- in other cases it is faqs.html       -->
-    <!-- this is to be corrected later        -->
-    <postGoal name="site">
-      <ant:copy file="target/docs/faqs.html" tofile="target/docs/faq.html" />
-    </postGoal>
  
     <postGoal name="clean:clean">
         <ant:ant antfile="build/build.xml"
@@ -284,7 +279,7 @@
     <goal name="scarab:check-locales"
           prereqs="java:compile"
           description="Check language translations">
-        <ant:taskdef
+		<ant:taskdef
             name="checkLocaleBundles" 
             classname="org.tigris.scarab.util.build.AntL10AnalysisTask" >
             <ant:classpath>

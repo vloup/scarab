@@ -73,42 +73,58 @@ For Hypersonic and MySQL everyting is allready setup for you. For
 other databases see the specific informations [FIXME] Where are these infos?[HD]
 </p>
 
-<p><b>create-custom-property-file</b><br/> 
-Regenerates the <i>custom.properties</i> from the <i>build.properties</i>
-You may use this target whenever you have changed properties in your 
-<i>build.properties</i> which must propagate to your runtime environment.
-If you don't want to redeploy the whole webapplication, just start
-this target and then restart tomcat. Please note, that in general
-it is NOT sufficient to simply copy your <i>build.properties</i>
-to your <i>custom.properties</i>.
-</p>
-
-<p><b>generate-om</b><br/>
-Generates the java-sources of the Torque Database layer. This target is
-normally used internally from other Ant tasks. But if you want to manually
-recreate the sources files alone, this target is your choice.
-</p>
-
-<p><b>compile</b><br/>
-Generates the class files out of the java sources.
-</p>
-
 <p><b>clean</b><br/>
 Removes the target files in ../target/scarab. You may want to clean
 your installation before rebuilding Scarab in order to ensure your
 runtime system is consistent with your source tree.
 </p>
 
-<p><b>clean-all</b><br/>
-Like clean but also removes any logfiles in the tomcat/logs directory
-</p>
-
 <p><b>war</b><br/>
 Creates a ready to distribute war file.
 </p>
 
+<p><b>create-custom-property-file</b><br/> 
+Regenerates the <i>custom.properties</i> and <i>defaultCustom.properties</i> from the <i>build.properties</i>
+You may use this target whenever you have changed properties in your 
+<i>build.properties</i> which must propagate to your runtime environment.
+If you don't want to redeploy the whole webapplication, just start
+this target and then restart tomcat.
+</p>
+
+<p><b>compile</b><br/>
+Generates Scarab sources only, e.g. custom property files are missing.
+</p>
 </subsection>
 </section>
-
+<section name="Properties">
+      <table>
+        <tr>
+          <th>Property name</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>skip.jira.templates.data</td>
+          <td>Yes</td>
+          <td>
+            True = Jira templates for default database should be skipped.
+          </td>
+        </tr>     
+        <tr>
+          <td>skip.seed.data</td>
+          <td>Yes</td>
+          <td>
+            True = Users, modules and issues for default database should be skipped.
+          </td>
+        </tr>  
+        <tr>
+          <td>skip.default.data</td>
+          <td>Yes</td>
+          <td>
+            True = Default global data (issue types, attributes, ...) for default database should be skipped.
+          </td>
+        </tr>                 
+      </table>
+    </section>
 </body>
 </document>

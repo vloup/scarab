@@ -19,10 +19,12 @@
 	<subsection name="Generating Maven Managed Docs">
 	<p>
 	Documentation should all be written in the xdoc format, and stored under the /xdocs directory.  When you
-	are ready to generate the documentation, you can run Maven's site generation goal via 'maven site'.  If you don't
-	want to bother to run the unit tests, then run 'maven site -Dmaven.test.skip=true'.  This will generate all
-	the site documentation, as well as the FAQ, Javadocs, and various code analysis reports in the directory "/target/docs".
+	are ready to generate the documentation, you can run Maven's site generation goal via: <source>maven site</source>
+	If you don't want to bother to run the unit tests, then run: <source>maven site -Dmaven.test.skip=true</source>
+	This will generate all the site documentation, as well as the FAQ, Javadocs, and various code analysis reports in the directory /target/docs.
 	</p>
+	</subsection>
+	<subsection name="Used Plugins">
 	<p>
 	We use a Tasks plugin from <a href="http://maven-plugins.sourceforge.net/maven-tasks-plugin/">Maven-Plugins</a>
 	to generate the roadmap document.  This plugin should download automatically and install.  If not, look at the
