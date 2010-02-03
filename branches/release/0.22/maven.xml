@@ -283,7 +283,7 @@
             name="checkLocaleBundles" 
             classname="org.tigris.scarab.util.build.AntL10AnalysisTask" >
             <ant:classpath>
-            	<ant:pathelement location="${maven.build.dir}/classes" />
+            	<ant:pathelement location="${maven.build.dest}" />
             	<ant:path refid="maven.dependency.classpath" />
             </ant:classpath>
         </ant:taskdef>
