@@ -8,27 +8,15 @@
 </properties>
 
 <body>
-
-
 <section name="The Scarab Build System">
-<subsection name="introduction">
+<subsection name="Introduction">
 
 <p>
 The installation and configuration of Scarab is intended to be as simple as 
-possible. This document outlines the directory structure of the distribution 
-(currently it mirrors the CVS tree), the requirements for running Scarab,
+possible. This document outlines the directory structure of the distribution, the requirements for running Scarab,
 the instructions for building and running an installation as well as 
 requirements for setting up the database.
 </p>
-<p>
-If you are doing development work with Scarab, please make sure to read 
-</p>
-
-<source>
-<a href="http://www.solitone.org/scarab_doc/">http://www.solitone.org/scarab_doc/</a>
-<a href="http://www.solitone.org/scarab_doc/howto/build-howto.html">http://www.solitone.org/scarab_doc/howto/build-howto.html</a>
-</source>
-
 <p>
 In this document we use the following logical locations:
 <ul>
@@ -46,12 +34,12 @@ system running.
 </p>
 </subsection>
 
-<subsection name="requirements">
+<subsection name="Requirements">
 
 <p>
 
 <ul>
-<li>SDK 1.3.1 or higher available from
+<li>SDK 1.4 or higher available from
     <p>
       <code>
         <a href="http://java.sun.com/">http://java.sun.com/</a>
@@ -68,7 +56,7 @@ system running.
     </p>
 </li>
 
-<li>Maven-1.0 or higher available from
+<li>Maven-1.x available from
     <p>
       <code>
         <a href="http://maven.apache.org/">http://maven.apache.org/</a>
@@ -108,7 +96,7 @@ system running.
 <li>An RDBMS preferably one out of the list below
     <p>
       <ul>
-        <li>MySQL 3.23.x/4.0.x  available from
+        <li>MySQL 3.23.x/4.0.x or higher available from
             <p>
               <code>
                 <a href="http://www.mysql.com/">http://www.mysql.com/</a>
@@ -154,10 +142,6 @@ system running.
             </p>
         </li>
       </ul>
-    </p>
-    <p>
-        NOTE: More detailed instructions for setting up the database on
-        different database vendors are available on our website.
     </p>
     <p>
       There are also several other databases with partial support:
@@ -290,23 +274,27 @@ we will refer to the root diretory of your distribution as <i>$SCARAB_ROOT</i>.
 </p>
 <source>
 scarab
-  +- build          &lt;-- Ant scripts for building the sample webapp
-  |                     and creating/loading the sql scripts.
+  +- build                 &lt;-- Ant scripts for building the sample webapp
+  |                             and creating/loading the sql scripts.
   +- extensions
-  |   +- usermods   &lt;-- place your modifications to the standard
-  |   |                    distribution here. These modifications will be
-  |   |                    incorporated into the build. This simplifies
-  |   |                    the process of replacing *.vm files,
-  |   |                    among other things.
-  |   +- scripts    &lt;-- Helper shell scripts
-  |   +- dtd        &lt;-- DTD's for validating XML files
-  |   +- bugzilla   &lt;-- Scripts for converting from Bugzilla to Scarab
+  |   +- backup            &lt;-- A tool to help backup and restore a Scarab database
+  |   +- bugzilla          &lt;-- Scripts for converting from Bugzilla to Scarab
+  |   +- dtd               &lt;-- DTD's for validating XML files
+  |   +- excel2scarab	   &lt;-- Ant build which transforms an XML input file into an XML importable by Scarab.
+  |   +- scripts           &lt;-- Helper shell scripts
+  |   +- usermods          &lt;--  place your modifications to the standard
+  |                                distribution here. These modifications will be
+  |                                incorporated into the build. This simplifies
+  |                                the process of replacing *.vm files,
+  |                                among other things.
   +- lib
-  +- src            &lt;-- The source files.
-  +- tomcat         &lt;-- Included Tomcat configured ready to run with Scarab.
-  +- www            &lt;-- Scarab Website
-      +- repository &lt;-- The .jar repository for jars used by Scarab.
-  +- xdocs          &lt;-- xml versions of manuals (guides, howtos etc)
+  +- src                   &lt;-- The source files.
+  +- tomcat                &lt;-- Included Tomcat configured ready to run with Scarab.
+  +- www                   &lt;-- Scarab Website
+      +- book              &lt;-- xml versions of manuals (guides)
+      +- dtd               &lt;-- DTD's
+      +- repository        &lt;-- The .jar repository for jars used by Scarab.
+  +- xdocs                 &lt;-- xml files for maven site (misc documentation files, howtos etc)
 </source>
 <p>
 Within the /src directory you find following subdirectories...
@@ -314,20 +302,20 @@ Within the /src directory you find following subdirectories...
 <source>
 src
   +- conf
-  |    +- conf      &lt;-- Various configuration files for Scarab.
-  |    |                TurbineResources.properties and Scarab.properties
-  |    |                live here.  Copied to WEB-INF/conf
-  |    +- classes   &lt;-- Various configuration files copied directly 
-  |                     into the classpath.
-  +- java           &lt;-- The Java source code for Scarab.
-  +- migration      &lt;-- Java source for migration ant tasks
-  +- schema         &lt;-- database schema files
-  +- sql            &lt;-- SQL files for defining the database.
-  +- templates      &lt;-- ??? [FIXME] what is tis for ???
-  +--test           &lt;-- Test suite code.
-  +--webapp         &lt;-- All the web resources required for Scarab like 
-  |                     images, css files, javascript files, html files,
-  |                     velocity templates.
+  |    +- conf             &lt;-- Various configuration files for Scarab.
+  |    |                       TurbineResources.properties and Scarab.properties
+  |    |                       live here.  Copied to WEB-INF/conf
+  |    +- classes          &lt;-- Various configuration files copied directly 
+  |                            into the classpath.
+  +- java                  &lt;-- The Java source code for Scarab.
+  +- migration             &lt;-- Java source for migration ant tasks
+  +- nsis                  &lt;-- Scripts for nsis (Nullsoft Scriptable Install System)
+  +- schema                &lt;-- database schema files
+  +- sql                   &lt;-- SQL files for defining the database.
+  +- test                  &lt;-- Test suite code.
+  +- webapp                &lt;-- All the web resources required for Scarab like 
+                               images, css files, javascript files, html files,
+                               velocity templates.
 
 </source>
 
@@ -369,7 +357,7 @@ you can also copy <code>project.properties</code> to your
 </p>
 <p>
 Please note that the properties modified in <code>build.properties</code>
-<b>only</b> affect the build. Changing them and then immediately restarting 
+only affect the build. Changing them and then immediately restarting 
 your appliation server has no effect at all - see the following section 
 on runtime properties for more information.
 </p>
@@ -520,6 +508,9 @@ You can set the location of your email server by modifying the property
 in <i>custom.properties</i> or by using the JNDI tree as discussed above.
 </p>
 <p>
+Maybe you have to edit some more properties. For more explanations, you may look into the properties guide.
+</p>
+<p>
 You will need to stop and restart Scarab/Tomcat for the changes to take
 effect.
 </p>
@@ -547,7 +538,7 @@ size issues. Therefore you have two options:
     the webapp directory and is set to <code>WEB-INF/attachments</code>. 
     You can also define an absolute path such as 
     </p>
-    <code>/bigdisk/scarab/attachments</code>.</li>
+    <code>/bigdisk/scarab/attachments</code></li>
 </ol>
 <p>
 It is recommended to also set the property
@@ -716,26 +707,17 @@ scarab.database.password
 You find more informations about the settings in <code>project.properties</code>
 </p>
 <p>
-NOTE: PostgreSQL users should follow a different procedure for creating
-      the database. See PostgreSQL.txt.
-</p>
-<p>
 NOTE: If you would like to only load the required database data and not
       the sample/default data, you can do so by passing the property
 </p>
-      <source>ant create-db -Dskip.seed.data=true</source>
+      <source>ant create-db -Dskip.seed.data=true -Dskip.default.data=true -Dskip.jira.templates.data=true</source>
 <p>
       to your JVM upon startup of the build processs or by adding the 
       same property to your <i>build.properties</i>:  
 </p>
-      <code>skip.seed.data=true</code>
-<p>
-NOTE: More detailed instructions for setting up the database on
-      different database vendors is available on our website.
-</p>
-<code>
-<a href="http://scarab.tigris.org/project_docs.html">http://scarab.tigris.org/project_docs.html</a>
-</code>
+      <code>skip.seed.data=true
+      ...
+      </code>
 <p>
 NOTE: The create scripts will attempt to first drop your scarab database
       and then recreate it. If you execute "ant create-db", all of your
@@ -752,7 +734,7 @@ NOTE (for MySQL only): If you get a
 </p>
 <p>
 NOTE: On some operating systems, there seems to be an unexpected
-      interation between the JVM, DNS resolution and the MySQL driver
+      interaction between the JVM, DNS resolution and the MySQL driver
       where a JDBC url pointing to 'localhost' will resolve as
       'localhost.localdomain' and will prevent the connection to MySQL
       from authenticating correctly because most people configure MySQL
@@ -772,13 +754,9 @@ NOTE: On some operating systems, there seems to be an unexpected
 <source>
         echo "GRANT ALL ON scarab.* to ''@localhost" | mysql mysql
 </source>      
-      Here are a couple of links to also help you solve possible
-      permissions problems:
+      See documentationof <a href="http://www.mysql.com/documentation/mysql/bychapter/manual_MySQL_Database_Administration.html#Access_denied">MySQL-manual</a>, too, to solve possible
+      permissions problems.
 </p>
-<code>
-      <a href="http://www.mysql.com/documentation/mysql/bychapter/manual_MySQL_Database_Administration.html#Access_denied">MySQL-manual</a><br/>
-      <a href="http://sourceforge.net/docman/display_doc.php?docid=8968&amp;group_id=15923">docman-display_doc.php</a><br/>
-</code>
 
 </subsection>
 
@@ -796,7 +774,7 @@ startup.bat   &lt;-- Win32
 Then, in your web browser, go to:
 </p>
 <source>
-&lt;http://localhost:8080/scarab>
+http://localhost:8080/scarab
 </source>
 <p>
 NOTE: Make sure that your TOMCAT_HOME is defined correctly. If you are 
@@ -816,22 +794,19 @@ NOTE: You can define your own URL by editing the <code>WEB-INF/web.xml</code>
 <subsection name="Customizing Scarab">
 <p>
 At times it may be useful to make minor modifications to Scarab without
-applying those changes directly to the Scarab sources (since this
-will cause CVS to report those differences, and even worse, the custom
-modifications might get unintentionally checked into the Scarab CVS
-repository by a Scarab developer).
+applying those changes directly to the Scarab sources.
 </p>
 <p>
-The extensions/usermod directory structure allows this to be done 
+The extensions/usermods directory structure allows this to be done 
 fairly simply.
 </p>
 <p>
 It contains three directories, lib, conf, and templates. Any files in
 the lib directory will be copied into the appropriate target
-directory _after_ any such files in the standard distribution,
-and will replace the standard distribution files.  Any files in the
+directory <b>after</b> any such files in the standard distribution,
+and will <b>replace</b> the standard distribution files. Any files in the
 template directory will be copied to the target template directory
-_ONLY_IF_ the property "scarab.copy.templates" is set, again after
+only if the property "scarab.copy.templates" is set, again after
 the files from the standard distribution. 
 </p>
 <p>

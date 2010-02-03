@@ -13,14 +13,7 @@
 <section name="Preparations before cutting">
 <p>
 	Basically you need to test and build the distribution, and 
-	then build and commit the generated documentation.  You will need following prerequisites
-	to proceed:
-	<source>
-	maven-1.0.*
-	java-1.4 or java-1.5 sdk
-	mysql-4.0 or newer
-	</source>
-	
+	then build and commit the generated documentation.
 </p>
 	<a name="buildtest"/><subsection name="Building a Distribution">
 	<p>
@@ -33,7 +26,7 @@
 	<p>
 	  Build and execute tests.
       <source>
-      maven
+      maven -Dmaven.test.skip=true
       maven scarab:create-db
       maven test
       </source>
@@ -88,7 +81,7 @@
 	</p>
 
 </subsection>
-<subsection name="Release">
+<subsection name="File Release">
 
 	<p>
 	  Build a source release. 
@@ -97,14 +90,6 @@
       <source>
       cd scarab/build
       ant package
-      </source>	       
-	</p>
-
-	<p>
-	  Build the All In One Scarab release. This will create a 
-	  Windows executable file that people can run in /target/ directory.
-      <source>
-      maven scarab:sample
       </source>	       
 	</p>
 </subsection>

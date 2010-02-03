@@ -126,7 +126,7 @@ and explore the documentation, build system and code that is there
 already. Build a "target" sandbox, startup Tomcat and explore the
 templates that are already there. Analyze the database design and look
 at the files in the src/sql directory (the default-data and sample-data)
-files are very helpful. The README.txt file documents everything
+files are very helpful. Scarab's Guides from documentation site contain everything
 necessary to get a Scarab installation up and running. It's easy.
 </p>
 </subsection>

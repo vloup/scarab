@@ -15,10 +15,10 @@
 			<simpara>Select the report you wish to run by clicking on the report name, or access the report builder by  clicking  the <emphasis role="bold">Create new</emphasis> button.</simpara>
 		</listitem>
 	</itemizedlist>
-	<para>The Scarab report build consists of three tabs: The <emphasis role="bold">Report information</emphasis> tab allows you to define the scope of the report and enter summary information. The summary information is for  saving reports. There are two sections on this tab: <emphasis role="bold">Artifact types selected for this report</emphasis>, and <emphasis role="bold">Summary</emphasis>. </para>
+	<para>The Scarab report build consists of several steps. At first you have to select the issue types.</para>
 	<sect1>
 		<title>Selecting issue types</title>
-		<para>The issue type included in the report defaults to the currently selected issue type. If you wish to define a report for a different or multiple issue types/modules, click the <emphasis role="bold">Edit list</emphasis> button. This will take you to the <emphasis role="bold">Cross module/issue type list</emphasis> page. You can use this page to define a list of issues types within the current module or across multiple modules to be included in your report.  It is highly recommended that the issue types for the report be chosen prior to working with the  content tabs.  Though it is possible to modify the list later, additions that conflict with already entered data on the other tabs will not be allowed.</para>
+		<para>The issue type included in the report defaults to the currently selected issue type. If you wish to define a report for a different or multiple issue types/modules, click the link for the <emphasis role="bold">List Editor</emphasis>. This will take you to the <emphasis role="bold">Cross module/issue type list</emphasis> page. You can use this page to define a list of issues types within the current module or across multiple modules to be included in your report. It is necessary that the issue types for the report be chosen prior to working with the content tabs. Though it is possible to modify the list later, additions that conflict with already entered data on the other tabs will not be allowed.</para>
 		<para>On the <emphasis role="bold">Cross module/issue type list</emphasis> page, you can perform the following tasks:</para>
 		<itemizedlist>
 			<listitem>
@@ -64,21 +64,21 @@
 			<title>
 				<emphasis role="bold">Data types</emphasis>
 			</title>
-			<para> The <emphasis role="bold">Row/Column criteria</emphasis> section allows you to select the type of data presented in the rows or columns of your report. The available selections are:</para>
+			<para>The <emphasis role="bold">Row/Column criteria</emphasis> section allows you to select the type of data presented in the rows or columns of your report. The available selections are:</para>
 			<itemizedlist>
 				<listitem>
 					<para>
-						<emphasis role="bold">Attribut(s) / option(s)</emphasis> When this data type is selected, you can choose from among the attributes and options defined for the selected issue types.</para>
+						<emphasis role="bold">Attribute(s) / Option(s)</emphasis> When this data type is selected, you can choose from among the attributes and options defined for the selected issue types.</para>
 				</listitem>
 				<listitem>
 					<para>
-						<emphasis role="bold">Utilisateurs (par attribut utilisateur)</emphasis>When this data type is selected, you can choose from among the module members and specify a user attribute for each user selected.</para>
+						<emphasis role="bold">Users (for user attributes)</emphasis> When this data type is selected, you can choose from among the module members and specify a user attribute for each user selected.</para>
 				</listitem>
 				<listitem>
-					<para>Date(s)<emphasis role="bold"/> When this data type is selected, you can define dates for each row or column of your report.</para>
+					<para><emphasis role="bold">Date(s) / Date Range(s)</emphasis> When this data type is selected, you can define dates for each row or column of your report.</para>
 				</listitem>
 			</itemizedlist>
-			<para>The option selected in the <emphasis role="bold">Select content type</emphasis> field determines the data available in the rest of the sections of these tabs. Only one content type can be used for each heading. If you choose Date(s) as a content type on either the <emphasis role="bold">Row content</emphasis> or <emphasis role="bold">Column content</emphasis> tab, it must be  the only heading on that axis. However, you can  define user criteria for one or more heading levels and option attributes for other headings on the same axis. Changing the content type to Date(s) after defining a set of user or attribute/option criteria for either the row or column content tabs will discard the previously entered data for that tab.</para>
+			<para>The option selected in the <emphasis role="bold">Select content type</emphasis> field determines the data available in the rest of the sections of these tabs. Only one content type can be used for each heading. If you choose Date(s) / Date Range(s) as a content type on either the <emphasis role="bold">Row content</emphasis> or <emphasis role="bold">Column content</emphasis> tab, it must be  the only content type on that axis. However, you can define different criteria for one or more heading levels on the same axis. Changing the content type after defining a set for either the row or column content tabs will discard the previously entered data for that tab.</para>
 		</sect2>
 		<sect2>
 			<title>
@@ -121,7 +121,7 @@
 			<para>You must have defined at least one heading containing <emphasis role="bold">Attribute/option(s)</emphasis> in your report before you can define groups.  To group options within headings:</para>
 			<orderedlist>
 				<listitem>
-					<para>DOn the <emphasis role="bold">Row content</emphasis> tab or the <emphasis role="bold">Column content</emphasis> tab, select a heading containing the <emphasis role="bold">Attribute/option(s)</emphasis> content type and click the <emphasis role="bold">Edit selected heading</emphasis> button.</para>
+					<para>On the <emphasis role="bold">Row content</emphasis> tab or the <emphasis role="bold">Column content</emphasis> tab, select a heading containing the <emphasis role="bold">Attribute/option(s)</emphasis> content type and click the <emphasis role="bold">Edit selected heading</emphasis> button.</para>
 				</listitem>
 				<listitem>
 					<para>In the group related data section, enter a name for the group and click the <emphasis role="bold">Add new</emphasis> button. Repeat this step if you wish to have additional groups within this heading.</para>
@@ -158,13 +158,13 @@
 			<para>To create  date/time reports:</para>
 			<orderedlist>
 				<listitem>
-					<para>On either the <emphasis role="bold">Row content</emphasis> or <emphasis role="bold">Column content</emphasis> tab, Select <emphasis role="bold">Date(s) </emphasis>from the <emphasis role="bold">Select content type</emphasis> drop down box.</para>
+					<para>On either the <emphasis role="bold">Row content</emphasis> or <emphasis role="bold">Column content</emphasis> tab, Select <emphasis role="bold">Date(s) / Date Range(s)</emphasis> from the <emphasis role="bold">Select content type</emphasis> drop down box.</para>
 				</listitem>
 				<listitem>
-					<para>In the <emphasis role="bold">Select row/column (dates) content</emphasis> table, use the drop down boxes to select the date and time you want to include in your report.</para>
+					<para>In the <emphasis role="bold">Select row/column (dates) content</emphasis> table, use the calendar to select the date and time you want to include in your report.</para>
 				</listitem>
 				<listitem>
-					<para>Click the <emphasis role="bold">Add single date/time</emphasis> button.</para>
+					<para>Click the <emphasis role="bold">Add</emphasis> button.</para>
 				</listitem>
 				<listitem>
 					<para>Continue adding dates in this fashion until all desired dates are included.</para>

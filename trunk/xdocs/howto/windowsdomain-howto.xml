@@ -46,7 +46,7 @@ In the build.properties file, include the following properties:
 <p>
 When browsing, Scarab will try to get the credentials and validate them against the NTLM domain.<br/>
 If they are valid. it will try logging in the user into Scarab.<br/>
-<strong>For this to succeed, the NTLM usename must match an Scarab username.</strong>
+<strong>For this to succeed, the NTLM username must match an Scarab username.</strong>
 </p>
 <p>
 If the user gets logged in, a message will be displayed, such as <strong>"You've been automatically logged in using your user 'YourUser' from domain 'YourDomain'."</strong>

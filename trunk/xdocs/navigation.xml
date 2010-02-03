@@ -13,7 +13,6 @@
     <menu name="General Information">
       <item name="Overview"               href="/index.html"/>
       <item name="Installation"           href="/howto/build-howto.html"/>
-      <item name="1.0 Roadmap"            href="/tasks-report.html"/>
     </menu>
   
     <menu name="Documentation">
@@ -22,7 +21,6 @@
       <!-- Note, name of properties is scarab_properties_final.html due to encoding issues forcing
       some name changes -->    
       <item name="Properties Guide"       href="/scarab_properties_final.html"/> 
-      <item name="FAQ"                    href="/faqs.html"/>
       <item name="How-To's"               href="/howto/index.html" collapse="true">
        <item name="Maven Build"           href="/howto/maven-build-howto.html"/>
        <item name="Ant Build"             href="/howto/ant-build-howto.html"/>
@@ -30,7 +28,6 @@
        <item name="Releasing Scarab"      href="/howto/release-howto.html"/>
        <item name="Scarab and Firewalls"  href="/howto/firewall-howto.html"/>
        <item name="Windows domain auth"   href="/howto/windowsdomain-howto.html"/>
-       <item name="Tuning Howto"          href="/howto/tuning-howto.html"/>
        <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>                                   
       </item>
       <item name="Databases"              href="/databases/index.html" collapse="true">
@@ -51,16 +48,11 @@
       <item name="XML Import"             href="/xmlimport/index.html"  collapse="true">
           <item name="Import Issues"      href="/xmlimport/import-issues.html"/>
           <item name="XML Format"         href="/xmlimport/xml-format.html"/>
-          <item name="XML FAQ"            href="/faqs.html#22"/>
+          <item name="XML FAQ"            href="/faq.html#22"/>
       </item>
-      <item name="Changes"                href="/changes-report.html"/>
       <item name="JavaDocs"               href="/apidocs/index.html"/>     
       <item name="L10N Status Report" href="/l10nstatus.html"/>
     </menu>
-    <menu name="Maven Goals">
-      <item name="Goals"                  href="/maven_goals.html" />
-      <item name="Properties"             href="/maven_properties.html" />
-    </menu> 
 
     <menu name="Project Tools"  collapse="true">
       <item name="Membership"             href="http://scarab.tigris.org/servlets/ProjectMemberList" />
