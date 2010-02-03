@@ -76,7 +76,7 @@
 <div class="scarab-toolgroup">
 
   <div class="label">
-    <strong><a href="$link.setPage("home,EnterNew.vm").addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.EnterNewIssue ...</a></strong>
+    <strong><a href="$link.setPage("home,EnterNew.vm").addPathInfo("eventSubmit_doStart", "foo").setAction("ReportIssue")">$l10n.EnterNewIssue</a></strong>
   </div>
   
   <div class="body">
