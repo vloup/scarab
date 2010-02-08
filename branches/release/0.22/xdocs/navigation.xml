@@ -22,7 +22,7 @@
       some name changes -->    
       <item name="Properties Guide"       href="/scarab_properties_final.html"/> 
       <item name="How-To's"               href="/howto/index.html" collapse="true">
-       <item name="Maven Build"           href="/howto/maven-build-howto.html"/>
+	   <item name="Maven Build"           href="/howto/maven-build-howto.html"/>
        <item name="Ant Build"             href="/howto/ant-build-howto.html"/>
        <item name="Howto Build Docs"      href="/howto/build-docs-howto.html"/>
        <item name="Releasing Scarab"      href="/howto/release-howto.html"/>
@@ -30,7 +30,8 @@
        <item name="NTLM Authentication"   href="/howto/windowsdomain-howto.html"/>
 	   <item name="LDAP Authentication"   href="/howto/ldap-howto.html"/>
        <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>
-		<item name="Import issues from Jira"    href="/howto/jira-import-howto.html"/>	   
+		<item name="Import issues from Jira"    href="/howto/jira-import-howto.html"/>
+       <item name="Debian package"    href="/howto/debian-package-howto.html"/>
       </item>
       <item name="Databases"              href="/databases/index.html" collapse="true">
 
