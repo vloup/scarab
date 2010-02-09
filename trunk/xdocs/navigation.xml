@@ -27,8 +27,11 @@
        <item name="Howto Build Docs"      href="/howto/build-docs-howto.html"/>
        <item name="Releasing Scarab"      href="/howto/release-howto.html"/>
        <item name="Scarab and Firewalls"  href="/howto/firewall-howto.html"/>
-       <item name="Windows domain auth"   href="/howto/windowsdomain-howto.html"/>
-       <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>                                   
+       <item name="NTLM Authentication"   href="/howto/windowsdomain-howto.html"/>
+	   <item name="LDAP Authentication"   href="/howto/ldap-howto.html"/>
+       <item name="Customizing Scarab"    href="/howto/customize-howto.html"/>
+		<item name="Import issues from Jira"    href="/howto/jira-import-howto.html"/>
+       <item name="Debian package"    href="/howto/debian-package-howto.html"/>
       </item>
       <item name="Databases"              href="/databases/index.html" collapse="true">
 
