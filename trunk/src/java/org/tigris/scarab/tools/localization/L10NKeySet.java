@@ -468,6 +468,7 @@ public class L10NKeySet
     public static final LocalizationKey ActivityAssociatedInfo = new L10NKey("ActivityAssociatedInfo");
     public static final LocalizationKey ActivityDependencies = new L10NKey("ActivityDependencies");
 
+    public static final LocalizationKey NotificationIssueReminder         = new L10NKey("NotificationIssueReminder");
     public static final LocalizationKey NotificationIssueOnHold           = new L10NKey("NotificationIssueOnHold");
     public static final LocalizationKey NotificationIssueCreated          = new L10NKey("NotificationIssueCreated");
     public static final LocalizationKey NotificationIssueMoved            = new L10NKey("NotificationIssueMoved");
@@ -487,6 +488,10 @@ public class L10NKeySet
     public static final LocalizationKey NotificationCommentAdded          = new L10NKey("NotificationCommentAdded");
     public static final LocalizationKey NotificationCommentChanged        = new L10NKey("NotificationCommentChanged");
     public static final LocalizationKey NotificationIssueOther            = new L10NKey("NotificationIssueOther");
+
+    public static final LocalizationKey WakeupFromOnHoldstate             = new L10NKey("WakeupFromOnHoldstate");  
+    public static final LocalizationKey WakeupFromIdlestate               = new L10NKey("WakeupFromIdlestate");
+    public static final LocalizationKey GeneratedOnHoldState              = new L10NKey("GeneratedOnHoldState");
     
     public static final LocalizationKey IssueIsNowLocatedIn = new L10NKey("IssueIsNowLocatedIn");
     public static final LocalizationKey IssueIdNotValid = new L10NKey("IssueIdNotValid");
