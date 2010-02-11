@@ -162,52 +162,84 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                 Activity act = (Activity)it.next();
                 if (act.getIssue().equals(issue))
                 {
-                    notification = new NotificationStatus(Email.getArchiveUser(), act);
-                    NotificationStatusPeer.doInsert(notification);
-
-                    Module module = issue.getModule();
-                    Set<ScarabUser> users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
-                    users.addAll(issue.getAllUsersToEmail(AttributePeer.CC_TO));
-                    users.addAll(activitySet.getRemovedUsers(issue));
-
-                    // Add all ScarabUsers defined in the module's ArchiveEmail string
-                    // Note 1: Only those entries will be taken into account, which can
-                    //         be identified as valid and existing Scarab users in the local
-                    //         repository.
-                    // Note 2: the users notification settings apply here!
-                    // Note 3: All foreign EmailAddresses stored in the module's ArchiveEmail
-                    //         will be ignored here and later added without any constraints
-                    //         during actual sending of the EMail!
-                    users.addAll(module.getArchivingScarabUsers());
-
-                    // FIXME: Should we still make difference between CC & TO? If so...
-                    // ...do we need this info in the notification_status table??
-
-                    // FIXME: SCB1439. does the user really have permissions
-                    // to view this attribute?
-
-                    String activityType = act.getActivityType();
-
-                    for (Iterator<ScarabUser> itusers = users.iterator(); itusers.hasNext(); )
+                    try
                     {
-                        ScarabUser user     = (ScarabUser)itusers.next();
-                        Integer userId      = user.getUserId();
-
-                        boolean isSelf = userId.equals(fromUser.getUserId());
-                        boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType);
-                        
-                        if(wantsNotification)
+                        notification = new NotificationStatus(Email.getArchiveUser(), act);
+                        NotificationStatusPeer.doInsert(notification);
+    
+                        Module module = issue.getModule();
+                        Set<ScarabUser> users = issue.getAllUsersToEmail(AttributePeer.EMAIL_TO);
+                        users.addAll(issue.getAllUsersToEmail(AttributePeer.CC_TO));
+                        users.addAll(activitySet.getRemovedUsers(issue));
+    
+                        // Add all ScarabUsers defined in the module's ArchiveEmail string
+                        // Note 1: Only those entries will be taken into account, which can
+                        //         be identified as valid and existing Scarab users in the local
+                        //         repository.
+                        // Note 2: the users notification settings apply here!
+                        // Note 3: All foreign EmailAddresses stored in the module's ArchiveEmail
+                        //         will be ignored here and later added without any constraints
+                        //         during actual sending of the EMail!
+                        users.addAll(module.getArchivingScarabUsers());
+    
+                        // FIXME: Should we still make difference between CC & TO? If so...
+                        // ...do we need this info in the notification_status table??
+    
+                        // FIXME: SCB1439. does the user really have permissions
+                        // to view this attribute?
+    
+                        String activityType = act.getActivityType();
+    
+                        for (Iterator<ScarabUser> itusers = users.iterator(); itusers.hasNext(); )
                         {
-                            notification = new NotificationStatus(user, act);
-                            NotificationStatusPeer.doInsert(notification);
+                            ScarabUser user     = (ScarabUser)itusers.next();
+                            Integer userId      = user.getUserId();
+    
+                            boolean isSelf = userId.equals(fromUser.getUserId());
+                            boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType);
+                            
+                            if(wantsNotification)
+                            {
+                                notification = new NotificationStatus(user, act);
+                                NotificationStatusPeer.doInsert(notification);
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        log.error("queueNotifications(): while processing activity queue: " + e.getMessage(),e);
+                        logNotificationData(notification);
+                        log.error("queueNotifications(): Abort this run");
+                        break;
+                    }
+                    
                 }
             }
         }
         catch (Exception e)
         {
-            log.error("queueNotifications(): ",e);
+            log.error("queueNotifications(): while setting up the activity queue: " + e.getMessage(),e);
+        }
+    }
+
+
+    private void logNotificationData(NotificationStatus notification) throws TorqueException
+    {
+        try
+        {
+            log.error("queueNotifications():comment:"      + notification.getComment());
+            log.error("queueNotifications():changeDate:"   + notification.getChangeDate());
+            log.error("queueNotifications():creationDate:" + notification.getCreationDate());
+            log.error("queueNotifications():creator:"      + notification.getCreator().toString());
+            log.error("queueNotifications():issueId:"      + notification.getIssueId());
+            log.error("queueNotifications():primaryKey:"   + notification.getPrimaryKey().toString());
+            log.error("queueNotifications():queryKey:"     + notification.getQueryKey());
+            log.error("queueNotifications():receiver:"     + notification.getReceiver().toString());
+            log.error("queueNotifications():status:"       + notification.getStatusLabel());
+        }
+        catch(Exception e)
+        {
+            log.error("queueNotifications(): while dumping notificationData: " + e.getMessage(),e);
         }
     }
 
@@ -467,7 +499,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                         ActivitySet activitySet = activity.getActivitySet();
                         Integer userId          = activitySet.getCreatedBy();
                         ScarabUser user         = ScarabUserManager.getInstance(userId);
-                        createWakeupNotification(issue, user);
+                        createWakeupNotification(issue, user, "WakeupFromOnHoldstate");
                     }
                 }
             }
@@ -479,7 +511,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         
     }
     
-    private void createWakeupNotification(Issue issue, ScarabUser user) throws TorqueException
+    private void createWakeupNotification(Issue issue, ScarabUser user, String wakeupMessage) throws TorqueException
     {
         Date date;
         try {
@@ -503,7 +535,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             
             Attachment attachment = AttachmentManager.getInstance();
             attachment.setTextFields(user, issue,Attachment.COMMENT__PK);
-            attachment.setData("WakeupFromOnHoldstate");
+            attachment.setData(wakeupMessage);
             attachment.setName("comment");
             attachment.save();
             
@@ -515,7 +547,8 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                 activitySet = ActivitySetManager.getInstance(tt, user);
                 activitySet.addActivity(activity);
                 activitySet.save();
-                addActivityNotification(ActivityType.ISSUE_ONHOLD, activitySet, issue, user);                
+                
+                addActivityNotification(ActivityType.ISSUE_REMINDER, activitySet, issue, user);                
             } catch (ScarabException e) {
                 throw new RuntimeException(e);
             }
@@ -1079,6 +1112,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         typeDescriptions.put(ActivityType.DEPENDENCY_CHANGED.getCode(), L10NKeySet.ActivityDependencies);
         typeDescriptions.put(ActivityType.DEPENDENCY_DELETED.getCode(), L10NKeySet.ActivityDependencies);
         typeDescriptions.put(ActivityType.ISSUE_ONHOLD.getCode(),       L10NKeySet.ActivityComments);
+        typeDescriptions.put(ActivityType.ISSUE_REMINDER.getCode(),     L10NKeySet.ActivityComments);
     } 
     
     
