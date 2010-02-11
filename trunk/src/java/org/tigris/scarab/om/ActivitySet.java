@@ -216,6 +216,7 @@ public class ActivitySet
     }    
 
     private static final ActivityType[] historyTypes = new ActivityType[] {
+        ActivityType.ISSUE_ONHOLD,
         ActivityType.ISSUE_MOVED,
         ActivityType.ISSUE_COPIED,
         ActivityType.USER_ATTRIBUTE_CHANGED,
