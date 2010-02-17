@@ -81,6 +81,7 @@ import org.apache.turbine.TemplateContext;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.tool.IntakeTool;
+import org.radeox.util.logging.Logger;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.om.AttachmentManager;
@@ -738,6 +739,20 @@ public class ScarabRequestTool
             ScarabUser me       = (ScarabUser)data.getUser();  // the userId of the current user
             MITList currentList = q.getMITList();              // The query MIT-list
             ScarabUser owner    = q.getScarabUser();           // The originator of the query
+            if(owner==null)
+            {
+                Log.get().warn("Current Query does not contain a User");
+                owner = me;
+                if(owner == null)
+                {
+                    owner = this.getCurrentUser();
+                    if(owner == null)
+                    {
+                        Log.get().warn("Current session has no user assigned. Can not retrieve RModuleUserAttributes.");
+                        return result;
+                    }
+                }
+            }
             Module module       = me.getCurrentModule();       // The current module
             IssueType theIssueType = this.getIssueType();      // The current issue Type
             currentList = currentList.copy();                  // Here we make a physical copy
