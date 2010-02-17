@@ -822,13 +822,17 @@ public class ScarabRequestTool
     }
 
     /**
-     * A Query object for use within the Scarab API.
+     * A Query object for use within the Scarab API. This method first checks if the
+     * current active data element contains a parameter of name "queryId". If that 
+     * parameter is found, the corresponding query is returned.
+     * Otherwise the last query ever created on this ScarabRequestTool-instance is returned.
+     * If there was no query used before, a default query is returned instead.
      */
     public Query getQuery() throws TorqueException
     {
-        if (query == null)
+        String queryId = data.getParameters().getString("queryId");
+        if (queryId != null || query == null)
         {
-            String queryId = data.getParameters().getString("queryId");
             query = getQuery(queryId);
         }
         return query;
@@ -836,7 +840,8 @@ public class ScarabRequestTool
 
     
     /**
-     * A Query object for use within the Scarab API.
+     * A Query object for use within the Scarab API. If QueryId is null,
+     * then a default Query is returned.
      * Used for shortlink to query (similar to short URL to issueId)
      */
     private Query getQuery(String queryId) throws TorqueException
