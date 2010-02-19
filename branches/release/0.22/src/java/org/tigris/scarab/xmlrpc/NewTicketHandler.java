@@ -26,91 +26,85 @@ package org.tigris.scarab.xmlrpc;
 *
 */
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+
 
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LinkedMap;
-import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.intake.model.Group;
+
 import org.apache.log4j.Category;
 import org.apache.torque.TorqueException;
-import org.apache.torque.util.Criteria;
-import org.tigris.scarab.attribute.DateAttribute;
-import org.tigris.scarab.attribute.OptionAttribute;
-import org.tigris.scarab.notification.ActivityType;
-import org.tigris.scarab.notification.NotificationManagerFactory;
-import org.tigris.scarab.om.ActivityManager;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Attachment;
-import org.tigris.scarab.om.AttachmentManager;
-import org.tigris.scarab.om.AttachmentType;
-import org.tigris.scarab.om.AttachmentTypeManager;
-import org.tigris.scarab.om.Attribute;
-import org.tigris.scarab.om.AttributeManager;
-import org.tigris.scarab.om.AttributeOption;
-import org.tigris.scarab.om.AttributeOptionManager;
 import org.tigris.scarab.om.AttributeValue;
-import org.tigris.scarab.om.AttributeValueManager;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
-import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
-import org.tigris.scarab.om.ScarabModulePeer;
+import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
-import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 
 /**
+ * Handler which provides all necessary methods to create an issues via xml-rpc interface.
+ * 
  * @author pti
  *
  */
 public class NewTicketHandler {
+	
 	Category logger = Category.getInstance(NewTicketHandler.class);
 
 	/**
-	 * @param module	The module to add the ticket to
-	 * @param issueType The issuetype as which the ticket should be entered
-	 * @param user      The user as which the ticket should be entered
-	 * @param attribs   A map with the attributes to be entered
-	 * @return
+	 * Creates a new issue from given parameters.
+	 * 
+	 * @param moduleCode		The module to add the ticket to (shortcut of moudle)
+	 * @param issueTypeName 	The issuetype as which the ticket should be entered (name of issue type)
+	 * @param userName      	The user as which the ticket should be entered (login name)
+	 * @param attribs   		A map with the attributes to be entered. (name/value mappings)
+	 * @return : Unique id of issue: {module shortcut}{count}
 	 * @throws TorqueException 
 	 * @throws ScarabException 
 	 */
-	public String createNewTicket( String moduleName, 
+	public String createNewTicket( String moduleCode, 
 								   String issueTypeName, 
 								   String userName, 
 								   Hashtable attribs) throws TorqueException, ScarabException {
-		Module module = getModuleByCode(moduleName);
+		
+		//init environment for the new issue
+		Module module = ModuleManager.getInstance(null, null, moduleCode);
 		IssueType issueType = IssueType.getInstance(issueTypeName);
 		Issue issue = module.getNewIssue(issueType);
 		ScarabUser user = ScarabUserManager.getInstance(userName);
-		HashMap values = getAttributes(issue);
-        ActivitySet activitySet = null;
+        
         Attachment reason = new Attachment();
         reason.setData("Created by xmlrpc");
         reason.setName("reason");
-        activitySet = issue
-            .setInitialAttributeValues(activitySet, reason, values, user);
         
-//        issue.setAttributeValues(activitySet, values, reason, user);
-        // Save any unsaved attachments as part of this ActivitySet as well
+        //init issue, set and store attributes
+		ActivitySet activitySet = null;
+        activitySet = issue.setInitialAttributeValues(activitySet, reason, new HashMap(), user);
+
+        // Save any unsaved attachments as part of this ActivitySet as well.
         setAttributes(issue,activitySet,reason,user,attribs);
         activitySet = issue.doSaveFileAttachments(activitySet, user);
         activitySet.save();
+        
         return issue.getUniqueId();
 	}
 
 	/**
-	 * @param attribs
-	 * @return
-	 * @throws TorqueException 
-	 * @throws ScarabException 
+	 * Gets new attribute values from given map, matches them against the attributes from the new issue.
+	 * Afterwards the resulting new attribute values will be set for the new issue.
+	 * 
+	 * @param issue				Issue where attriutes should be set.
+	 * @param activitySet		Activity set.
+	 * @param attachment		Attachment for issue: e.g. reason for change.
+	 * @param user				User for issue creation.
+	 * @param attribs			Map with name/value mappings for new attributes values.
+	 * @throws TorqueException
+	 * @throws ScarabException
 	 */
 	private void setAttributes(Issue issue, ActivitySet activitySet, Attachment attachment, ScarabUser user, Hashtable attribs) throws TorqueException, ScarabException {
 
@@ -130,37 +124,6 @@ public class NewTicketHandler {
         	}
         }
         issue.setAttributeValues(activitySet, newValues, attachment, user);
-	}
-
-	/**
-	 * @param attribs
-	 * @return
-	 * @throws TorqueException 
-	 */
-	private HashMap getAttributes(Issue issue) throws TorqueException {
-
-			
-		return new HashMap(issue.getAttributeValuesMap());
-	}
-
-	/**
-	 * @param module
-	 * @throws TorqueException 
-	 */
-	private Module getModuleByCode(String module) throws TorqueException {
-        final Criteria crit = new Criteria();
-        if( module != null )
-        {
-            crit.add(ScarabModulePeer.MODULE_CODE, module);
-        }
-        final List result = ScarabModulePeer.doSelect(crit);
-        if (result.size() != 1)
-        {
-            throw new TorqueException ("Selected: " + result.size() + 
-                " rows. Expected 1."); //EXCEPTION
-        }
-        return (Module) result.get(0);		// TODO Auto-generated method stub
-		
 	}
 
 }
