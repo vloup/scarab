@@ -1032,7 +1032,10 @@ public class Issue
 
 
     /**
-     * AttributeValues that are set for this Issue
+     * Returns AttributeValues that are set for this Issue.
+     * 
+     * @return : Map with mappings for : attrinbute-Name/attribute-value
+     * @throws TorqueException
      */
     public Map getAttributeValuesMap() throws TorqueException
     {
@@ -1965,6 +1968,17 @@ public class Issue
         return DependTypeManager.getAll();
     }
 
+    /**
+     * Stores depend into database and checks wheter this depend exists already.
+     * 
+     * @param activitySet : Instance of ActivitySet.
+     * @param depend : Instance of depend.
+     * @param childIssue : Issue which is target of dependency.
+     * @param user : Instance of user.
+     * @return : ActivitySet.
+     * @throws TorqueException
+     * @throws ScarabException
+     */
     public ActivitySet doAddDependency(ActivitySet activitySet, Depend depend, 
                                        Issue childIssue, ScarabUser user)
         throws TorqueException, ScarabException
@@ -3388,11 +3402,18 @@ public class Issue
     }
 
     /**
+     * 
      * Sets original AttributeValues for an new issue based on a hashmap of values
      * This is data is saved to the database and the proper ActivitySet is 
      * also recorded.
-     *
-     * @throws TorqueException when the workflow has an error to report
+     * 
+     * @param activitySet : Instance of activity set.
+     * @param attachment : Some attachment, e.g. reason of change.
+     * @param newValues : Map with mappings for attribute-values: id/attribute-value
+     * @param user : Instance of user.
+     * @return : Instance of activity set.
+     * @throws TorqueException
+     * @throws ScarabException
      */
     public ActivitySet setInitialAttributeValues(ActivitySet activitySet, 
             Attachment attachment, 
@@ -3593,6 +3614,12 @@ public class Issue
      * Make sure that workflow is valid for the initial values of a new issue. 
      * It will return a non-null String
      * which is the workflow error message otherwise it will return null.
+     * 
+     * @param newValues : Map with mapings of: id/attribute-value
+     * @param user : User instance.
+     * @return
+     * @throws TorqueException
+     * @throws ScarabException
      */
     public String doCheckInitialAttributeValueWorkflow(final HashMap newValues, 
                                                        final ScarabUser user)
@@ -3620,11 +3647,17 @@ public class Issue
         return msg;
     }
 
-    /**
-     * This method is used with the setAttributeValues() method to 
-     * Make sure that workflow is valid. It will return a non-null String
-     * which is the workflow error message otherwise it will return null.
-     */
+   /**
+    * This method is used with the setAttributeValues() method to 
+    * Make sure that workflow is valid. It will return a non-null String
+    * which is the workflow error message otherwise it will return null.
+    * 
+    * @param newAttVals : Map with mapings of: id/attribute-value
+    * @param user : User instance.
+    * @return
+    * @throws TorqueException
+    * @throws ScarabException
+    */
     public String doCheckAttributeValueWorkflow(final HashMap newAttVals, 
                                                 final ScarabUser user)
         throws TorqueException,ScarabException
