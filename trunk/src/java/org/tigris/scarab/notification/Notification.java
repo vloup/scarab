@@ -292,7 +292,7 @@ public class Notification implements Conditioned
         }
         else
         {
-            log.info("Only " + matchCounter + " send Conditions out of "+attributeIds.size()+" match the req)uiered values");
+            log.info("Only " + matchCounter + " send Conditions out of "+attributeIds.size()+" match the required values");
             match = false;
         }
         
