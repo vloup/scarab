@@ -71,6 +71,7 @@ import org.apache.fulcrum.template.TurbineTemplate;
 
 import org.tigris.scarab.services.email.VelocityEmail;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
 
@@ -258,6 +259,23 @@ public class TemplateHtmlEmail
         }
         catch( Exception e)
         {
+            Log.get().error(e.getMessage());
+            Log.get().warn("This was the Email context:");
+            try
+            {
+                Object[] keys = context.getKeys();
+                for(int i=0; i < keys.length; i++)
+                {
+                    String keystring = keys[i].toString();
+                    Object val = context.get(keystring);
+                    Log.get().warn("    " + keystring + "=" + val.toString());                    
+                }
+            }
+            catch(Exception ex)
+            {
+                Log.get().error("Double error: Can not dump Email context. ");
+            }
+            Log.get().warn("End of Email context dump");
             throw new EmailException("Cannot parse email template", e);
         }
 
