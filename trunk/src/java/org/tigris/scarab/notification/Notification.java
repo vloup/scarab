@@ -216,7 +216,7 @@ public class Notification implements Conditioned
 
     /**
      * Check if the current combination of user/module/issue-content
-     * meets the conditions under whioch a notification shal be sent.
+     * meets the conditions under which a notification shall be sent.
      * Note: If the condition operator is set to "OR", any matching
      * notification option in any attribute will return true
      * If the operator is set to "AND" Each attribute for which options have
@@ -240,7 +240,12 @@ public class Notification implements Conditioned
         Iterator<Condition> iter = conditions.iterator();
         Set<Integer>attributeIds = new HashSet<Integer>();
 
-        log.info("test sendNotification conditions -----------------------------------------------");
+        String forIssueId = "";
+        if(this.issue!=null)
+        {
+            forIssueId = "for issue " + this.issue.getIdPrefix()+ this.issue.getIdCount();
+        }
+        log.info("test sendNotification conditions "+forIssueId+" -------------");
         
         int matchCounter = 0;
         while(iter.hasNext())
@@ -254,7 +259,7 @@ public class Notification implements Conditioned
             
             AttributeOption option = AttributeOptionManager.getInstance(optionId);
             
-            log.info("test  " + attribute.getName() + "=\"" + option.getName()    + "\"  (att:" + + attributeId + ",opt:" + optionId+")");
+            //log.info("test for " + attribute.getName() + "=\"" + option.getName()    + "\"  (att:" + + attributeId + ",opt:" + optionId+")");
             
             Iterator<Entry<String,AttributeValue>> attvalIterator = attributeValues.entrySet().iterator();
             while( attvalIterator.hasNext())
@@ -268,20 +273,22 @@ public class Notification implements Conditioned
                 {
                     int aoi = av.getOptionId();
                     boolean match = aoi == optionId;
-                    log.info( ((match)? "match ":"      ") + att.getName()       + "=\"" + attOpt.getName()    + "\"  (att:" + attvalAttributeId + ",opt:" + attOpt.getOptionId());
+                    //log.info( ((match)? "match ":"      ") + att.getName()       + "=\"" + attOpt.getName()    + "\"  (att:" + attvalAttributeId + ",opt:" + attOpt.getOptionId());
                     if( match)
                     {
+                        String sendConditionMet = "SendCondition met. ("+attribute.getName() + "=\"" + option.getName()+")";
                         matchCounter++;
                         if ( operator.equals(OR) )
                         {
-                            log.info("SendCondition met. (any condition match terminated on first match");
+                            log.info(sendConditionMet + " -> (send notification)");
                             return true;  // quick exit. first match gives success.
                         }
+                        log.info(sendConditionMet);
                         break; // we can break the inner iteration (we found the match)
-                    }
-                    
+                    }                    
                 }
             }
+            
         }
 
         boolean match; // just in case no condition is defined, we return true
@@ -292,7 +299,14 @@ public class Notification implements Conditioned
         }
         else
         {
-            log.info("Only " + matchCounter + " send Conditions out of "+attributeIds.size()+" match the required values");
+            if (attributeIds.size() > 0)
+            {
+                log.info("Only " + matchCounter + " send Conditions out of "+attributeIds.size()+" met. (Send is not triggered.)");
+            }
+            else
+            {
+                log.info("None of the available conditions was applicable to this issue. (Send is not triggered.)" );
+            }
             match = false;
         }
         
