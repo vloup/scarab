@@ -68,9 +68,11 @@ import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TurbineTemplate;
+import org.apache.log4j.Logger;
 
 import org.tigris.scarab.services.email.VelocityEmail;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
+import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
 
@@ -138,6 +140,8 @@ public class TemplateHtmlEmail
     /** The map of embedded files. */
     private Hashtable embmap = null;
 
+    public static Logger log = Log.get(Email.class.getName());
+    
     /**
      * Constructor, sets the TemplateContext object.
      *
@@ -245,7 +249,7 @@ public class TemplateHtmlEmail
         String htmlbody = "";
         String textbody = "";
 
-        // Process the templates.
+        // Create MessageBody from template:
         try
         {
             if (htmlTemplate != null)
@@ -259,50 +263,76 @@ public class TemplateHtmlEmail
         }
         catch( Exception e)
         {
-            Log.get().error(e.getMessage());
-            Log.get().warn("This was the Email context:");
-            try
-            {
-                Object[] keys = context.getKeys();
-                for(int i=0; i < keys.length; i++)
-                {
-                    String keystring = keys[i].toString();
-                    Object val = context.get(keystring);
-                    Log.get().warn("    " + keystring + "=" + val.toString());                    
-                }
-            }
-            catch(Exception ex)
-            {
-                Log.get().error("Double error: Can not dump Email context. ");
-            }
-            Log.get().warn("End of Email context dump");
+            dumpContextToLog(e);
             throw new EmailException("Cannot parse email template", e);
         }
 
-        if (StringUtils.isNotEmpty(htmlbody) && StringUtils.isNotEmpty(textbody))
+        // Set appropriate Message body:
+        try
         {
-            // We have both plain text and HTML message bodys
-            setHtmlMsg(htmlbody); 
-            setTextMsg(textbody); 
+            if (StringUtils.isNotEmpty(htmlbody) && StringUtils.isNotEmpty(textbody))
+            {
+                // We have both plain text and HTML message bodys
+                setHtmlMsg(htmlbody); 
+                setTextMsg(textbody); 
+            }
+            else if (StringUtils.isEmpty(htmlbody)) 
+            {
+                // We have only a text body.
+                setTextMsg(textbody);
+                /* Note that we don't use setMsg() because that would put the plain
+                 * text into a <html><pre>[plain text]</pre></html> stansa in the
+                 * HTML part. Not particularly useful. Worse, it also defeats any 
+                 * hyperlinks in the message.
+                 */
+            }
+            else
+            {
+                // We have only a HTML message. Recipients with a text-only client
+                // won't like this.
+                setHtmlMsg(htmlbody); 
+            }
         }
-        else if (StringUtils.isEmpty(htmlbody)) 
+        catch( Exception e)
         {
-            // We have only a text body.
-            setTextMsg(textbody);
-            /* Note that we don't use setMsg() because that would put the plain
-             * text into a <html><pre>[plain text]</pre></html> stansa in the
-             * HTML part. Not particularly useful. Worse, it also defeats any 
-             * hyperlinks in the message.
-             */
-        }
-        else
-        {
-            // We have only a HTML message. Recipients with a text-only client
-            // won't like this.
-            setHtmlMsg(htmlbody); 
+            dumpContextToLog(e);
+            throw new EmailException("Cannot set message body", e);
         }
 
-        return super.send();
+
+        // Send message to recipients:
+        String mimeMessageId = null;
+        try
+        {
+            mimeMessageId = super.send();
+        }
+        catch( Exception e)
+        {
+            dumpContextToLog(e);
+            throw new EmailException("Cannot send email template", e);
+        }
+        
+        return mimeMessageId;
+    }
+
+    private void dumpContextToLog(Exception e) {
+        log.error(e.getMessage());
+        log.error("This was the Email context:");
+        try
+        {
+            Object[] keys = context.getKeys();
+            for(int i=0; i < keys.length; i++)
+            {
+                String keystring = keys[i].toString();
+                Object val = context.get(keystring);
+                log.error("    " + keystring + "=" + val.toString());                 
+            }
+        }
+        catch(Exception ex)
+        {
+            log.error("Double error: Can not dump Email context. ");
+        }
+        log.error("End of Email context dump");
     }
 
     /**
