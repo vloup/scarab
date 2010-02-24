@@ -315,22 +315,26 @@ public class TemplateHtmlEmail
         return mimeMessageId;
     }
 
-    private void dumpContextToLog(Exception e) {
-        log.error(e.getMessage());
-        log.error("This was the Email context:");
+    private void dumpContextToLog(Exception e) 
+    {
+        log.error("context dump after exception ["+ e.getMessage()+"]");
+        String keystring=null;
+        Object val = null;
         try
         {
             Object[] keys = context.getKeys();
             for(int i=0; i < keys.length; i++)
             {
-                String keystring = keys[i].toString();
-                Object val = context.get(keystring);
-                log.error("    " + keystring + "=" + val.toString());                 
+                keystring = keys[i].toString();
+                val = context.get(keystring);
+                log.error("    " + keystring + "=" + ((val==null)? "null (no value in context)":val.toString()) );                 
             }
         }
         catch(Exception ex)
         {
-            log.error("Double error: Can not dump Email context. ");
+            log.error("Double error: Can not dump Email context. ("+ex.getMessage()+")");
+            log.error("key["+keystring+"]");
+            log.error("val["+val+"]");
         }
         log.error("End of Email context dump");
     }
