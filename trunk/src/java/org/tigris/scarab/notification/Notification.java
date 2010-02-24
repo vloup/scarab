@@ -299,13 +299,13 @@ public class Notification implements Conditioned
         }
         else
         {
-            if (attributeIds.size() > 0)
+            if (matchCounter > 0)
             {
                 log.info("Only " + matchCounter + " send Conditions out of "+attributeIds.size()+" met. (Send is not triggered.)");
             }
             else
             {
-                log.info("None of the available conditions was applicable to this issue. (Send is not triggered.)" );
+                log.info("None of the " + attributeIds.size() + " available conditions was applicable to this issue. (Send is not triggered.)" );
             }
             match = false;
         }
