@@ -58,7 +58,6 @@ import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.Attachment;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
-import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 
 /**
@@ -93,7 +92,7 @@ public class Activity
                 Criteria crit = new Criteria();
                 crit.add(ActivityPeer.ACTIVITY_ID, this.getActivityId());
                 crit.addJoin(AttachmentPeer.ATTACHMENT_ID, ActivityPeer.ATTACHMENT_ID);
-                List results = AttachmentPeer.doSelect(crit);
+                List<Attachment> results = AttachmentPeer.doSelect(crit);
                 if (!results.isEmpty())
                 {
                     attachment = (Attachment) results.get(0);
@@ -154,7 +153,7 @@ public class Activity
                 crit.add(ActivityPeer.ATTRIBUTE_ID, getAttributeId());
                 crit.add(ActivityPeer.END_DATE, null);
                 crit.add(ActivityPeer.NEW_VALUE, this.getOldValue());
-                List result = ActivityPeer.doSelect(crit);
+                List<Activity> result = ActivityPeer.doSelect(crit);
                 int resultSize = result.size();
                 if (resultSize > 0)
                 {
@@ -223,31 +222,41 @@ public class Activity
     public String getOldValue(Issue issue, ScarabLocalizationTool l10n) 
         throws Exception
     {
-        String value = null;
-        if(   getType().equals(ActivityType.DEPENDENCY_DELETED)
-           || getType().equals(ActivityType.DEPENDENCY_CHANGED))
-         {
+        String value              = null;
+        ActivityType activityType = getType();
+        String oldValue           = getOldValue();
+        
+        if(   ActivityType.DEPENDENCY_DELETED.equals(activityType)
+           || ActivityType.DEPENDENCY_CHANGED.equals(activityType))
+        {
         	 value = getDepend().getIssueRelatedByObserverId().getUniqueId()
-             + " < " + l10n.get(DependTypeManager.getManager().getL10nKey(getOldValue())) + " > "
+             + " < " + l10n.get(DependTypeManager.getManager().getL10nKey(oldValue)) + " > "
               + " " + getDepend().getIssueRelatedByObservedId().getUniqueId();       
-         } else if( getType().equals(ActivityType.ATTACHMENT_REMOVED))
-         {
+        } 
+        else if( ActivityType.ATTACHMENT_REMOVED.equals(activityType))
+        {
              value = getAttachment().getFileName();
-         } else if( getType().equals(ActivityType.URL_DELETED))
-         {
+        } 
+        else if( ActivityType.URL_DELETED.equals(activityType))
+        {
              value = getAttachment().getData();
-         } else if( getType().equals(ActivityType.COMMENT_CHANGED))
-         {
-             value = getOldValue()!=null ? firstChars( getOldValue(), 50 ) : "";
-         } else {
+        } 
+        else if( ActivityType.COMMENT_CHANGED.equals(activityType))
+        {
+             value = oldValue!=null ? firstChars( oldValue, 50 ) : "";
+        } 
+        else 
+        {
         	//assumption that an attribute was changed
-        	 if(getAttribute() != null && getAttribute().isDateAttribute()){
-         		value = DateAttribute.dateFormat(getOldValue()!=null ? getOldValue() : "",  L10NKeySet.ShortDateDisplay.getMessage(l10n));
+        	if(getAttribute() != null && getAttribute().isDateAttribute())
+        	{
+         		value = DateAttribute.dateFormat(oldValue!=null ? oldValue : "",  L10NKeySet.ShortDateDisplay.getMessage(l10n));
          	}
-         	else{
-         		value = getOldValue()!=null ? getOldValue() : "";
+         	else
+         	{
+         		value = oldValue!=null ? oldValue : "";
          	}
-         }
+        }
 
         return value;
     }
@@ -273,44 +282,60 @@ public class Activity
         throws Exception
     {
         String value = null;
-        if(   getType().equals(ActivityType.DEPENDENCY_CREATED)
-           || getType().equals(ActivityType.DEPENDENCY_CHANGED))
+        ActivityType activityType = getType();
+        String newValue = getNewValue();
+        
+        if(   ActivityType.DEPENDENCY_CREATED.equals(activityType)
+           || ActivityType.DEPENDENCY_CHANGED.equals(activityType))
         {
+            if(newValue == null)
+            {
+                throw new RuntimeException("Dependency creation/change needs a new value. (Does imply that Dependency deletion is NOT supported?). The Error occured in issue " 
+                          + issue.getParents()+ issue.getIdCount() );
+            }
         	if(issue != null 
         			&& issue.getIssueId().intValue() != getDepend().getIssueRelatedByObservedId().getIssueId().intValue()
-        			&& getNewValue().equals("blocking")){
+        			&& "blocking".equals(newValue))
+        	{
             	value = getDepend().getIssueRelatedByObserverId().getUniqueId()
                 + " " + l10n.get("DependsOn") //deprecated, but method is used many times in scarab.
             	+ " " + getDepend().getIssueRelatedByObservedId().getUniqueId(); 
             }
-            else{
+            else
+            {
             	value = getDepend().getIssueRelatedByObservedId().getUniqueId()
-            	+ " " + (getNewValue().equals("blocking") ? l10n.get("PrerequisiteFor") : l10n.get(DependTypeManager.getManager().getL10nKey(getNewValue())))
+            	+ " " + ("blocking".equals(newValue) ? l10n.get("PrerequisiteFor") : l10n.get(DependTypeManager.getManager().getL10nKey(newValue)))
                 + " " + getDepend().getIssueRelatedByObserverId().getUniqueId();  
-            }	
-           
-        } else if( getType().equals(ActivityType.ATTACHMENT_CREATED))
+            }
+        } 
+        else if( ActivityType.ATTACHMENT_CREATED.equals(activityType))
         {
             value = getAttachment().getFileName();
-        } else if(    getType().equals(ActivityType.URL_ADDED)
-                || getType().equals(ActivityType.COMMENT_ADDED))
+        }
+        else if(    ActivityType.URL_ADDED.equals(activityType)
+                || ActivityType.COMMENT_ADDED.equals(activityType))
         {
             value = getAttachment().getData();
-        } else if( getType().equals(ActivityType.COMMENT_CHANGED))
+        }
+        else if( ActivityType.COMMENT_CHANGED.equals(activityType))
         {
-            value = getNewValue()!=null ? firstChars( getNewValue(), 50 ) : "";
-        } else if( getType().equals(ActivityType.OTHER))
+            value = newValue!=null ? firstChars( newValue, 50 ) : "";
+        }
+        else if( getType().equals(ActivityType.OTHER))
         {
             value = super.getDescription()!=null ? super.getDescription() : "";
-        } else {
+        } 
+        else 
+        {
         	//assumption that an attribute was changed
-        	if(getAttribute() != null && getAttribute().isDateAttribute()){
-        		value = DateAttribute.dateFormat(getNewValue()!=null ? getNewValue() : "",  L10NKeySet.ShortDateDisplay.getMessage(l10n));
+        	if(getAttribute() != null && getAttribute().isDateAttribute())
+        	{
+        		value = DateAttribute.dateFormat(newValue!=null ? newValue : "",  L10NKeySet.ShortDateDisplay.getMessage(l10n));
         	}
-        	else{
-        		value = getNewValue()!=null ? getNewValue() : "";
-        	}
-            
+        	else
+        	{
+        		value = newValue!=null ? newValue : "";
+        	}            
         }
         return value;
     }
