@@ -75,15 +75,12 @@
     #if($status.equals($blockingStatus)) 
 		style="background:#FE9292"
 		## light red
-    #else 
-		style="background:#C0FE92"
-		## light green
     #end
   #end
 #end
 
 ## ===========================================
-## macro relationTable : Displays relationships of one type (blocking, duplicates, non-blocking) for an issue.
+## macro relationTable : Displays relationships of one type (blocking (is blocked), blocking (blocks), duplicates, non-blocking) for an issue.
 ##                       For the related issues the conditions of theses issues can be evaluated additionally. 
 ## ===========================================
 ## $thisIssue : Currently selected issue.
@@ -97,6 +94,10 @@
       #set ($allBlockersDisplayed = true)
       #foreach ($depend in $entries)
 
+		 ## 
+		 ## Evaluate actual blocking status of potential blockers if conditions are defined
+		 ## Actual blockers are shown with red background table row (see below)
+		 ##
          #set ($status="")      
          #if ($indentLevel==0)
            #set ($isDependant=false)
@@ -112,9 +113,6 @@
                  #set ($isDependant=true)
                #end
              #end
-           #end
-           #if ($isDependant==false && !$blockingStatus.equals(""))
-             #set ($status= "Not$blockingStatus")
            #end
          #end
       
@@ -151,13 +149,6 @@
               #end
           </td>
           
-          ## -------------------------------------
-          ## The dependency status
-          ## -------------------------------------
-          <td nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
-            #if (!$status.equals(""))$l10n.get($status)#end
-          </td>
-
           ## -------------------------------------
           ## related Issues IssueId plus Hyperlink
           ## -------------------------------------
@@ -307,7 +298,6 @@
           <th nowrap="nowrap">$l10n.Select</th>
         #end
         <th nowrap="nowrap" >$l10n.DependencyType</th>
-        <th nowrap="nowrap" >$l10n.BlockedStatus</th>
         <th nowrap="nowrap" >$l10n.IssueId</th>     
         <th nowrap="nowrap" >$l10n.Summary</th>
         #foreach ($attr in $additionalDisplayAttributes)
