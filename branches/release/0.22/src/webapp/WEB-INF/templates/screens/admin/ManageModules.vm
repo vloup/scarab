@@ -32,14 +32,10 @@ $module.Description
 <p><em>$l10n.NoModulesToEdit</em></p>
 #end
 
-#if ($data.User.EditableModules.size() > 0)
 <form action="$link.setPage("admin,ModifyModule.vm").addPathInfo("new", "true")" method="post">
 <div class="functnbar2">
 <input type="submit" name="maxumusDorkus" value="$l10n.CreateNew" />
 </div>
 </form>
-#else
-<p><em>$l10n.NoModuleEditPermission</em></p>
-#end
 
 </div>

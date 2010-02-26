@@ -1293,11 +1293,11 @@ public abstract class AbstractScarabModule
             
             if (optIds.length > 0)
             { 
-                Criteria crit = new Criteria();
-                crit.add(RModuleOptionPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
-                crit.add(RModuleOptionPeer.MODULE_ID, getModuleId());
-                crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
-                crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
+                    Criteria crit = new Criteria();
+                    crit.add(RModuleOptionPeer.ISSUE_TYPE_ID, issueType.getIssueTypeId());
+                    crit.add(RModuleOptionPeer.MODULE_ID, getModuleId());
+                    crit.addIn(RModuleOptionPeer.OPTION_ID, optIds);
+                    crit.addAscendingOrderByColumn(RModuleOptionPeer.PREFERRED_ORDER);
                 crit.addAscendingOrderByColumn(RModuleOptionPeer.DISPLAY_VALUE);
                 rModOpts = getRModuleOptions(crit);
             }
@@ -1986,8 +1986,10 @@ public abstract class AbstractScarabModule
         // Add defaults for issue types and attributes 
         // from parent module
         final Module parentModule = ModuleManager.getInstance(getParentId());
-        inheritFromParent(parentModule);        
-
+        if(parentModule != null && parentModule.getModuleId().intValue() != 0){
+        	inheritFromParent(parentModule);  //don't inherit anything from global data/module
+        }
+        
         final List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
         for (int i=0; i< defaultIssueTypes.size(); i++)
         {
