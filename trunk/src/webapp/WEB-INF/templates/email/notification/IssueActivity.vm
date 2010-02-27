@@ -43,10 +43,10 @@ $cr
 #markup('b')$l10n.ActivityPersonnelChanges#markup('b')
 ${cr}-------------------------------------------------------------------------------
 #foreach ($not in $ActivityPersonnelChanges)
-#set ($displayName = $not.Activity.getDisplayName(l10n) )
-#set ($newValue    = $not.Activity.getNewValue(l10n) )
-#set ($oldValue    = $not.Activity.getOldValue(l10n) )
-  - $displayName: #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) $oldValue -->#end #if ($newValue.length() > 0)$newValue #else(${l10n.Deleted}) #end #if ($oldValue.length() == 0)   ($l10n.New) #end
+#set ($displayName = $not.Activity.getDisplayName($l10n) )
+#set ($newValue    = $not.Activity.getNewValue($l10n) )
+#set ($oldValue    = $not.Activity.getOldValue($l10n) )
+  - $displayName: #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) $oldValue -->#end #if ($newValue.length() > 0)$newValue #else($l10n.Deleted) #end #if ($oldValue.length() == 0)   ($l10n.New) #end
 
 #end
 #end
@@ -56,14 +56,14 @@ $cr
 #markup('b')$l10n.ActivityAttributeChanges#markup('b')
 ${cr}-------------------------------------------------------------------------------
 #foreach ($not in $ActivityAttributeChanges)
-#set ($displayName = $not.Activity.getDisplayName(l10n) )
-#set ($newValue    = $not.Activity.getNewValue(l10n) )
-#set ($oldValue    = $not.Activity.getOldValue(l10n) )
+#set ($displayName = $not.Activity.getDisplayName($l10n) )
+#set ($newValue    = $not.Activity.getNewValue($l10n) )
+#set ($oldValue    = $not.Activity.getOldValue($l10n) )
 #if ($not.Activity.Attribute.AttributeType.Name == "long-string")
   - $displayName:
     "$newValue"
 #else
-  - $displayName: #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) $oldValue -->#end #if ($newValue.length() > 0)$newValue #else(${l10n.Deleted}) #end #if ($oldValue.length() == 0)   ($l10n.New) #end
+  - $displayName: #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) $oldValue -->#end #if ($newValue.length() > 0)$newValue #else($l10n.Deleted) #end #if ($oldValue.length() == 0)   ($l10n.New) #end
 
 #end
 #end
@@ -96,7 +96,7 @@ $cr
 #if ($ActivityComments.size() > 1)
 ${cr}-------------------------------------------------------------------------------
 #end
-#markup('b')${l10n.Comment} $not.Creator.Name#markup('b')$cr
+#markup('b')$l10n.Comment $not.Creator.Name#markup('b')$cr
 $l10n.getIgnoreMissingResource($not.Activity.Attachment.Data)
 #end
 #end
@@ -108,6 +108,6 @@ $l10n.ActivitiesGeneratedBy
 #end
   $l10n.ActivityBetween $firstNotification.getActivityCreationDate($l10n) $l10n.ActivityAnd $lastNotification.getActivityCreationDate($l10n).
 #else
-${l10n.ActivityGeneratedBy} #foreach ($creat in $creators)$creat.Name ($creat.Email)#end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)${cr}
+$l10n.ActivityGeneratedBy #foreach ($creat in $creators)$creat.Name ($creat.Email)#end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)${cr}
 #end
 [$module.Name]: $issueURL
