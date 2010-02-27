@@ -323,28 +323,29 @@ public class TemplateHtmlEmail
 
     private void logSend()
     {
+        // Retrieve the IssueId if available:
+        String issueId = getIssueDisplayString();
+
         InternetAddress from = this.getFromAddress();
+
         Iterator<InternetAddress> toIter = this.toList.iterator();
         while(toIter.hasNext())
         {
             InternetAddress to = toIter.next();
-            emailLog.info("from:"+from.getAddress() + " - to:"+to.getAddress() + " - OK");
+            emailLog.info(issueId + "from:"+from.getAddress() + " - to:"+to.getAddress() + " - OK");
+        }
+        Iterator<InternetAddress> ccIter = this.ccList.iterator();        
+        while(ccIter.hasNext())
+        {
+            InternetAddress cc = ccIter.next();
+            emailLog.error(issueId + "from:"+from.getAddress() + " - cc:"+cc.getAddress() + " - OK");
         }
     }
     
     private void logFail(Exception e)
     {
         // Retrieve the IssueId if available:
-        Issue issue = (Issue) context.get("issue");
-        String issueId;
-        if( issue != null)
-        {
-            issueId = "issue:"+issue.getIdPrefix() + issue.getIdCount()+" ";
-        }
-        else
-        {
-            issueId = "";
-        }
+        String issueId = getIssueDisplayString();
         
         InternetAddress from = this.getFromAddress();
         
@@ -359,9 +360,24 @@ public class TemplateHtmlEmail
         while(ccIter.hasNext())
         {
             InternetAddress cc = ccIter.next();
-            emailLog.error(issueId + "from:"+from.getAddress() + " - to:"+cc.getAddress() + " - FAIL (" + e.getMessage()+")");
+            emailLog.error(issueId + "from:"+from.getAddress() + " - cc:"+cc.getAddress() + " - FAIL (" + e.getMessage()+")");
         }
         
+    }
+
+    private String getIssueDisplayString() 
+    {
+        Issue issue = (Issue) context.get("issue");
+        String issueId;
+        if( issue != null)
+        {
+            issueId = "issue:"+issue.getIdPrefix() + issue.getIdCount()+" ";
+        }
+        else
+        {
+            issueId = "";
+        }
+        return issueId;
     }
     
     private void dumpContextToLog(Exception e) 
