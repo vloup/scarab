@@ -57,8 +57,10 @@ package org.tigris.scarab.services.email;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.EmailException;
@@ -70,6 +72,7 @@ import org.apache.fulcrum.template.TemplateContext;
 import org.apache.fulcrum.template.TurbineTemplate;
 import org.apache.log4j.Logger;
 
+import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.services.email.VelocityEmail;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.util.Email;
@@ -140,7 +143,8 @@ public class TemplateHtmlEmail
     /** The map of embedded files. */
     private Hashtable embmap = null;
 
-    public static Logger log = Log.get(Email.class.getName());
+    public  static Logger log      = Log.get(Email.class.getName());
+    private static Logger emailLog = Log.get("email.log");
     
     /**
      * Constructor, sets the TemplateContext object.
@@ -305,9 +309,11 @@ public class TemplateHtmlEmail
         try
         {
             mimeMessageId = super.send();
+            logSend();
         }
         catch( Exception e)
         {
+            
             dumpContextToLog(e);
             throw new EmailException("Cannot send email template", e);
         }
@@ -315,9 +321,59 @@ public class TemplateHtmlEmail
         return mimeMessageId;
     }
 
+    private void logSend()
+    {
+        InternetAddress from = this.getFromAddress();
+        Iterator<InternetAddress> toIter = this.toList.iterator();
+        while(toIter.hasNext())
+        {
+            InternetAddress to = toIter.next();
+            emailLog.info("from:"+from.getAddress() + " - to:"+to.getAddress() + " - OK");
+        }
+    }
+    
+    private void logFail(Exception e)
+    {
+        // Retrieve the IssueId if available:
+        Issue issue = (Issue) context.get("issue");
+        String issueId;
+        if( issue != null)
+        {
+            issueId = "issue:"+issue.getIdPrefix() + issue.getIdCount()+" ";
+        }
+        else
+        {
+            issueId = "";
+        }
+        
+        InternetAddress from = this.getFromAddress();
+        
+        Iterator<InternetAddress> toIter = this.toList.iterator();     
+        while(toIter.hasNext())
+        {
+            InternetAddress to = toIter.next();
+            emailLog.error(issueId + "from:"+from.getAddress() + " - to:"+to.getAddress() + " - FAIL (" + e.getMessage()+")");
+        }
+        
+        Iterator<InternetAddress> ccIter = this.ccList.iterator();        
+        while(ccIter.hasNext())
+        {
+            InternetAddress cc = ccIter.next();
+            emailLog.error(issueId + "from:"+from.getAddress() + " - to:"+cc.getAddress() + " - FAIL (" + e.getMessage()+")");
+        }
+        
+    }
+    
     private void dumpContextToLog(Exception e) 
     {
-        log.error("context dump after exception ["+ e.getMessage()+"]");
+        logFail(e);
+        log.info("context dump after exception ["+ e.getMessage()+"]");
+        log.info("From:" + this.fromAddress.getAddress());
+        InternetAddress to = (InternetAddress)this.toList.get(0);
+        if(to != null)
+        {
+            log.info("to:" + to.getAddress());
+        }
         String keystring=null;
         Object val = null;
         try
@@ -327,7 +383,7 @@ public class TemplateHtmlEmail
             {
                 keystring = keys[i].toString();
                 val = context.get(keystring);
-                log.error("    " + keystring + "=" + ((val==null)? "null (no value in context)":val.toString()) );                 
+                log.info("    " + keystring + "=" + ((val==null)? "null (no value in context)":val.toString()) );                 
             }
         }
         catch(Exception ex)
@@ -336,7 +392,7 @@ public class TemplateHtmlEmail
             log.error("key["+keystring+"]");
             log.error("val["+val+"]");
         }
-        log.error("End of Email context dump");
+        log.info("End of Email context dump");
     }
 
     /**
