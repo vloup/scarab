@@ -383,6 +383,7 @@ public abstract class AbstractScarabUser
     }
 
     /**
+     * Returns all modules which are editable fur user.
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules(Module)
      */
     public List getEditableModules(Module currEditModule)
@@ -391,7 +392,7 @@ public abstract class AbstractScarabUser
         List userModules = getModules(true);
         List editModules = new ArrayList();
 
-        if (currEditModule != null)
+        if (currEditModule != null && currEditModule.getParent().getModuleId().intValue() != 0)
         {
             editModules.add(currEditModule.getParent());
         }
@@ -402,7 +403,7 @@ public abstract class AbstractScarabUser
 
             if (!editModules.contains(module) && parent != currEditModule)
             {
-                if (hasPermission(ScarabSecurity.MODULE__EDIT, module))
+                if (hasPermission(ScarabSecurity.MODULE__EDIT, module) && module.getModuleId().intValue() != 0)
                 {
                     editModules.add(module);
                 }

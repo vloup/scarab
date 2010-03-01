@@ -2,7 +2,7 @@
 #set ($canEdit = "false")
 
 #set ($moduleId = $data.Parameters.getString("moduleid"))
-#if (!$moduleId || $moduleId.length() == 0)
+#if (!$moduleId || $moduleId.length() == 0 || $moduleId == "0")
    #set ($createNew = "true")
 #end
 
@@ -34,12 +34,6 @@
 <div id="module" class="app">
 
   <h3>$title</h3>
-
-  #if ($userModules.size() == 0)
-
-    <p><em>$l10n.NoModuleEditPermission</em></p>
-
-  #else
 
     #* =================================================================
     *  Render the user module editor
@@ -103,10 +97,11 @@
 
             #* PARENT MODULE *#
             <tr>
-              <th>* $l10n.ParentModule</th>
+              <th>$l10n.ParentModule</th>
               <td> 
                 <select name="$moduleGroup.ParentId.Key">
-                  #if ($editModule)
+                  <option value="0">$l10n.Choose</option>
+                  #if ($editModule) 
                     #foreach ($userModule in $userModules)
                       #if ($editModule.Parent.ModuleId.toString().equals($userModule.ModuleId.toString()))
                         <option selected="selected" value="$userModule.ModuleId">[$userModule.Name] $userModule.RealName</option>
@@ -300,7 +295,5 @@
 
       $intake.declareGroups()
     </form>
-
-  #end
 
 </div>

@@ -2138,8 +2138,10 @@ public abstract class AbstractScarabModule
         // Add defaults for issue types and attributes 
         // from parent module
         final Module parentModule = ModuleManager.getInstance(getParentId());
-        inheritFromParent(parentModule);        
-
+        if(parentModule != null && parentModule.getModuleId().intValue() != 0){
+        	inheritFromParent(parentModule);  //don't inherit anything from global data/module
+        }
+        
         final List defaultIssueTypes = IssueTypePeer.getDefaultIssueTypes();
         for (int i=0; i< defaultIssueTypes.size(); i++)
         {
