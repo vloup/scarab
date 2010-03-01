@@ -70,23 +70,36 @@
 ## ===========================================
 #macro (addBackground $blockingStatus $status)
   #if ($status.equals(""))
-    
+    ## use default grey background
   #else
-    #if($status.equals($blockingStatus)) style="background:#FE9292"
-    #else style="background:#C0FE92"
+    #if($status.equals($blockingStatus)) 
+		style="background:#FE9292"
+		## light red
     #end
   #end
 #end
 
 ## ===========================================
-## macro relationTable
+## macro relationTable : Displays relationships of one type (blocking (is blocked), blocking (blocks), duplicates, non-blocking) for an issue.
+##                       For the related issues the conditions of theses issues can be evaluated additionally. 
 ## ===========================================
-#macro (relationTable $thisIssue $indentLevel $entries $blockers $blockingStatus)
+## $thisIssue : Currently selected issue.
+## $indentLevel : Depth of recursion.
+## $entries : Related issues to $thisIssue according to one specific type of relationship.
+## $blockers : Related issues to $thisIssue according to one specific type of relationship and where any condition is matched.
+## $blockingStatus : Blocking state of relationship.
+## ===========================================
+#macro (relationTable $thisIssue $indentLevel $entries $blockers $blockingStatus)   
+      
       #set ($allBlockersDisplayed = true)
       #foreach ($depend in $entries)
 
+		 ## 
+		 ## Evaluate actual blocking status of potential blockers if conditions are defined
+		 ## Actual blockers are shown with red background table row (see below)
+		 ##
          #set ($status="")      
-         #if ($depend.TypeId == 1 && $indentLevel==0)
+         #if ($indentLevel==0)
            #set ($isDependant=false)
            ##depend:$depend.UniqueId 
            #foreach ($bi in $blockers)
@@ -100,9 +113,6 @@
                  #set ($isDependant=true)
                #end
              #end
-           #end
-           #if ($isDependant==false && !$blockingStatus.equals(""))
-             #set ($status= "Not$blockingStatus")
            #end
          #end
       
@@ -139,13 +149,6 @@
               #end
           </td>
           
-          ## -------------------------------------
-          ## The dependency status
-          ## -------------------------------------
-          <td nowrap="nowrap" #addBackground("$blockingStatus" "$status")>
-            #if (!$status.equals(""))$l10n.get($status)#end
-          </td>
-
           ## -------------------------------------
           ## related Issues IssueId plus Hyperlink
           ## -------------------------------------
@@ -295,7 +298,6 @@
           <th nowrap="nowrap">$l10n.Select</th>
         #end
         <th nowrap="nowrap" >$l10n.DependencyType</th>
-        <th nowrap="nowrap" >$l10n.BlockedStatus</th>
         <th nowrap="nowrap" >$l10n.IssueId</th>     
         <th nowrap="nowrap" >$l10n.Summary</th>
         #foreach ($attr in $additionalDisplayAttributes)
