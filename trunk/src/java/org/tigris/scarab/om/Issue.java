@@ -3536,8 +3536,9 @@ public class Issue
         // only change dependency type for non-deleted deps
         if ( isActive && ( rolesHaveSwitched || typeHasChanged ) )
         {
-            final Issue otherIssue = IssueManager
-                            .getInstance(newDepend.getObservedId(), false);
+            final Issue otherIssue = (newDepend.getObservedId().longValue() != this.getIssueId().longValue()
+            		? IssueManager.getInstance(newDepend.getObservedId(), false)
+            		: IssueManager.getInstance(newDepend.getObserverId(), false));
 
             // always delete an old dependency
             oldDepend.setDeleted(true);
