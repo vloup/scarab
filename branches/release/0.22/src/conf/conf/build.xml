@@ -33,14 +33,14 @@
     <target name="scarab-welcome">
       <echo>
         Creating or upgrading Scarab Database:
-        type                  = ${scarab.database.type}
-        instance name         = ${scarab.database.name}
-        admin user            = ${scarab.database.admin.username}
-        jdbc url              = ${scarab.database.url}
-        jdbc driver           = ${scarab.database.jdbc.driver}
-        skip jira templates   = ${skip.jira.templates.data}
-        skip sample data      = ${skip.seed.data}
-        skip default data     = ${skip.default.data}
+        scarab.database.type            = ${scarab.database.type}
+        scarab.database.name            = ${scarab.database.name}
+        scarab.database.admin.username  = ${scarab.database.admin.username}
+        scarab.database.url             = ${scarab.database.url}
+        scarab.database.jdbc.driver     = ${scarab.database.jdbc.driver}
+        skip.jira.templates.data        = ${skip.jira.templates.data}
+        skip.seed.data                  = ${skip.seed.data}
+        skip.default.data               = ${skip.default.data}
       </echo>
     </target>
 
