@@ -319,9 +319,15 @@ public class MoveIssue extends BaseModifyIssue
             // Do the copy/move
             try
             {
-                newIssue = issue.move(newModule, newIssueType, 
-                                      selectAction, user,
-                                      reason, commentAttrs, commentUserValues);
+            	if("move".equals(selectAction)){
+            		 newIssue = issue.move(newModule, newIssueType, user,
+                             reason, commentAttrs, commentUserValues);
+            	}
+            	else if("copy".equals(selectAction)){
+            		 newIssue = issue.copy(newModule, newIssueType, user,
+                             reason, commentAttrs, commentUserValues);
+            	}
+               
             }
             catch (Exception e)
             {
