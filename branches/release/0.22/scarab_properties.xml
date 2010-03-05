@@ -1520,6 +1520,85 @@
     </group>
   </section>
 
+  <section name="MIGRATION">
+    <details>
+      These are some default values that are required for
+      the b18-b19 migration build target. DO NOT MODIFY THEM!
+      
+      Relation to ant build:
+      ----------------------
+      This section directly corresponds to the ant task
+      
+        migrate-b18-b19  
+    </details>
+
+    <property>
+      <name>scarab.tomcat.http.port</name>
+      <default>8080</default>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.tomcat.shutdown.port</name>
+      <default>8005</default>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.webapp.reloadable</name>
+      <default>true</default>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.webapp.checkInterval</name>
+      <default>2</default>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.welcome.file</name>
+      <default>index.html</default>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.file.max.size</name>
+      <default>157286400</default>
+      <comment>Maximum file size for file uploads/attachments.</comment>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.tomcat.proxy.name</name>
+      <default/>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+    <property>
+      <name>scarab.tomcat.proxy.port</name>
+      <default/>
+      <comment/>
+      <type>Build</type>
+       <customization modification="optional">advanced</customization>
+      <file/>
+    </property>
+  </section>
+
+
   <section name="PROPERTY-MAPS">
     <details>
       Following mappings are fixed and shall never be changed!
@@ -2599,15 +2678,7 @@
         </details>
 
       </property>
-	<property>
-      <name>scarab.file.max.size</name>
-      <default>157286400</default>
-      <comment>Maximum file size for file uploads/attachments.</comment>
-      <type>Build</type>
-       <customization modification="optional">advanced</customization>
-      <file/>
-    </property>
-	  <property>
+      <property>
         <name>repository.dir</name>
         <default>${root.dir}/www/repository</default>
         <comment/>
