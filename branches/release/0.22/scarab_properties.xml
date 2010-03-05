@@ -1575,8 +1575,8 @@
     <property>
       <name>scarab.file.max.size</name>
       <default>157286400</default>
-      <comment/>
-      <type>Runtime</type>
+      <comment>Maximum file size for file uploads/attachments.</comment>
+      <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
     </property>

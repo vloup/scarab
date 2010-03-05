@@ -5,7 +5,7 @@
     <!-- Torque Component initialized from the Turbine runtime properties -->
     <torque />
     <mimetype mimetypes="/WEB-INF/conf/mime.types" />
-    <upload repository="WEB-INF" sizeMax="157286400"
+    <upload repository="WEB-INF" sizeMax="@SCARAB_FILE_MAX_SIZE@"
         sizeThreshold="8192" />
     <parser />
 
