@@ -1525,6 +1525,9 @@
       These are some default values that are required for
       the b18-b19 migration build target. DO NOT MODIFY THEM!
       
+	  Currently it seems these properties (and the "b18-b19" task)
+	  are not used/needed anymore - EXCEPT "scarab.file.max.size"!!
+	  
       Relation to ant build:
       ----------------------
       This section directly corresponds to the ant task
