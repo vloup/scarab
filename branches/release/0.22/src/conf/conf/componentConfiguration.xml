@@ -4,10 +4,17 @@
 
     <!-- Torque Component initialized from the Turbine runtime properties -->
     <torque />
-    <mimetype mimetypes="/WEB-INF/conf/mime.types" />
-    <upload repository="WEB-INF" sizeMax="-1"
-        sizeThreshold="8192" />
-    <parser />
+    
+	<mimetype mimetypes="/WEB-INF/conf/mime.types" />
+    
+	<!-- Fulcrum Upload Component http://turbine.apache.org/fulcrum/fulcrum-upload/
+		repository: The directory where files will be temporarily stored.
+		sizeMax: The maximum size of a request that will be processed. -1 = Unlimited.
+		sizeThreshold: The maximum size of a request that will have it's elements cached in memory.
+	-->
+	<upload repository="WEB-INF" sizeMax="-1" sizeThreshold="8192" />
+    
+	<parser />
 
     <localization>
         <bundles>
@@ -15,14 +22,18 @@
             <bundle>InitDbScarabBundle</bundle>
         </bundles>
     </localization>
+	
     <pool>
         <configuration>
             <capacity default="128" />
         </configuration>
     </pool>
+	
     <factory />
+	
     <scarabCache />
-    <!--
+    
+	<!--
         # Path for writing index, if starts with a '/', the path is assumed to be 
         # absolute, otherwise it will be created relative to the webapp root.
     -->
