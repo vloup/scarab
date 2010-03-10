@@ -164,6 +164,7 @@
                  <filter token="SCARAB_MODULE_CODE_LENGTH" value="${scarab.module.code.length}"/>
                  <filter token="VERSION" value="${version}"/>
                  <filter token="BUILD_DATE" value="${DSTAMP}${TSTAMP}"/>
+                 <filter token="SCARAB_FILE_MAX_SIZE" value="${scarab.file.max.size}"/>
              </filterset>
         </copy>
 

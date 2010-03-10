@@ -48,6 +48,8 @@ package org.tigris.scarab.om;
 
 // JDK classes
 import com.workingdogs.village.DataSetException;
+
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.text.ParseException;
@@ -2590,17 +2592,17 @@ public class Issue
     }    
     
     /**
-     *  Move or copy issue to destination module.
+     *  Move issue to destination module.
      */
     public Issue move(final Module newModule, 
-            final IssueType newIssueType,
-            final String action, 
-            final ScarabUser user, 
+            final IssueType newIssueType, 
+            final ScarabUser user,
             final String reason,
             final List commentAttrs, 
             final List commentUserValues)
           throws TorqueException, ScarabException
     {
+    	
         Issue newIssue;
 
         final Attachment attachment = new Attachment();
@@ -2608,8 +2610,7 @@ public class Issue
         // If moving to a new issue type, just change the issue type id
         // otherwise, create fresh issue
         if (getModule().getModuleId().equals(newModule.getModuleId())
-            && !getIssueType().getIssueTypeId().equals(newIssueType.getIssueTypeId())
-            && action.equals("move"))
+            && !getIssueType().getIssueTypeId().equals(newIssueType.getIssueTypeId()))
         {
             newIssue = this;
             newIssue.setIssueType(newIssueType);
@@ -2620,33 +2621,122 @@ public class Issue
             newIssue = newModule.getNewIssue(newIssueType);
         }
 
-        if (newIssue != this)
+        if (newIssue != this)//new issue is not same issue instance as old issue
         {
-            // If moving issue to new module, delete original
-            if (action.equals("move"))
-            {
-                setMoved(true);
-                save();
-            }
+            // mark issue as moved
+            setMoved(true);
+            save();
 
+            //add new transaction to new issue
             ActivitySet createActivitySet = ActivitySetManager.getInstance(
                     ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
             createActivitySet.setCreatedDate(getCreatedDate());
             createActivitySet.save();
             newIssue.setCreatedTransId(createActivitySet.getActivitySetId());
-            newIssue.save();
+            newIssue.save();      
 
+            // copy attachments: comments/files etc.
+            final Iterator attachments = getAttachments().iterator();
+            while (attachments.hasNext())
+            {
+                final Attachment oldA = (Attachment)attachments.next();
+                String oldFilePath = oldA.getFullPath();
+                oldA.setIssueId(newIssue.getIssueId());
+                oldA.save();
+                
+                // move file attachment, too
+                if (Attachment.FILE__PK.equals(oldA.getTypeId())
+                		&& !newIssue.getUniqueId().equals(this.getUniqueId()))
+                {
+                    try
+                    {
+                        oldA.copyFileFromTo(oldFilePath, oldA.getFullPath());//copy
+                        File f = new File(oldFilePath);//delete old one from disk
+                        f.delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
+                    }
+                }
+            }
 
+            // Copy over activity sets for the source issue's previous,
+            // and adapt them to new issue
+            final List activitySets = getActivitySets();
+            final List nonMatchingAttributes = getNonMatchingAttributeValuesList
+                                               (newModule, newIssueType);
+            final List alreadyAssociatedUsers = new ArrayList();
+            for (Iterator i = activitySets.iterator(); i.hasNext();)
+            {
+                final ActivitySet as = (ActivitySet)i.next();
+
+                // If activity set has an attachment, make a copy for new issue
+                // Copy over activities with sets
+                final List activities = as.getActivityList(this);
+                for (Iterator j = activities.iterator(); j.hasNext();)
+                {
+                    // iterate over and move transaction's activities
+                    final Activity a = (Activity)j.next();
+                    
+                    // Only copy transactions that are records of previous move/copies
+                    // or transactions relating to attributes.
+                    // Other transactions (attachments, dependencies)
+                    // will be saved when attachments and dependencies are copied.
+                    if (as.getTypeId().equals((ActivitySetTypePeer.MOVE_ISSUE__PK))
+                            || !a.getAttributeId().equals(new Integer("0")))
+                    {
+                        // If this is an activity relating to setting an attribute value
+                        // And the final value is in the issue right now, we'll copy
+                        // over the attribute value
+                        final AttributeValue attVal = getAttributeValueWithValue(a.getAttribute(),
+                                a.getNewValue(), a.getNewNumericValue());
+                        if (a.getEndDate() == null && attVal != null)
+                        {
+                            final List values = getAttributeValues(a.getAttribute());
+                            for (Iterator it = values.iterator(); it.hasNext(); )
+                            {
+                                final AttributeValue att = (AttributeValue)it.next();
+                                // Only copy if the target artifact type contains this
+                                // Attribute
+                                if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, att))
+                                {
+                                    final boolean isUser = (att instanceof UserAttribute);
+                                    if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getUserName()+att.getAttribute().getName()))
+                                    {
+                                    	att.setIssueId(newIssue.getIssueId());
+                                    	att.setActivity(a);
+                                    	att.startActivitySet(as);
+                                    	att.save();
+                                        if (isUser)
+                                        {
+                                            alreadyAssociatedUsers.add(((UserAttribute)att).getUserName()+att.getAttribute().getName());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //adapt all misc activities from old issue
+            Iterator iterActivities = getActivitys().iterator();
+            while(iterActivities.hasNext()){
+            	Activity act = (Activity)iterActivities.next();
+            	act.setIssue(newIssue);
+            	act.save();
+            	newIssue.getActivity(true).add(act); // ?
+            }
+            
             // Adjust dependencies if its a new issue id
             // (i.e.. moved to new module)
-            final List children = getChildren();
+           final List children = getChildren();
             for (Iterator i = children.iterator(); i.hasNext();)
             {
                  Depend depend = (Depend)i.next();
-                 if (action.equals("move"))
-                 {
-                     doDeleteDependency(null, depend, user);
-                 }
+                 doDeleteDependency(null, depend, user);
+                 
                  final Issue child = IssueManager.getInstance(depend.getObserverId());
                  final Depend newDepend = new Depend();
                  newDepend.setObserverId(child.getIssueId());
@@ -2658,10 +2748,8 @@ public class Issue
             for (Iterator j = parents.iterator(); j.hasNext();)
             {
                  final Depend depend = (Depend)j.next();
-                 if (action.equals("move"))
-                 {
-                     doDeleteDependency(null, depend, user);
-                 }
+                 doDeleteDependency(null, depend, user);
+                 
                  final Issue parent = IssueManager.getInstance(depend.getObservedId());
                  final Depend newDepend = new Depend();
                  newDepend.setObserverId(newIssue.getIssueId());
@@ -2669,37 +2757,125 @@ public class Issue
                  newDepend.setTypeId(depend.getTypeId());
                  parent.doAddDependency(null, newDepend, newIssue, user);
             }
+            
+        }       
+       
 
-            // copy attachments: comments/files etc.
-            final Iterator attachments = getAttachments().iterator();
-            while (attachments.hasNext())
+        // Generate comment to deal with attributes that do not
+        // Exist in destination module, as well as the user attributes.
+        final StringBuffer attachmentBuf = new StringBuffer();
+        final StringBuffer delAttrsBuf = new StringBuffer();
+        if (reason != null && reason.length() > 0)
+        {
+            attachmentBuf.append(reason).append(". ");
+        }
+        if (commentAttrs.size() > 0 || commentUserValues.size() > 0 )
+        {
+            attachmentBuf.append(Localization.format(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(), "DidNotCopyAttributes", newIssueType.getName() + "/" + newModule.getName()));
+            attachmentBuf.append("\n");
+            for (int i = 0; i < commentAttrs.size(); i++)
             {
-                final Attachment oldA = (Attachment)attachments.next();
-                final Attachment newA = oldA.copy();
-                newA.setIssueId(newIssue.getIssueId());
-                newA.save();
-                final Activity oldAct = oldA.getActivity();
-                if (oldAct != null)
+                final List attVals = getAttributeValues((Attribute) commentAttrs
+                        .get(i));
+                for (int j = 0; j < attVals.size(); j++)
                 {
-                    final ActivitySet activitySet = newIssue.attachActivitySet(null, user);
-                    ActivityManager.createTextActivity(newIssue, activitySet,
-                        ActivityType.getActivityType(oldA.getActivity().getActivityType()), newA);
-                }
-                if (Attachment.FILE__PK.equals(newA.getTypeId()))
-                {
-                    try
-                    {
-                        oldA.copyFileTo(newA.getFullPath());
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
-                    }
+                    final AttributeValue attVal = (AttributeValue) attVals.get(j);
+                    String field = null;
+                    delAttrsBuf.append(attVal.getAttribute().getName());
+                    field = attVal.getValue();
+                    delAttrsBuf.append("=").append(field).append(". ").append(
+                            "\n");
                 }
             }
+            for (int i=0; i < commentUserValues.size(); i++)
+            {
+                final UserAttribute useratt = (UserAttribute)commentUserValues.get(i);
+                delAttrsBuf.append(useratt.getAttribute().getName() + ": " +
+                        useratt.getUserName() + "\n");
+            }
+           final String delAttrs = delAttrsBuf.toString();
+           attachmentBuf.append(delAttrs);
 
-            // Copy over activity sets for the source issue's previous
-            // Transactions
+           // Also create a regular comment with non-matching attribute info
+           final Attachment comment = new Attachment();
+           comment.setTextFields(user, newIssue, Attachment.COMMENT__PK);
+
+           final Object[] args = {this.getUniqueId(), newIssueType.getName() + " / " + newModule.getName()};
+           final StringBuffer commentBuf = new StringBuffer(Localization.format(
+              ScarabConstants.DEFAULT_BUNDLE_NAME,
+              getLocale(),
+              "DidNotCopyAttributesFromArtifact", args));
+           commentBuf.append("\n").append(delAttrs);
+           comment.setData(commentBuf.toString());
+           comment.setName(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "Comment"));
+           comment.save();
+        }
+        else
+        {
+            attachmentBuf.append(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "AllCopied"));
+        }
+        attachment.setData(attachmentBuf.toString());
+
+        attachment.setName(Localization.getString(
+               ScarabConstants.DEFAULT_BUNDLE_NAME,
+               getLocale(),
+               "MovedIssueNote"));
+        attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
+        attachment.save();
+
+        // Create activitySet for the MoveIssue activity
+        final ActivitySet activitySet2 = 
+        	newIssue.attachActivitySet(null, user, attachment, ActivitySetTypePeer.MOVE_ISSUE__PK);
+
+        // Save activity record
+        final Attribute zeroAttribute = AttributeManager
+            .getInstance(NUMBERKEY_0);
+        ActivityManager
+            .createTextActivity(newIssue, zeroAttribute, activitySet2,
+                                ActivityType.ISSUE_MOVED,
+                                getUniqueId(), newIssue.getUniqueId());
+
+        newIssue.index();
+        
+        return newIssue;
+    }
+    
+    /**
+     * Copy issue to destination module.
+     */
+    public Issue copy(final Module newModule, 
+            final IssueType newIssueType, 
+            final ScarabUser user, 
+            final String reason,
+            final List commentAttrs, 
+            final List commentUserValues)
+          throws TorqueException, ScarabException
+    {
+        Issue newIssue;
+
+        final Attachment attachment = new Attachment();
+
+        // create fresh issue
+        newIssue = newModule.getNewIssue(newIssueType);
+
+        if (newIssue != this)
+        {
+            ActivitySet createActivitySet = ActivitySetManager.getInstance(
+                    ActivitySetTypePeer.CREATE_ISSUE__PK, getCreatedBy());
+            createActivitySet.setCreatedDate(getCreatedDate());
+            createActivitySet.save();
+            newIssue.setCreatedTransId(createActivitySet.getActivitySetId());
+            newIssue.save();
+
+            // Copy over activity sets for the source issue's attribute activities
             final List activitySets = getActivitySets();
             final List nonMatchingAttributes = getNonMatchingAttributeValuesList
                                                (newModule, newIssueType);
@@ -2709,17 +2885,13 @@ public class Issue
                 final ActivitySet as = (ActivitySet)i.next();
                 ActivitySet newAS = null;
                 Attachment newAtt =  null;
-                // If activity set has an attachment, make a copy for new issue
-                if (as.getAttachmentId() != null)
-                {
-                    newAtt = as.getAttachment().copy();
-                    newAtt.save();
-                }
+                              
                 // Copy over activities with sets
                 final List activities = as.getActivityList(this);
                 for (Iterator j = activities.iterator(); j.hasNext();)
                 {
                     final Activity a = (Activity)j.next();
+
                     // Only copy transactions that are records of previous move/copies
                     // Or transactions relating to attributes.
                     // Other transactions (attachments, dependencies)
@@ -2727,20 +2899,32 @@ public class Issue
                     if (as.getTypeId().equals((ActivitySetTypePeer.MOVE_ISSUE__PK))
                         || !a.getAttributeId().equals(new Integer("0")))
                     {
-                        newAS = new ActivitySet();
-                        newAS.setTypeId(as.getTypeId());
-                        if (newAtt != null)
-                        {
-                            newAS.setAttachmentId(newAtt.getAttachmentId());
-                        }
-                        newAS.setCreatedBy(as.getCreatedBy());
-                        newAS.setCreatedDate(as.getCreatedDate());
-                        newAS.save();
-
                         // iterate over and copy transaction's activities
+                       
+                        if(newAS == null){
+                        	
+                        	 // If old activity set has an attachment, make a copy for new issue
+                            if (as.getAttachmentId() != null)
+                            {
+                                newAtt = as.getAttachment().copy();
+                                newAtt.save();
+                            }
+                        	
+            				//init and store new activity set/transaction
+                            newAS = new ActivitySet();
+                            newAS.setTypeId(as.getTypeId());
+                            if (newAtt != null)
+                            {
+                                newAS.setAttachmentId(newAtt.getAttachmentId());
+                            }
+                            newAS.setCreatedBy(as.getCreatedBy());
+                            newAS.setCreatedDate(as.getCreatedDate());
+                            newAS.save();
+                        }
+                        
                         final Activity newA = a.copy(newIssue, newAS);
+                        
                         newIssue.getActivity(true).add(newA);
-
                         // If this is an activity relating to setting an attribute value
                         // And the final value is in the issue right now, we'll copy
                         // over the attribute value
@@ -2772,6 +2956,58 @@ public class Issue
                                 }
                             }
                         }
+                    }
+                }
+            }
+            
+            // add dependencies newly
+            final List children = getChildren();
+            for (Iterator i = children.iterator(); i.hasNext();)
+            {
+                 Depend depend = (Depend)i.next();
+                 final Issue child = IssueManager.getInstance(depend.getObserverId());
+                 final Depend newDepend = new Depend();
+                 newDepend.setObserverId(child.getIssueId());
+                 newDepend.setObservedId(newIssue.getIssueId());
+                 newDepend.setTypeId(depend.getTypeId());
+                 newIssue.doAddDependency(null, newDepend, child, user);
+            }
+            final List parents = getParents();
+            for (Iterator j = parents.iterator(); j.hasNext();)
+            {
+                 final Depend depend = (Depend)j.next();
+                 final Issue parent = IssueManager.getInstance(depend.getObservedId());
+                 final Depend newDepend = new Depend();
+                 newDepend.setObserverId(newIssue.getIssueId());
+                 newDepend.setObservedId(parent.getIssueId());
+                 newDepend.setTypeId(depend.getTypeId());
+                 parent.doAddDependency(null, newDepend, newIssue, user);
+            }
+            
+            // copy attachments: comments/files etc. and add them, too
+            final Iterator attachments = getAttachments().iterator();
+            while (attachments.hasNext())
+            {
+                final Attachment oldA = (Attachment)attachments.next();
+                final Attachment newA = oldA.copy();
+                newA.setIssueId(newIssue.getIssueId());
+                newA.save();
+                final Activity oldAct = oldA.getActivity();
+                if (oldAct != null)
+                {
+                    final ActivitySet activitySet = newIssue.attachActivitySet(null, user);
+                    ActivityManager.createTextActivity(newIssue, activitySet,
+                        ActivityType.getActivityType(oldA.getActivity().getActivityType()), newA);
+                }
+                if (Attachment.FILE__PK.equals(newA.getTypeId()))
+                {
+                    try
+                    {
+                        oldA.copyFileTo(newA.getFullPath());
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ScarabException(L10NKeySet.ExceptionGeneral,ex);
                     }
                 }
             }
@@ -2840,20 +3076,12 @@ public class Issue
         }
         attachment.setData(attachmentBuf.toString());
 
-        if (action.equals("move"))
-        {
-            attachment.setName(Localization.getString(
-               ScarabConstants.DEFAULT_BUNDLE_NAME,
-               getLocale(),
-               "MovedIssueNote"));
-        }
-        else
-        {
-            attachment.setName(Localization.getString(
+
+        attachment.setName(Localization.getString(
                ScarabConstants.DEFAULT_BUNDLE_NAME,
                getLocale(),
                "CopiedIssueNote"));
-        }
+        
         attachment.setTextFields(user, newIssue, Attachment.MODIFICATION__PK);
         attachment.save();
 
