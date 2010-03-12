@@ -62,6 +62,9 @@ CONTENTS OF THIS FILE
    If you have intentionally or unintentionally scratched your index data
    during migration, it will automatically rebuild upon forst start of
    the webapp.
+   
+   Remember that for a migration the value for instance-id (Property: "scarab.instance.id")
+   of your new build of Scarab, has to match the old value.
 
 ,-----------------------------------------------------------------------.
 | 1.2 Details of the migration tasks                                    |
