@@ -11,7 +11,7 @@
 		Implemented property for maximum file size of uploads: scarab.file.max.size
 		</action>
 		<action dev="jhoech" type="fix">
-		Reworked screen for role requests. Added permission for role reqeusts.
+		Reworked screen for role requests. Added permission for role requests.
 		</action>
 		<action dev="jhoech" type="fix">
 		Reworked automatic login by NTLM.
