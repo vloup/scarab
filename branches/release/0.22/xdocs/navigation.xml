@@ -24,6 +24,7 @@
       <item name="How-To's"               href="/howto/index.html" collapse="true">
 	   <item name="Maven Build"           href="/howto/maven-build-howto.html"/>
        <item name="Ant Build"             href="/howto/ant-build-howto.html"/>
+	   <item name="Migrate Scarab"    	  href="/howto/migrate-howto.html"/>
        <item name="Howto Build Docs"      href="/howto/build-docs-howto.html"/>
        <item name="Releasing Scarab"      href="/howto/release-howto.html"/>
        <item name="Scarab and Firewalls"  href="/howto/firewall-howto.html"/>
