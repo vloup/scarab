@@ -35,7 +35,7 @@
 		Reworked search engine.
 		</action>
 		<action dev="ronvoe122" type="add">
-		Now using Torque 3.3.RC2s
+		Now using Torque 3.3 RC2
 		</action>
 		<action dev="jfelfouly" type="add">
 		Experimental webinstaller.
