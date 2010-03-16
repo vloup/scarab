@@ -40,6 +40,12 @@
 		<action dev="jfelfouly" type="add">
 		Experimental webinstaller.
 		</action>
+		<action dev="spjames" type="add">
+		Adds support for multi-part MIME email for sending plain-text-with-HTML email.
+		</action>
+		<action dev="ptillemans" type="add">
+		Handler to create new tickets and to handle attribute options via xml-rpc interface.
+		</action>
 	</release>
     <release version="b21" date="in-development">
       <action dev="pledbrook" type="fix" due-to="Ronny Voelker" fix="SCB1736">
