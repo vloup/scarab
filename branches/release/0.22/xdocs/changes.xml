@@ -6,6 +6,41 @@
   </properties>
 
   <body>
+	<release version="b22" date="16-MARCH-2010">
+		<action dev="jhoech" type="fix">
+		Implemented property for maximum file size of uploads: scarab.file.max.size
+		</action>
+		<action dev="jhoech" type="fix">
+		Reworked screen for role requests. Added permission for role reqeusts.
+		</action>
+		<action dev="jhoech" type="fix">
+		Reworked automatic login by NTLM.
+		</action>
+		<action dev="hair" type="add">
+		Support threads for notifications by email.
+		</action>
+		<action dev="jhoech" type="add">
+		Reworked dependency tab: More conservative evaluation of blocking states and accroding conditions, modifiable display attributes for dependant issues.
+		</action>
+		<action dev="jhoech" type="add">
+		Changes for report engine: support for date ranges, report can be displayed on module home page.
+		</action>
+		<action dev="hair" type="add">
+		Possibility to import issues from jira.
+		</action>
+		<action dev="ronvoe122, jhoech" type="fix">
+		Reworked history tab: Fixes for date formats, layout and more...
+		</action>
+		<action dev="ronvoe122" type="fix">
+		Reworked search engine.
+		</action>
+		<action dev="ronvoe122" type="add">
+		Now using Torque 3.3.RC2s
+		</action>
+		<action dev="jfelfouly" type="add">
+		Experimental webinstaller.
+		</action>
+	</release>
     <release version="b21" date="in-development">
       <action dev="pledbrook" type="fix" due-to="Ronny Voelker" fix="SCB1736">
        Sorting on the "Created By" and "Modified By" attributes now works
