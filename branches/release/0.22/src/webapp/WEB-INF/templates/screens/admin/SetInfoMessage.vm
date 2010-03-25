@@ -5,7 +5,7 @@
 
 <div>$l10n.SetInfoMessagePrompt</div>
 <div><input type="text" name="msg" value="" size="80" /></div> 
-<div><input type="submit" name="foo" value="Set message" /></div> 
+<div><input type="submit" name="foo" value="$l10n.Done" /></div> 
 
 </form>
 </div>
