@@ -385,7 +385,7 @@
         <default>Administrator</default>
         <comment>
           Username of the initial (only?) Scarab administrator. Maybe this,
-          along with the other adminstrator user properties, should be build
+          along with the other administrator user properties, should be build
           properties which modify the seed data. Otherwise use hard-coded
           values.
         </comment>

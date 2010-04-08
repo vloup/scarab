@@ -3058,7 +3058,7 @@ public class ScarabRequestTool
     public void setInfoMessage(Localizable localizable)
     {
         ScarabLocalizationTool l10n = getLocalizationTool();
-        this.infoMessage = new SimpleSkipFiltering(localizable.getMessage(l10n));
+        this.infoMessage = localizable == null ? null : new SimpleSkipFiltering(localizable.getMessage(l10n));
     }
 
     /**

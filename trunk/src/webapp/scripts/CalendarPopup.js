@@ -994,6 +994,9 @@ NOTES:
 
 */ 
 
+// Quick fix for FF3
+function CP_stop(e) { if (e && e.stopPropagation) { e.stopPropagation(); } }
+
 // CONSTRUCTOR for the CalendarPopup Object
 function CalendarPopup() {
 	var c;
@@ -1320,7 +1323,7 @@ function CP_getCalendar() {
 		var refresh = windowref+'CP_refreshCalendar';
 		var refreshLink = 'javascript:' + refresh;
 		if (this.isShowNavigationDropdowns) {
-			result += '<TD CLASS="'+this.cssPrefix+'cpMonthNavigation" WIDTH="78" COLSPAN="3"><select CLASS="'+this.cssPrefix+'cpMonthNavigation" name="cpMonth" onChange="'+refresh+'('+this.index+',this.options[this.selectedIndex].value-0,'+(year-0)+');">';
+			result += '<TD CLASS="'+this.cssPrefix+'cpMonthNavigation" WIDTH="78" COLSPAN="3"><select CLASS="'+this.cssPrefix+'cpMonthNavigation" name="cpMonth" onmouseup="CP_stop(event)" onChange="'+refresh+'('+this.index+',this.options[this.selectedIndex].value-0,'+(year-0)+');">';
 			for( var monthCounter=1; monthCounter<=12; monthCounter++ ) {
 				var selected = (monthCounter==month) ? 'SELECTED' : '';
 				result += '<option value="'+monthCounter+'" '+selected+'>'+this.monthNames[monthCounter-1]+'</option>';
@@ -1328,7 +1331,7 @@ function CP_getCalendar() {
 			result += '</select></TD>';
 			result += '<TD CLASS="'+this.cssPrefix+'cpMonthNavigation" WIDTH="10">&nbsp;</TD>';
 
-			result += '<TD CLASS="'+this.cssPrefix+'cpYearNavigation" WIDTH="56" COLSPAN="3"><select CLASS="'+this.cssPrefix+'cpYearNavigation" name="cpYear" onChange="'+refresh+'('+this.index+','+month+',this.options[this.selectedIndex].value-0);">';
+			result += '<TD CLASS="'+this.cssPrefix+'cpYearNavigation" WIDTH="56" COLSPAN="3"><select CLASS="'+this.cssPrefix+'cpYearNavigation" name="cpYear" onmouseup="CP_stop(event)" onChange="'+refresh+'('+this.index+','+month+',this.options[this.selectedIndex].value-0);">';
 			for( var yearCounter=year-this.yearSelectStartOffset; yearCounter<=year+this.yearSelectStartOffset; yearCounter++ ) {
 				var selected = (yearCounter==year) ? 'SELECTED' : '';
 				result += '<option value="'+yearCounter+'" '+selected+'>'+yearCounter+'</option>';

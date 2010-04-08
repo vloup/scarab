@@ -19,7 +19,7 @@
 
  <div class="scarab-toolgroup">
   <div class="label">
-   <strong>$link.setPage("admin,AdminIndex.vm").setLabel("$l10n.Admin")</strong></div>
+   <strong>$l10n.Admin</strong></div>
 
   <div class="body">
    #if ($allowGATS || $allowGAS || $allowUSI)

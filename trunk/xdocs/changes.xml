@@ -44,7 +44,7 @@
 		Handler to create new tickets and to handle attribute options via xml-rpc interface.
 		</action>
 	</release>
-    <release version="b21" date="in-development">
+    <release version="b21" date="9-FEB-2007 (guessed from release files datestamp)">
       <action dev="pledbrook" type="fix" due-to="Ronny Voelker" fix="SCB1736">
        Sorting on the "Created By" and "Modified By" attributes now works
        without any problems.
