@@ -1120,7 +1120,7 @@
 
       <property>
         <name>scarab.attachment.remove.permanent</name>
-        <default>true</default>
+        <default>false</default>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
