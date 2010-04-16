@@ -2245,18 +2245,21 @@ public class ScarabRequestTool
     }
     
     /**
-     * Return the default query for the current module.
-     * Typical usage as home page for that module.
+     * Return the default query for the current module/user combination.
+     * Typical usage as home page for the current user of that module.
      * @return
      * @throws Exception
      */
     public Query getDefaultQuery() throws Exception
     {
-        return getDefaultQuery(getCurrentModule());
+        Module currentModule   = getCurrentModule();
+        ScarabUser currentUser = getCurrentUser();
+        Integer currentUserId  = (currentUser==null)? null:currentUser.getUserId();
+        return getDefaultQuery(currentModule, currentUserId);
     }
 
     /**
-     * Return the default query for the given module.
+     * Return the default query (as set by the module owner) for the given module.
      * Typical usage as home page for the given module.
      * @param module
      * @return
@@ -2264,7 +2267,20 @@ public class ScarabRequestTool
      */
     public Query getDefaultQuery(Module module) throws Exception
     {
-        return QueryPeer.getDefaultQuery(module);
+        Integer ownerId = (module != null) ? module.getOwnerId():null;
+        return getDefaultQuery(module, ownerId);
+    }
+
+    /**
+     * Return the default query (as set by the given user) for the given module.
+     * Typical usage as home page for the given module.
+     * @param module
+     * @return
+     * @throws Exception
+     */
+    public Query getDefaultQuery(Module module, Integer userId) throws Exception
+    {
+        return QueryPeer.getDefaultQuery(module, userId);
     }
 
     /**

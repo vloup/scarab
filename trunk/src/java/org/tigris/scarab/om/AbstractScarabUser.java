@@ -383,7 +383,7 @@ public abstract class AbstractScarabUser
     }
 
     /**
-     * Returns all modules which are editable fur user.
+     * Returns all modules which are editable for user.
      * @see org.tigris.scarab.om.ScarabUser#getEditableModules(Module)
      */
     public List getEditableModules(Module currEditModule)
@@ -765,7 +765,7 @@ public abstract class AbstractScarabUser
         String result;
         if(homePage.equals("IssueList.vm"))
         {
-            Query q = QueryPeer.getDefaultQuery(module);
+            Query q = QueryPeer.getDefaultQuery(module, this.getUserId());
             if(q != null)
             {
                 homePage="IssueList.vm";
@@ -800,7 +800,7 @@ public abstract class AbstractScarabUser
                 else
                 {
                     
-                    Query q = QueryPeer.getDefaultQuery(module);
+                    Query q = QueryPeer.getDefaultQuery(module, this.getUserId());
                     if(q != null)
                     {
                         homePage="IssueList.vm";

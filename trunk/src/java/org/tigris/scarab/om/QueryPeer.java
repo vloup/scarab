@@ -46,6 +46,7 @@ package org.tigris.scarab.om;
  * individuals on behalf of Collab.Net.
  */ 
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -390,7 +391,9 @@ public class QueryPeer
 
 
     /**
-     * Return the 
+     * Return the module's default query as it was set by the module owner.
+     * If you want to get the user customized default query, then use 
+     * the method getDefaultQuery(module, userId) instead
      * @param module
      * @param user
      * @return
@@ -398,15 +401,31 @@ public class QueryPeer
      */
     public static Query getDefaultQuery(Module module) throws TorqueException 
     {
+        Integer moduleOwnerId = module.getOwnerId();
+        return getDefaultQuery(module, moduleOwnerId);
+    }
+        
+    /**
+     * Return the module's default query as it was set by the given userId.
+     * If the user has not customized the default query yet, this method returns
+     * the default query as it was preset by the module Owner.
+     * @param module
+     * @param user
+     * @return
+     * @throws TorqueException
+     */
+    public static Query getDefaultQuery(Module module, Integer userId) throws TorqueException 
+    {
         List<Query> queries = null;
         Object obj = QueryManager.getMethodResult()
             .get(QUERY_PEER, GET_MODULE_QUERIES, module, "homePage");
         if (obj == null) 
-        {
+        {       
+            Integer moduleId      = module.getModuleId();
             Criteria crit = new Criteria()
                 .add(QueryPeer.DELETED, 0);
             crit.add(QueryPeer.HOME_PAGE, 1);
-            crit.add(QueryPeer.MODULE_ID, module.getModuleId());
+            crit.add(QueryPeer.MODULE_ID, moduleId);
             queries = QueryPeer.doSelect(crit);
             QueryManager.getMethodResult()
                 .put(queries, QUERY_PEER, GET_MODULE_QUERIES, module, "homePage");
@@ -416,14 +435,27 @@ public class QueryPeer
             queries = (List)obj;
         }
         
-        Query result;
-        if(queries != null &&queries.size() == 1)
+        Integer moduleOwnerId = module.getOwnerId();
+        Query result = null;
+        if(queries != null)
         {
-            result = queries.get(0);
-        }
-        else
-        {
-            result = null;
+            Iterator<Query> iter = queries.iterator();
+            while(iter.hasNext())
+            {
+                Query candidate = iter.next();
+                Integer candidateId = candidate.getUserId();
+                if(candidateId.equals(userId) || candidateId.equals(moduleOwnerId))
+                {
+                    result = candidate; // We found a customized query.
+                }
+                if(candidateId.equals(userId))
+                {
+                    break; // It is the user's custom query. Take that and be happy.
+                }
+            }
+            // Now result contains either the user's customized query, 
+            // or the module owner's query, if the user hasn't configured one by himself,
+            // or null, if no query could be found at all for either the user or the module owner.
         }
         return result;
     }

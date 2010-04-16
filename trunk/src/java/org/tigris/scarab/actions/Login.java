@@ -175,7 +175,7 @@ public class Login extends ScarabTemplateAction
                     {
                         data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
                         
-                        Query defaultQuery = QueryPeer.getDefaultQuery(uniqueModule);
+                        Query defaultQuery = QueryPeer.getDefaultQuery(uniqueModule, user.getUserId());
                         ParameterParser pp = data.getParameters();
                         if(defaultQuery != null)
                         {
