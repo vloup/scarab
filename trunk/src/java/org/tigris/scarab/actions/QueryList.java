@@ -210,16 +210,31 @@ public class QueryList extends RequireLoginFirstAction
         ParameterParser pp = data.getParameters();   
         String queryId = pp.get("startpage");
         
-        List<Query> globalQueries  = getScarabRequestTool(context).getGlobalQueries();
         List<Query> privateQueries = getScarabRequestTool(context).getUserAllQueries();
         Query newStartQuery = QueryManager.getInstance(new NumberKey(queryId), false);
         
-        setStartpage(globalQueries, newStartQuery);
-        setStartpage(privateQueries, newStartQuery);       
+        boolean addedAsStartQuery;
+        
+        addedAsStartQuery = setStartpage(privateQueries, newStartQuery);       
+        if(addedAsStartQuery)
+        {
+            // We just have added a private query as startPage.
+            // We will not deal with the public queries.
+            // Consequently we can have more than one startQuery per module.
+        }
+        else
+        {
+            // Since we have not marked a personal query as start page we probably
+            // are dealing with a public query, hence we must process the public query list
+            // too.
+            List<Query> globalQueries  = getScarabRequestTool(context).getGlobalQueries();
+            setStartpage(globalQueries, newStartQuery);
+        }
     }
     
-    private void setStartpage(List<Query> queries, Query newStartQuery) throws TorqueException
+    private boolean setStartpage(List<Query> queries, Query newStartQuery) throws TorqueException
     {
+        boolean addedAsStartQuery = false;
         Iterator<Query> iter = queries.iterator();
         while(iter.hasNext())
         {
@@ -227,6 +242,7 @@ public class QueryList extends RequireLoginFirstAction
             if (query.getQueryId().equals(newStartQuery.getQueryId()))
             {
                 query.setHomePage(true);
+                addedAsStartQuery=true;
             }
             else
             {
@@ -234,5 +250,6 @@ public class QueryList extends RequireLoginFirstAction
             }
             query.save();
         }
+        return addedAsStartQuery;
     }
 }
