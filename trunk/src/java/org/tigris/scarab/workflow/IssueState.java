@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.TorqueException;
-import org.apache.turbine.Turbine;
 import org.tigris.scarab.attribute.DateAttribute;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeValue;
@@ -15,6 +14,7 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.RModuleAttribute;
+import org.tigris.scarab.tools.Environment;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.SimpleSkipFiltering;
 import org.tigris.scarab.util.SkipFiltering;
@@ -183,10 +183,10 @@ public class IssueState
     public boolean isSealed() throws TorqueException
     {        
         boolean result = false;
-        String status = getProperty("scarab.common.status.id", null);
+        String status = Environment.getConfigurationProperty("scarab.common.status.id", null);
         if (status != null)
         {
-            String value = getProperty("scarab.common.status.sealed", null);
+            String value = Environment.getConfigurationProperty("scarab.common.status.sealed", null);
             if(value != null)
             {
                 AttributeValue attval = issue.getAttributeValue(status);
@@ -212,10 +212,10 @@ public class IssueState
     public boolean isOnHold() throws TorqueException
     {        
         boolean result = false;
-        String status = getProperty("scarab.common.status.id", null);
+        String status = Environment.getConfigurationProperty("scarab.common.status.id", null);
         if (status != null)
         {
-            String value = getProperty("scarab.common.status.onhold", null);
+            String value = Environment.getConfigurationProperty("scarab.common.status.onhold", null);
             if(value != null)
             {
                 AttributeValue attval = issue.getAttributeValue(status);
@@ -249,7 +249,7 @@ public class IssueState
     public Attribute getStatusAttribute() throws TorqueException
     {
         Attribute attribute = null;
-        String attributeName = getProperty("scarab.common.status.id", null);
+        String attributeName = Environment.getConfigurationProperty("scarab.common.status.id", null);
         if(attributeName != null)
         {
             attribute = issue.getAttribute(attributeName);
@@ -266,7 +266,7 @@ public class IssueState
     public Attribute getOnHoldExpirationDate() throws TorqueException
     {
         Attribute attribute = null;
-        String attributeName = getProperty("scarab.common.status.onhold.dateProperty", null);
+        String attributeName = Environment.getConfigurationProperty("scarab.common.status.onhold.dateProperty", null);
         if(attributeName != null)
         {
             attribute = issue.getAttribute(attributeName);
@@ -286,7 +286,7 @@ public class IssueState
     public Date getOnHoldUntil() throws TorqueException, ParseException
     {
         Date date = null;
-        String attributeName = getProperty("scarab.common.status.onhold.dateProperty", null);
+        String attributeName = Environment.getConfigurationProperty("scarab.common.status.onhold.dateProperty", null);
         
         if (attributeName != null)
         {
@@ -312,7 +312,7 @@ public class IssueState
      */
     public int getReminderPeriod()
     {
-        String rp = getProperty("scarab.common.status.onhold.reminder.period", null);
+        String rp = Environment.getConfigurationProperty("scarab.common.status.onhold.reminder.period", null);
         int result = 0;
         if (rp != null)
         {
@@ -320,22 +320,5 @@ public class IssueState
         }
         return result;
     }
-    
-    
-    /**
-     * helper funtion to retrieve properties from the Turbine Configuration sysstem.
-     * @param prop
-     * @param def
-     * @return
-     */
-    private String getProperty(String prop, String def)
-    {
-        String result = (String)Turbine.getConfiguration().getProperty(prop);
-        if(result == null)
-        {
-            result = def;
-        }
-        return result;
-    }
-    
+        
 }

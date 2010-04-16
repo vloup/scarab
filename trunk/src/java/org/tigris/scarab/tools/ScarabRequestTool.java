@@ -150,7 +150,7 @@ public class ScarabRequestTool
     implements ApplicationTool,Recyclable
 {
     private static final String TIME_ZONE =
-        Turbine.getConfiguration().getString("scarab.timezone", "");
+        Environment.getConfigurationProperty("scarab.timezone", "");
 
     private static final String POS_IN_LIST = "posInList";
 

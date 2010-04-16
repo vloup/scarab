@@ -156,7 +156,7 @@ public class ScarabGlobalTool
     private FieldMethodizer parameterName = null;
 
     private static final String BUILD_VERSION = 
-        Turbine.getConfiguration().getString("scarab.build.version", "");
+        Environment.getConfigurationProperty("scarab.build.version", "");
 
     private static RenderContext context = new BaseRenderContext();
     private static RenderEngine engine = new ScarabRenderEngine();
@@ -831,7 +831,7 @@ public class ScarabGlobalTool
     public String getSiteName()
     {
         String siteName = 
-            Turbine.getConfiguration().getString("scarab.site.name","");
+            Environment.getConfigurationProperty("scarab.site.name","");
 
         if (siteName == null)
         {
@@ -848,7 +848,7 @@ public class ScarabGlobalTool
     public String getSiteLogo()
     {
         String siteLogo = 
-            Turbine.getConfiguration().getString("scarab.site.logo","");
+            Environment.getConfigurationProperty("scarab.site.logo","");
 
         if (siteLogo == null)
         {
@@ -868,7 +868,7 @@ public class ScarabGlobalTool
     public int getPublicModulesDisplayCount()
     {
         String publicModulesDisplayCount = 
-            Turbine.getConfiguration().getString("scarab.public.modules.display.count","-1");
+            Environment.getConfigurationProperty("scarab.public.modules.display.count","-1");
         return Integer.parseInt(publicModulesDisplayCount);
     }
 
@@ -941,8 +941,7 @@ public class ScarabGlobalTool
         {
             try
             {
-                moduleCodeLength = Integer.parseInt(Turbine.getConfiguration().
-                                   getString("scarab.module.code.length", "4"));
+                moduleCodeLength = Integer.parseInt(Environment.getConfigurationProperty("scarab.module.code.length", "4"));
             }
             catch (Exception e)
             {
