@@ -386,7 +386,7 @@
         <comment>
           Username of the initial (only?) Scarab administrator. Maybe this,
           along with the other administrator user properties, should be build
-          properties which modify the seed data. Otherwise use hard-coded
+          properties which modify the sample data. Otherwise use hard-coded
           values.
         </comment>
         <type>Runtime</type>

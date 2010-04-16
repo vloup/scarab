@@ -710,12 +710,12 @@ You find more informations about the settings in <code>project.properties</code>
 NOTE: If you would like to only load the required database data and not
       the sample/default data, you can do so by passing the property
 </p>
-      <source>ant create-db -Dskip.seed.data=true -Dskip.default.data=true -Dskip.jira.templates.data=true</source>
+      <source>ant create-db -Dskip.sample.data=true -Dskip.default.data=true -Dskip.jira.templates.data=true</source>
 <p>
       to your JVM upon startup of the build processs or by adding the 
       same property to your <i>build.properties</i>:  
 </p>
-      <code>skip.seed.data=true
+      <code>skip.sample.data=true
       ...
       </code>
 <p>

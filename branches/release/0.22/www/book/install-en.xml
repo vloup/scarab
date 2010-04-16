@@ -447,7 +447,7 @@ scarab.database.port=**GENERATED**    #unchanged
 				</warning>
 				<sect3>
 				<title>Default database</title>
-				<simpara>Run the following command to build Scarab's deafult database including all default and seed data:</simpara>
+				<simpara>Run the following command to build Scarab's deafult database including all default and sample data:</simpara>
 				<informalexample>
 					<programlisting>
     ant create-db
@@ -468,21 +468,21 @@ scarab.database.port=**GENERATED**    #unchanged
             </programlisting>
 				</informalexample>
 				<note>
-					<simpara>This option is independent of 'skip.seed.data' or 'skip.default.data' (see next chapter), so they can be specified together.</simpara>
+					<simpara>This option is independent of 'skip.sample.data' or 'skip.default.data' (see next chapter), so they can be specified together.</simpara>
 				</note>
 				</sect3>
 				<sect3>
-				<title>Seed data</title>
+				<title>Sample data</title>
 				<simpara>
-				  By default, some seed data are put into Scarab's database. There are 
+				  By default, some sample data are put into Scarab's database. There are 
 				  some modules and already entered issues. To avoid this,
-                 you can pass the option "-Dskip.seed.data=true" to ant. To skip all 
+                 you can pass the option "-Dskip.sample.data=true" to ant. To skip all 
 				 default global data, too, as there are some attributes, issue-types and so on,
 				 you can additionally pass the option "-Dskip.default.data=true" to ant:
                 </simpara>
 				<informalexample>
 					<programlisting>
-    ant create-db -Dskip.seed.data=true -Dskip.default.data=true
+    ant create-db -Dskip.sample.data=true -Dskip.default.data=true
             </programlisting>
 				</informalexample>
 				<note>
