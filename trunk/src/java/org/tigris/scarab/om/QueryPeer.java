@@ -444,9 +444,9 @@ public class QueryPeer
             {
                 Query candidate = iter.next();
                 Integer candidateId = candidate.getUserId();
-                String scopeId      = candidate.getScopeId().toString();
-                boolean isPrivateUserQuery = candidateId.equals(userId) && scopeId.equals(QueryPeer.TYPE_PRIVATE);
-                boolean isGlobalQuery      = scopeId.equals(QueryPeer.TYPE_GLOBAL);
+                Integer scopeId      = candidate.getScopeId();
+                boolean isPrivateUserQuery = candidateId.equals(userId) && (scopeId == 1);
+                boolean isGlobalQuery      = scopeId == 2;
                 if( isPrivateUserQuery || isGlobalQuery )
                 {
                     result = candidate; // We found a customized query.
