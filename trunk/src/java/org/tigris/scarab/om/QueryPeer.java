@@ -444,11 +444,14 @@ public class QueryPeer
             {
                 Query candidate = iter.next();
                 Integer candidateId = candidate.getUserId();
-                if(candidateId.equals(userId) || candidateId.equals(moduleOwnerId))
+                String scopeId      = candidate.getScopeId().toString();
+                boolean isPrivateUserQuery = candidateId.equals(userId) && scopeId.equals(QueryPeer.TYPE_PRIVATE);
+                boolean isGlobalQuery      = scopeId.equals(QueryPeer.TYPE_GLOBAL);
+                if( isPrivateUserQuery || isGlobalQuery )
                 {
                     result = candidate; // We found a customized query.
                 }
-                if(candidateId.equals(userId))
+                if(isPrivateUserQuery)
                 {
                     break; // It is the user's custom query. Take that and be happy.
                 }
