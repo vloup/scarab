@@ -986,7 +986,7 @@
       <details>
         Helper properties for the workflow.
         Note: Some of these properties are temporary "hacks"
-        until the workf.ow engine has been improved in such a
+        until the workflow engine has been improved in such a
         way that it can be configured through the Webinterface.        
       </details>
 		
@@ -1147,6 +1147,31 @@
           property (default = Domain__Edit)
         </details>
       </property>
+	  
+      <property>
+        <name>scarab.common.assignedTo</name>
+        <default>AssignedTo</default>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This is the name of the user attribute which contains "assigned to" information.
+        </details>
+      </property>
+
+      <property>
+        <name>scarab.common.assignedCC</name>
+        <default>AssignedCC</default>
+        <comment/>
+        <type>Runtime</type>
+        <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This is the name of the user attribute which contains "assigned cc" information.
+        </details>
+      </property>
+	  
     </group>
 
     <group name="Turbine-properties">

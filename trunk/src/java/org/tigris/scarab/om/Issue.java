@@ -85,6 +85,7 @@ import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.Environment;
 import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
@@ -1372,6 +1373,33 @@ public class Issue
     public List getUserAttributeValues() throws TorqueException
     {
         return getUserAttributeValues(null);
+    }
+    
+    /**
+     * Return the first user assigned to the current issue. If multiple users are assigned to this issue,
+     * an arbitrary user will be retrieved. 
+     * Purpose of this method:
+     * Used to add at least one assigned to user to the Email subject of any Scarab-generated EMail.
+     * @return
+     * @throws TorqueException
+     */
+    public String getFirstAssignedTo() throws TorqueException
+    {
+        String assignedToAttributeName = Environment.getConfigurationProperty("scarab.common.assignedTo", "assignedTo");
+        List<AttributeValue> allAssignedUsers = getUserAttributeValues();
+        Iterator<AttributeValue> iter = allAssignedUsers.iterator();
+        String result = "";
+        while(iter.hasNext())
+        {
+            AttributeValue attval = iter.next();
+            String attributeName = attval.getAttribute().getName();
+            if(attributeName.equals(assignedToAttributeName))
+            {
+                result = attval.getValue();
+                break;
+            }
+        }
+        return result;
     }
     
     /**
