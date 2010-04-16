@@ -33,7 +33,7 @@
 	<sect1>
 		<title>XML export of issues</title>
 		<simpara>Select XML export in the Current module section.</simpara>
-		<screenshot><graphic fileref="images/xml-export.fr.png"/></screenshot>
+		<screenshot><graphic fileref="images/xml-export.png"/></screenshot>
 		<note><para>In the default Role configuration, you just need the Observer role in a module to have access to this functionality.</para></note>
 	</sect1>
 	<sect1>
@@ -43,7 +43,7 @@
 	<sect1>
 		<title>XML import</title>
 		<simpara>Select XML import in the Current module section.</simpara>
-		<screenshot><graphic fileref="images/xml-import.fr.png"/></screenshot>
+		<screenshot><graphic fileref="images/xml-import.png"/></screenshot>
 		<note><para>In the default Role configuration, you just need the Observer role in a module to have access to this functionality.</para></note>
 	</sect1>
 </chapter>

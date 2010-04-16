@@ -7,7 +7,7 @@
 	<sect1>
 		<title>Anonymous access</title>
 		<screenshot>
-			<graphic fileref="images/anonymous.fr.png"/>
+			<graphic fileref="images/anonymous.png"/>
 		</screenshot>
 		<simpara>Anonymous access may be granted to certain modules. These modules are listed on the home page of your Scarab installation and you don't have to login to access them.</simpara>
 		<simpara>If you have a Scarab account, or if you can create one, you'll probably able to access other modules, or you'll be able to perform more operations on the modules to which an anonymous access is granted.</simpara>
@@ -15,7 +15,7 @@
 	<sect1>
 		<title>Logging in</title>
 		<screenshot>
-			<graphic fileref="images/login.fr.png"/>
+			<graphic fileref="images/login.png"/>
 		</screenshot>
 		<simpara>In a corporate environment, someone may have created your account beforehand and may have given you your Scarab user name and password.</simpara>
 		<simpara>In other situations, or if you do not have a user account, usually you may create one using the &quot;Register&quot; link. In the register process, you will need to use an email address to which you really have access. Otherwise, the whole communication between Scarab and you will not work.</simpara>

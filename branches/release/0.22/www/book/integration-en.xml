@@ -6,11 +6,11 @@
 		<simpara>An interesting way to bring Scarab information into Eclipse is probably to use an RSS reader, for example <ulink url="http://morphine.sourceforge.net/presence/projects/rss/index.html">Eclipse RSS Reader</ulink>. Let us use this plugin as an example.</simpara>
 		<simpara>You can keep an eye on a given issue or on the result of any public query (except for multi-module queries). Say you want to keep an eye on the history of the PACS1 issue in Scarab. In the bottom right corner of the issue page in Scarab, you have RSS and ATOM links.</simpara>
 		<screenshot>
-			<graphic fileref="images/pacs1-rss1.fr.png"/>
+			<graphic fileref="images/pacs1-rss1.png"/>
 		</screenshot>
 		<simpara>Copy the URL in the RSS link.</simpara>
 		<screenshot>
-			<graphic fileref="images/pacs1-rss2.fr.png"/>
+			<graphic fileref="images/pacs1-rss2.png"/>
 		</screenshot>
 		<simpara>Now, in Eclipse, create a new RSS channel.</simpara>
 		<screenshot>
