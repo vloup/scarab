@@ -29,7 +29,6 @@
       <tr>
         <th>Property name</th>
         <th>Type</th>
-		<th>Comment</th>
         <th>Details</th>          
       </tr>
       <xsl:apply-templates />
@@ -45,7 +44,6 @@
   <tr>
   <td><xsl:value-of select="name" /></td>
   <td><xsl:value-of select="type" /></td>
-  <td><xsl:value-of select="comment" /></td>
   <td><xsl:value-of select="details" /></td>
   </tr>
 </xsl:template>

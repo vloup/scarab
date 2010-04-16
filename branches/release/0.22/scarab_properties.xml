@@ -195,7 +195,6 @@
     <property>
       <name>scarab.database.type</name>
       <default>mysql</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">basic</customization>
       <file/>
@@ -222,7 +221,7 @@
       <property>
         <name>scarab.database.username</name>
         <default>**GENERATED**</default>
-        <comment/>
+        <details/>
         <type>Build</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -231,7 +230,7 @@
       <property>
         <name>scarab.database.password</name>
         <default>**GENERATED**</default>
-        <comment/>
+        <details/>
         <type>Build</type>
          <customization modification="recommended">basic</customization>
         <file/>
@@ -251,9 +250,9 @@
       <property>
         <name>scarab.database.admin.username</name>
         <default>**GENERATED**</default>
-        <comment>
+        <details>
           Database user to use when creating and seeding the database.
-        </comment>
+        </details>
         <type>Build</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -262,9 +261,9 @@
       <property>
         <name>scarab.database.admin.password</name>
         <default>**GENERATED**</default>
-        <comment>
+        <details>
           Password to use when creating and seeding the database.
-        </comment>
+        </details>
         <type>Build</type>
          <customization modification="recommended">basic</customization>
         <file/>
@@ -273,7 +272,6 @@
       <property>
         <name>scarab.database.host</name>
         <default>localhost</default>
-        <comment/>
         <type>Build</type>
          <customization modification="required">basic</customization>
         <file/>
@@ -289,7 +287,6 @@
       <property autogen="true">
         <name>scarab.database.port</name>
         <default>**GENERATED**</default>
-        <comment>The port that the database is running on.</comment>
         <type>Build/Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
@@ -322,38 +319,32 @@
       <property autogen="true">
         <name>scarab.database.url</name>
         <default>**GENERATED**</default>
-        <comment>
-          This property is specific to a database driver and is built up from  
-          other user-specified properties. I guess this goes hand-in-hand with
-          'scarab.database.jdbc.driver'.
-        </comment>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
         <details>
-          This property is per default generated depending on the property "scarab.database.type".
+          This property is specific to a database driver and is built up from  
+          other user-specified properties. I guess this goes hand-in-hand with
+          'scarab.database.jdbc.driver'. This property is per default generated 
+		  depending on the property "scarab.database.type".
         </details>
       </property>
 
       <property autogen="true">
         <name>scarab.database.admin.url</name>
         <default>**GENERATED**</default>
-        <comment> 
-          JDBC URL to use when creating and seeding the database.
-          This property is generated depending on the property "scarab.database.type".
-        </comment>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
         <details>
-          This property is per default generated depending on the property "scarab.database.type".
+          JDBC URL to use when creating and seeding the database.
+          This property is generated depending on the property "scarab.database.type".
         </details>
       </property>
 
       <property autogen="true">
         <name>scarab.database.url.extension</name>
         <default>**GENERATED**</default>
-        <comment>This property is generated depending on the property "scarab.database.type".</comment>
         <details>
           This property is per default generated depending on the property "scarab.database.type".
         </details>
@@ -364,10 +355,6 @@
       <property>
         <name>scarab.database.name</name>
         <default>scarab</default>
-        <comment>
-          I don't know whether Torque needs building with the database
-          name or not. If not, this can just be a runtime property.
-        </comment>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -383,12 +370,6 @@
       <property>
         <name>scarab.user.username</name>
         <default>Administrator</default>
-        <comment>
-          Username of the initial (only?) Scarab administrator. Maybe this,
-          along with the other administrator user properties, should be build
-          properties which modify the sample data. Otherwise use hard-coded
-          values.
-        </comment>
         <type>Runtime</type>
          <customization modification="recommended">basic</customization>
         <file/>
@@ -410,7 +391,6 @@
       <property>
         <name>scarab.database.adapter</name>
         <default>${scarab.database.type}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -423,7 +403,6 @@
       <property autogen="true">
         <name>scarab.database.pool.validationQuery</name>
         <default>**GENERATED**</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -447,12 +426,10 @@
       <property autogen="true">
         <name>scarab.database.jdbc.driver</name>
         <default>**GENERATED**</default>
-        <comment>
-          The JDBC driver to use for the database connection. We supply standard
+        <details>
+		  The JDBC driver to use for the database connection. We supply standard
           ones for several databases, but users should have the option to supply
           their own.
-        </comment>
-        <details>
           This property is per default generated depending on the property "scarab.database.type".
         </details>
         <type>Runtime</type>
@@ -463,7 +440,6 @@
       <property autogen="true">
         <name>scarab.database.jdbc.driver.jar</name>
         <default>**GENERATED**</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -475,7 +451,6 @@
       <property autogen="true">
         <name>scarab.jdbc.handler</name>
         <default>**GENERATED**</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -487,7 +462,6 @@
       <property>
         <name>scarab.module.code.length</name>
         <default>4</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -526,9 +500,6 @@
       <property>
         <name>scarab.issue.comment.renderer</name>
         <default>plaintext</default>
-        <comment>
-          determines the default rendering engine ("plaintext"|"html"|"radeox").        
-        </comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -555,12 +526,6 @@
       <property>
         <name>system.mail.host</name>
         <default>localhost</default>
-        <comment>
-          This is the host on which your Email service runs
-          as seen from Scarab. This is usually a named host, e.g.
-          mailserver.mydomain.com. If the mail service runs
-          on the same host as Scarab, you can use the default (localhost)        
-        </comment>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
@@ -574,10 +539,6 @@
       <property>
         <name>system.mail.smtp.user</name>
         <default/>
-        <comment>
-          Username for the SMTP authentication (if required by the
-          system.mail.host mail server).
-        </comment>
         <type>Runtime</type>
         <customization modification="optional"/>
         <details>
@@ -588,10 +549,6 @@
       <property>
         <name>system.mail.smtp.pwd</name>
         <default/>
-        <comment>
-          Password for the SMTP authentication (if required by the
-          system.mail.host mail server).
-        </comment>
         <type>Runtime</type>
         <customization modification="optional"/>
         <details>
@@ -614,7 +571,6 @@
       <property>
         <name>scarab.email.domain</name>
         <default>example.org</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
@@ -627,9 +583,6 @@
       <property>
         <name>scarab.email.default.fromName</name>
         <default>Administrator</default>
-        <comment>
-          E-mail name that e-mails from Scarab have in their 'from' address.
-        </comment>
         <type>Runtime</type>
          <customization modification="required">basic</customization>
         <file/>
@@ -646,7 +599,6 @@
       <property>
         <name>system.mail.pseudohtml</name>
         <default>true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="recommended">advanced</customization>
         <file/>
@@ -662,7 +614,6 @@
       <property>
         <name>system.email.html</name>
         <default>true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="recommended">advanced</customization>
         <file/>
@@ -684,7 +635,6 @@
       <property>
         <name>scarab.email.register.fromName</name>
         <default>${scarab.email.default.fromName}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -692,7 +642,6 @@
       <property>
         <name>scarab.email.forgotpassword.fromName</name>
         <default>${scarab.email.register.fromName}@${scarab.email.domain}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -700,7 +649,6 @@
       <property>
         <name>scarab.email.archive.toAddress</name>
         <default>${scarab.email.default.fromName}@${scarab.email.domain}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -708,13 +656,13 @@
       <property>
         <name>scarab.email.default.fromAddress</name>
         <default>${scarab.email.default.fromName}@${scarab.email.domain}</default>
-        <comment>
+        <details>
           The 'from' address for e-mails that are sent by Scarab. I think this
           generally needs to be a valid e-mail address, or at least a valid
           domain. I vaguely remember someone having problems because they were
           using the default from address which had an invalid domain. Something
           didn't like it.
-        </comment>
+        </details>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -722,7 +670,6 @@
       <property>
         <name>scarab.email.register.fromAddress</name>
         <default>${scarab.email.register.fromName}@${scarab.email.domain}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -730,7 +677,6 @@
       <property>
         <name>scarab.email.forgotpassword.fromAddress</name>
         <default>${scarab.email.register.fromName}@${scarab.email.domain}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -738,7 +684,6 @@
       <property>
         <name>system.mail.smtp.from</name>
         <default>${scarab.email.default.fromName}@${scarab.email.domain}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="required">advanced</customization>
         <file/>
@@ -748,7 +693,6 @@
     <property>
       <name>scarab.automatic.role.approval</name>
       <default/>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">basic</customization>
       <file/>
@@ -775,7 +719,6 @@
     <property>
         <name>locale.default.charset</name>
         <default>UTF-8</default>
-        <comment>The characterset to be used on screen.</comment>
         <type>Runtime</type>type>
         <file/>
         <details>
@@ -791,7 +734,6 @@
     <property>
       <name>scarab.email.encoding</name>
       <default>UTF-8</default>
-      <comment/>
       <type>Runtime</type>
       <file/>
       <details>
@@ -806,7 +748,6 @@
     <property>
       <name>scarab.timezone</name>
       <default>GMT+0</default>
-      <comment/>
       <type>Runtime</type>
       <file/>
       <details>
@@ -818,7 +759,6 @@
     <property>
       <name>scarab.datefields.editable</name>
       <default>false</default>
-      <comment/>
       <type>Runtime</type>
       <file/>
       <details>
@@ -830,12 +770,6 @@
     <property>
       <name>scarab.email.replyto.sender</name>
       <default>false</default>
-      <comment>
-        When set to false the ReplyTo field in the scarab generated email will be 
-        the default email address scarab.email.default.fromAddress. 
-        When set to true, ReplyTo is set to the originator
-        of the email, i.e. the one the created or last modified the issue.
-      </comment>
       <type>Runtime</type>
       <file/>
       <details>
@@ -857,10 +791,9 @@
         <property>
           <name>scarab.register.email.checkValidA</name>
           <default>true</default>
-          <comment>If true, will check if an email address is from a valid domain with A record</comment>
+          <details>If true, will check if an email address is from a valid domain with A record</details>
           <type>Runtime</type>
           <file/>
-          <details/>
         </property>
         <property>
           <name>scarab.register.email.badEmails</name>
@@ -921,7 +854,6 @@
 	      <property>
       	<name>scarab.login.ldap.synchronizeOnStartUp</name>
       	<default>true</default>
-      	<comment>Synchronize local database to LDAP on initialization.</comment>
       	<type>Runtime</type>
       	<file></file>
       	<details>
@@ -934,7 +866,6 @@
       <property>
       	<name>scarab.login.ldap.providerFactory</name>
       	<default>com.sun.jndi.ldap.LdapCtxFactory</default>
-      	<comment>The JNDI factory to connect to the LDAP data source.</comment>
       	<type>Runtime</type>
       	<file></file>
       	<details>
@@ -946,7 +877,6 @@
       <property>
       	<name>scarab.login.ldap.providerUrl</name>
       	<default>ldap://localhost/</default>
-      	<comment>The LDAP url of the datasource.</comment>
       	<type>Runtime</type>
       	<file></file>
       	<details>
@@ -958,7 +888,6 @@
       <property>
       	<name>scarab.login.ldap.ldapQuery</name>
       	<default>(objectClass=posixAccount)</default>
-      	<comment>LDAP query to limit the resultset.</comment>
       	<type>Runtime</type>
       	<file></file>
       	<details>
@@ -971,12 +900,11 @@
       <property>
       	<name>scarab.login.ldap.baseDn</name>
       	<default>dc=example,dc=com</default>
-      	<comment>The LDAP basedn to start the subtree search.</comment>
       	<type>Runtime</type>
       	<file></file>
       	<details>
 			This property lets you choose to limit the records returned by specifying
-			the base dn below which to search for records.       	
+			the base dn for LDAP below which to search for records.       	
       	</details>      	
       </property>
 	</group>
@@ -998,9 +926,6 @@
       The implementation of NotificationManager to be used by Scarab.
       </details>
       <type>Runtime</type>
-      <comment>
-      The implementation of NotificationManager to be used by Scarab.
-      </comment>
     </property>
 
     <property>
@@ -1014,15 +939,11 @@
       waiting time of 5 minutes.
       </details>
       <type>Runtime</type>
-      <comment>
-        Waiting time after which a queued notification is sent to recipients in [msec]
-      </comment>
     </property>
     
     <property>
       <name>scarab.instance.id</name>
       <default>local</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1038,7 +959,6 @@
     <property>
       <name>scarab.common.status.id</name>
       <default>status</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1072,7 +992,6 @@
       <property>
         <name>session.timeout</name>
         <default>1800</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1081,7 +1000,6 @@
       <property>
         <name>services.UploadService.repository</name>
         <default>WEB-INF</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1090,10 +1008,10 @@
       <property>
         <name>searchindex.path</name>
         <default>WEB-INF/index</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
+		<details>Path where e.g. Lucene will store its index files.</details>
       </property>
       
       <property>
@@ -1147,10 +1065,10 @@
       <property>
         <name>scarab.http.scheme</name>
         <default>http</default>
-        <comment>
+        <details>
           Drop this? I guess that this is used for generating e-mail
           links.
-        </comment>
+        </details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1158,11 +1076,11 @@
       <property>
         <name>scarab.http.domain</name>
         <default>localhost</default>
-        <comment>
+        <details>
           This also appears in the database, and I'm really not sure
           what to do about it. It causes a lot of problems with the
           generated e-mail links.
-        </comment>
+        </details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1170,7 +1088,7 @@
       <property>
         <name>scarab.http.port</name>
         <default>8080</default>
-        <comment>See 'scarab.http.domain'.</comment>
+        <details>See 'scarab.http.domain'.</details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1178,12 +1096,12 @@
       <property>
         <name>scarab.context</name>
         <default>scarab</default>
-        <comment>
+        <details>
           What shall we do with this? Normally the context comes from
           the name of the deployed WAR file, unless a different context
           name is configured in server.xml. Maybe just allow the user
           to configure the context name via server.xml directly?
-        </comment>
+        </details>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1191,29 +1109,24 @@
       <property>
         <name>scarab.http.scriptname</name>
         <default>/${scarab.context}/issues</default>
-        <comment>
-          Drop this? Most people seem to have problems when this is
-          set to something other than /scarab/issues anyway.
-        </comment>
-        <type>Runtime</type>
-         <customization modification="optional">advanced</customization>
-        <file/>
         <details>
           This property must NEVER be modified.
           They will eventually be removed from this file.
         </details>
+        <type>Runtime</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
       </property>
 
       <property>
         <name>scarab.attachment.remove.permanent</name>
-        <default>false</default>
-        <comment>true: remove attachments physically as needed</comment>
+        <default>true</default>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
         <details>
-          The default configuration keeps all file attachments on 
-          Disk, when the associations to the attachments are removed 
+          If set to "false" all file attachments will be kept on 
+          disk, when the associations to the attachments are removed 
           from their issues. If you change this property to "true"
           the files will also be removed physically.
         </details>
@@ -1224,7 +1137,6 @@
       <property>
         <name>scarab.attachments.repository</name>
         <default>WEB-INF/attachments</default>
-        <comment>Location of attachements directory</comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1248,7 +1160,6 @@
       <property>
         <name>scarab.dhtml.hide_bars</name>
         <default>true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1261,7 +1172,6 @@
       <property>
         <name>scarab.dhtml.autoresize_textarea</name>
         <default>true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1288,7 +1198,6 @@
       <property>
         <name>scarab.site.name</name>
         <default></default>
-        <comment/>
         <details>
           The scarab.site.name is the name of your personal
           scarab instance. it is diplayed in the top-bar centered
@@ -1306,7 +1215,6 @@
       <property>
         <name>scarab.site.logo</name>
         <default>/images/trans.gif</default>
-        <comment/>
         <details>
            The site.logo is displayed centered at the top bar.
            Here you can add your own logo. It is rendered left
@@ -1326,7 +1234,6 @@
       <property>
         <name>scarab.admin.password.reset.allowed</name>
         <default>true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1340,8 +1247,6 @@
       <property>
         <name>scarab.anonymous.enable</name>
         <default>true</default>
-        <comment>Enable anonymous user using the scarab.anonymous.username
-        </comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1360,7 +1265,6 @@
       <property>
         <name>scarab.anonymous.username</name>
         <default>anonymous</default>
-        <comment>Choose which user will act as Anonymous</comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1375,7 +1279,6 @@
       <property>
         <name>scarab.anonymous.rolename</name>
         <default>Anonymous</default>
-        <comment>Choose which role will hold the permissions for anonymous access</comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1390,7 +1293,6 @@
       <property>
         <name>scarab.public.modules.display.count</name>
         <default>99999</default>
-        <comment>limits the number of public modules displayed on the Login screen</comment>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1409,7 +1311,6 @@
       <property>
         <name>scarab.dataexport.encoding</name>
         <default>UTF-8</default>
-        <comment>Encoding to be used for data exports, including XML, TSV and XLS outputs.</comment>
         <details>Encoding to be used for data exports, including XML, TSV and XLS outputs.</details>
       </property>
     </group>
@@ -1465,7 +1366,6 @@
     <property>
       <name>custom.properties.tmpl</name>
       <default>${root.dir}/project.properties</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1482,7 +1382,6 @@
       <property>
         <name>default.custom.properties</name>
         <default>WEB-INF/conf/defaultCustom.properties</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1490,7 +1389,6 @@
       <property>
         <name>custom.properties</name>
         <default>WEB-INF/conf/custom.properties</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1504,7 +1402,6 @@
       <property>
         <name>scarab.database.ant.buildfile</name>
         <default>WEB-INF/conf/build-database.xml</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1512,7 +1409,6 @@
       <property>
         <name>scarab.database.ant.target</name>
         <default>create-db</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -1538,7 +1434,6 @@
     <property>
       <name>scarab.tomcat.http.port</name>
       <default>8080</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1546,7 +1441,6 @@
     <property>
       <name>scarab.tomcat.shutdown.port</name>
       <default>8005</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1554,7 +1448,6 @@
     <property>
       <name>scarab.webapp.reloadable</name>
       <default>true</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1562,7 +1455,6 @@
     <property>
       <name>scarab.webapp.checkInterval</name>
       <default>2</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1570,7 +1462,6 @@
     <property>
       <name>scarab.welcome.file</name>
       <default>index.html</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1578,7 +1469,7 @@
     <property>
       <name>scarab.file.max.size</name>
       <default>157286400</default>
-      <comment>Maximum file size for file uploads/attachments.</comment>
+      <details>Maximum file size for file uploads/attachments.</details>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1586,7 +1477,6 @@
     <property>
       <name>scarab.tomcat.proxy.name</name>
       <default/>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1594,7 +1484,6 @@
     <property>
       <name>scarab.tomcat.proxy.port</name>
       <default/>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1611,7 +1500,6 @@
     <property>
       <name>torque.database.scarab.adapter</name>
       <default>${scarab.database.adapter}</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1619,7 +1507,6 @@
     <property>
       <name>torque.dsfactory.scarab.pool.validationQuery</name>
       <default>${scarab.database.pool.validationQuery}</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1627,7 +1514,6 @@
     <property>
       <name>torque.dsfactory.scarab.connection.driver</name>
       <default>${scarab.database.jdbc.driver}</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1635,7 +1521,6 @@
     <property>
       <name>torque.dsfactory.scarab.connection.url</name>
       <default>${scarab.database.url}</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1643,7 +1528,6 @@
     <property>
       <name>torque.dsfactory.scarab.connection.user</name>
       <default>${scarab.database.username}</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1651,7 +1535,6 @@
     <property>
       <name>torque.dsfactory.scarab.connection.password</name>
       <default>${scarab.database.password}</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -1667,7 +1550,6 @@
     <property>
       <name>jdbc</name>
       <default>jdbc</default>
-      <comment/>
       <type>Runtime</type>
        <customization modification="optional">basic</customization>
       <file/>
@@ -1693,7 +1575,6 @@
       <property>
         <name>scarab.jdbc.handler.mysql</name>
         <default>mysql</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1701,7 +1582,6 @@
       <property>
         <name>scarab.database.port.mysql</name>
         <default>3306</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1709,7 +1589,6 @@
       <property>
         <name>scarab.database.admin.url.mysql</name>
         <default>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}/?</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1717,7 +1596,6 @@
       <property>
         <name>scarab.database.url.mysql</name>
         <default>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}?zeroDateTimeBehavior=convertToNull&amp;${scarab.database.url.extension}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1725,7 +1603,6 @@
       <property>
         <name>scarab.database.url.extension.mysql</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1736,7 +1613,6 @@
       <property>
         <name>scarab.database.pool.validationQuery.mysql</name>
         <default>SELECT 1</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1744,7 +1620,6 @@
       <property>
         <name>scarab.database.jdbc.driver.mysql</name>
         <default>org.gjt.mm.mysql.Driver</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1754,7 +1629,6 @@
       <property>
         <name>scarab.database.admin.username.mysql</name>
         <default>root</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1762,7 +1636,6 @@
       <property>
         <name>scarab.database.admin.password.mysql</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1772,7 +1645,6 @@
       <property>
         <name>scarab.database.username.mysql</name>
         <default>root</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1780,7 +1652,6 @@
       <property>
         <name>scarab.database.password.mysql</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1791,7 +1662,6 @@
       <property>
         <name>scarab.test.database.name.mysql</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1799,7 +1669,6 @@
       <property>
         <name>scarab.test.database.url.mysql</name>
         <default>${jdbc}:mysql://${scarab.database.host}:${scarab.database.port}/${scarab.test.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1807,7 +1676,6 @@
       <property>
         <name>scarab.test.database.username.mysql</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1815,7 +1683,6 @@
       <property>
         <name>scarab.test.database.password.mysql</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1823,7 +1690,6 @@
       <property>
         <name>scarab.database.jdbc.driver.jar.mysql</name>
         <default>mysql-*.jar</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1837,7 +1703,6 @@
       <property>
         <name>scarab.jdbc.handler.postgresql</name>
         <default>postgres</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1845,7 +1710,6 @@
       <property>
         <name>scarab.database.port.postgresql</name>
         <default>5432</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1853,7 +1717,6 @@
       <property>
         <name>scarab.database.admin.url.postgresql</name>
         <default>${jdbc}:postgresql://${scarab.database.host}:${scarab.database.port}/template1</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1861,7 +1724,6 @@
       <property>
         <name>scarab.database.url.postgresql</name>
         <default>${jdbc}:postgresql://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1869,7 +1731,6 @@
       <property>
         <name>scarab.database.url.extension.postgresql</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1877,7 +1738,6 @@
       <property>
         <name>scarab.database.pool.validationQuery.postgresql</name>
         <default>SELECT 1</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1885,7 +1745,6 @@
       <property>
         <name>scarab.database.jdbc.driver.postgresql</name>
         <default>org.postgresql.Driver</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1893,7 +1752,6 @@
       <property>
         <name>scarab.database.admin.username.postgresql</name>
         <default>postgres</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1901,7 +1759,6 @@
       <property>
         <name>scarab.database.admin.password.postgresql</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1910,7 +1767,6 @@
       <property>
         <name>scarab.database.username.postgresql</name>
         <default>sa</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1918,7 +1774,6 @@
       <property>
         <name>scarab.database.password.postgresql</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1928,7 +1783,6 @@
       <property>
         <name>scarab.test.database.name.postgresql</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1936,7 +1790,6 @@
       <property>
         <name>scarab.test.database.url.postgresql</name>
         <default>${jdbc}:postgresql://${scarab.database.host}:${scarab.database.port}/${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1944,7 +1797,6 @@
       <property>
         <name>scarab.test.database.username.postgresql</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1952,7 +1804,6 @@
       <property>
         <name>scarab.test.database.password.postgresql</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1960,7 +1811,6 @@
       <property>
         <name>scarab.database.jdbc.driver.jar.postgres</name>
         <default>postgresql-*.jar</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1975,7 +1825,6 @@
       <property>
         <name>hsqldb.database</name>
         <default>hsqldb</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1983,7 +1832,6 @@
       <property>
         <name>hsqldb.dbname</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1991,7 +1839,6 @@
       <property>
         <name>scarab.jdbc.handler.hypersonic</name>
         <default>hsqldb</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -1999,7 +1846,6 @@
       <property>
         <name>scarab.database.port.hypersonic</name>
         <default>3306</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2007,7 +1853,6 @@
       <property>
         <name>scarab.database.admin.url.hypersonic</name>
         <default>jdbc:hsqldb:file:${applicationRoot}/embedded_hsqldb/${hsqldb.dbname};shutdown=true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2015,7 +1860,6 @@
       <property>
         <name>scarab.database.url.hypersonic</name>
         <default>jdbc:hsqldb:file:${applicationRoot}/embedded_hsqldb/${hsqldb.dbname};shutdown=true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2023,7 +1867,6 @@
       <property>
         <name>scarab.database.url.extension.hypersonic</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2031,7 +1874,6 @@
       <property>
         <name>scarab.database.pool.validationQuery.hypersonic</name>
         <default>SELECT ATTRIBUTE_ID FROM SCARAB_ATTRIBUTE WHERE ATTRIBUTE_ID='0'</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2039,7 +1881,6 @@
       <property>
         <name>scarab.database.jdbc.driver.hypersonic</name>
         <default>org.hsqldb.jdbcDriver</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2047,7 +1888,6 @@
       <property>
         <name>scarab.database.admin.username.hypersonic</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2055,7 +1895,6 @@
       <property>
         <name>scarab.database.admin.password.hypersonic</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2064,7 +1903,6 @@
       <property>
         <name>scarab.database.username.hypersonic</name>
         <default>sa</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2072,7 +1910,6 @@
       <property>
         <name>scarab.database.password.hypersonic</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2082,7 +1919,6 @@
       <property>
         <name>scarab.test.database.name.hypersonic</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2090,7 +1926,6 @@
       <property>
         <name>scarab.test.database.url.hypersonic</name>
         <default>${jdbc}:hsqldb:.</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2098,7 +1933,6 @@
       <property>
         <name>scarab.test.database.username.hypersonic</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2106,7 +1940,6 @@
       <property>
         <name>scarab.test.database.password.hypersonic</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2114,7 +1947,6 @@
       <property>
         <name>scarab.database.jdbc.driver.jar.hypersonic</name>
         <default>hsqldb*.jar</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2128,7 +1960,6 @@
       <property>
         <name>scarab.jdbc.handler.mssql</name>
         <default>mssql</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2136,7 +1967,6 @@
       <property>
         <name>scarab.database.port.mssql</name>
         <default>1433</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2144,7 +1974,6 @@
       <property>
         <name>scarab.database.admin.url.mssql</name>
         <default>${jdbc}:microsoft:sqlserver://${scarab.database.host}:${scarab.database.port};DatabaseName=${scarab.database.name};SelectMethod=cursor</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2152,7 +1981,6 @@
       <property>
         <name>scarab.database.url.mssql</name>
         <default>${jdbc}:microsoft:sqlserver://${scarab.database.host}:${scarab.database.port};DatabaseName=${scarab.database.name};SelectMethod=cursor</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2160,7 +1988,6 @@
       <property>
         <name>scarab.database.url.extension.mssql</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2168,7 +1995,6 @@
       <property>
         <name>scarab.database.pool.validationQuery.mssql</name>
         <default>SELECT 1</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2176,7 +2002,6 @@
       <property>
         <name>scarab.database.jdbc.driver.mssql</name>
         <default>com.microsoft.jdbc.sqlserver.SQLServerDriver</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2184,7 +2009,6 @@
       <property>
         <name>scarab.database.admin.username.mssql</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2192,7 +2016,6 @@
       <property>
         <name>scarab.database.admin.password.mssql</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2201,7 +2024,6 @@
       <property>
         <name>scarab.database.username.mssql</name>
         <default>sa</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2209,7 +2031,6 @@
       <property>
         <name>scarab.database.password.mssql</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2219,7 +2040,6 @@
       <property>
         <name>scarab.test.database.name.mssql</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2227,7 +2047,6 @@
       <property>
         <name>scarab.test.database.url.mssql</name>
         <default>${jdbc}:microsoft:sqlserver://${scarab.database.host}:${scarab.database.port};DatabaseName=${scarab.test.database.name};SelectMethod=cursor</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2235,7 +2054,6 @@
       <property>
         <name>scarab.test.database.username.mssql</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2243,7 +2061,6 @@
       <property>
         <name>scarab.test.database.password.mssql</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2251,7 +2068,6 @@
       <property>
         <name>scarab.database.jdbc.driver.jar.mssql</name>
         <default>ms*.jar</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2259,7 +2075,6 @@
       <property>
         <name>scarab.database.manual.creation.mssql</name>
         <default>true</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2273,7 +2088,6 @@
       <property>
         <name>scarab.jdbc.handler.oracle</name>
         <default>oracle</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2281,7 +2095,6 @@
       <property>
         <name>scarab.database.port.oracle</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2289,7 +2102,6 @@
       <property>
         <name>scarab.database.admin.url.oracle</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2297,7 +2109,6 @@
       <property>
         <name>scarab.database.url.oracle</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2305,7 +2116,6 @@
       <property>
         <name>scarab.database.url.extensionoracle</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2313,7 +2123,6 @@
       <property>
         <name>scarab.database.pool.validationQuery.oracle</name>
         <default>SELECT 1 FROM DUAL</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2321,7 +2130,6 @@
       <property>
         <name>scarab.database.jdbc.driver.oracle</name>
         <default>oracle.jdbc.driver.OracleDriver</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2329,7 +2137,6 @@
       <property>
         <name>scarab.database.admin.username.oracle</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2337,7 +2144,6 @@
       <property>
         <name>scarab.database.admin.password.oracle</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2346,7 +2152,6 @@
       <property>
         <name>scarab.database.username.oracle</name>
         <default>sa</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2354,7 +2159,6 @@
       <property>
         <name>scarab.database.password.oracle</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2364,7 +2168,6 @@
       <property>
         <name>scarab.test.database.name.oracle</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2372,7 +2175,6 @@
       <property>
         <name>scarab.test.database.url.oracle</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2380,7 +2182,6 @@
       <property>
         <name>scarab.test.database.username.oracle</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2388,7 +2189,6 @@
       <property>
         <name>scarab.test.database.password.oracle</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2396,7 +2196,6 @@
       <property>
         <name>scarab.database.jdbc.driver.jar.oracle</name>
         <default>oracle-*.jar</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2410,7 +2209,6 @@
       <property>
         <name>scarab.jdbc.handler.db2</name>
         <default>db2</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2418,7 +2216,6 @@
       <property>
         <name>scarab.database.port.db2</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2426,7 +2223,6 @@
       <property>
         <name>scarab.database.admin.url.db2</name>
         <default>jdbc:db2:${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2434,7 +2230,6 @@
       <property>
         <name>scarab.database.url.db2</name>
         <default>jdbc:db2:${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2442,7 +2237,6 @@
       <property>
         <name>scarab.database.url.extension.db2</name>
         <default/>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2450,7 +2244,6 @@
       <property>
         <name>scarab.database.pool.validationQuery.db2</name>
         <default>SELECT 1 FROM SYSIBM.SYSDUMMY1</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2458,7 +2251,6 @@
       <property>
         <name>scarab.database.jdbc.driver.db2</name>
         <default>COM.ibm.db2.jdbc.app.DB2Driver</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2466,7 +2258,6 @@
       <property>
         <name>scarab.database.admin.username.db2</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2474,7 +2265,6 @@
       <property>
         <name>scarab.database.admin.password.db2</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2483,7 +2273,6 @@
       <property>
         <name>scarab.database.username.db2</name>
         <default>sa</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2491,7 +2280,6 @@
       <property>
         <name>scarab.database.password.db2</name>
         <default></default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2501,7 +2289,6 @@
       <property>
         <name>scarab.test.database.name.db2</name>
         <default>${scarab.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2509,7 +2296,6 @@
       <property>
         <name>scarab.test.database.url.db2</name>
         <default>jdbc:db2:${scarab.test.database.name}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2517,7 +2303,6 @@
       <property>
         <name>scarab.test.database.username.db2</name>
         <default>${scarab.database.username}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2525,7 +2310,6 @@
       <property>
         <name>scarab.test.database.password.db2</name>
         <default>${scarab.database.password}</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2533,7 +2317,6 @@
       <property>
         <name>scarab.database.jdbc.driver.jar.db2</name>
         <default>db2java.zip</default>
-        <comment/>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
@@ -2556,9 +2339,9 @@
     <property>
       <name>Name</name>
       <default>Scarab</default>
-      <comment>
+      <details>
         Name of the project ("Scarab" for the standard distribution).
-      </comment>
+      </details>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -2566,7 +2349,7 @@
     <property>
       <name>version</name>
       <default>1.0-b22-dev</default>
-      <comment>Project version.</comment>
+      <details>Project version.</details>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -2574,9 +2357,9 @@
     <property>
       <name>project</name>
       <default>scarab</default>
-      <comment>
+      <details>
         Name of the project, used for???.
-      </comment>
+      </details>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -2584,7 +2367,7 @@
     <property>
       <name>year</name>
       <default>2000-2004</default>
-      <comment>Year, possibly used for copyright message.</comment>
+      <details>Year, possibly used for copyright message.</details>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -2598,7 +2381,6 @@
       <property>
         <name>build.dir</name>
         <default>${root.dir}/target</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2606,7 +2388,6 @@
       <property>
         <name>build.project</name>
         <default>${build.dir}/scarab</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2614,7 +2395,6 @@
       <property>
         <name>build.project.webinf</name>
         <default>${build.project}/WEB-INF</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2622,7 +2402,6 @@
       <property>
         <name>build.project.webinf.lib</name>
         <default>${build.project}/WEB-INF/lib</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2630,7 +2409,6 @@
       <property>
         <name>build.sql.scarab</name>
         <default>${build.project.webinf}/sql</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2638,7 +2416,6 @@
       <property>
         <name>build.src.scarab</name>
         <default>${build.project.webinf}/src</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2646,7 +2423,6 @@
       <property>
         <name>build.dest.scarab</name>
         <default>${build.project.webinf}/classes</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2654,7 +2430,6 @@
       <property>
         <name>deploy.dir</name>
         <default>${build.dir}</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2662,7 +2437,6 @@
       <property>
         <name>deploy.project</name>
         <default>${deploy.dir}/scarab</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2670,7 +2444,6 @@
       <property>
         <name>scarab.torque.schemas</name>
         <default>scarab-schema.xml</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2684,7 +2457,6 @@
       <property>
         <name>repository.dir</name>
         <default>${root.dir}/www/repository</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2692,7 +2464,6 @@
       <property>
         <name>lib.dir</name>
         <default>${root.dir}/lib</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2700,7 +2471,6 @@
       <property>
         <name>src.dir</name>
         <default>${root.dir}/src</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2708,7 +2478,6 @@
       <property>
         <name>extensions.dir</name>
         <default>${root.dir}/extensions</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2725,7 +2494,6 @@
         username (the default value is ${scarab.user.username}).
       </details>
       <default>${scarab.user.username}</default>
-      <comment/>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
       <file/>
@@ -2739,7 +2507,6 @@
       <property>
         <name>scarab.scarabgen.home</name>
         <default>../scarab-gen</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2747,7 +2514,6 @@
       <property>
         <name>scarab.docs.head</name>
         <default>${scarab.scarabgen.home}/www/head</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2755,7 +2521,6 @@
       <property>
         <name>scarab.docbook.enable</name>
         <default>true</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2770,7 +2535,6 @@
       <property>
         <name>maven.multiproject.type</name>
         <default>war</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2778,7 +2542,6 @@
       <property>
         <name>maven.repo.remote</name>
         <default>file:www/repository,http://www.ibiblio.org/maven/,http://mirrors.ibiblio.org/pub/mirrors/maven,http://guest:guest@PROJECT.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven,http://www.apache.org/dist/java-repository/</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2786,7 +2549,6 @@
       <property>
         <name>maven.docbook.src</name>
         <default>www/book</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2794,7 +2556,6 @@
       <property>
         <name>maven.sdocbook.src.dir</name>
         <default>www/book</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2802,7 +2563,6 @@
       <property>
         <name>maven.sdocbook.files</name>
         <default>**/scarab-*.xml</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2810,7 +2570,6 @@
       <property>
         <name>statcvs.exclude</name>
         <default>www/**/*.*</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2818,7 +2577,6 @@
       <property>
         <name>statcvs.include</name>
         <default>src/**/*.*</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2826,7 +2584,6 @@
       <property>
         <name>statcvs.verbose</name>
         <default>false</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2834,7 +2591,6 @@
       <property>
         <name>statcvs.history</name>
         <default>false</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2842,7 +2598,6 @@
       <property>
         <name>statcvs.log.options</name>
         <default>-d 2004-01-01&lt;</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2857,7 +2612,6 @@
       <property>
         <name>maven.eclipse.output.dir</name>
         <default>src/webapp/WEB-INF/classes</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2865,7 +2619,6 @@
       <property>
         <name>maven.eclipse.classpath.include</name>
         <default>src/conf/conf,src/conf/classes</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2880,7 +2633,6 @@
       <property>
         <name>maven.netbeans.exec.rebuild</name>
         <default>clean war:war</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2888,7 +2640,6 @@
       <property>
         <name>maven.netbeans.exec.build</name>
         <default>war:war</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2904,7 +2655,6 @@
       <property>
         <name>maven.junit.fork</name>
         <default>true</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2912,7 +2662,6 @@
       <property>
         <name>maven.junit.usefile</name>
         <default>true</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2920,7 +2669,6 @@
       <property>
         <name>maven.test.failure.ignore</name>
         <default>true</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2936,7 +2684,6 @@
       <property>
         <name>maven.javadoc.useexternalfile</name>
         <default>true</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2945,7 +2692,6 @@
       <property>
         <name>maven.pmd.excludes</name>
         <default>**/om/**</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2954,7 +2700,6 @@
       <property>
         <name>maven.pmd.includes</name>
         <default>**/tigris/**</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2963,7 +2708,6 @@
       <property>
         <name>maven.simian.excludes</name>
         <default>**/om/**</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2972,7 +2716,6 @@
       <property>
         <name>maven.simian.includes</name>
         <default>**/tigris/**</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2981,7 +2724,6 @@
       <property>
         <name>maven.findbugs.excludes</name>
         <default>**/om/**</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2990,7 +2732,6 @@
       <property>
         <name>maven.findbugs.includes</name>
         <default>**/tigris/**</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -2999,7 +2740,6 @@
       <property>
         <name>maven.checkstyle.format</name>
         <default>turbine</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -3008,7 +2748,6 @@
       <property>
         <name>maven.xdoc.version</name>
         <default>${pom.currentVersion}</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -3022,7 +2761,6 @@
       <property>
         <name>maven.dist.bin.assembly.dir</name>
         <default>${root.dir}/target/dist</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
@@ -3034,7 +2772,6 @@
       <property>
         <name>maven.nsis.build.dir</name>
         <default>${root.dir}/target/dist</default>
-        <comment/>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>
