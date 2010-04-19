@@ -10,7 +10,7 @@ public class IssueTestObjectFactory
     {
         if (issue0 == null)
         {
-            issue0 = IssueManager.getInstance(new NumberKey(1), false);
+            issue0 = IssueManager.getInstance(new NumberKey(1001), false);
         }
         return issue0;
     }

@@ -17,7 +17,7 @@ public class ModuleTestObjectFactory
         throws Exception
     {
         if(module==null)
-            module = ModuleManager.getInstance(new NumberKey(5), false);
+            module = ModuleManager.getInstance(new NumberKey(1005), false);
         return module;
     }
 

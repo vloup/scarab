@@ -90,7 +90,7 @@ public class IssueSearchTest extends BaseTurbineTestCase
     {
         IssueSearch search = getSearch();
         AttributeOption sgi = 
-            AttributeOptionManager.getInstance(new Integer(21));
+            AttributeOptionManager.getInstance(new Integer(121));
         search.addAttributeValue(testAttribs.getPlatformAttribute(), sgi);
         List results = search.getQueryResults();
         assertTrue("Should be one result.", (results.size() == 1));
@@ -101,7 +101,7 @@ public class IssueSearchTest extends BaseTurbineTestCase
     {
         IssueSearch search = getSearch();
         AttributeOption notsgi = 
-            AttributeOptionManager.getInstance(new Integer(20));
+            AttributeOptionManager.getInstance(new Integer(120));
         search.addAttributeValue(testAttribs.getPlatformAttribute(), notsgi);
         List results = search.getQueryResults();
         assertTrue("Should be no result.", (results.size() == 0));
@@ -171,7 +171,7 @@ public class IssueSearchTest extends BaseTurbineTestCase
     {
         IssueSearch search = getSearch();
         AttributeOption sgi = 
-            AttributeOptionManager.getInstance(new Integer(21));
+            AttributeOptionManager.getInstance(new Integer(121));
         search.addAttributeValue(testAttribs.getPlatformAttribute(), sgi);
         search.addUserSearch(testUsers.getUser5().getUserId().toString(), 
                                IssueSearch.ANY_KEY);

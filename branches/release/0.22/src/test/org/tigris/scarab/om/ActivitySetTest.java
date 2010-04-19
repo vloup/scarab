@@ -65,10 +65,10 @@ public class ActivitySetTest extends BaseTurbineTestCase
 
     public void testCreate() throws Exception {
         
-        Issue issue2 =  BaseIssuePeer.retrieveByPK(new NumberKey("1"));
+        Issue issue2 =  BaseIssuePeer.retrieveByPK(new NumberKey("1001"));
         assertNotNull(issue2);
         System.out.println("\ntestCreate()");
-        Issue issue = IssueManager.getInstance(new NumberKey("1"));
+        Issue issue = IssueManager.getInstance(new NumberKey("1001"));
         Attachment attachment = AttachmentManager.getInstance();
         attachment.setName("activitySet test");
         attachment.setData("Test comment");

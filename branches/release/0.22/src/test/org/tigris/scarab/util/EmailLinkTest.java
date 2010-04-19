@@ -70,7 +70,7 @@ public class EmailLinkTest extends BaseTurbineTestCase
         String expected = 
             // FIXME: Get host, port, and context information from somewhere.
             //"http://10.0.0.1:8080/s/template/Foo.vm/curmodule/5/foo/bar/jjj/aaa";
-            "/template/Foo.vm/curmodule/5/foo/bar/jjj/aaa";
+            "/template/Foo.vm/curmodule/1005/foo/bar/jjj/aaa";
         //assertEquals(expected, el.toString());
         assertTrue(el.toString().endsWith(expected));
     }

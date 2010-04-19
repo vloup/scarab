@@ -57,8 +57,8 @@ import org.tigris.scarab.test.BaseTurbineTestCase;
  */
 public class AttributeValueTest extends BaseTurbineTestCase
 {
-    private static final NumberKey ATTR_DESCRIPTION = new NumberKey("1");
-    private static final NumberKey ATTR_SEVERITY = new NumberKey("9");
+    private static final NumberKey ATTR_DESCRIPTION = new NumberKey("101");
+    private static final NumberKey ATTR_SEVERITY = new NumberKey("109");
     private AttributeValue attVal = null;
     private AttributeValue attVal2 = null;
      private Issue issue = null;

@@ -28,7 +28,7 @@ INSERT INTO SCARAB_ATTRIBUTE VALUES (223,'[JIRA] Version',5,NULL,NULL,'Version a
 INSERT INTO SCARAB_ATTRIBUTE VALUES (224,'[JIRA] Due',13,NULL,NULL,'Due attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:39:19',0);
 INSERT INTO SCARAB_ATTRIBUTE VALUES (225,'[JIRA] Votes',3,NULL,NULL,'Votes attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-09 16:40:10',0);
 INSERT INTO SCARAB_ATTRIBUTE VALUES (240,'[JIRA] Assignee',8,'Issue | View',NULL,'Assignee attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.','to',1,'2005-12-10 14:43:31',0);
-INSERT INTO SCARAB_ATTRIBUTE VALUES (241,'[JIRA] Resolution',5,NULL,5,'Resolution attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-10 14:43:55',0);
+INSERT INTO SCARAB_ATTRIBUTE VALUES (241,'[JIRA] Resolution',5,NULL,105,'Resolution attribute for JIRA issuetypes. Do not modify or importing JIRA xmls will fail.',NULL,1,'2005-12-10 14:43:55',0);
 
 
 --

@@ -138,7 +138,7 @@ public class QueryTest extends BaseTurbineTestCase
     public void testSaveAndSendEmail() throws Exception
     {
         System.out.println("\ntestSaveAndSendEmail()");
-        query1.setUserId(new Integer(2));
+        query1.setUserId(new Integer(1002));
         query1.setName("Test query 2");
         query1.setValue("&searchId=2&searchisp=asc");
         query1.setDescription("Description for test query 2");

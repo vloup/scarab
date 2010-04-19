@@ -67,7 +67,7 @@ public class AttributeOptionTest extends BaseTurbineTestCase
     {
 		super.setUp();
         ao = 
-            AttributeOptionManager.getInstance(new NumberKey(83));
+            AttributeOptionManager.getInstance(new NumberKey(183));
 
 
     }
@@ -119,7 +119,7 @@ public class AttributeOptionTest extends BaseTurbineTestCase
         System.out.println (
             "Testing: testIsChildOf() with AttributeOption: " + ao.getName());
         AttributeOption parent = 
-            AttributeOptionManager.getInstance(new NumberKey(87));
+            AttributeOptionManager.getInstance(new NumberKey(187));
         assertEquals(true, ao.isChildOf(parent));
         System.out.println (ao.isChildOf(parent));
     }
@@ -130,7 +130,7 @@ public class AttributeOptionTest extends BaseTurbineTestCase
         System.out.println (
             "Testing: testIsParentOf() with AttributeOption: " + ao.getName());
         AttributeOption child = 
-            AttributeOptionManager.getInstance(new NumberKey(39));
+            AttributeOptionManager.getInstance(new NumberKey(139));
         assertEquals(true, ao.isParentOf(child));
         System.out.println (ao.isParentOf(child));
     }

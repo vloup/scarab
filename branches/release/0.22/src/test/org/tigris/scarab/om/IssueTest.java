@@ -82,9 +82,9 @@ public class IssueTest extends BaseTurbineTestCase
     {
         // loops thru module and issue type combinations
         // creates an issue in each combination
-        for (int i = 1; i < nbrDfltModules + 1; i++)
+        for (int i = 1001; i < 1000 + nbrDfltModules + 1; i++)
         {
-            for (int j = 1; j < nbrDfltIssueTypes + 1; j++)
+            for (int j = 101; j < 100 + nbrDfltIssueTypes + 1; j++)
             {
                 Module module =
                     ScarabModulePeer.retrieveByPK(
@@ -218,7 +218,7 @@ public class IssueTest extends BaseTurbineTestCase
         assignUser();
         List attVals = testIssues.getIssue0().getUserAttributeValues();
         AttributeValue attVal = (AttributeValue) attVals.get(0);
-        assertEquals(attVal.getAttributeId().toString(), "2");
+        assertEquals(attVal.getAttributeId().toString(), "102");
     }
 
     public void testGetEligibleUsers() throws Exception
@@ -278,14 +278,14 @@ public class IssueTest extends BaseTurbineTestCase
     protected Attribute getAssignAttribute()
     throws Exception
     {
-            return AttributeManager.getInstance(new NumberKey(2));
+            return AttributeManager.getInstance(new NumberKey(102));
     }
         
     protected Attribute getCcAttribute()
     throws Exception
     {
        
-            return AttributeManager.getInstance(new NumberKey(13));
+            return AttributeManager.getInstance(new NumberKey(113));
         
     }
 }

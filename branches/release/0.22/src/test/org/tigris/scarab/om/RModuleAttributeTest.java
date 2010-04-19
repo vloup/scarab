@@ -67,7 +67,7 @@ public class RModuleAttributeTest extends BaseTurbineTestCase
     public void setUp() throws Exception
 	{
     	super.setUp();
-        platform = AttributeManager.getInstance(new NumberKey("5"));
+        platform = AttributeManager.getInstance(new NumberKey("105"));
         rma = testModules.getModule().getRModuleAttribute(platform,
                 testITs.getDefaultIssueType());
         

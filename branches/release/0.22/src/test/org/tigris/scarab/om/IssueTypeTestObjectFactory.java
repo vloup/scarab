@@ -11,7 +11,7 @@ public class IssueTypeTestObjectFactory
     {
         if(defaultIssueType==null)
             defaultIssueType = IssueTypeManager
-            .getInstance(new NumberKey(1), false);
+            .getInstance(new NumberKey(101), false);
         return defaultIssueType;
     }
 
