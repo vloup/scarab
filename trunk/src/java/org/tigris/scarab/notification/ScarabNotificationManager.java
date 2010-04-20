@@ -943,30 +943,40 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
 
 
     /**
+     * Add a notification to the Map of user activities. 
+     * The user activities are sorted according to their activityType.
+     * This is later used to create the EMail content sorted by activityType.
      * @param notification
      * @param userActivities
      */
-    private void addActivity(NotificationStatus notification, Map userActivities)
+    private void addActivity(NotificationStatus notification, Map<LocalizationKey,List<NotificationStatus>> userActivities)
     {
+
+        // Find the ActivityGroupNotificationList to which 
+        // the current Notification shall be added.
+        // If none does yet exist, silently create a new entry
+        
         LocalizationKey activityGroup = getActivityGroup(notification.getActivityType());
-        List typeNotifications = (List) userActivities.get(activityGroup);
-        if (null == typeNotifications)
+        List<NotificationStatus> activityGroupNotificationList = userActivities.get(activityGroup);
+        if (null == activityGroupNotificationList)
         {
-            typeNotifications = new ArrayList();
-            userActivities.put(activityGroup, typeNotifications);
+            activityGroupNotificationList = new ArrayList<NotificationStatus>();
+            userActivities.put(activityGroup, activityGroupNotificationList);
         }
         
         // We will only add this notification to the user's list if it's not
         // already present.
+        
         boolean bAlreadyPresent = false;
-        for (Iterator it = typeNotifications.iterator(); it.hasNext() && !bAlreadyPresent; )
+        for (Iterator<NotificationStatus> it = activityGroupNotificationList.iterator(); it.hasNext() && !bAlreadyPresent; )
         {
-            NotificationStatus not = (NotificationStatus)it.next();
+            NotificationStatus not = it.next();
             bAlreadyPresent = (not.getActivityId().equals(notification.getActivityId()));
         }
+        
         if (!bAlreadyPresent)
         {
-            typeNotifications.add(notification);
+            activityGroupNotificationList.add(notification);
         }
     }
 
