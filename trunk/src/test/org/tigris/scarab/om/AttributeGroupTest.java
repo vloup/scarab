@@ -69,8 +69,8 @@ public class AttributeGroupTest extends BaseTurbineTestCase {
     
     public void setUp() throws Exception {
         super.setUp();
-        severity = AttributeManager.getInstance(new NumberKey("9"));
-        group = AttributeGroupManager.getInstance(new NumberKey("131"));
+        severity = AttributeManager.getInstance(new NumberKey("109"));
+        group = AttributeGroupManager.getInstance(new NumberKey("1031"));
 
     }
 
@@ -111,7 +111,7 @@ public class AttributeGroupTest extends BaseTurbineTestCase {
 
     public void testGetRAttributeAttributeGroup() throws Exception {
 
-        assertEquals(new Integer(9), group.getRAttributeAttributeGroup(severity).getAttributeId());
+        assertEquals(new Integer(109), group.getRAttributeAttributeGroup(severity).getAttributeId());
     }
 
     /**
@@ -133,7 +133,7 @@ public class AttributeGroupTest extends BaseTurbineTestCase {
         ScarabCache.clear();
         assertFalse(AttributeGroupManager.exists(newGroup));
 
-        group = AttributeGroupManager.getInstance(new NumberKey("131"));
+        group = AttributeGroupManager.getInstance(new NumberKey("1031"));
         assertNotNull(group);
         assertTrue(AttributeGroupManager.exists(group));
 

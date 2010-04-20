@@ -20,7 +20,7 @@
     <property file="custom.properties" />
     <property file="defaultCustom.properties" />
 
-    <property name="skip.seed.data" value="false"/>
+    <property name="skip.sample.data" value="false"/>
     <property name="skip.default.data" value="false"/>
     <property name="skip.jira.templates.data" value="false"/>
 
@@ -39,7 +39,7 @@
         scarab.database.url             = ${scarab.database.url}
         scarab.database.jdbc.driver     = ${scarab.database.jdbc.driver}
         skip.jira.templates.data        = ${skip.jira.templates.data}
-        skip.seed.data                  = ${skip.seed.data}
+        skip.sample.data                = ${skip.sample.data}
         skip.default.data               = ${skip.default.data}
       </echo>
     </target>
@@ -78,7 +78,7 @@
         <property name="optional.scarab-jira-templates-data.sql" value=""/>
 
         <condition property="optional.scarab-sample-data.sql" value="scarab-sample-data.sql">
-           <not><istrue value="${skip.seed.data}"/></not>
+           <not><istrue value="${skip.sample.data}"/></not>
         </condition>
         <property name="optional.scarab-sample-data.sql" value=""/>
         

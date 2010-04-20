@@ -27,7 +27,7 @@ insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (45, 'S
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (46, 'SCARAB_R_MODULE_USER_ATTRIBUTE', 10000, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (47, 'SCARAB_GLOBAL_PARAMETER', 10000, 10);
 insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (48, 'SCARAB_NOTIFICATION_RULE', 10000, 10);
-insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (100, 'SCARAB_TRANSITION', 10000, 10);
-insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (101, 'SCARAB_CONDITION', 10000, 10);
-insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (999, 'ID_TABLE', 1000, 1);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (49, 'SCARAB_TRANSITION', 10000, 10);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (50, 'SCARAB_CONDITION', 10000, 10);
+insert into ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (99, 'ID_TABLE', 10000, 1);
 

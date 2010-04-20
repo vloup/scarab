@@ -2,51 +2,51 @@
 
 -- Description
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(1, 'Description', 12, 'Description', '2002-01-01 00:30:00');
+        values(101, 'Description',12, 'Description', '2002-01-01 00:30:00');
 -- Assigned to
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, 
        ATTRIBUTE_TYPE_ID, PERMISSION, ACTION, DESCRIPTION, CREATED_DATE)
-       values(2, 'AssignedTo', 8, 'Issue | Edit', 'to', 'AssignedTo', '2002-01-01 00:30:00');
+       values(102, 'AssignedTo',8, 'Issue | Edit', 'to', 'AssignedTo', '2002-01-01 00:30:00');
 -- Status
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(3, 'Status', 5, 'Status', '2002-01-01 00:30:00');
+        values(103, 'Status',5, 'Status', '2002-01-01 00:30:00');
 -- Resolution
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, 
        ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(4, 'Resolution', 5, 'Resolution', '2002-01-01 00:30:00');
+        values(104, 'Resolution',5, 'Resolution', '2002-01-01 00:30:00');
 -- Platform
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, 
        ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-       values(5, 'Platform', 5, 'Platform', '2002-01-01 00:30:00');
+       values(105, 'Platform',5, 'Platform', '2002-01-01 00:30:00');
 -- Operating system
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(6, 'OperatingSystem', 5, 'OperatingSystem', '2002-01-01 00:30:00');
+        values(106, 'OperatingSystem',5, 'OperatingSystem', '2002-01-01 00:30:00');
 -- Priority select-one
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(7, 'Priority', 5, 'Priority', '2002-01-01 00:30:00');
+        values(107, 'Priority',5, 'Priority', '2002-01-01 00:30:00');
 -- Priority voted
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(8, 'Vote', 5, 'Vote', '2002-01-01 00:30:00');
+        values(108, 'Vote',5, 'Vote', '2002-01-01 00:30:00');
 -- Severity
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(9, 'Severity', 5, 'Severity', '2002-01-01 00:30:00');
+        values(109, 'Severity',5, 'Severity', '2002-01-01 00:30:00');
 
 -- cc attribute
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, 
        ATTRIBUTE_TYPE_ID, PERMISSION, ACTION, DESCRIPTION, CREATED_DATE)
-       values(13, 'AssignedCC', 8, 'Issue | View', 'cc', 'CcAttribute', '2002-01-01 00:30:00');
+       values(113, 'AssignedCC',8, 'Issue | View', 'cc', 'CcAttribute', '2002-01-01 00:30:00');
 -- Tracking 
 -- removing until further discussion
 -- insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
---         values(10, 'Tracking', 10, 'Tracking', '2002-01-01 00:30:00')
+--         values(10, 'Tracking',10, 'Tracking', '2002-01-01 00:30:00')
 
 
 -- Brief (one-line) Description
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(11, 'Summary', 1, 'Summary', '2002-01-01 00:30:00');
+        values(111, 'Summary',1, 'Summary', '2002-01-01 00:30:00');
 -- Functional area
 insert into SCARAB_ATTRIBUTE(ATTRIBUTE_ID, ATTRIBUTE_NAME, ATTRIBUTE_TYPE_ID, DESCRIPTION, CREATED_DATE)
-        values(12, 'FunctionalArea', 5, 'FunctionalArea', '2002-01-01 00:30:00');
+        values(112, 'FunctionalArea',5, 'FunctionalArea', '2002-01-01 00:30:00');
 
 update SCARAB_ATTRIBUTE set CREATED_BY=null;
 
@@ -55,232 +55,232 @@ update SCARAB_ATTRIBUTE set CREATED_BY=null;
 
 -- Unconfirmed
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(1, 3, 'Unconfirmed');
+        values(101,103, 'Unconfirmed');
 -- New
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(2, 3, 'New');
+        values(102,103, 'New');
 -- Assigned
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(3, 3, 'Assigned');
+        values(103,103, 'Assigned');
 -- Reopened
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(4, 3, 'Reopened');
+        values(104,103, 'Reopened');
 -- Resolved
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(5, 3, 'Resolved');
+        values(105,103, 'Resolved');
 
 -- We need to do this mapping here because there is an integrity constraint
 -- on having the Resolved ATTRIBUTE_OPTION exist before we can set it
 
-update SCARAB_ATTRIBUTE set REQUIRED_OPTION_ID=5 where ATTRIBUTE_ID=4;
+update SCARAB_ATTRIBUTE set REQUIRED_OPTION_ID=105 where ATTRIBUTE_ID=104;
         
 -- Verified
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(6, 3, 'Verified');
+        values(106,103, 'Verified');
 -- Closed
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(7, 3, 'Closed');
+        values(107,103, 'Closed');
 -- Fixed
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(8, 4, 'Fixed');
+        values(108,104, 'Fixed');
 -- Invalid
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(9, 4, 'Invalid');
+        values(109,104, 'Invalid');
 -- WONTFIX
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(10, 4, 'Wontfix');
+        values(110,104, 'Wontfix');
 -- LATER
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(11, 4, 'Later');
+        values(111,104, 'Later');
 -- REMIND
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(12, 4, 'Remind');
+        values(112,104, 'Remind');
 -- DUPLICATE
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(13, 4, 'Duplicate');
+        values(113,104, 'Duplicate');
 -- WORKSFORME
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(14, 4, 'Worksforme');
+        values(114,104, 'Worksforme');
 -- MOVED
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(15, 4, 'Moved');
+        values(115,104, 'Moved');
 -- All
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(16, 5, 'All');
+        values(116,105, 'All');
 -- DEC
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(17, 5, 'DEC');
+        values(117,105, 'DEC');
 -- HP
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(18, 5, 'HP');
+        values(118,105, 'HP');
 -- Macintosh
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(19, 5, 'Macintosh');
+        values(119,105, 'Macintosh');
 -- PC
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(20, 5, 'PC');
+        values(120,105, 'PC');
 -- SGI
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(21, 5, 'SGI');
+        values(121,105, 'SGI');
 -- Sun
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(22, 5, 'Sun');
+        values(122,105, 'Sun');
 -- Other
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(23, 5, 'Other');
+        values(123,105, 'Other');
 -- Operating systems
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(24, 6, 'All');
+        values(124,106, 'All');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(75, 6, 'Windows');
+        values(175,106, 'Windows');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(25, 6, 'Windows3.1');
+        values(125,106, 'Windows3.1');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(26, 6, 'Windows95');
+        values(126,106, 'Windows95');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(27, 6, 'Windows98');
+        values(127,106, 'Windows98');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(28, 6, 'WindowsME');
+        values(128,106, 'WindowsME');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(29, 6, 'Windows2000');
+        values(129,106, 'Windows2000');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(30, 6, 'WindowsNT');
+        values(130,106, 'WindowsNT');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(76, 6, 'MacOS');
+        values(176,106, 'MacOS');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(31, 6, 'MacSystem7');
+        values(131,106, 'MacSystem7');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(32, 6, 'MacSystem7.5');
+        values(132,106, 'MacSystem7.5');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(33, 6, 'MacSystem7.6.1');
+        values(133,106, 'MacSystem7.6.1');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(34, 6, 'MacSystem8.0');
+        values(134,106, 'MacSystem8.0');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(35, 6, 'MacSystem8.5');
+        values(135,106, 'MacSystem8.5');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(36, 6, 'MacSystem8.6');
+        values(136,106, 'MacSystem8.6');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(37, 6, 'MacSystem9.0');
+        values(137,106, 'MacSystem9.0');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(77, 6, 'OSX');
+        values(177,106, 'OSX');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(87, 6, 'Unix');
+        values(187,106, 'Unix');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(38, 6, 'Linux');
+        values(138,106, 'Linux');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(78, 6, 'Redhat');
+        values(178,106, 'Redhat');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(79, 6, 'Suse');
+        values(179,106, 'Suse');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(80, 6, 'Debian');
+        values(180,106, 'Debian');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(81, 6, 'OtherLinux');
+        values(181,106, 'OtherLinux');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(82, 6, 'GeneralBSD');
+        values(182,106, 'GeneralBSD');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(40, 6, 'FreeBSD');
+        values(140,106, 'FreeBSD');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(41, 6, 'NetBSD');
+        values(141,106, 'NetBSD');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(42, 6, 'OpenBSD');
+        values(142,106, 'OpenBSD');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(83, 6, 'CommercialUnix');
+        values(183,106, 'CommercialUnix');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(39, 6, 'BSDI');
+        values(139,106, 'BSDI');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(43, 6, 'AIX');
+        values(143,106, 'AIX');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(44, 6, 'BeOS');
+        values(144,106, 'BeOS');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(45, 6, 'HPUX');
+        values(145,106, 'HPUX');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(46, 6, 'IRIX');
+        values(146,106, 'IRIX');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(50, 6, 'OSF1');
+        values(150,106, 'OSF1');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(51, 6, 'Solaris');
+        values(151,106, 'Solaris');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(52, 6, 'SunOS');
+        values(152,106, 'SunOS');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(53, 6, 'Other');
+        values(153,106, 'Other');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(48, 6, 'OpenVMS');
+        values(148,106, 'OpenVMS');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(49, 6, 'OS2');
+        values(149,106, 'OS2');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(84, 6, 'RealtimeEmbedded');
+        values(184,106, 'RealtimeEmbedded');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(47, 6, 'Neutrino');
+        values(147,106, 'Neutrino');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(85, 6, 'HandheldPDA');
+        values(185,106, 'HandheldPDA');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(86, 6, 'PalmOS');
+        values(186,106, 'PalmOS');
 
 -- Transitions
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (103, NULL, 3, 1, 2);
+        values (103, NULL,103,101, 102);
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (102, NULL, 3, 0, 1);
+        values (102, NULL,103,0, 101);
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (104, NULL, 3, 2, 3);                
+        values (104, NULL,103,102, 103);                
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (105, NULL, 3, 3, 5);
+        values (105, NULL,103,103, 105);
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (106, NULL, 3, 5, 6);
+        values (106, NULL,103,105, 106);
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (107, NULL, 3, 6, 7);
+        values (107, NULL,103,106, 107);
 insert into SCARAB_TRANSITION(TRANSITION_ID, ROLE_ID, ATTRIBUTE_ID, FROM_OPTION_ID, TO_OPTION_ID)
-        values (108, NULL, 3, 7, 4);
+        values (108, NULL,103,107, 104);
 
 -- Conditions
 insert into SCARAB_CONDITION(CONDITION_ID, TRANSITION_ID, MODULE_ID, ISSUE_TYPE_ID, ATTRIBUTE_ID, OPTION_ID)
-        values (1, NULL, NULL, NULL, 4, 5);
+        values (101, NULL, NULL, NULL,104, 105);
 insert into SCARAB_CONDITION(CONDITION_ID, TRANSITION_ID, MODULE_ID, ISSUE_TYPE_ID, ATTRIBUTE_ID, OPTION_ID)
-        values (2, NULL, NULL, NULL, 4, 6);
+        values (102, NULL, NULL, NULL,104, 106);
 insert into SCARAB_CONDITION(CONDITION_ID, TRANSITION_ID, MODULE_ID, ISSUE_TYPE_ID, ATTRIBUTE_ID, OPTION_ID)
-        values (3, NULL, NULL, NULL, 4, 7);        
+        values (103, NULL, NULL, NULL,104, 107); 
                 
 -- Priorities select-one
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(54, 7, 'High');
+        values(154,107, 'High');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(55, 7, 'Medium');
+        values(155,107, 'Medium');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(56, 7, 'Low');
+        values(156,107, 'Low');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(57, 7, 'Undecided');
+        values(157,107, 'Undecided');
 
 -- Priorities voted
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(58, 8, 'High');
+        values(158,108, 'High');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(59, 8, 'Medium');
+        values(159,108, 'Medium');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(60, 8, 'Low');
+        values(160,108, 'Low');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(61, 8, 'Undecided');
+        values(161,108, 'Undecided');
 
 -- Severities
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
-        values(62, 9, 'Blocker');
+        values(162,109, 'Blocker');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(63, 9, 'Critical');
+        values(163,109, 'Critical');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(64, 9, 'Major');
+        values(164,109, 'Major');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(65, 9, 'Normal');
+        values(165,109, 'Normal');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(66, 9, 'Minor');
+        values(166,109, 'Minor');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(67, 9, 'Trivial');
+        values(167,109, 'Trivial');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(68, 9, 'Enhancement');
+        values(168,109, 'Enhancement');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(69, 9, 'Cosmetic');
+        values(169,109, 'Cosmetic');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(70, 9, 'Serious');
+        values(170,109, 'Serious');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(71, 9, 'Undecided');
+        values(171,109, 'Undecided');
 
 -- Tracking options DISABLED
 
@@ -289,1091 +289,1091 @@ insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
 
 
 -- insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
---       values(72, 10, 'Never')
+--       values(172,110, 'Never')
 
 
 -- send notification on major change
 
 
 -- insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
---       values(73, 10, 'Major')
+--       values(173,110, 'Major')
 
 
 -- send notification on any change
 
 
 -- insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME)
---       values(74, 10, 'Any')
+--       values(174,110, 'Any')
 
  
 -- Functional area
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(88, 12, 'UserInterface');
+        values(188,112, 'UserInterface');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(89, 12, 'Setup');
+        values(189,112, 'Setup');
 insert into SCARAB_ATTRIBUTE_OPTION(OPTION_ID, ATTRIBUTE_ID, OPTION_NAME) 
-        values(90, 12, 'Help');
+        values(190,112, 'Help');
 
 -- Option_Option relationships
 -- option1_id, option2_id, relationship_id, preferred_order, weight
 
-insert into SCARAB_R_OPTION_OPTION values (0,1,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,2,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,3,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (0,4,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (0,5,1,5,5);
-insert into SCARAB_R_OPTION_OPTION values (0,6,1,6,6);
-insert into SCARAB_R_OPTION_OPTION values (0,7,1,7,7);
-insert into SCARAB_R_OPTION_OPTION values (0,8,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,9,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,10,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (0,11,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (0,12,1,5,5);
-insert into SCARAB_R_OPTION_OPTION values (0,13,1,6,6);
-insert into SCARAB_R_OPTION_OPTION values (0,14,1,7,7);
-insert into SCARAB_R_OPTION_OPTION values (0,15,1,8,8);
-insert into SCARAB_R_OPTION_OPTION values (0,16,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,17,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,18,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (0,19,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (0,20,1,5,5);
-insert into SCARAB_R_OPTION_OPTION values (0,21,1,6,6);
-insert into SCARAB_R_OPTION_OPTION values (0,22,1,7,7);
-insert into SCARAB_R_OPTION_OPTION values (0,23,1,8,8);
-insert into SCARAB_R_OPTION_OPTION values (0,54,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,55,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,56,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (0,57,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (0,58,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,59,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,60,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (0,61,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (0,62,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,63,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,64,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (0,65,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (0,66,1,5,5);
-insert into SCARAB_R_OPTION_OPTION values (0,67,1,6,6);
-insert into SCARAB_R_OPTION_OPTION values (0,68,1,7,7);
-insert into SCARAB_R_OPTION_OPTION values (0,69,1,8,8);
-insert into SCARAB_R_OPTION_OPTION values (0,70,1,9,9);
-insert into SCARAB_R_OPTION_OPTION values (0,71,1,10,10);
+insert into SCARAB_R_OPTION_OPTION values (0,101,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,102,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,103,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,104,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (0,105,1,5,5);
+insert into SCARAB_R_OPTION_OPTION values (0,106,1,6,6);
+insert into SCARAB_R_OPTION_OPTION values (0,107,1,7,7);
+insert into SCARAB_R_OPTION_OPTION values (0,108,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,109,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,110,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,111,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (0,112,1,5,5);
+insert into SCARAB_R_OPTION_OPTION values (0,113,1,6,6);
+insert into SCARAB_R_OPTION_OPTION values (0,114,1,7,7);
+insert into SCARAB_R_OPTION_OPTION values (0,115,1,8,8);
+insert into SCARAB_R_OPTION_OPTION values (0,116,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,117,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,118,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,119,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (0,120,1,5,5);
+insert into SCARAB_R_OPTION_OPTION values (0,121,1,6,6);
+insert into SCARAB_R_OPTION_OPTION values (0,122,1,7,7);
+insert into SCARAB_R_OPTION_OPTION values (0,123,1,8,8);
+insert into SCARAB_R_OPTION_OPTION values (0,154,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,155,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,156,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,157,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (0,158,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,159,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,160,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,161,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (0,162,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,163,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,164,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,165,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (0,166,1,5,5);
+insert into SCARAB_R_OPTION_OPTION values (0,167,1,6,6);
+insert into SCARAB_R_OPTION_OPTION values (0,168,1,7,7);
+insert into SCARAB_R_OPTION_OPTION values (0,169,1,8,8);
+insert into SCARAB_R_OPTION_OPTION values (0,170,1,9,9);
+insert into SCARAB_R_OPTION_OPTION values (0,171,1,10,10);
 -- TRACKING disabled 
--- insert into SCARAB_R_OPTION_OPTION values (0,72,1,1,1)
--- insert into SCARAB_R_OPTION_OPTION values (0,73,1,2,2)
--- insert into SCARAB_R_OPTION_OPTION values (0,74,1,3,3)
+-- insert into SCARAB_R_OPTION_OPTION values (0,172,1,1,1)
+-- insert into SCARAB_R_OPTION_OPTION values (0,173,1,2,2)
+-- insert into SCARAB_R_OPTION_OPTION values (0,174,1,3,3)
 
-insert into SCARAB_R_OPTION_OPTION values (0,88,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (0,89,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (0,90,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (0,188,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (0,189,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (0,190,1,3,3);
 
-insert into SCARAB_R_OPTION_OPTION values (0,24,1,1,1);
-insert into SCARAB_R_OPTION_OPTION values (24,75,1,2,2);
-insert into SCARAB_R_OPTION_OPTION values (24,76,1,9,9);
-insert into SCARAB_R_OPTION_OPTION values (24,87,1,18,18);
-insert into SCARAB_R_OPTION_OPTION values (24,53,1,38,38);
-insert into SCARAB_R_OPTION_OPTION values (24,84,1,41,41);
-insert into SCARAB_R_OPTION_OPTION values (24,85,1,43,43);
-insert into SCARAB_R_OPTION_OPTION values (75,25,1,3,3);
-insert into SCARAB_R_OPTION_OPTION values (75,26,1,4,4);
-insert into SCARAB_R_OPTION_OPTION values (75,27,1,5,5);
-insert into SCARAB_R_OPTION_OPTION values (75,28,1,6,6);
-insert into SCARAB_R_OPTION_OPTION values (75,29,1,7,7);
-insert into SCARAB_R_OPTION_OPTION values (75,30,1,8,8);
-insert into SCARAB_R_OPTION_OPTION values (76,31,1,10,10);
-insert into SCARAB_R_OPTION_OPTION values (76,32,1,11,11);
-insert into SCARAB_R_OPTION_OPTION values (76,33,1,12,12);
-insert into SCARAB_R_OPTION_OPTION values (76,34,1,13,13);
-insert into SCARAB_R_OPTION_OPTION values (76,35,1,14,14);
-insert into SCARAB_R_OPTION_OPTION values (76,36,1,15,15);
-insert into SCARAB_R_OPTION_OPTION values (76,37,1,16,16);
-insert into SCARAB_R_OPTION_OPTION values (76,77,1,17,17);
-insert into SCARAB_R_OPTION_OPTION values (38,78,1,25,25);
-insert into SCARAB_R_OPTION_OPTION values (38,79,1,26,26);
-insert into SCARAB_R_OPTION_OPTION values (38,80,1,27,27);
-insert into SCARAB_R_OPTION_OPTION values (38,81,1,28,28);
-insert into SCARAB_R_OPTION_OPTION values (82,40,1,20,20);
-insert into SCARAB_R_OPTION_OPTION values (82,41,1,21,21);
-insert into SCARAB_R_OPTION_OPTION values (82,42,1,22,22);
-insert into SCARAB_R_OPTION_OPTION values (83,39,1,30,30);
-insert into SCARAB_R_OPTION_OPTION values (83,43,1,31,31);
-insert into SCARAB_R_OPTION_OPTION values (83,44,1,32,32);
-insert into SCARAB_R_OPTION_OPTION values (83,45,1,33,33);
-insert into SCARAB_R_OPTION_OPTION values (83,46,1,34,34);
-insert into SCARAB_R_OPTION_OPTION values (83,50,1,35,35);
-insert into SCARAB_R_OPTION_OPTION values (83,51,1,36,36);
-insert into SCARAB_R_OPTION_OPTION values (83,52,1,37,37);
-insert into SCARAB_R_OPTION_OPTION values (53,48,1,39,39);
-insert into SCARAB_R_OPTION_OPTION values (53,49,1,40,40);
-insert into SCARAB_R_OPTION_OPTION values (84,47,1,42,42);
-insert into SCARAB_R_OPTION_OPTION values (85,86,1,44,44);
-insert into SCARAB_R_OPTION_OPTION values (87,38,1,24,24);
-insert into SCARAB_R_OPTION_OPTION values (87,82,1,19,19);
-insert into SCARAB_R_OPTION_OPTION values (87,83,1,29,29);
+insert into SCARAB_R_OPTION_OPTION values (0,124,1,1,1);
+insert into SCARAB_R_OPTION_OPTION values (124,175,1,2,2);
+insert into SCARAB_R_OPTION_OPTION values (124,176,1,9,9);
+insert into SCARAB_R_OPTION_OPTION values (124,187,1,18,18);
+insert into SCARAB_R_OPTION_OPTION values (124,153,1,38,38);
+insert into SCARAB_R_OPTION_OPTION values (124,184,1,41,41);
+insert into SCARAB_R_OPTION_OPTION values (124,185,1,43,43);
+insert into SCARAB_R_OPTION_OPTION values (175,125,1,3,3);
+insert into SCARAB_R_OPTION_OPTION values (175,126,1,4,4);
+insert into SCARAB_R_OPTION_OPTION values (175,127,1,5,5);
+insert into SCARAB_R_OPTION_OPTION values (175,128,1,6,6);
+insert into SCARAB_R_OPTION_OPTION values (175,129,1,7,7);
+insert into SCARAB_R_OPTION_OPTION values (175,130,1,8,8);
+insert into SCARAB_R_OPTION_OPTION values (176,131,1,10,10);
+insert into SCARAB_R_OPTION_OPTION values (176,132,1,11,11);
+insert into SCARAB_R_OPTION_OPTION values (176,133,1,12,12);
+insert into SCARAB_R_OPTION_OPTION values (176,134,1,13,13);
+insert into SCARAB_R_OPTION_OPTION values (176,135,1,14,14);
+insert into SCARAB_R_OPTION_OPTION values (176,136,1,15,15);
+insert into SCARAB_R_OPTION_OPTION values (176,137,1,16,16);
+insert into SCARAB_R_OPTION_OPTION values (176,177,1,17,17);
+insert into SCARAB_R_OPTION_OPTION values (138,178,1,25,25);
+insert into SCARAB_R_OPTION_OPTION values (138,179,1,26,26);
+insert into SCARAB_R_OPTION_OPTION values (138,180,1,27,27);
+insert into SCARAB_R_OPTION_OPTION values (138,181,1,28,28);
+insert into SCARAB_R_OPTION_OPTION values (182,140,1,20,20);
+insert into SCARAB_R_OPTION_OPTION values (182,141,1,21,21);
+insert into SCARAB_R_OPTION_OPTION values (182,142,1,22,22);
+insert into SCARAB_R_OPTION_OPTION values (183,139,1,30,30);
+insert into SCARAB_R_OPTION_OPTION values (183,143,1,31,31);
+insert into SCARAB_R_OPTION_OPTION values (183,144,1,32,32);
+insert into SCARAB_R_OPTION_OPTION values (183,145,1,33,33);
+insert into SCARAB_R_OPTION_OPTION values (183,146,1,34,34);
+insert into SCARAB_R_OPTION_OPTION values (183,150,1,35,35);
+insert into SCARAB_R_OPTION_OPTION values (183,151,1,36,36);
+insert into SCARAB_R_OPTION_OPTION values (183,152,1,37,37);
+insert into SCARAB_R_OPTION_OPTION values (153,148,1,39,39);
+insert into SCARAB_R_OPTION_OPTION values (153,149,1,40,40);
+insert into SCARAB_R_OPTION_OPTION values (184,147,1,42,42);
+insert into SCARAB_R_OPTION_OPTION values (185,186,1,44,44);
+insert into SCARAB_R_OPTION_OPTION values (187,138,1,24,24);
+insert into SCARAB_R_OPTION_OPTION values (187,182,1,19,19);
+insert into SCARAB_R_OPTION_OPTION values (187,183,1,29,29);
 
 
 -- Types of issues (artifact/issue types).
 
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(1, 'Defect', 'DefectDescription', 0, 1);
+        values(101, 'Defect', 'DefectDescription',0, 1);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(2, 'DefectTemplate', '', 1,0);
+        values(102, 'DefectTemplate', '',101,0);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(3, 'Patch', 'PatchDescription', 0, 1);
+        values(103, 'Patch', 'PatchDescription',0, 1);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(4, 'PatchTemplate', '', 3, 0);
+        values(104, 'PatchTemplate', '',103, 0);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(5, 'Task', 'TaskDescription', 0, 1);
+        values(105, 'Task', 'TaskDescription',0, 1);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(6, 'TaskTemplate', '', 5, 0);
+        values(106, 'TaskTemplate', '',105, 0);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(7, 'Feature', 'FeatureDescription', 0, 1);
+        values(107, 'Feature', 'FeatureDescription',0, 1);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(8, 'FeatureTemplate', '', 7, 0);
+        values(108, 'FeatureTemplate', '',107, 0);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(9, 'Enhancement', 'EnhancementDescription', 0, 1);
+        values(109, 'Enhancement', 'EnhancementDescription',0, 1);
 insert into SCARAB_ISSUE_TYPE(ISSUE_TYPE_ID, NAME, DESCRIPTION, PARENT_ID, ISDEFAULT)
-        values(10, 'EnhancementTemplate', '', 9, 0);
+        values(110, 'EnhancementTemplate', '',109, 0);
 
 -- Insert attribute groups for project 0
--- group_id, name, description, module_id, issue_type_id, active, dedupe, preferred order
+-- group_id, name, description, module_id, issue_type_id, active, dedupe, preferred order,
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (1, 'AttributeGroupOne', 'dedupeAttributes', NULL, 1, 1, 1, 1,NULL);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (2, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL, 1, 1, 0, 3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (101, 'AttributeGroupOne', 'dedupeAttributes', NULL,101,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (102, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL,101,1,0,3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (3, 'AttributeGroupOne', 'dedupeAttributes', NULL, 3, 1, 1, 1,NULL);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (4, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL, 3, 1, 0, 3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (103, 'AttributeGroupOne', 'dedupeAttributes', NULL,103,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (104, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL,103,1,0,3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (5, 'AttributeGroupOne', 'dedupeAttributes', NULL, 5, 1, 1, 1,NULL);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (6, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL, 5, 1, 0, 3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (105, 'AttributeGroupOne', 'dedupeAttributes', NULL,105,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (106, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL,105,1,0,3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (7, 'AttributeGroupOne', 'dedupeAttributes', NULL, 7, 1, 1, 1,NULL);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (8, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL, 7, 1, 0, 3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (107, 'AttributeGroupOne', 'dedupeAttributes', NULL,107,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (108, 'AttributeGroupTwo', 'nonDedupeAttributes',  NULL,107,1,0,3,NULL);
 
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (9, 'AttributeGroupOne', 'dedupeAttributes', NULL, 9, 1, 1, 1,NULL);
-INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (10, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL, 9, 1, 0, 3,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (109, 'AttributeGroupOne', 'dedupeAttributes', NULL,109,1,1,1,NULL);
+INSERT INTO SCARAB_ATTRIBUTE_GROUP VALUES (110, 'AttributeGroupTwo', 'nonDedupeAttributes', NULL,109,1,0,3,NULL);
  
 -- Insert mapping between attributes and groups 
 -- group_id, attribute_id, preferred order
 
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (1, 5, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (1, 6, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (1, 11, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 1, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 3, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 4, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 7, 4);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 8, 5);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 9, 6);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (101,105, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (101,106, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (101,111, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,101, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,103, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,104, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,107, 4);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,108, 5);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,109, 6);
 -- Tracking DISABLED
--- INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 10, 8)
+-- INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,110, 8)
 
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (2, 12, 7);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (102,112, 7);
 
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (3, 5, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (3, 6, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (3, 11, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (4, 1, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (4, 3, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (4, 4, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (4, 7, 4);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (4, 8, 5);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (4, 12, 6);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (103,105, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (103,106, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (103,111, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (104,101, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (104,103, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (104,104, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (104,107, 4);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (104,108, 5);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (104,112, 6);
 
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (5, 11, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (6, 1, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (6, 3, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (6, 4, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (6, 7, 4);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (6, 8, 5);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (6, 12, 6);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (105,111, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (106,101, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (106,103, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (106,104, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (106,107, 4);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (106,108, 5);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (106,112, 6);
 
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (7, 11, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 1, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 2, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 3, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 4, 4);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 7, 5);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 8, 6);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (8, 12, 7);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (107,111, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,101, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,102, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,103, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,104, 4);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,107, 5);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,108, 6);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (108,112, 7);
 
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (9, 11, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (10, 1, 1);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (10, 3, 2);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (10, 4, 3);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (10, 7, 4);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (10, 8, 5);
-INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (10, 12, 6);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (109,111, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (110,101, 1);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (110,103, 2);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (110,104, 3);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (110,107, 4);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (110,108, 5);
+INSERT INTO SCARAB_R_ATTRIBUTE_ATTRGROUP VALUES (110,112, 6);
 
 -- populate the root module with all issue types.
 -- module_id, issue_type_id, active, show in nav, preferred order
 
-INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,3,1,1,2);
-INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,5,1,1,3);
-INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,7,1,1,4);
-INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,9,1,1,5);
+INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,101,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,103,1,1,2);
+INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,105,1,1,3);
+INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,107,1,1,4);
+INSERT INTO SCARAB_R_MODULE_ISSUE_TYPE (MODULE_ID, ISSUE_TYPE_ID, ACTIVE, DISPLAY, PREFERRED_ORDER) VALUES (0,109,1,1,5);
 
 -- populate the root module with all attributes.
 -- module_id, attr_id, issue_type_id, display_value, active, required, preferred order, quick search,default_text_flag
 
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,1,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,1,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,1,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,1,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,5,1,'Platform',1,1,2,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,6,1,'OperatingSystem',1,1,3,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,1,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,1,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,9,1,'Severity',1,0,700,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,1,'Summary',1,1,1,1,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,1,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,2,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,2,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,2,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,2,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,5,2,'Platform',1,1,2,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,6,2,'OperatingSystem',1,1,3,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,2,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,2,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,9,2,'Severity',1,0,700,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,2,'Summary',1,1,1,1,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,2,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,3,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,3,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,3,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,3,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,5,3,'Platform',1,1,2,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,6,3,'OperatingSystem',1,1,3,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,3,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,3,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,3,'Summary',1,1,1,1,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,3,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,4,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,4,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,4,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,4,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,5,4,'Platform',1,1,2,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,6,4,'OperatingSystem',1,1,3,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,4,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,4,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,4,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,4,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,5,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,5,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,5,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,5,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,5,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,5,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,5,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,5,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,6,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,6,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,6,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,6,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,6,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,6,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,6,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,6,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,7,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,7,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,7,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,7,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,7,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,7,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,7,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,7,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,8,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,8,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,8,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,8,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,8,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,8,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,8,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,8,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,9,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,9,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,9,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,9,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,9,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,9,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,9,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,9,'FunctionalArea',1,0,1000,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,1,10,'Description',1,1,100,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,2,10,'AssignedTo',1,0,200,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,3,10,'Status',1,0,300,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,4,10,'Resolution',1,0,400,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,7,10,'Priority',1,0,500,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,8,10,'Vote',1,0,600,0,0);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,11,10,'Summary',1,1,1,1,1);
-INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,12,10,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,101,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,101,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,101,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,101,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,105,101,'Platform',1,1,2,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,106,101,'OperatingSystem',1,1,3,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,101,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,101,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,109,101,'Severity',1,0,700,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,101,'Summary',1,1,1,1,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,101,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,102,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,102,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,102,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,102,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,105,102,'Platform',1,1,2,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,106,102,'OperatingSystem',1,1,3,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,102,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,102,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,109,102,'Severity',1,0,700,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,102,'Summary',1,1,1,1,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,102,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,103,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,103,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,103,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,103,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,105,103,'Platform',1,1,2,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,106,103,'OperatingSystem',1,1,3,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,103,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,103,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,103,'Summary',1,1,1,1,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,103,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,104,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,104,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,104,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,104,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,105,104,'Platform',1,1,2,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,106,104,'OperatingSystem',1,1,3,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,104,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,104,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,104,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,104,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,105,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,105,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,105,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,105,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,105,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,105,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,105,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,105,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,106,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,106,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,106,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,106,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,106,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,106,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,106,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,106,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,107,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,107,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,107,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,107,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,107,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,107,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,107,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,107,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,108,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,108,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,108,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,108,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,108,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,108,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,108,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,108,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,109,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,109,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,109,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,109,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,109,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,109,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,109,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,109,'FunctionalArea',1,0,1000,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,101,110,'Description',1,1,100,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,102,110,'AssignedTo',1,0,200,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,103,110,'Status',1,0,300,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,104,110,'Resolution',1,0,400,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,107,110,'Priority',1,0,500,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,108,110,'Vote',1,0,600,0,0);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,111,110,'Summary',1,1,1,1,1);
+INSERT INTO SCARAB_R_MODULE_ATTRIBUTE VALUES (0,112,110,'FunctionalArea',1,0,1000,0,0);
 
 -- populate the root module with all options.
 -- module_id, issue_type_id, option_id, display_value, active, preferred order
 
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,16,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,16,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,17,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,17,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,18,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,18,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,19,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,19,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,20,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,20,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,21,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,21,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,22,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,22,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,23,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,23,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,24,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,24,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,25,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,25,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,26,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,26,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,27,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,27,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,28,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,28,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,29,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,29,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,30,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,30,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,31,NULL,1,10,10);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,31,NULL,1,10,10);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,32,NULL,1,11,11);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,32,NULL,1,11,11);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,33,NULL,1,12,12);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,33,NULL,1,12,12);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,34,NULL,1,13,13);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,34,NULL,1,13,13);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,35,NULL,1,14,14);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,35,NULL,1,14,14);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,36,NULL,1,15,15);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,36,NULL,1,15,15);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,37,NULL,1,16,16);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,37,NULL,1,16,16);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,38,NULL,1,18,18);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,38,NULL,1,18,18);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,39,NULL,1,28,28);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,39,NULL,1,28,28);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,40,NULL,1,24,24);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,40,NULL,1,24,24);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,41,NULL,1,25,25);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,41,NULL,1,25,25);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,42,NULL,1,26,26);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,42,NULL,1,26,26);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,43,NULL,1,29,29);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,43,NULL,1,29,29);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,44,NULL,1,30,30);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,44,NULL,1,30,30);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,45,NULL,1,31,31);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,45,NULL,1,31,31);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,46,NULL,1,34,34);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,46,NULL,1,34,34);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,50,NULL,1,35,35);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,50,NULL,1,35,35);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,51,NULL,1,32,32);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,51,NULL,1,32,32);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,52,NULL,1,33,33);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,52,NULL,1,33,33);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,53,NULL,1,40,40);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,53,NULL,1,40,40);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,75,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,75,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,76,NULL,1,9,9);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,76,NULL,1,9,9);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,77,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,77,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,82,NULL,1,23,23);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,82,NULL,1,23,23);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,83,NULL,1,27,27);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,83,NULL,1,27,27);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,84,NULL,1,38,38);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,84,NULL,1,38,38);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,85,NULL,1,36,36);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,85,NULL,1,36,36);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,87,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,87,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,62,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,62,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,63,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,63,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,64,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,64,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,65,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,65,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,66,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,66,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,67,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,67,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,68,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,68,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,69,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,69,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,70,NULL,1,9,9);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,70,NULL,1,9,9);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,71,NULL,1,10,10);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,71,NULL,1,10,10);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,1,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,2,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,16,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,16,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,17,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,17,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,18,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,18,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,19,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,19,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,20,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,20,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,21,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,21,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,22,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,22,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,23,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,23,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,24,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,24,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,25,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,25,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,26,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,26,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,27,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,27,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,28,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,28,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,29,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,29,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,30,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,30,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,31,NULL,1,10,10);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,31,NULL,1,10,10);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,32,NULL,1,11,11);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,32,NULL,1,11,11);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,33,NULL,1,12,12);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,33,NULL,1,12,12);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,34,NULL,1,13,13);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,34,NULL,1,13,13);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,35,NULL,1,14,14);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,35,NULL,1,14,14);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,36,NULL,1,15,15);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,36,NULL,1,15,15);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,37,NULL,1,16,16);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,37,NULL,1,16,16);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,38,NULL,1,18,18);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,38,NULL,1,18,18);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,39,NULL,1,28,28);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,39,NULL,1,28,28);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,40,NULL,1,24,24);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,40,NULL,1,24,24);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,41,NULL,1,25,25);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,41,NULL,1,25,25);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,42,NULL,1,26,26);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,42,NULL,1,26,26);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,43,NULL,1,29,29);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,43,NULL,1,29,29);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,44,NULL,1,30,30);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,44,NULL,1,30,30);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,45,NULL,1,31,31);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,45,NULL,1,31,31);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,46,NULL,1,34,34);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,46,NULL,1,34,34);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,50,NULL,1,35,35);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,50,NULL,1,35,35);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,51,NULL,1,32,32);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,51,NULL,1,32,32);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,52,NULL,1,33,33);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,52,NULL,1,33,33);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,53,NULL,1,40,40);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,53,NULL,1,40,40);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,75,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,75,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,76,NULL,1,9,9);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,76,NULL,1,9,9);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,77,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,77,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,82,NULL,1,23,23);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,82,NULL,1,23,23);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,83,NULL,1,27,27);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,83,NULL,1,27,27);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,84,NULL,1,38,38);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,84,NULL,1,38,38);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,85,NULL,1,36,36);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,85,NULL,1,36,36);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,87,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,87,NULL,1,17,17);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,3,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,4,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,5,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,6,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,7,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,8,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,1,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,2,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,3,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,4,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,5,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,6,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,7,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,8,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,9,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,10,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,11,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,12,NULL,1,5,5);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,13,NULL,1,6,6);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,14,NULL,1,7,7);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,15,NULL,1,8,8);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,54,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,55,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,56,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,57,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,58,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,59,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,60,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,61,NULL,1,4,4);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,88,NULL,1,1,1);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,89,NULL,1,2,2);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,9,90,NULL,1,3,3);
-INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,10,90,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,116,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,116,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,117,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,117,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,118,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,118,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,119,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,119,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,120,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,120,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,121,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,121,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,122,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,122,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,123,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,123,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,124,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,124,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,125,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,125,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,126,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,126,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,127,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,127,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,128,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,128,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,129,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,129,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,130,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,130,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,131,NULL,1,10,10);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,131,NULL,1,10,10);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,132,NULL,1,11,11);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,132,NULL,1,11,11);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,133,NULL,1,12,12);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,133,NULL,1,12,12);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,134,NULL,1,13,13);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,134,NULL,1,13,13);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,135,NULL,1,14,14);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,135,NULL,1,14,14);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,136,NULL,1,15,15);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,136,NULL,1,15,15);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,137,NULL,1,16,16);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,137,NULL,1,16,16);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,138,NULL,1,18,18);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,138,NULL,1,18,18);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,139,NULL,1,28,28);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,139,NULL,1,28,28);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,140,NULL,1,24,24);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,140,NULL,1,24,24);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,141,NULL,1,25,25);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,141,NULL,1,25,25);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,142,NULL,1,26,26);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,142,NULL,1,26,26);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,143,NULL,1,29,29);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,143,NULL,1,29,29);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,144,NULL,1,30,30);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,144,NULL,1,30,30);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,145,NULL,1,31,31);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,145,NULL,1,31,31);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,146,NULL,1,34,34);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,146,NULL,1,34,34);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,150,NULL,1,35,35);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,150,NULL,1,35,35);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,151,NULL,1,32,32);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,151,NULL,1,32,32);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,152,NULL,1,33,33);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,152,NULL,1,33,33);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,153,NULL,1,40,40);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,153,NULL,1,40,40);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,175,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,175,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,176,NULL,1,9,9);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,176,NULL,1,9,9);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,177,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,177,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,182,NULL,1,23,23);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,182,NULL,1,23,23);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,183,NULL,1,27,27);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,183,NULL,1,27,27);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,184,NULL,1,38,38);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,184,NULL,1,38,38);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,185,NULL,1,36,36);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,185,NULL,1,36,36);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,187,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,187,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,162,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,162,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,163,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,163,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,164,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,164,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,165,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,165,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,166,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,166,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,167,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,167,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,168,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,168,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,169,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,169,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,170,NULL,1,9,9);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,170,NULL,1,9,9);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,171,NULL,1,10,10);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,171,NULL,1,10,10);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,101,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,102,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,116,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,116,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,117,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,117,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,118,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,118,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,119,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,119,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,120,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,120,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,121,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,121,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,122,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,122,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,123,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,123,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,124,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,124,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,125,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,125,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,126,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,126,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,127,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,127,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,128,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,128,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,129,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,129,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,130,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,130,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,131,NULL,1,10,10);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,131,NULL,1,10,10);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,132,NULL,1,11,11);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,132,NULL,1,11,11);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,133,NULL,1,12,12);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,133,NULL,1,12,12);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,134,NULL,1,13,13);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,134,NULL,1,13,13);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,135,NULL,1,14,14);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,135,NULL,1,14,14);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,136,NULL,1,15,15);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,136,NULL,1,15,15);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,137,NULL,1,16,16);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,137,NULL,1,16,16);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,138,NULL,1,18,18);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,138,NULL,1,18,18);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,139,NULL,1,28,28);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,139,NULL,1,28,28);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,140,NULL,1,24,24);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,140,NULL,1,24,24);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,141,NULL,1,25,25);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,141,NULL,1,25,25);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,142,NULL,1,26,26);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,142,NULL,1,26,26);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,143,NULL,1,29,29);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,143,NULL,1,29,29);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,144,NULL,1,30,30);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,144,NULL,1,30,30);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,145,NULL,1,31,31);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,145,NULL,1,31,31);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,146,NULL,1,34,34);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,146,NULL,1,34,34);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,150,NULL,1,35,35);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,150,NULL,1,35,35);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,151,NULL,1,32,32);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,151,NULL,1,32,32);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,152,NULL,1,33,33);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,152,NULL,1,33,33);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,153,NULL,1,40,40);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,153,NULL,1,40,40);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,175,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,175,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,176,NULL,1,9,9);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,176,NULL,1,9,9);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,177,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,177,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,182,NULL,1,23,23);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,182,NULL,1,23,23);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,183,NULL,1,27,27);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,183,NULL,1,27,27);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,184,NULL,1,38,38);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,184,NULL,1,38,38);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,185,NULL,1,36,36);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,185,NULL,1,36,36);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,187,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,187,NULL,1,17,17);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,103,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,104,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,105,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,106,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,107,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,108,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,101,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,102,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,103,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,104,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,105,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,106,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,107,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,108,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,109,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,110,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,111,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,112,NULL,1,5,5);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,113,NULL,1,6,6);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,114,NULL,1,7,7);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,115,NULL,1,8,8);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,154,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,155,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,156,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,157,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,158,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,159,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,160,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,161,NULL,1,4,4);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,188,NULL,1,1,1);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,189,NULL,1,2,2);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,109,190,NULL,1,3,3);
+INSERT INTO SCARAB_R_MODULE_OPTION VALUES (0,110,190,NULL,1,3,3);
 
 -- issue type options for defect
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,1,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,2,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,3,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,4,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,5,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,6,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,7,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,8,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,9,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,10,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,11,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,12,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,13,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,14,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,15,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,16,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,17,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,18,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,19,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,20,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,21,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,22,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,23,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,24,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,25,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,26,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,27,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,28,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,29,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,30,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,31,1,0,10,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,32,1,0,11,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,33,1,0,12,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,34,1,0,13,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,35,1,0,14,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,36,1,0,15,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,37,1,0,16,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,38,1,0,23,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,39,1,0,29,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,40,1,0,20,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,41,1,0,21,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,42,1,0,22,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,43,1,0,30,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,44,1,0,31,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,45,1,0,32,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,46,1,0,33,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,47,1,0,41,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,48,1,0,38,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,49,1,0,39,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,50,1,0,34,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,51,1,0,35,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,52,1,0,36,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,53,1,0,37,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,54,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,55,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,56,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,57,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,58,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,59,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,60,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,61,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,62,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,63,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,64,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,65,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,66,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,67,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,68,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,69,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,70,1,0,9,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,71,1,0,10,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,75,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,76,1,0,9,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,77,1,0,17,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,78,1,0,24,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,79,1,0,25,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,80,1,0,26,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,81,1,0,27,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,82,1,0,19,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,83,1,0,28,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,84,1,0,40,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,85,1,0,42,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,86,1,0,43,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,87,1,0,18,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,88,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,89,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (1,90,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,101,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,102,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,103,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,104,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,105,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,106,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,107,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,108,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,109,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,110,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,111,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,112,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,113,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,114,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,115,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,116,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,117,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,118,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,119,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,120,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,121,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,122,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,123,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,124,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,125,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,126,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,127,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,128,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,129,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,130,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,131,1,0,10,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,132,1,0,11,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,133,1,0,12,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,134,1,0,13,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,135,1,0,14,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,136,1,0,15,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,137,1,0,16,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,138,1,0,23,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,139,1,0,29,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,140,1,0,20,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,141,1,0,21,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,142,1,0,22,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,143,1,0,30,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,144,1,0,31,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,145,1,0,32,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,146,1,0,33,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,147,1,0,41,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,148,1,0,38,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,149,1,0,39,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,150,1,0,34,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,151,1,0,35,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,152,1,0,36,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,153,1,0,37,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,154,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,155,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,156,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,157,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,158,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,159,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,160,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,161,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,162,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,163,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,164,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,165,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,166,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,167,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,168,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,169,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,170,1,0,9,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,171,1,0,10,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,175,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,176,1,0,9,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,177,1,0,17,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,178,1,0,24,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,179,1,0,25,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,180,1,0,26,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,181,1,0,27,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,182,1,0,19,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,183,1,0,28,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,184,1,0,40,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,185,1,0,42,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,186,1,0,43,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,187,1,0,18,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,188,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,189,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (101,190,1,0,3,-1);
 
 -- issue type options for patch
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,1,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,2,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,3,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,4,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,5,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,6,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,7,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,8,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,9,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,10,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,11,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,12,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,13,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,14,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,15,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,16,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,17,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,18,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,19,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,20,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,21,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,22,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,23,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,24,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,25,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,26,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,27,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,28,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,29,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,30,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,31,1,0,10,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,32,1,0,11,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,33,1,0,12,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,34,1,0,13,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,35,1,0,14,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,36,1,0,15,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,37,1,0,16,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,38,1,0,23,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,39,1,0,29,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,40,1,0,20,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,41,1,0,21,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,42,1,0,22,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,43,1,0,30,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,44,1,0,31,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,45,1,0,32,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,46,1,0,33,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,47,1,0,41,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,48,1,0,38,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,49,1,0,39,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,50,1,0,34,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,51,1,0,35,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,52,1,0,36,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,53,1,0,37,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,54,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,55,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,56,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,57,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,58,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,59,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,60,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,61,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,75,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,76,1,0,9,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,77,1,0,17,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,78,1,0,24,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,79,1,0,25,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,80,1,0,26,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,81,1,0,27,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,82,1,0,19,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,83,1,0,28,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,84,1,0,40,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,85,1,0,42,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,86,1,0,43,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,87,1,0,18,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,88,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,89,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (3,90,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,101,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,102,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,103,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,104,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,105,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,106,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,107,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,108,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,109,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,110,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,111,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,112,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,113,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,114,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,115,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,116,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,117,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,118,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,119,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,120,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,121,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,122,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,123,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,124,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,125,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,126,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,127,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,128,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,129,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,130,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,131,1,0,10,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,132,1,0,11,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,133,1,0,12,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,134,1,0,13,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,135,1,0,14,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,136,1,0,15,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,137,1,0,16,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,138,1,0,23,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,139,1,0,29,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,140,1,0,20,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,141,1,0,21,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,142,1,0,22,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,143,1,0,30,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,144,1,0,31,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,145,1,0,32,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,146,1,0,33,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,147,1,0,41,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,148,1,0,38,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,149,1,0,39,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,150,1,0,34,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,151,1,0,35,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,152,1,0,36,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,153,1,0,37,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,154,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,155,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,156,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,157,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,158,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,159,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,160,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,161,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,175,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,176,1,0,9,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,177,1,0,17,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,178,1,0,24,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,179,1,0,25,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,180,1,0,26,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,181,1,0,27,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,182,1,0,19,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,183,1,0,28,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,184,1,0,40,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,185,1,0,42,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,186,1,0,43,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,187,1,0,18,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,188,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,189,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (103,190,1,0,3,-1);
 
 -- issue type options for task
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,1,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,2,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,3,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,4,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,5,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,6,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,7,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,8,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,9,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,10,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,11,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,12,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,13,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,14,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,15,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,54,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,55,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,56,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,57,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,58,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,59,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,60,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,61,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,88,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,89,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (5,90,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,101,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,102,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,103,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,104,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,105,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,106,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,107,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,108,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,109,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,110,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,111,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,112,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,113,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,114,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,115,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,154,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,155,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,156,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,157,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,158,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,159,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,160,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,161,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,188,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,189,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (105,190,1,0,3,-1);
 
 -- issue type options for feature
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,1,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,2,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,3,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,4,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,5,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,6,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,7,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,8,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,9,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,10,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,11,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,12,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,13,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,14,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,15,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,54,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,55,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,56,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,57,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,58,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,59,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,60,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,61,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,88,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,89,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (7,90,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,101,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,102,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,103,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,104,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,105,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,106,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,107,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,108,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,109,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,110,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,111,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,112,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,113,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,114,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,115,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,154,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,155,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,156,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,157,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,158,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,159,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,160,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,161,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,188,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,189,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (107,190,1,0,3,-1);
 
 --issue type options for enhancement
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,1,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,2,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,3,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,4,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,5,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,6,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,7,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,8,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,9,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,10,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,11,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,12,1,0,5,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,13,1,0,6,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,14,1,0,7,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,15,1,0,8,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,54,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,55,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,56,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,57,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,58,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,59,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,60,1,0,3,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,61,1,0,4,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,88,1,0,1,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,89,1,0,2,-1);
-INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (9,90,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,101,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,102,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,103,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,104,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,105,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,106,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,107,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,108,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,109,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,110,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,111,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,112,1,0,5,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,113,1,0,6,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,114,1,0,7,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,115,1,0,8,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,154,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,155,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,156,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,157,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,158,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,159,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,160,1,0,3,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,161,1,0,4,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,188,1,0,1,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,189,1,0,2,-1);
+INSERT INTO SCARAB_R_ISSUETYPE_OPTION VALUES (109,190,1,0,3,-1);
 
 -- user attributes for issue types
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (2,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (13,1,1,0,1,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (2,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (13,3,1,0,1,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (2,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (13,5,1,0,1,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (2,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (13,7,1,0,1,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (2,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (13,9,1,0,1,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (102,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (113,101,1,0,1,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (102,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (113,103,1,0,1,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (102,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (113,105,1,0,1,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (102,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (113,107,1,0,1,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (102,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (113,109,1,0,1,0,0,0);
 
 --issue type attributes for defect
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (1,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (3,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (4,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (5,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (6,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (7,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (8,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (9,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (11,1,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (12,1,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (101,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (103,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (104,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (105,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (106,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (107,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (108,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (109,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (111,101,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (112,101,1,0,2,0,0,0);
 
 --issue type attributes for patch
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (1,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (3,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (4,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (5,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (6,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (7,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (8,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (11,3,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (12,3,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (101,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (103,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (104,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (105,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (106,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (107,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (108,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (111,103,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (112,103,1,0,2,0,0,0);
 
 --issue type attributes for task
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (1,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (3,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (4,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (7,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (8,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (11,5,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (12,5,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (101,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (103,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (104,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (107,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (108,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (111,105,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (112,105,1,0,2,0,0,0);
 
 --issue type attributes for feature
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (1,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (3,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (4,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (7,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (8,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (11,7,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (12,7,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (101,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (103,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (104,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (107,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (108,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (111,107,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (112,107,1,0,2,0,0,0);
 
 --issue type attributes for enhancement
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (1,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (3,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (4,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (7,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (8,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (11,9,1,0,2,0,0,0);
-INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (12,9,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (101,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (103,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (104,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (107,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (108,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (111,109,1,0,2,0,0,0);
+INSERT INTO SCARAB_R_ISSUETYPE_ATTRIBUTE VALUES (112,109,1,0,2,0,0,0);

@@ -71,7 +71,7 @@ public class ScarabModuleTest extends BaseTurbineTestCase
         newModule.setRealName("Test Module " + d.getTime());
         newModule.setCode("TM" + d.getTime());
         newModule.setOwnerId(new Integer(1));
-        newModule.setParentId(new Integer(1));
+        newModule.setParentId(new Integer(1001));
         newModule.setDescription("This is the new module description");
         
      
@@ -82,7 +82,7 @@ public class ScarabModuleTest extends BaseTurbineTestCase
     public void testGetParents() throws Exception
     {
         Module module = ModuleManager
-            .getInstance(new NumberKey(7), false);
+            .getInstance(new NumberKey(1007), false);
         List parents = module.getAncestors();
         Iterator itr = parents.iterator();
         while (itr.hasNext())
@@ -149,14 +149,14 @@ public class ScarabModuleTest extends BaseTurbineTestCase
                 int expectedSize = 0;
                 switch (Integer.parseInt(attr.getAttributeId().toString()))
                 {
-                    case 3: expectedSize = 7;break;
-                    case 4: expectedSize = 8;break;
-                    case 5: expectedSize = 8;break;
-                    case 6: expectedSize = 52;break;
-                    case 7: expectedSize = 4;break;
-                    case 8: expectedSize = 4;break;
-                    case 9: expectedSize = 10;break;
-                    case 12: expectedSize = 3;break;
+                    case 103: expectedSize = 7;break;
+                    case 104: expectedSize = 8;break;
+                    case 105: expectedSize = 8;break;
+                    case 106: expectedSize = 52;break;
+                    case 107: expectedSize = 4;break;
+                    case 108: expectedSize = 4;break;
+                    case 109: expectedSize = 10;break;
+                    case 112: expectedSize = 3;break;
                 }
                 assertTrue(expectedSize >0);
             }
@@ -178,11 +178,11 @@ public class ScarabModuleTest extends BaseTurbineTestCase
         int expectedSize = 0;
         switch (Integer.parseInt(issueType.getIssueTypeId().toString()))
         {
-            case 1: expectedSize = 12;break;
-            case 3: expectedSize = 11;break;
-            case 5: expectedSize = 9;break;
-            case 7: expectedSize = 9;break;
-            case 9: expectedSize = 9;break;
+            case 101: expectedSize = 12;break;
+            case 103: expectedSize = 11;break;
+            case 105: expectedSize = 9;break;
+            case 107: expectedSize = 9;break;
+            case 109: expectedSize = 9;break;
         }
         return expectedSize;
     }

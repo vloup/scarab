@@ -111,7 +111,7 @@ Generates Scarab sources only, e.g. custom property files are missing.
           </td>
         </tr>     
         <tr>
-          <td>skip.seed.data</td>
+          <td>skip.sample.data</td>
           <td>Yes</td>
           <td>
             True = Users, modules and issues for default database should be skipped.

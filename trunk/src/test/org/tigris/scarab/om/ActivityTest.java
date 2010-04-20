@@ -95,9 +95,9 @@ public class ActivityTest extends BaseTurbineTestCase {
 
     public void testGetAttribute() throws Exception {
         System.out.println("\ntestGetAttribute()");
-        Activity retActivity = ActivityManager.getInstance(new NumberKey(1), false);
+        Activity retActivity = ActivityManager.getInstance(new NumberKey(1001), false);
         Integer key = retActivity.getAttribute().getAttributeId();
-        assertTrue("AttId expected: 11 got: " + key, key.intValue() == 11);
+        assertTrue("AttId expected: 111 got: " + key, key.intValue() == 111);
     }
 
     protected ActivitySet getEditActivitySet() throws Exception {
@@ -113,6 +113,6 @@ public class ActivityTest extends BaseTurbineTestCase {
 
     protected Attribute getPlatformAttribute() throws Exception {
 
-        return AttributeManager.getInstance(new NumberKey(5));
+        return AttributeManager.getInstance(new NumberKey(105));
     }
 }

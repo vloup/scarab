@@ -72,7 +72,7 @@ public class AttachmentTest extends BaseTurbineTestCase
     	super.setUp();
     	comment = AttachmentManager.getInstance();
     	fileAttachment = AttachmentManager.getInstance();
-    	issue = IssueManager.getInstance(new NumberKey("1"));
+    	issue = IssueManager.getInstance(new NumberKey("1001"));
     	
     }
 

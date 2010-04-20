@@ -325,7 +325,7 @@ public class AttributeOption
     }
 
     /**
-     * Returns direct parent of this child.
+     * Returns direct parent of this child if only one parent exists.
      */
     public AttributeOption getParent()
         throws TorqueException

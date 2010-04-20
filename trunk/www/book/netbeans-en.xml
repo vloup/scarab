@@ -45,7 +45,7 @@
 			</screenshot>
 			<simpara>You need now to restart Netbeans to use the Mevenide plug-in you have just installed.</simpara>
 			<screenshot>
-				<graphic fileref="images/netbeans07png"/>
+				<graphic fileref="images/netbeans07.png"/>
 			</screenshot>
 		</sect2>
 	</sect1>

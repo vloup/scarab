@@ -70,8 +70,8 @@ public class RModuleOptionTest extends BaseTurbineTestCase
 	{
     	super.setUp();
         issueType = testITs.getDefaultIssueType();
-        priority = AttributeManager.getInstance(new NumberKey("7"));
-        high = AttributeOptionManager.getInstance(new NumberKey("54"));
+        priority = AttributeManager.getInstance(new NumberKey("107"));
+        high = AttributeOptionManager.getInstance(new NumberKey("154"));
         rmo = testModules.getModule().getRModuleOption(high, issueType);
         assertNotNull(issueType);
         assertNotNull(priority);
@@ -117,7 +117,7 @@ public class RModuleOptionTest extends BaseTurbineTestCase
         RModuleOption rmoNew= RModuleOptionManager.getInstance();
         rmoNew.setModule(testModules.getModule());
         rmoNew.setIssueType(testITs.getDefaultIssueType());
-        rmoNew.setOptionId(new Integer(1));
+        rmoNew.setOptionId(new Integer(101));
         rmoNew.save();
         rmoNew.delete();
     }

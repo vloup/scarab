@@ -1,16 +1,10 @@
 <!-- $Id -->
 <chapter>
-	<title>Scarab for the super-administrator</title>
-	<simpara>Each Scarab installation has a global administrator. His/her login is &quot;Administrator&quot; by default -- but this may have been changed when building Scarab. The initial password is &quot;1&quot; (without the quotes) -- this <emphasis>should</emphasis> have been changed after building Scarab.</simpara>
-	<simpara>The super-administrator has access to some additional functionalities.</simpara>
-	<screenshot><graphic fileref="images/superadmin.png"/></screenshot>
-	<section>
-	<title>Display an informational message</title>
+	<title>Display an informational message</title>	
 	<simpara>This allows the administrator to display an informational message to all users, connected or about to connect. For instance, to plan a maintenance operation.</simpara>
 	<simpara>Access this function using the &quot;Set default informational message&quot; link.</simpara>
 	<screenshot><graphic fileref="images/messaging0.png"/></screenshot>
 	<simpara>The entered message now appears on top of every page (including the home page), to all users.</simpara>
 	<screenshot><graphic fileref="images/messaging1.png"/></screenshot>
 	<note><para>The informational message is not persistent: it is reset if you restart the web application.</para></note>
-	</section>
 </chapter>

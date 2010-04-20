@@ -270,6 +270,6 @@ without the example records.
     cd ../extensions/backup
     [use backup script to purge database]
     cd ../../build
-    ant create-db -Dskip.seed.data=1
+    ant create-db -Dskip.sample.data=1
     cd ../tomcat/bin
     ./startup.sh

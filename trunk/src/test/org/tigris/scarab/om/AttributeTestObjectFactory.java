@@ -13,7 +13,7 @@ public class AttributeTestObjectFactory
     {
         if (platformAttribute == null)
         {
-            platformAttribute = AttributeManager.getInstance(new NumberKey(5));
+            platformAttribute = AttributeManager.getInstance(new NumberKey(105));
         }
         return platformAttribute;
     }
@@ -22,7 +22,7 @@ public class AttributeTestObjectFactory
     {
         if (voteAttribute == null)
         {
-            voteAttribute = AttributeManager.getInstance(new NumberKey(8));
+            voteAttribute = AttributeManager.getInstance(new NumberKey(108));
         }
         return voteAttribute;
     }
@@ -31,7 +31,7 @@ public class AttributeTestObjectFactory
     {
         if (assignAttribute == null)
         {
-            assignAttribute = AttributeManager.getInstance(new NumberKey(2));
+            assignAttribute = AttributeManager.getInstance(new NumberKey(102));
         }
         return assignAttribute;
     }

@@ -99,6 +99,7 @@ td.cpCurrentDateDisabled
 border: thin solid rgb(255, 170, 170);
 }
 
+/* Style for property configuration view */
 td.applicationConfiguration
 {
     text-align: left;

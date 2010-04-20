@@ -9,7 +9,7 @@
         How can I not load the Sample Data?
       </b></question>
       <answer>
-Remind the additional build properties, such as <code>skip.seed.data</code> for example.
+Remind the additional build properties, such as <code>skip.sample.data</code> for example.
       </answer>
     </faq>  
     <faq id="1">

@@ -22,7 +22,7 @@ public class ScarabUserTestObjectFactory
     {
         if (user2 == null)
         {
-            user2 = ScarabUserManager.getInstance(new NumberKey(2), false);
+            user2 = ScarabUserManager.getInstance(new NumberKey(1002), false);
 
         }
         return user2;
@@ -32,7 +32,7 @@ public class ScarabUserTestObjectFactory
     {
         if (user0 == null)
         {
-            user0 = ScarabUserManager.getInstance(new NumberKey(5), false);
+            user0 = ScarabUserManager.getInstance(new NumberKey(1005), false);
         }
         return user0;
     }

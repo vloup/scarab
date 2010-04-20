@@ -13,6 +13,7 @@
 	<!ENTITY superadmin SYSTEM "superadmin-en.xml">
 	<!ENTITY xml SYSTEM "xml-import-export-en.xml">
 	<!ENTITY integration SYSTEM "integration-en.xml">
+	<!ENTITY userroles SYSTEM "manage-user-roles-en.xml">
 ]>
 <!-- $Id -->
 <book>
@@ -40,6 +41,7 @@
 	<part>
 		<title>Scarab for module administrators</title>
 		&modules;
+		&userroles;
 		&bestpractices;
 	    &workflow;
 	    &superadmin;

@@ -1486,14 +1486,17 @@ public class ModifyIssue extends BaseModifyIssue
             ActivitySet activitySet = null;
             try
             {
-                Issue workingIssue = issue;
                 if (needRoleSwitch)
                 {
                     depend.exchangeRoles();
-                    workingIssue = childIssue;
+                    activitySet = issue
+                    .doAddDependency(activitySet, depend, childIssue, user);
                 }
-                activitySet = issue
-                    .doAddDependency(activitySet, depend, workingIssue, user);
+                else{
+                    activitySet = childIssue
+                    .doAddDependency(activitySet, depend, issue, user);
+                }
+
             }
             catch (ScarabException se)
             {
@@ -1590,10 +1593,10 @@ public class ModifyIssue extends BaseModifyIssue
                     newDepend.exchangeRoles();
                 }
                 
-                // make the changes
-                activitySet = 
-                    workingIssue.doChangeDependencyType(activitySet, oldDepend,
-                                                 newDepend, user);
+                 // make the changes
+                  activitySet = 
+                  workingIssue.doChangeDependencyType(activitySet, oldDepend,
+                                                      newDepend, user);
             }
             intake.remove(group);
         }
