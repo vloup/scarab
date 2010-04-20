@@ -49,6 +49,8 @@ package org.tigris.scarab.notification;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -949,6 +951,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
      * @param notification
      * @param userActivities
      */
+    @SuppressWarnings("unchecked")
     private void addActivity(NotificationStatus notification, Map<LocalizationKey,List<NotificationStatus>> userActivities)
     {
 
@@ -977,6 +980,24 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         if (!bAlreadyPresent)
         {
             activityGroupNotificationList.add(notification);
+            Collections.sort(activityGroupNotificationList, new DisplayNameComparator());
+        }
+    }
+
+    private class DisplayNameComparator implements Comparator<NotificationStatus>
+    {
+
+        public int compare(NotificationStatus o1, NotificationStatus o2) 
+        {
+            int result = 0;
+            try
+            {
+                result =  o1.getActivity().getDisplayName().compareTo(o2.getActivity().getDisplayName());
+            } catch (Exception e) 
+            {
+                // [HD] Compare can not be performed, just ignore it (needs enhancement!!!)
+            }
+            return result;
         }
     }
 

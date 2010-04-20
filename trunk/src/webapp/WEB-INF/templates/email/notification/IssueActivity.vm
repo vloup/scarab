@@ -38,12 +38,16 @@ ${cr}---------------------------------------------------------------------------
 #end
 #end
 #if ($ActivityPersonnelChanges)
-$cr
--------------------------------------------------------------------------------
-#markup('b')$l10n.ActivityPersonnelChanges#markup('b')
-${cr}-------------------------------------------------------------------------------
+#set ($currentDisplayName = "")
 #foreach ($not in $ActivityPersonnelChanges)
 #set ($displayName = $not.Activity.getDisplayName($l10n) )
+#if ($currentDisplayName != $displayName)
+$cr
+-------------------------------------------------------------------------------
+#markup('b')$l10n.ActivityPersonnelChanges ($displayName) #markup('b')
+${cr}-------------------------------------------------------------------------------
+#end
+#set ($currentDisplayName = $displayName)
 #set ($newValue    = $not.Activity.getNewValue($l10n) )
 #set ($oldValue    = $not.Activity.getOldValue($l10n) )
   - $displayName: #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) $oldValue -->#end #if ($newValue.length() > 0)$newValue #else($l10n.Deleted) #end #if ($oldValue.length() == 0)   ($l10n.New) #end
