@@ -1383,19 +1383,19 @@ public class Issue
      * @return
      * @throws TorqueException
      */
-    public String getFirstAssignedTo() throws TorqueException
+    public ScarabUser getFirstAssignedTo() throws TorqueException
     {
         String assignedToAttributeName = Environment.getConfigurationProperty("scarab.common.assignedTo", "assignedTo");
         List<AttributeValue> allAssignedUsers = getUserAttributeValues();
         Iterator<AttributeValue> iter = allAssignedUsers.iterator();
-        String result = "";
+        ScarabUser result = null;
         while(iter.hasNext())
         {
             AttributeValue attval = iter.next();
             String attributeName = attval.getAttribute().getName();
             if(attributeName.equals(assignedToAttributeName))
             {
-                result = attval.getValue();
+                result = attval.getScarabUser();
                 break;
             }
         }
