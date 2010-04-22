@@ -379,6 +379,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                     EmailContext ectx = new EmailContext();
                     ectx.setIssue(issue);
                     ectx.setLinkTool(new ScarabLink());
+                    ectx.put("format",new org.tigris.scarab.tools.Format());
                     ectx.put("creators", creators);
                     ectx.put("firstNotification", firstNotification);
                     ectx.put("lastNotification", lastNotification);                    

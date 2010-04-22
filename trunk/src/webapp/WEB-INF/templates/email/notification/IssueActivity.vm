@@ -44,13 +44,17 @@ ${cr}---------------------------------------------------------------------------
 #if ($currentDisplayName != $displayName)
 $cr
 -------------------------------------------------------------------------------
-#markup('b')$l10n.ActivityPersonnelChanges ($displayName) #markup('b')
+#markup('b')$l10n.format("ActivityPersonnelChanges", $displayName) #markup('b')
 ${cr}-------------------------------------------------------------------------------
 #end
 #set ($currentDisplayName = $displayName)
 #set ($newValue    = $not.Activity.getNewValue($l10n) )
 #set ($oldValue    = $not.Activity.getOldValue($l10n) )
-  - $displayName: #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) $oldValue -->#end #if ($newValue.length() > 0)$newValue #else($l10n.Deleted) #end #if ($oldValue.length() == 0)   ($l10n.New) #end
+#set ($fromValue   = "") #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) #set($fromValue = $oldValue) #end
+#set ($toValue     = "") #if ($newValue.length() > 0) #set ($toValue = $newValue) #end
+#set ($transit     = "") #if ($fromValue != "" && $toValue != "") #set ($transit = "-->") #end
+#set ($comment     = "") #if ($fromValue != "" && $toValue == "") #set ($comment = $l10n.Deleted) #elseif ($fromValue == "" && $toValue != "") #set ($comment = $l10n.New ) #end 
+  - $format.getDate($l10n.ShortTimePattern, $not.CreationDate) : $fromValue $transit $toValue #if ($comment != "") ($comment) #end
 
 #end
 #end
