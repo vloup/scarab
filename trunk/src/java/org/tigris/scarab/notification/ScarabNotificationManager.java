@@ -826,13 +826,53 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             .get(L10NKeySet.ActivityAttributeChanges));
         ectx.put("ActivityPersonnelChanges", groupedActivities
             .get(L10NKeySet.ActivityPersonnelChanges));
-        ectx.put("ActivityComments", groupedActivities
-            .get(L10NKeySet.ActivityComments));
+        ectx.put("ActivityComments", getUniqueCommentNotifications(groupedActivities));
         ectx.put("ActivityAssociatedInfo", groupedActivities
             .get(L10NKeySet.ActivityAssociatedInfo));
         ectx.put("ActivityDependencies", groupedActivities
             .get(L10NKeySet.ActivityDependencies));
         ectx.put("ActivityReasons", consolidateActivityReasons(groupedActivities));
+    }
+
+
+    /**
+     * Check the list of pending notifications for duplicated comments.
+     * Duplicated comments appear whenever an administrator has modified an already created comment before
+     * the comment creation notification was sent out. IN that case we get 2 (or even more) activities which
+     * point to the same Attachment (the comment content). The email template would then place multiple copies
+     * of the same data into the email. This is annoying.
+     * 
+     * remark: In case of removing duplicated content, we could try to save the "changes" on a comment and publish
+     * that. But for simplicity we just send out the comment as it is "right now". That should serve almost any 
+     * purposes.
+     * @param groupedActivities
+     * @return
+     */
+    private List<NotificationStatus> getUniqueCommentNotifications(
+            Map groupedActivities) {
+        List<NotificationStatus> comments = (List<NotificationStatus>)groupedActivities.get(L10NKeySet.ActivityComments);
+        Iterator<NotificationStatus> iter = comments.iterator();
+        List<NotificationStatus> uniqueComments = new ArrayList<NotificationStatus>();
+
+        List<Attachment> attachmentList = new ArrayList<Attachment>();
+        while(iter.hasNext())
+        {
+            NotificationStatus notificationStatus = iter.next();
+            try {
+                Activity activity      = notificationStatus.getActivity();
+                Attachment attachment  = activity.getAttachment();
+                if(!attachmentList.contains(attachment))
+                {
+                    attachmentList.add(attachment);
+                    uniqueComments.add(notificationStatus);
+                }
+            }
+            catch (TorqueException e) 
+            {
+                uniqueComments.add(notificationStatus);
+            }
+        }
+        return uniqueComments;
     }
 
 
