@@ -117,7 +117,8 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
     {
         return NOTIFICATION_MANAGER_ID;
     }
-    
+
+    private static List<NotificationStatus> EMPTY_LIST = new ArrayList();    
     
     /**
      * Receives an activitySet from which to generate notification. Current
@@ -848,28 +849,37 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
      * @param groupedActivities
      * @return
      */
-    private List<NotificationStatus> getUniqueCommentNotifications(
-            Map groupedActivities) {
+    private List<NotificationStatus> getUniqueCommentNotifications( Map groupedActivities) 
+    {
+        List<NotificationStatus> uniqueComments;
         List<NotificationStatus> comments = (List<NotificationStatus>)groupedActivities.get(L10NKeySet.ActivityComments);
-        Iterator<NotificationStatus> iter = comments.iterator();
-        List<NotificationStatus> uniqueComments = new ArrayList<NotificationStatus>();
-
-        List<Attachment> attachmentList = new ArrayList<Attachment>();
-        while(iter.hasNext())
+        if (comments == null)
         {
-            NotificationStatus notificationStatus = iter.next();
-            try {
-                Activity activity      = notificationStatus.getActivity();
-                Attachment attachment  = activity.getAttachment();
-                if(!attachmentList.contains(attachment))
+            uniqueComments = EMPTY_LIST;  // No comments in groupedActivities
+        }
+        else
+        {
+            Iterator<NotificationStatus> iter = comments.iterator();
+            uniqueComments = new ArrayList<NotificationStatus>();
+
+            List<Attachment> attachmentList = new ArrayList<Attachment>();
+            while(iter.hasNext())
+            {
+                NotificationStatus notificationStatus = iter.next();
+                try 
                 {
-                    attachmentList.add(attachment);
+                    Activity activity      = notificationStatus.getActivity();
+                    Attachment attachment  = activity.getAttachment();
+                    if(!attachmentList.contains(attachment))
+                    {
+                        attachmentList.add(attachment);
+                        uniqueComments.add(notificationStatus);
+                    }
+                }
+                catch (TorqueException e) 
+                {
                     uniqueComments.add(notificationStatus);
                 }
-            }
-            catch (TorqueException e) 
-            {
-                uniqueComments.add(notificationStatus);
             }
         }
         return uniqueComments;
