@@ -29,44 +29,34 @@
   -->
 
   <!--
-    For us to load the default.properties from the classpath, we need to bootstrap.
-    To know the right lib.dir for the torque-classpath, we need to manually
-    figure out torque.lib.dir, but to do that, we need to manually figure
-    out torque.contextProperties and load that so that any old configurations
-    still work propertly. Then we can go on and do the rest of the mappings via
-    old.properties.
+  	Default properties.
+  	
+  	build.properties will be used as additional property resource,
+  	if no other value for torque.contextProperties is given.
   -->
   <property name="build.properties" value="build.properties"/>
   <property name="torque.contextProperties" value="${build.properties}"/>
   <property file="${torque.contextProperties}"/>
   <property name="lib.dir" value="lib"/>
-  <property name="torque.lib.dir" value="${lib.dir}"/>
-  <property name="torque.jar" value="torque-gen-3.3-RC2.jar"/>
 
   <!--
     Build the classpath used by all torque ant tasks.
 
     First, defines the template/generator override directories/jars based on the
     torque.override.dir build property.  If this property is not set, use
-    the torque.lib.dir as a default to keep ant happy.
+    the lib.dir as a default to keep ant happy.
 
     Note: To prevent version conflicts in the default case, jars being
     overridden need to end in "override.jar".
 
-    Next, specifically point to each file we're including to avoid version
-    conflicts in the case of the torque.lib.dir being something like lib.repo.
-    However, we still need to pull in the user's database driver and since we
-    don't know which jar that will be, after we've got all of our specific,
-    version-safe jars, do a general inclusion of the torque.lib.dir to catch
-    any drivers. In the maven-built versions, ${torque.jar} is in the working
-    directory.
+    Next, do a general inclusion of the lib.dir to catch any drivers.
   -->
   <condition property="valid.override.directory"
              value="${torque.override.dir}">
     <isset property="torque.override.dir" />
   </condition>
   <condition property="valid.override.directory"
-             value="${torque.lib.dir}">
+             value="${lib.dir}">
     <not>
         <isset property="torque.override.dir" />
     </not>
@@ -77,15 +67,7 @@
     <fileset dir="${valid.override.directory}">
       <include name="*override.jar"/>
     </fileset>
-    <pathelement path="${torque.jar}" />
-    <fileset dir="${torque.lib.dir}">
-      <include name="**/commons-collections-3.1.jar"/>
-      <include name="**/commons-lang-2.1.jar"/>
-      <include name="**/commons-logging-1.0.4.jar"/>
-      <include name="**/velocity-1.3.1.jar"/>
-      <include name="**/village-2.0.jar"/>
-      <include name="**/xercesImpl-2.6.2.jar"/>
-      <include name="**/xml-apis-2.0.2.jar"/>
+    <fileset dir="${lib.dir}">
       <include name="**/*.jar"/>
     </fileset>
   </path>
