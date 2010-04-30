@@ -39,7 +39,7 @@
 	 href="$link.setPage('Index.vm')/action/Search/go	/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0" /></a>
 </td>
 #end
-## <-- For the purpose of these seemingly obsolete characters, invalid multiline-comments.
+## <-- Seemingly obsolete characters, to make velocity-1.5 render this file correctly (invalid multiline-comments).
 *#
 
 </tr></table>
