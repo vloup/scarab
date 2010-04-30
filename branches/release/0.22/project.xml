@@ -491,11 +491,21 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+	<!-- Added by jhoech to make torque 3.3 happy -->
+	<dependency>
+      <groupId>velocity</groupId>
+      <artifactId>texen</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
     <dependency>
       <!-- Added by HD to make the ant-build happy -->
       <groupId>torque</groupId>
       <artifactId>torque-gen</artifactId>
-      <version>3.3-RC2</version>
+      <version>3.3</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -504,7 +514,7 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque</artifactId>
-      <version>3.3-RC2</version>
+      <version>3.3</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -513,7 +523,7 @@
     <dependency>
       <groupId>torque</groupId>
       <artifactId>torque-gen-templates</artifactId>
-      <version>3.3-RC2</version>
+      <version>3.3</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -532,7 +542,7 @@
     <dependency>
       <groupId>velocity</groupId>
       <artifactId>velocity</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
