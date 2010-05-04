@@ -41,9 +41,8 @@
    <h4>$l10n.Comments</h4>
   #end
 
-  #set ($comment_counter=0)
+  #set ($comment_counter=$comments.size())
   #foreach ($comment in $comments)
-    #set ($comment_counter = $comment_counter + 1)
     <div class="scb_comment">
       #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
       <h4>
@@ -59,6 +58,7 @@
       </div>
     
     </div>
+    #set ($comment_counter = $comment_counter - 1)
   #end
 
   #if ($isEditComments)
