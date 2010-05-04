@@ -1048,7 +1048,65 @@
 		  the unit is minutes. The default setting is 1440 (1 day)
         </details>
       </property>
-	  	  
+
+      <property>
+        <name>scarab.common.status.activity.reminder.exclude.states</name>
+        <default>onhold,closed</default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          Whenever an issue hangs during the course of its processing, a reminder
+		  notification shall be sent out to the participants. This property
+		  defines a comma separated list of $state values for which the reminder
+		  shall NOT be issued. By default we exclude "onhold" and "closed" for
+		  following reasons: "closed" issues are meant to keep idle forever. 
+		  So there is no need to remind anybody of that!
+		  "onhold" issues are handled elsewhere and again there is no reason to
+		  reind anybody either.
+        </details>
+      </property>
+	  	  	  	  
+      <property>
+        <name>scarab.common.status.activity.reminder.include.states</name>
+        <default></default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          Whenever an issue hangs during the course of its processing, a reminder
+		  notification shall be sent out to the participants. This property
+		  defines a comma separated list of $state values for which the reminder
+		  MUST be performed. By default this property is empty. Hence we process
+		  issues in ANY state except those mentioned above in
+		  
+		  scarab.common.status.activity.reminder.exclude.states. 
+		  
+		  If you want to explicitly define the states for which a reminder must be sent,
+		  you can create a comma separated list of state values here.
+
+		  IMPORTANT: 
+		  - If include.states AND exclude.states both are empty, then no reminder
+		  is sent out at all.
+		  - If only one of the two properties is set then the according inclusion/exclusion
+		  takes place.
+		  - If both properties are set, then the exclusion property is ignored!
+        </details>
+      </property>
+	  	  	  	  
+      <property>
+        <name>scarab.common.status.activity.reminder.period</name>
+        <default>1440</default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager how long to wait
+		  utnil it sends a reminder notification for issues in any state found in the
+		  includes.state list or not found in the excludes.state list (see above).
+		  The default setting is 1440 (1 day)
+        </details>
+      </property>
 
       <property>
         <name>scarab.common.status.sealed.modifyPermission</name>

@@ -41,16 +41,24 @@
    <h4>$l10n.Comments</h4>
   #end
 
+  #set ($comment_counter=0)
   #foreach ($comment in $comments)
-    #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
-    <h4>
-      #userTimeStamp( $commentUser $comment.CreatedDate)
-    </h4>
-    #if ($isEditComments)
-      #textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)
-    #else
-      $scarabG.textToHTML($l10n.getIgnoreMissingResource($comment.Data), $link, $scarabR.CurrentModule)
-    #end
+    #set ($comment_counter = $comment_counter + 1)
+    <div class="scb_comment">
+      #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
+      <h4>
+      <span class="counter">$comment_counter: </span> #userTimeStamp( $commentUser $comment.CreatedDate) 
+      </h4>
+    
+      <div class="content">
+        #if ($isEditComments)
+          #textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)
+        #else
+          $scarabG.textToHTML($l10n.getIgnoreMissingResource($comment.Data), $link, $scarabR.CurrentModule)
+        #end
+      </div>
+    
+    </div>
   #end
 
   #if ($isEditComments)

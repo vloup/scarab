@@ -91,7 +91,7 @@
 
 #scb_banner table {
     border-style:none;
-    margin:8px;
+    margin:8px 0px;
     padding:0px;
     width:100%;
 }
@@ -326,6 +326,42 @@ span.displayValue {
 	margin-left:15px;
 }
 
+/* ============================================================== */
+/* Issue comments                                                 */
+/* ============================================================== */
+
+/*
+   provide a cross browser compatible pre which uses auto 
+   word wrap for long lines: 
+*/
+.comment {
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  _white-space:pre;
+}
+
+.scb_comment {
+  _margin-top:20px;
+}
+
+.scb_comment .content {
+	margin-top:5px;
+	margin-left:35px;
+}
+
+.scb_comment .content .comment {
+	margin-top:0px;
+	background-color:#f8f8f8;
+	margin:0px;
+	padding:10px;
+}
+
+.scb_comment .counter {
+    margin-right:10px;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* ==== From here on downwards the refactoring must still take place. ==== */
@@ -1272,6 +1308,7 @@ ul {
 	border-bottom-style: none;
 	margin-left: 2px;
 	margin-right: 2px;
+  _width:640px; // for ie6 only (long-line wrapping broken)
 }
 
 .scarab-canvas div h4 {
@@ -1326,18 +1363,7 @@ a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
 	color: #003163
 }
 
-/*
-   provide a cross browser compatible pre which uses auto 
-   word wrap for long lines: 
-*/
-pre {
-	white-space: -moz-pre-wrap;
-	white-space: -pre-wrap;
-	white-space: -o-pre-wrap;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	display: inline;
-}
+	
 
 /*
     Treeview related style definitions
