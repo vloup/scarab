@@ -41,7 +41,7 @@
    <h4>$l10n.Comments</h4>
   #end
 
-  #set ($comment_counter=$comments.size())
+  #set ($comment_counter=$numComments)
   #foreach ($comment in $comments)
     <div class="scb_comment">
       #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
