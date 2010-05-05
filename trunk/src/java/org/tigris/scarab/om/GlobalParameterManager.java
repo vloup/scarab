@@ -86,7 +86,7 @@ public class GlobalParameterManager
     private static boolean toBoolean(String booleanValue)
     {
     	return(
-    	       booleanValue.equalsIgnoreCase("T") 
+    	       booleanValue.equalsIgnoreCase("T") //Reading simple characters as boolean, is kept for backwards compatibility only.
     	    || booleanValue.equalsIgnoreCase("TRUE")
         );
     }
@@ -322,7 +322,7 @@ public class GlobalParameterManager
     public static boolean getBooleanFromHierarchy(String name, Module module, boolean def)
         throws TorqueException
     {
-        String defAsString = (def)? "T":"F";
+        String defAsString = (def)? "TRUE":"FALSE";
         return toBoolean(getStringFromHierarchy(name, module, defAsString ));
     }
 
@@ -330,13 +330,13 @@ public class GlobalParameterManager
     public static void setBoolean(String name, boolean value)
         throws TorqueException
     {
-        setString(name, (value ? "T" : "F"));
+        setString(name, (value ? "TRUE" : "FALSE"));
     }
 
     public static void setBoolean(String name, Module module, boolean value)
         throws TorqueException
     {
-        setString(name, module, (value ? "T" : "F"));
+        setString(name, module, (value ? "TRUE" : "FALSE"));
     }
 
     /**

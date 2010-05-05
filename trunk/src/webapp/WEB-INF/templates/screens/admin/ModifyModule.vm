@@ -232,7 +232,7 @@
                     selectedObject = document.getElementById(selector);
                     val = selectedObject.options[selectedObject.selectedIndex].value;
                     cb = document.getElementById(checkmarker);
-                    if(val == "F")
+                    if(val == "FALSE")
                     {
                       cb.disabled=false;
                       return;
@@ -256,8 +256,8 @@
 	                #if (!$isGlobal)
                  <option value="" #if ($inherited) selected #end>$l10n.Default</option>
                 #end
-                <option value="T" #if (!$inherited && $selected) selected #end>$l10n.Yes</option>
-                <option value="F" #if (!$inherited && !$selected) selected #end>$l10n.No</option>
+                <option value="TRUE" #if (!$inherited && $selected) selected #end>$l10n.Yes</option>
+                <option value="FALSE" #if (!$inherited && !$selected) selected #end>$l10n.No</option>
               </select>
               #if (!$isGlobal) $l10n.ReasonFieldRequiredExplained #end
             </td>
