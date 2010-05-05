@@ -91,7 +91,7 @@
 
 #scb_banner table {
     border-style:none;
-    margin:8px 0px;
+    margin:8px;
     padding:0px;
     width:100%;
 }
@@ -1083,11 +1083,11 @@ This file contains rules that extend or override the more basic formatting defin
 }
 
 input.fullWidth {
-	width: 100%;
+	width: 99%;
 }
 
 textarea.fullWidth {
-	width: 100%;
+	width: 99%;
 }
 
 .cpYearNavigation,.cpMonthNavigation {
@@ -1308,7 +1308,7 @@ ul {
 	border-bottom-style: none;
 	margin-left: 2px;
 	margin-right: 2px;
-  _width:640px; // for ie6 only (long-line wrapping broken)
+  _width:1000px; // for ie6 only (long-line wrapping broken)
 }
 
 .scarab-canvas div h4 {

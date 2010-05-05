@@ -105,7 +105,7 @@
         <tr>
           <th style="text-align:right;"> 
             <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
-            #if($fieldExtraHeader)
+            #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
               <pre>$fieldExtraHeader</pre>
             #end
           </th>
@@ -152,7 +152,7 @@
           <tr>
             <th style="text-align:right;"> 
               <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
-              #if($fieldExtraHeader)
+              #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
                 <pre>$fieldExtraHeader</pre>
               #end
             </th>

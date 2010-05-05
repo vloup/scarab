@@ -92,7 +92,7 @@ $displayValue
       #if ($canMakeTransition.trim()=="true")
         #if ($templateInfo || (!$required && $newValues && $newValues.toString() == ''))
           <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
-          #if ($newValues > 0)
+          #if ($newValues && $newValues > 0)
             #set ($checked = "checked")
           #end
           #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
@@ -264,7 +264,7 @@ $displayValue
             name="$fieldName" 
             value="$fieldValue"
             #if($size > 0) size="$size" #else class="fullWidth" #end /> 
-            #if ( !$fieldValue.toString().equals($hint) ) <span class="hint">$hint</span> #end
+            #if ( $hint.length() > 0 && !$fieldValue.toString().equals($hint) ) <span class="hint">$hint</span> #end
             
         #end
 #end
