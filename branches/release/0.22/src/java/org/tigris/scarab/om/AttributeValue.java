@@ -815,6 +815,13 @@ Leaving here so that John can remove or fix.
             .getNewInstance(getAttributeId(), getIssue());
         return copyInto(copyObj);
     }
+    
+    public AttributeValue copy(Connection con) throws TorqueException 
+    {
+        throw new RuntimeException("Unimplemented method AttributeValue:copy(Connection conn)");
+        //return copy();
+    }
+    
 
     public void save(Connection dbcon)
         throws TorqueException
