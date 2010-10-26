@@ -118,7 +118,14 @@ public class NotificationRuleManager
         }
         else
         {
-            isEnabled = rule.getFilterState();
+            if(issue.isSealed())
+            {
+                isEnabled = false; // Do not send notifications to other users when Issue is "closed"
+            }
+            else
+            {
+                isEnabled = rule.getFilterState();
+            }
         }
         
         if(isEnabled)
