@@ -4610,7 +4610,7 @@ public class Issue
      * Check if the properties scarab.common.status.id and scarab.common.status.sealed
      * exist and if the current value of the status attribute matches the sealed
      * value. Return true, if the issue is in the sealed state, otherwise return false.
-     * This method is used to find out if an issue shoul dbe rendered read-only
+     * This method is used to find out if an issue should be rendered read-only
      * because it is in closed (sealed) state and should never be touched again.
      * @return
      * @throws TorqueException
