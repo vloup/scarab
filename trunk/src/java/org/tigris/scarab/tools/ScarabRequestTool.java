@@ -108,6 +108,7 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.MITListItem;
 import org.tigris.scarab.om.MITListItemManager;
 import org.tigris.scarab.om.MITListManager;
+import org.tigris.scarab.om.MITListPeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ParentChildAttributeOption;
@@ -621,6 +622,7 @@ public class ScarabRequestTool
                 //
 
                 //issueListColumns = currentList.getCommonRModuleUserAttributes();
+                ensure_List_has_MIT_data(currentList, module, issueType);
                 issueListColumns = currentList.getAllRModuleUserAttributes();
 
                 //
@@ -660,6 +662,60 @@ public class ScarabRequestTool
         }
 
         return issueListColumns;
+    }
+
+    /**
+     * [HD]: This method is a repair for initialization issues.
+     * It should be superfluous, because the currentList should already have correctly
+     * initialized values. But sometimes this is not as expected. Hence here is the
+     * best possible fix:
+     * 
+     * If the list has no module assigen, take the one we provide in the API
+     * If the issueType is not defined, take the one we provide in the API
+     * If the IssueType is not correctly initialized, make it an All Modules, All IssueTypes itemlist
+     * 
+     * Questions: Why does a MITList have to ask its children for its type after all ?
+     * Shouldn't the IssueType be fixed for the entire list ?
+     * And what if there are MITLIstItems with different IssueType ?
+     * 
+     * @param currentList
+     * @param module
+     * @param issueType
+     * @throws TorqueException
+     */
+    private void ensure_List_has_MIT_data(MITList currentList, Module module, IssueType issueType) throws TorqueException 
+    {
+        if(currentList != null)
+        {
+            MITListItem item = currentList.getFirstItem();
+            if(item != null)
+            {
+                if(item.getModule() == null)
+                {
+                    // Ensure the item has been assigned to a module
+                    item.setModule(module);
+                }
+
+                IssueType itemIssueType = item.getIssueType();
+                if(itemIssueType == null)
+                {
+                    // item's issueType has not beeen initialized ?
+                    if(issueType == null)
+                    {                        
+                        // Our local IssueType has also not been created ??
+                        issueType = new IssueType();
+                    }
+                    item.setIssueType(issueType);
+                    itemIssueType = issueType;
+                }
+                if (itemIssueType.getIssueTypeId() == null)
+                {
+                    // No definition means "Do not care". Hence it is equal to "any issueType from any module":
+                    itemIssueType.setIssueTypeId(MITListPeer.ALL_MODULES_ISSUETYPES.intValue());
+                }
+            }
+            
+        }
     }
 
     /**
@@ -866,6 +922,11 @@ public class ScarabRequestTool
             if (queryId == null || queryId.length() == 0)
             {
                 query = Query.getInstance();
+                Module m = getCurrentModule();
+                if(m != null)
+                {
+                    query.setModule(m);
+                }
             }
             else
             {
@@ -1780,7 +1841,7 @@ public class ScarabRequestTool
      *
      * @return a <code>Issue</code> value
      */
-    private IssueSearch getPopulatedSearch(String query)
+    private IssueSearch getPopulatedSearch(String queryString)
         throws Exception
     {
         IssueSearch search = getNewSearch();
@@ -1790,7 +1851,7 @@ public class ScarabRequestTool
         search.setIssueListAttributeColumns(getRModuleUserAttributes(theQuery));
         search.setLocalizationTool(getLocalizationTool());
 
-        StringValueParser parser = ScarabUtil.parseURL(query);
+        StringValueParser parser = ScarabUtil.parseURL(queryString);
 
         String[] userList = parser.getStrings("user_list");
         boolean searchInAllAttributes = parser.getBoolean("searchallattributes",false);

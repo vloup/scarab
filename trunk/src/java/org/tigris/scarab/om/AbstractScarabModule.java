@@ -1086,21 +1086,19 @@ public abstract class AbstractScarabModule
         if (obj == null)
         {
             Criteria crit = new Criteria();
-            crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, 
-                     issueType.getIssueTypeId());
-            crit.add(RModuleAttributePeer.MODULE_ID, getModuleId());
-            crit.addAscendingOrderByColumn(
-                RModuleAttributePeer.PREFERRED_ORDER);
-            crit.addAscendingOrderByColumn(
-                RModuleAttributePeer.DISPLAY_VALUE);
+            Integer issueTypeId = issueType.getIssueTypeId();
+            Integer moduleId    = getModuleId();
+            crit.add(RModuleAttributePeer.ISSUE_TYPE_ID, issueTypeId);
+            crit.add(RModuleAttributePeer.MODULE_ID, moduleId);
+            crit.addAscendingOrderByColumn(RModuleAttributePeer.PREFERRED_ORDER);
+            crit.addAscendingOrderByColumn(RModuleAttributePeer.DISPLAY_VALUE);
             
             if (activeOnly)
             {
                 crit.add(RModuleAttributePeer.ACTIVE, true);
             }
             
-            crit.addJoin(AttributePeer.ATTRIBUTE_ID,
-                     RModuleAttributePeer.ATTRIBUTE_ID); 
+            crit.addJoin(AttributePeer.ATTRIBUTE_ID, RModuleAttributePeer.ATTRIBUTE_ID); 
             if (USER.equals(attributeType))
             {
                 crit.add(AttributePeer.ATTRIBUTE_TYPE_ID, 

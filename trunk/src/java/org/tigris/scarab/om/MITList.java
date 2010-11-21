@@ -360,7 +360,8 @@ public class MITList
         Module module = null;
         if (item.getModuleId() == null)
         {
-            module = getScarabUser().getCurrentModule();
+            ScarabUser user = getScarabUser();
+            module = user.getCurrentModule();
         }
         else
         {
@@ -824,28 +825,25 @@ public class MITList
         }
         else
         {
-            Integer moduleId;
-            Integer issueTypeId;
+            Integer moduleId    = null;
+            Integer issueTypeId = null;
             
             if(isSingleModuleIssueType())
             {
-                moduleId    = getModule().getModuleId();
-                issueTypeId = getIssueType().getIssueTypeId();
+                Module module = getModule();
+                moduleId     = module.getModuleId();
+               
+                IssueType issueType = getIssueType();
+                issueTypeId   = issueType.getIssueTypeId();
             }
             else if (isSingleModule())
             {
                 moduleId    = getModule().getModuleId();
-                issueTypeId = null;
             }
             else if (isSingleIssueType())
             {
-                moduleId    = null;
-                issueTypeId = getIssueType().getIssueTypeId();
-            }
-            else
-            {
-                moduleId = null;
-                issueTypeId = null;
+                IssueType issueType = getIssueType();
+                issueTypeId   = issueType.getIssueTypeId();
             }
             
             crit.add(RModuleUserAttributePeer.LIST_ID,       null);

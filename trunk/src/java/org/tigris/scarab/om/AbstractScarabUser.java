@@ -429,14 +429,15 @@ public abstract class AbstractScarabUser
         Object obj = ScarabCache.get(this, GET_R_MODULE_USERATTRIBUTES, 
                                      module, issueType); 
         if (obj == null) 
-        {        
+        {
+            Integer moduleId    = module.getModuleId();
+            Integer userId      = getUserId();
+            Integer issueTypeId = issueType.getIssueTypeId();
             Criteria crit = new Criteria()
-                .add(RModuleUserAttributePeer.USER_ID, getUserId())
-                .add(RModuleUserAttributePeer.MODULE_ID, module.getModuleId())
-                .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, 
-                     issueType.getIssueTypeId())
-                .addAscendingOrderByColumn(
-                    RModuleUserAttributePeer.PREFERRED_ORDER);
+                .add(RModuleUserAttributePeer.USER_ID,       userId)
+                .add(RModuleUserAttributePeer.MODULE_ID,     moduleId)
+                .add(RModuleUserAttributePeer.ISSUE_TYPE_ID, issueTypeId)
+                .addAscendingOrderByColumn(RModuleUserAttributePeer.PREFERRED_ORDER);
             
             result = getRModuleUserAttributes(crit);
             ScarabCache.put(result, this, GET_R_MODULE_USERATTRIBUTES,  
