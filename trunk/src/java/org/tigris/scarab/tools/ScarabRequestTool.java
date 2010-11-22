@@ -761,8 +761,9 @@ public class ScarabRequestTool
      * First attempts to get the RModuleUserAttributes from the user.
      * If it is empty, then it will try to get the defaults from the module.
      * If anything fails, it will return an empty list.
+     * @throws TorqueException 
      */
-    public List<RModuleAttribute> getRModuleUserAttributes()
+    public List<RModuleAttribute> getRModuleUserAttributes() throws TorqueException
     {
         ScarabUser user = (ScarabUser)data.getUser();
         Module module   = user.getCurrentModule();
@@ -830,10 +831,12 @@ public class ScarabRequestTool
      * Common driver function to get the current list of RModule Attributes.
      * @param user
      * @return
+     * @throws TorqueException 
      */
-    private List<RModuleAttribute> getRModuleUserAttributes(ScarabUser user, Module module)
+    private List<RModuleAttribute> getRModuleUserAttributes(ScarabUser user, Module module) throws TorqueException
     {
-        IssueType theIssueType = this.getIssueType();
+        Integer defaultIssueTypeId = (Integer)MITListPeer.ALL_MODULES_ISSUETYPES.intValue();
+        IssueType theIssueType = this.getIssueType(defaultIssueTypeId);
 
         if(issueListColumns == null || issueListColumns.size() == 0)
         {
@@ -1174,10 +1177,16 @@ public class ScarabRequestTool
         return issueType;
     }
 
+    public IssueType getIssueType() throws TorqueException
+    {
+        return getIssueType((Integer)null);
+    }
+    
     /**
      * Get an issue type object.
+     * @throws TorqueException 
      */
-    public IssueType getIssueType()
+    public IssueType getIssueType(Integer defaultIssueTypeId) throws TorqueException
     {
         if (issueType == null)
         {
@@ -1186,7 +1195,7 @@ public class ScarabRequestTool
             if (key == null)
             {
                 // get new issue type
-                issueType = new IssueType();
+                issueType = new IssueType(defaultIssueTypeId);
             }
             else
             {
@@ -1197,7 +1206,7 @@ public class ScarabRequestTool
                 }
                 catch (Exception e)
                 {
-                    issueType = new IssueType();
+                    issueType = new IssueType(defaultIssueTypeId);
                 }
             }
         }

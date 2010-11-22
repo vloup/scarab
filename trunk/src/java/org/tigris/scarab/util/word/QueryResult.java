@@ -237,6 +237,14 @@ public class QueryResult
             {
                 List multiVal = (List)i.next();
                 String csv = StringUtils.join(multiVal.iterator(), ", ");
+                if(csv.indexOf('\n') > -1)
+                {
+                    csv = csv.replace('\n', '.');
+                }
+                if(csv.indexOf('\r') > -1)
+                {
+                    csv = csv.replace('\r', '.');
+                }
                 result.add(csv);
             }
         }            

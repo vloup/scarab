@@ -745,6 +745,12 @@ public abstract class AbstractScarabModule
 
     /**
      * Returns default issue list attributes for this module.
+     * This list is generated as follows:
+     * The first default text attribute is searched
+     * Then all UserAttributes are added
+     * If the number of colomns is < 3 then add as many
+     * attributes from the list until the number of 
+     * attributes is 3
      */
     public List getDefaultRModuleUserAttributes(IssueType issueType)
         throws TorqueException
@@ -757,23 +763,27 @@ public abstract class AbstractScarabModule
             result = new LinkedList();
             Attribute[] attributes = new Attribute[3];
             int count = 0;
-            attributes[count++] = issueType.getDefaultTextAttribute(this);
-            if (attributes[0] == null) 
-            {
-                count = 0;
-            }            
+            //attributes[count++] = issueType.getDefaultTextAttribute(this);
+            //if (attributes[0] == null) 
+            //{
+            //    count = 0;
+            //}            
             List rma1s = getRModuleAttributes(issueType, true, NON_USER);
             Iterator i = rma1s.iterator();
+
+            // Find first default text attribute ...
             while (i.hasNext())
             {
-                Attribute a = ((RModuleAttribute)i.next()).getAttribute();
-                if (!a.isTextAttribute() || attributes[0] == null) 
+                RModuleAttribute rmat = (RModuleAttribute)i.next();
+                Attribute a = rmat.getAttribute();
+                if (a.isTextAttribute() && rmat.getIsDefaultText()) 
                 {
                     attributes[count++] = a;
                     break;
                 }
             }
 
+            // Add all UserAttributes
             List rma2s = getRModuleAttributes(issueType, true, USER);
             i = rma2s.iterator();
             while (i.hasNext() && count < 3)            
