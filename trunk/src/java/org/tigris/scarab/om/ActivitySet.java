@@ -61,6 +61,7 @@ import org.apache.torque.om.Persistent;
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.Environment;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -98,9 +99,9 @@ public class ActivitySet
     /**
      * Returns a list of Activity objects associated with this ActivitySet.
      */
-    public List getActivityList() throws ScarabException
+    public List<Activity> getActivityList() throws ScarabException
     {
-        List result = null;
+        List<Activity> result = null;
 /* FIXME: caching is disabled here because new Activities can be
           added to this activityset and the addition does not trigger 
           a reset of this cache (JSS).
@@ -239,6 +240,45 @@ public class ActivitySet
         throws Exception
     {
         return getActivityList(issue, historyTypeList);  
+    }
+
+    public boolean hasTransitionSealed() throws ScarabException, TorqueException 
+    {
+        boolean result = false;
+        String status = Environment.getConfigurationProperty("scarab.common.status.id", null);
+        if (status != null)
+        {
+            String value = Environment.getConfigurationProperty("scarab.common.status.sealed", null);
+            if(value != null)
+            {
+                
+                List<Activity> activities = getActivityList();
+                Iterator<Activity> iter = activities.iterator();
+                
+                Activity act = null;
+                while((act = iter.next()) != null)
+                {
+                    ActivityType at = ActivityType.getActivityType(act.getActivityType());
+                    if(at == ActivityType.ATTRIBUTE_CHANGED)
+                    {
+                        Attribute att = act.getAttribute();
+                        String name = att.getName();
+                        if(name.equals(status))
+                        {
+                           String oldv = act.getOldValue();
+                           String newv = act.getNewValue();
+                           
+                           if(oldv.equals(value) || newv.equals(value))
+                           {
+                               result = true;
+                               break;
+                           }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 }

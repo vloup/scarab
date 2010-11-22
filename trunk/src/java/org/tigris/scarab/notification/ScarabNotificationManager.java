@@ -85,6 +85,7 @@ import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.services.cache.ScarabCache;
+import org.tigris.scarab.tools.Environment;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.LocalizationKey;
@@ -159,6 +160,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
     {
         try
         {
+            boolean containsTransitionToSealed = activitySet.hasTransitionSealed();
             NotificationStatus notification = null;
             for (Iterator<Activity> it = activitySet.getActivityList().iterator(); it.hasNext(); )
             {
@@ -199,7 +201,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                             Integer userId      = user.getUserId();
     
                             boolean isSelf = userId.equals(fromUser.getUserId());
-                            boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType);
+                            boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType, containsTransitionToSealed);
                             
                             if(wantsNotification)
                             {
@@ -224,7 +226,6 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             log.error("queueNotifications(): while setting up the activity queue: " + e.getMessage(),e);
         }
     }
-
 
     private void logNotificationData(NotificationStatus notification) throws TorqueException
     {

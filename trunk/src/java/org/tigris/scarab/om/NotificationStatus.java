@@ -273,7 +273,18 @@ public  class NotificationStatus
                 rdo = not1.getActivityType().getCode().compareTo(not2.getActivityType().getCode());
                 if (0 == rdo)
                 {
-                    rdo = not1.getCreationDate().compareTo(not2.getCreationDate());
+                    try
+                    {
+                        rdo = not1.getActivity().getDisplayName().compareTo(not2.getActivity().getDisplayName());
+                    }
+                    catch(Exception e)
+                    {
+                        // [HD] Compare can not be performed, just ignore it (needs enhancement!!!)
+                    }
+                    if(rdo == 0)
+                    {    
+                        rdo = not1.getCreationDate().compareTo(not2.getCreationDate());
+                    }
                 }
             }
                 

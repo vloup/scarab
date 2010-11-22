@@ -137,6 +137,18 @@ public  class IssueType
     // this will not change, so only look it up once.
     private IssueType parentIssueType;
 
+    public IssueType()
+    {
+        super();
+    }
+
+    
+    public IssueType(Integer issueTypeId) throws TorqueException 
+    {
+        this();
+        this.setIssueTypeId(issueTypeId);
+    }
+    
     /**
      * Gets the IssueType template for this IssueType. The template
      * is a special type of IssueType.
