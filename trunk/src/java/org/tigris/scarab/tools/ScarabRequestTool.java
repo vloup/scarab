@@ -905,6 +905,11 @@ public class ScarabRequestTool
     public Query getQuery() throws TorqueException
     {
         String queryId = data.getParameters().getString("queryId");
+        if(queryId==null)
+        {
+            queryId = data.getParameters().getString("query");
+        }
+                
         if (queryId != null || query == null)
         {
             query = getQuery(queryId);
