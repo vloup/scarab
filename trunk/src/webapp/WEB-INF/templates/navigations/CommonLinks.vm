@@ -54,11 +54,11 @@
     #set ($queryId = $data.User.getDefaultQueryId($module))
     #set ($homePage= $data.User.getHomePage($module))
     #set ($newQueryId = $data.Parameters.getString("queryId") )
-    #set ($dummy   = $data.Parameters.setString("query",$queryId) )
-    #set ($dummy   = $data.Parameters.setString("queryId",$queryId) )
+    ##set ($dummy   = $data.Parameters.setString("query",$queryId) )
+    ##set ($dummy   = $data.Parameters.setString("queryId",$queryId) )
     <strong><a href="$link.setPage($homePage).addPathInfo("query","$queryId")">$l10n.IssueTrackingHome</a></strong> | 
     <strong><a href="$link.setPage("SelectModule.vm")">$l10n.Modules ...</a></strong>
-    #if ($newQueryId) $dummy   = $data.Parameters.setString("queryId", $newQueryId) #end
+    #if ($newQueryId) #set ($dummy   = $data.Parameters.setString("queryId", $newQueryId)) #end
   </div>
 </div>
 
