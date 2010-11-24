@@ -160,7 +160,6 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
     {
         try
         {
-            boolean containsTransitionToSealed = activitySet.hasTransitionSealed();
             NotificationStatus notification = null;
             for (Iterator<Activity> it = activitySet.getActivityList().iterator(); it.hasNext(); )
             {
@@ -201,7 +200,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                             Integer userId      = user.getUserId();
     
                             boolean isSelf = userId.equals(fromUser.getUserId());
-                            boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType, containsTransitionToSealed);
+                            boolean wantsNotification = NotificationRuleManager.isNotificationEnabledFor(user, issue, isSelf, activityType, activitySet);
                             
                             if(wantsNotification)
                             {

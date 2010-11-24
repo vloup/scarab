@@ -104,7 +104,7 @@ public class NotificationRuleManager
      * @throws ScarabException 
      * @throws TorqueException 
      */
-    public static boolean isNotificationEnabledFor(ScarabUser user, Issue issue, boolean isSelf, String activityType, boolean hasGetSealedActivity) throws ScarabException, TorqueException
+    public static boolean isNotificationEnabledFor(ScarabUser user, Issue issue, boolean isSelf, String activityType, ActivitySet activitySet) throws ScarabException, TorqueException
     {
         Integer userId   = user.getUserId();
         Module module    = issue.getModule();
@@ -118,7 +118,7 @@ public class NotificationRuleManager
         }
         else
         {
-            if(issue.isSealed() && !hasGetSealedActivity)
+            if(issue.isSealed() && !activitySet.hasTransitionSealed())
             {
                 isEnabled = false; // Do not send notifications to other users when Issue is "closed"
             }
