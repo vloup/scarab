@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.torque.TorqueException;
@@ -259,25 +260,34 @@ public class ActivitySet
                     if (iter != null)
                     {
                         Activity act = null;
-                        while((act = iter.next()) != null)
+                        try
                         {
-                            ActivityType at = ActivityType.getActivityType(act.getActivityType());
-                            if(at == ActivityType.ATTRIBUTE_CHANGED)
+                            while((act = iter.next()) != null)
                             {
-                                Attribute att = act.getAttribute();
-                                String name = att.getName();
-                                if(name.equals(status))
+                                ActivityType at = ActivityType.getActivityType(act.getActivityType());
+                                if(at == ActivityType.ATTRIBUTE_CHANGED)
                                 {
-                                   String oldv = act.getOldValue();
-                                   String newv = act.getNewValue();
-                                   
-                                   if(oldv.equals(value) || newv.equals(value))
-                                   {
-                                       result = true;
-                                       break;
-                                   }
+                                    Attribute att = act.getAttribute();
+                                    String name = att.getName();
+                                    if(name.equals(status))
+                                    {
+                                       String oldv = act.getOldValue();
+                                       String newv = act.getNewValue();
+                                       
+                                       if(oldv.equals(value) || newv.equals(value))
+                                       {
+                                           result = true;
+                                           break;
+                                       }
+                                    }
                                 }
                             }
+                        }
+                        catch (NoSuchElementException nsee)
+                        {
+                            Throwable th = new Throwable("No such element exception occured.(ignore and assume transitionToSealed=false)");
+                            th.printStackTrace();
+                            result = false;
                         }
                     }
                 }
