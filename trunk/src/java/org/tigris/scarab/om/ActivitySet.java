@@ -274,7 +274,7 @@ public class ActivitySet
                                        String oldv = act.getOldValue();
                                        String newv = act.getNewValue();
                                        
-                                       if(oldv.equals(value) || newv.equals(value))
+                                       if(value.equals(oldv) || value.equals(newv))
                                        {
                                            result = true;
                                            break;
