@@ -253,26 +253,31 @@ public class ActivitySet
             {
                 
                 List<Activity> activities = getActivityList();
-                Iterator<Activity> iter = activities.iterator();
-                
-                Activity act = null;
-                while((act = iter.next()) != null)
+                if (activities != null)
                 {
-                    ActivityType at = ActivityType.getActivityType(act.getActivityType());
-                    if(at == ActivityType.ATTRIBUTE_CHANGED)
+                    Iterator<Activity> iter = activities.iterator();
+                    if (iter != null)
                     {
-                        Attribute att = act.getAttribute();
-                        String name = att.getName();
-                        if(name.equals(status))
+                        Activity act = null;
+                        while((act = iter.next()) != null)
                         {
-                           String oldv = act.getOldValue();
-                           String newv = act.getNewValue();
-                           
-                           if(oldv.equals(value) || newv.equals(value))
-                           {
-                               result = true;
-                               break;
-                           }
+                            ActivityType at = ActivityType.getActivityType(act.getActivityType());
+                            if(at == ActivityType.ATTRIBUTE_CHANGED)
+                            {
+                                Attribute att = act.getAttribute();
+                                String name = att.getName();
+                                if(name.equals(status))
+                                {
+                                   String oldv = act.getOldValue();
+                                   String newv = act.getNewValue();
+                                   
+                                   if(oldv.equals(value) || newv.equals(value))
+                                   {
+                                       result = true;
+                                       break;
+                                   }
+                                }
+                            }
                         }
                     }
                 }
