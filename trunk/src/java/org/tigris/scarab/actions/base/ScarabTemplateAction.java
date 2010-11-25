@@ -90,7 +90,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public static ScarabRequestTool getScarabRequestTool(TemplateContext context)
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);

@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.RunData;
+import org.apache.turbine.TemplateContext;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.actions.Login;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.util.Log;
 
 /*
@@ -51,14 +54,44 @@ public class AnonymousLoginValve extends AbstractValve
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
         String target = data.getTarget();
-        if (anonymousAccessAllowed && !nonAnonymousTargets.contains(target) && target.indexOf("help,") == -1)
+        
+        // Only try this if accessing an authenticated page:
+        if (!nonAnonymousTargets.contains(target) && target.indexOf("help,") == -1)
         {
-	        // If there's no user, we will login as Anonymous.
-	        ScarabUser user = (ScarabUser)data.getUserFromSession();
-	        if (null == user || user.getUserId() == null || !user.hasLoggedIn())
-	        {
-	            Login.anonymousLogin(data);
-	        }	        
+            ScarabUser user = (ScarabUser)data.getUserFromSession();
+            // If there's no user, we will try login:
+
+            if (null == user || user.getUserId() == null || !user.hasLoggedIn())
+            {
+                boolean isLoggedIn = false;
+                String username   = data.getParameters().get("userid");
+                // Maybe a User has been provided in the parameter list ?    
+                if(username != null)
+                {
+                    String password = data.getParameters().get("password");
+                    final ScarabRequestTool scarabR = null;
+                    try
+                    {
+                        // Try logging in. Note No ScarabRequestTool available here,
+                        // so no screen action can be prepared here.
+                        isLoggedIn = Login.authentifyWithCredentials(data, scarabR, username, password);
+                    }
+                    catch(Exception e)
+                    {
+                        // login failed (user unknown, not confirmed, wrong password, ...) no action taken here
+                        // Maybe even anonymous login should be forbidden now ?
+                        // See below
+                    }
+                }
+
+                // We were not able to log in an authenticated user (as possibly tried above) but anonymous login is enabled
+                if(!isLoggedIn && anonymousAccessAllowed)
+                {
+                    // So perform anonymous login here
+                    Login.anonymousLogin(data);
+                }
+                
+            }
         }
         context.invokeNext(data);        
     }

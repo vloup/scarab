@@ -67,6 +67,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.tools.localization.L10NMessage;
 import org.tigris.scarab.tools.localization.Localizable;
+import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.om.MITList;
@@ -209,64 +210,65 @@ public class Login extends ScarabTemplateAction
     }
 
     /**
-     * Checks to make sure that the user exists, has been confirmed.
+     * Used from LoginValve only
+     * Checks that the user exists and has been confirmed.
+     * If all checks have passed, setup the login-data. The user is now logged in.
+     * If checks fail, the user is not logged in, but a failure action has been 
+     * prepared for further activity (return to login page, not confirmed page, password renew page, etc..)
      */
     public boolean checkUser(RunData data, TemplateContext context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
 
         Group login = intake.get("Login", IntakeTool.DEFAULT_KEY);
         String username = login.get("Username").toString();
         String password = login.get("Password").toString();
+        ScarabRequestTool scarabR = getScarabRequestTool(context);
         
-        ScarabUser user = null;
-
-        try
+        return authentifyWithCredentials(data, scarabR, username, password);
+    }
+        
+    /**
+     * More generic authentification, used for automatic login (parameter based).
+     * Note: This is a highly unsecure method and it bears some potential vulnerability.
+     * So it should be used with care. the calling method is responsible to ensure safe usage!
+     * 
+     * The method checks that the user exists and has been confirmed.
+     * If all checks have passed, setup the login-data. The user is now logged in.
+     * If checks fail, the user is not logged in.
+     * If a ScarabRequestTool instance is provided (not null) then a failure action will be 
+     * prepared for further activity (return to login page, not confirmed page, password renew page, etc..)
+     * @throws Exception 
+     */
+    public static boolean authentifyWithCredentials(RunData data, ScarabRequestTool scarabR, String username, String password) throws Exception
+    {
+        
+        ScarabUser user = authenticateUser(data, scarabR, username, password);
+        if(user == null)
         {
-            // Authenticate the user and get the object.
-            user = (ScarabUser) TurbineSecurity
-                .getAuthenticatedUser(username, password);
-        }
-        catch (UnknownEntityException e)
-        {
-            scarabR.setAlertMessage(L10NKeySet.InvalidUsernameOrPassword);
-            Log.get().info("Invalid login attempted: " + e.getMessage());
-            return failAction(data, "Login.vm");            
-        }
-        catch (PasswordMismatchException e)
-        {
-            scarabR.setAlertMessage(L10NKeySet.InvalidUsernameOrPassword);
-            Log.get().debug("Password mis-match during login attempt: "
-                           + e.getMessage());
-            return failAction(data, "Login.vm");            
-        }
-        catch (DataBackendException e)
-        {
-            scarabR.setAlertMessage(L10NKeySet.ExceptionDatabaseGenericError);
-            Log.get().error("Error while attempting to log in", e);
-            return failAction(data, "Login.vm");
+            // Could not authenticate the user
+            return false;
         }
 
         try
         {
-            if (user.getConfirmed().equals(ScarabUser.DELETED)){
-                scarabR.setAlertMessage(L10NKeySet.UserIsDeleted);
+            if (user.getConfirmed().equals(ScarabUser.DELETED))
+            {
+                setAlertMessage(scarabR,L10NKeySet.UserIsDeleted);
                 Log.get().error("Deleted user attempting to log in");
-                return failAction(data, "Login.vm");
+                failAction(data, "Login.vm");
+                return false;
             }
             // check the CONFIRM_VALUE
             if (!user.isConfirmed())
             {
-                if (scarabR != null)
-                {
-                    user = (ScarabUser) TurbineSecurity.getUserInstance();
-                    scarabR.setUser(user);
-                    scarabR.setAlertMessage(L10NKeySet.UserIsNotConfirmed);
-                }
+                user = (ScarabUser) TurbineSecurity.getUserInstance();
+                setUser(scarabR, user);
+                setAlertMessage(scarabR,L10NKeySet.UserIsNotConfirmed);
 
-                return failAction(data, "Confirm.vm");
+                failAction(data, "Confirm.vm");
+                return false;
             }
 
 
@@ -281,13 +283,9 @@ public class Login extends ScarabTemplateAction
             boolean userPasswordExpired = user.isPasswordExpired();
             if (userPasswordExpired)
             {
-                if (scarabR != null)
-                {
-                    user = (ScarabUser) TurbineSecurity.getUserInstance();
-                    scarabR.setUser(user);
-                    scarabR.setAlertMessage(L10NKeySet.YourPasswordHasExpired);
-                }
-
+                user = (ScarabUser) TurbineSecurity.getUserInstance();
+                setUser(scarabR, user);
+                setAlertMessage(scarabR,L10NKeySet.YourPasswordHasExpired);
 
                 setTarget(data, "ChangePassword.vm");
                 //change next screen to allow password reset.
@@ -309,21 +307,78 @@ public class Login extends ScarabTemplateAction
         catch (TurbineSecurityException e)
         {
             Localizable msg = new L10NMessage(L10NKeySet.ExceptionTurbineGeneric,e);
-            scarabR.setAlertMessage(msg);
-            return failAction(data, "Login.vm");
+            setAlertMessage(scarabR,msg);
+            failAction(data, "Login.vm");
+            return false;
         }
         return true;
+    }
+
+    private static void setUser(ScarabRequestTool scarabR, ScarabUser user) 
+    {
+        scarabR.setUser(user);
+    }
+
+    private static void setAlertMessage(ScarabRequestTool scarabR, Localizable key) 
+    {
+        if(scarabR != null)
+        {
+            scarabR.setAlertMessage(key);
+        }
+    }
+
+    /**
+     * Perform a simple authentication for given user/password.
+     * returns the ScarabUser instance on success.
+     * returns a null pointer on failure.
+     * @param data
+     * @param scarabR
+     * @param username
+     * @param password
+     * @return
+     */
+    private static ScarabUser authenticateUser(RunData data, ScarabRequestTool scarabR, String username, String password) 
+    {        
+        ScarabUser user = null;  
+        try
+        {
+            // Authenticate the user and get the object.
+            user = (ScarabUser) TurbineSecurity
+                .getAuthenticatedUser(username, password);
+        }
+        catch (UnknownEntityException e)
+        {
+            setAlertMessage(scarabR, L10NKeySet.InvalidUsernameOrPassword);
+            Log.get().info("Invalid login attempted: " + e.getMessage());
+            failAction(data, "Login.vm");            
+            return null;
+        }
+        catch (PasswordMismatchException e)
+        {
+            setAlertMessage(scarabR, L10NKeySet.InvalidUsernameOrPassword);
+            Log.get().debug("Password mis-match during login attempt: "
+                           + e.getMessage());
+            failAction(data, "Login.vm");            
+            return null;
+        }
+        catch (DataBackendException e)
+        {
+            setAlertMessage(scarabR, L10NKeySet.ExceptionDatabaseGenericError);
+            Log.get().error("Error while attempting to log in", e);
+            failAction(data, "Login.vm");
+            return null;
+        }
+        return user;
     }
 
     /**
      * sets an anonymous user
      * sets the template to the passed in template
      */
-    private boolean failAction(RunData data, String template)
+    private static void failAction(RunData data, String template)
     {
         anonymousLogin(data);
     	setTarget(data, template);
-        return false;
     }
     
     /**
