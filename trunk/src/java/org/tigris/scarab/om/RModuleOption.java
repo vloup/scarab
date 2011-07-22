@@ -73,10 +73,10 @@ public class RModuleOption
     implements Persistent
 {
 
-    private static final String R_MODULE_OPTION = 
-        "RModuleOption";
-    private static final String GET_RMOS = 
-        "getRMOs";
+    private static final String R_MODULE_OPTION                  = "RModuleOption";
+    private static final String GET_RMOS                         = "getRMOs";
+    private static final String GET_RMOS_FOR_ISSUETYPE           = "getRMOsForIssueType";
+    private static final String GET_RMOS_FOR_ISSUETYPE_AND_VALUE = "getRMOsForIssueTypeValue";
     
     private int level;
 
@@ -376,25 +376,118 @@ public class RModuleOption
 
     public static List<RModuleOption> getRMOs(Integer moduleId)
     throws TorqueException
-{
-    List<RModuleOption> result = null;
-    Object obj = ScarabCache.get(R_MODULE_OPTION, GET_RMOS, moduleId); 
-    if (obj == null) 
-    {        
-        Criteria crit = new Criteria()
-            .add(RModuleOptionPeer.MODULE_ID, moduleId);
-        crit.addAscendingOrderByColumn(
-            RModuleOptionPeer.PREFERRED_ORDER);
-        result = (List<RModuleOption>)RModuleOptionPeer.doSelect(crit);
-        ScarabCache.put(result, R_MODULE_OPTION, GET_RMOS, 
-                        moduleId);
-    }
-    else 
     {
-        result = (List<RModuleOption>)obj;
+        List<RModuleOption> result = null;
+        Object obj = ScarabCache.get(R_MODULE_OPTION, GET_RMOS, moduleId); 
+        if (obj == null) 
+        {        
+            Criteria crit = new Criteria()
+                .add(RModuleOptionPeer.MODULE_ID, moduleId);
+            crit.addAscendingOrderByColumn(
+                RModuleOptionPeer.PREFERRED_ORDER);
+            result = (List<RModuleOption>)RModuleOptionPeer.doSelect(crit);
+            ScarabCache.put(result, R_MODULE_OPTION, GET_RMOS, 
+                            moduleId);
+        }
+        else 
+        {
+            result = (List<RModuleOption>)obj;
+        }
+        return result;
     }
-    return result;
-}
+  
+    /**
+     * Return the list of ModuleOptions for the current Module/IssueType combination
+     * Precondition: ModuleId and IssuetypeId must be set to reasonable values
+     * @param moduleId
+     * @param issueTypeId
+     * @return
+     * @throws TorqueException
+     */
+    public static List<RModuleOption> getRMOs(Integer moduleId, Integer issueTypeId) throws TorqueException
+    {
+        List<RModuleOption> result = null;
+        Object obj = ScarabCache.get(R_MODULE_OPTION, GET_RMOS_FOR_ISSUETYPE , moduleId, issueTypeId); 
+        if (obj == null) 
+        {        
+            Criteria crit = new Criteria()
+            .add(RModuleOptionPeer.MODULE_ID, moduleId)
+            .and(RModuleOptionPeer.ISSUE_TYPE_ID, issueTypeId);
+            crit.addAscendingOrderByColumn(
+                RModuleOptionPeer.PREFERRED_ORDER);
+            result = (List<RModuleOption>)RModuleOptionPeer.doSelect(crit);
+            ScarabCache.put(result, R_MODULE_OPTION, GET_RMOS_FOR_ISSUETYPE , moduleId, issueTypeId);
+        }
+        else 
+        {
+            result = (List<RModuleOption>)obj;
+        }
+        return result;
+    }    
     
+    /**
+     * Return the list of ModuleOptions for the current Module/IssueType combination
+     * having the given DisplayValue. This is a convenience method, so we can 
+     * use a human readable element in the velocity environment.
+     * 
+     * [HD]: This is used in a very weird context where i need to manually associate
+     * Elements of 2 dependent attribute lists with each other. Idealy Scarab would allow
+     * to define inter attribute dependencies like: 
+     * 
+     * if attribute x has value A then attribute y must be set to B
+     * if attribute y has value C then attribute x must become a selection list containing all allowed values)
+     * 
+     * For now this is done as needed within hard coded extension macros. And there
+     * i want to use the Display values instead of the OptionIds (knowing that this is a bad hack which may introduce redundancies).
+     * the plan is to get true dependencies added to the data model (I am working on it).
+     * 
+     * Precondition: ModuleId and IssuetypeId must be set to reasonable values
+     * @param moduleId
+     * @param issueTypeId
+     * @return
+     * @throws TorqueException
+     */
+    public static List<RModuleOption> getRMOs(Integer moduleId, Integer issueTypeId, String displayValue) throws TorqueException
+    {
+        List<RModuleOption> result = null;
+        Object obj = ScarabCache.get(R_MODULE_OPTION, GET_RMOS_FOR_ISSUETYPE_AND_VALUE , moduleId, issueTypeId, displayValue); 
+        if (obj == null) 
+        {
+            Criteria crit = new Criteria()
+            .add(RModuleOptionPeer.MODULE_ID, moduleId)
+            .and(RModuleOptionPeer.ISSUE_TYPE_ID, issueTypeId)
+            .and(RModuleOptionPeer.DISPLAY_VALUE, displayValue);
+            crit.addAscendingOrderByColumn(
+                RModuleOptionPeer.PREFERRED_ORDER);
+            result = (List<RModuleOption>)RModuleOptionPeer.doSelect(crit);
+            ScarabCache.put(result, R_MODULE_OPTION, GET_RMOS_FOR_ISSUETYPE_AND_VALUE , moduleId, issueTypeId, displayValue);
+        }
+        else 
+        {
+            result = (List<RModuleOption>)obj;
+        }
+        return result;
+    }    
+
+    /**
+     * See above for explanation.
+     * This is another convenience method which returns the first RModuleOptions which meets the
+     * given criteria. (Knowing that it is a bad solution).
+     * @param moduleId
+     * @param issueTypeId
+     * @param displayValue
+     * @return
+     * @throws TorqueException
+     */
+    public static RModuleOption getFirstRMO(Integer moduleId, Integer issueTypeId, String displayValue) throws TorqueException
+    {
+        RModuleOption result = null;
+        List<RModuleOption> rmos = getRMOs(moduleId, issueTypeId, displayValue);
+        if (rmos != null && rmos.size() > 0)
+        {
+            result = rmos.get(0);
+        }
+        return result;
+    }
     
 }

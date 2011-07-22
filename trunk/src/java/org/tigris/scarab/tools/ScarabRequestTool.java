@@ -119,6 +119,7 @@ import org.tigris.scarab.om.RModuleAttribute;
 import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleIssueTypePeer;
+import org.tigris.scarab.om.RModuleOption;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -3469,6 +3470,23 @@ public class ScarabRequestTool
         return RModuleIssueTypePeer.retrieveByPK(moduleId, issueTypeId);
     }
 
+    /**
+     * Get the module options for a specific module/issueType combination
+     * Used for the frontend (maybe refactor into separate tool ? )
+     * @param moduleId
+     * @return
+     * @throws TorqueException
+     */
+    public RModuleOption getFirstModuleOption(Module module, IssueType issueType, String displayValue) throws TorqueException
+    {
+        RModuleOption result = null;
+        if (module != null && issueType != null && displayValue != null)
+        {
+            result = RModuleOption.getFirstRMO(module.getModuleId(), issueType.getIssueTypeId(), displayValue);
+        }
+        return result;
+    }
+    
     public void clearCachedQueryResult()
     {
         data.getUser().removeTemp("queryResult");
