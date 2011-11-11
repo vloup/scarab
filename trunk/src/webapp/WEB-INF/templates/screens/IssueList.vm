@@ -1,4 +1,4 @@
-#* SCB2537: Feeds for queries are currently not supported.
+#* SCB2537: Feeds are currently not supported.
 #if ($scarabR.Query.QueryId)
 <link rel="alternate" type="application/rss+xml" title="RSS" href="$link.setPage('Index.vm')/action/Search/go/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/rss_2.0">
 <link rel="alternate" type="application/rss+xml" title="ATOM" href="$link.setPage('Index.vm')/action/Search/go/$scarabR.Query.QueryId/eventSubmit_doSelectquery/foo/output/feed/feedType/atom_0.3">
@@ -30,7 +30,7 @@
 #end
 </td>
 
-#* SCB2537: Feeds for queries are currently not supported.
+#* SCB2537: Feeds are currently not supported.
 #if ($scarabR.Query.QueryId)
 <td align="right" nowrap="1">
 	<a style="align:right;" title="$l10n.SearchRSSFeed"

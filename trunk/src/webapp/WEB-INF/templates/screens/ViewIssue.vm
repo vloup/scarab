@@ -5,10 +5,14 @@
 ## · hasDeletePermission: true if the user has permission to delete issues in this modue.
 ##
 ##
+
+#* SCB2537: Feeds are currently not supported.
 <link rel="alternate" type="application/rss+xml" title="RSS"
 href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0">
 <link rel="alternate" type="application/rss+xml" title="ATOM"
 href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3">
+*#
+
 #set ($currentIssueId   = $data.Parameters.getString("id"))
 #set ($currentIssue     = $scarabR.getIssue($currentIssueId))
 #set ($numUsers         = $currentIssue.getAssociatedUsers().size())
