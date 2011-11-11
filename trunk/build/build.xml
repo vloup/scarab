@@ -419,6 +419,7 @@
                destdir="${build.dest.scarab}"
                debug="on"
                deprecation="off"
+               includeantruntime="false"
                optimize="off">
             <classpath refid="classpath"/>
             <classpath>
