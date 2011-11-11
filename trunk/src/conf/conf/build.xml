@@ -111,6 +111,16 @@
 
     <target name="create-database" depends="check-create-db-script"
             if="create.database.script.exists">
+
+       <echo>
+         Creating or upgrading Scarab Database:
+         scarab.database.jdbc.driver     = ${scarab.database.jdbc.driver}
+         scarab.database.admin.url       = ${scarab.database.admin.url}
+         scarab.database.admin.username  = ${scarab.database.admin.username}
+         scarab.database.admin.password  = ${scarab.database.admin.password}
+         src                             = ${sql.current.dir}/create-db.sql
+       </echo>
+
        <sql
             driver="${scarab.database.jdbc.driver}"
             url="${scarab.database.admin.url}"
