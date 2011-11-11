@@ -164,7 +164,7 @@
 
           #set ($userPref = $data.User.EnterIssueRedirect)
           #if (!$userPref)
-            #set ($userPref = 2)
+            #set ($userPref = 3)
           #end
 
           <tr>
