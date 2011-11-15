@@ -1485,6 +1485,23 @@
         <file/>
       </property>
 
+      <property>
+        <name>scarab.site.style</name>
+        <default>classic</default>
+        <details>
+           The site.style determines which overall design
+           shall be used for scarab.
+           The default style is "classic".
+           If you change the style here, you also have to provide a
+           css style file in $scarab_root/WEB_INF/skins
+           with the same name.
+        </details>
+        <type>Runtime</type>
+         <customization modification="optional">advanced</customization>
+        <file/>
+      </property>
+
+
     </group>
 
     <group name="user-administration">
