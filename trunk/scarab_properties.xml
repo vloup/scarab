@@ -1437,6 +1437,21 @@
          <customization modification="optional">advanced</customization>
         <file/>
       </property>
+
+      <property>
+        <name>scarab.extended.footer</name>
+        <default>true</default>
+        <details>
+          Issues can be assigned, moved and deleted. This functionality
+          is placed in the Issue Footer by default.
+          Sometimes all these functions are not necessary for "normal users"
+          In that case the footer can be disabled by setting this attribute
+          to false.
+        </details>
+        <type>Runtime</type>
+         <customization modification="advanced">basic</customization>
+        <file/>
+      </property>
 	  
     </group>
 
