@@ -3,6 +3,14 @@
 #if($pseudoHTML && $type=='b')*#end#if($pseudoHTML && $type=='u')_#end#if($pseudoHTML && $type=='i')/#end#if(!$pseudoHTML && $type=='s')****#end
 #end
 
+##
+## Call example: :#getProperty("scarab.site.logo")
+##
+#macro (getProperty $key)
+$scarabG.getTurbineConfiguration().getString($key)
+#end
+
+
 #macro (CanMakeTransitionForOption $fromValue $option $issue $multiple)
     #set ($selected = false)
     #set ($canMakeTransition = true)
