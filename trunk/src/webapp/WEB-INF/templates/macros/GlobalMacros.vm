@@ -623,7 +623,7 @@ $displayValue
   #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
   <a href="$prevLink">$l10n.PaginatePrevious</a> |
  #end
- $pageNum of $scarabR.NbrPages
+ $pageNum l10n.Of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
   #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()))
   | <a href="$nextLink">$l10n.PaginateNext</a>
@@ -641,7 +641,7 @@ $displayValue
   #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("searchType", "$searchType").setPage($scarabR.getCurrentTemplate()))
   <a href="$prevLink" title="$l10n.PaginatePrevious" class="previous_element" ></a> |
  #end
- $pageNum of $scarabR.NbrPages
+ $pageNum $l10n.Of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
   #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("searchType", "$searchType").setPage($scarabR.getCurrentTemplate()))
   | <a href="$nextLink" title="$l10n.PaginateNext" class="next_element"></a>
@@ -659,7 +659,7 @@ $displayValue
   #set ($prevLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.PrevPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("searchType", "$searchType").setPathInfo("view","$view").setPage($scarabR.getCurrentTemplate()))
   <a href="$prevLink">$l10n.PaginatePrevious</a> |
  #end
- $pageNum of $scarabR.NbrPages
+ $pageNum $l10n.Of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
   #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage").setPathInfo("pageNum", "$scarabR.NextPage").setPathInfo("sortColumn", "$sortColumn").setPathInfo("sortPolarity", "$sortPolarity").setPathInfo("searchType", "$searchType").setPathInfo("view","$view").setPage($scarabR.getCurrentTemplate()))
   | <a href="$nextLink">$l10n.PaginateNext</a>
@@ -680,7 +680,7 @@ $displayValue
  #end
   <a href="$prevLink">$l10n.PaginatePrevious</a> |
  #end
- $pageNum of $scarabR.NbrPages
+ $pageNum $l10n.Of $scarabR.NbrPages
  #if ($scarabR.NextPage != 0)
   #set ($nextLink = $link.setPathInfo("resultsperpage", "$resultsPerPage.toString()").addPathInfo("pageNum", "$scarabR.NextPage").addPathInfo("sortColumn", "$sortColumn").addPathInfo("sortPolarity", "$sortPolarity").setPage($scarabR.getCurrentTemplate()).addPathInfo("searchString", $searchString).addPathInfo("searchField", $searchField).addPathInfo($scarabG.Constant.CANCEL_TEMPLATE, $cancelTemplate))
  
@@ -707,7 +707,9 @@ $displayValue
    #set ($prevLink = $link.setPathInfo("id", "$prevIssue").setPage($scarabR.getCurrentTemplate()).addPathInfo("posInList", $scarabR.PrevIssuePosInList))
    <a href="$prevLink">$l10n.PaginatePrevious</a> |
   #end
-  $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
+  #if ($scarabR.CurrentSearchResultsSize > 1)
+    $scarabR.IssuePosInList $l10n.Of $scarabR.CurrentSearchResultsSize
+  #end
   #set ($nextIssue=$scarabR.NextIssue)
   #if ($nextIssue)
    #set ($nextLink = $link.setPathInfo("id", "$nextIssue").setPage($scarabR.getCurrentTemplate()).addPathInfo("posInList", $scarabR.NextIssuePosInList))
