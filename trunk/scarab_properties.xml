@@ -1454,6 +1454,20 @@
       </details>
 
       <property>
+        <name>scarab.product.logo</name>
+        <default>/images/logo.gif</default>
+        <details>
+           The product.logo is displayed on the left side of the top bar.
+           Here you can add remove the product logo or replace it with your own
+           logo. The default setting displays the Scarab-Logo.
+           Hide it by replacing the value with "/images/trans.gif"
+        </details>
+        <type>Runtime</type>
+         <customization modification="optional">basic</customization>
+        <file/>
+      </property>
+
+      <property>
         <name>scarab.site.name</name>
         <default></default>
         <details>
