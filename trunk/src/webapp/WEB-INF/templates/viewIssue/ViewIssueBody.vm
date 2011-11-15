@@ -175,11 +175,9 @@
     </select>
     </span>
     <span>
-      <input type="submit" name="eventSubmit_doAddwatchers" title="Hier k&ouml;nnen Sie andere Mitarbeiter als $watchedRMA.DisplayValue hinzuf&uuml;gen " value="als $watchedRMA.DisplayValue" class="button" />
+      <input type="submit" name="eventSubmit_doAddwatchers" title="$l10n.format("AssignOtherWatcher", $watchedRMA.DisplayValue)" value="$l10n.As $watchedRMA.DisplayValue" class="button" />
     </span>
 #end
-
-
 
 ## TODO: The getCopyToModules() can be expensive (PCN20967).  Add APIs
 ## which perform the "should show" check without retrieving all the
@@ -217,10 +215,10 @@
 ## #if ($showCopyButton || $showMoveButton)
 ##   <div class="functnbar">
 ##     #if ($showMoveButton)
-##       <input type="submit" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;
+##       <input type="submit" title="$l10n.MoveIssueTo" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;
 ##     #end
 ##     #if ($showCopyButton)
-##       <input type="submit" value="$l10n.CopyIssue" name="eventSubmit_doCopy" />
+##       <input type="submit" title="$l10n.CopyIssueTo" value="$l10n.CopyIssue" name="eventSubmit_doCopy" />
 ##     #end
 ##   </div>
 ## #end
@@ -356,17 +354,17 @@
         #if ($showCopyButton || $showMoveButton)
           #if ($showMoveButton)
             <span style="color:white">
-              <input style="align:right;" type="submit" value="$l10n.Move" name="eventSubmit_doMove" class="button" />
+              <input style="align:right;" type="submit" title="$l10n.MoveIssueTo" value="$l10n.Move" name="eventSubmit_doMove" class="button" />
             </span>
           #end
           #if ($showCopyButton)
             <span style="color:white">
-              <input style="align:right;" type="submit" value="$l10n.Copy" name="eventSubmit_doCopy" class="button" />
+              <input style="align:right;" type="submit" title="$l10n.CopyIssueTo" value="$l10n.Copy" name="eventSubmit_doCopy" class="button" />
             </span>
           #end
           #if ($hasDeletePermission)
             <span style="color:white">
-              <input style="align:right;" type="submit" value="$l10n.Delete" name="eventSubmit_doDeleteissue" class="button" />
+              <input style="align:right;" type="submit" title="$l10n.DeleteIssueFrom" value="$l10n.Delete" name="eventSubmit_doDeleteissue" class="button" />
             </span>
           #end
         #end
