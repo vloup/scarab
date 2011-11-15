@@ -58,7 +58,8 @@
       #if ($selectUserAttr.getMultiValue() == false)
         #set ($assignedAttrib = $selectUserAttr)
         #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
-      #elseif ($watchedAttrib == -1)
+      #end
+      #if ($watchedAttrib == -1)
         #set ($watchedAttrib = $selectUserAttr)
         #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
       #end
