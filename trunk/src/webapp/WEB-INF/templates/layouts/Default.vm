@@ -13,7 +13,9 @@
     #if ($updateFrequency && $updateFrequency.length() > 0)
       <meta http-equiv="refresh" content="$updateFrequency" />
     #end
-    <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/classic.css")" />
+
+    #set ($style_file = "/skins/#getProperty('scarab.site.style').css")
+    <link rel="stylesheet" type="text/css" href="$staticLink.setPath($style_file)" />
     <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/custom.css")" />
 
     <script src="$staticLink.setPath("/scripts/debug.js")" type="text/javascript"></script>
@@ -194,7 +196,10 @@ $currentIssue.createIssueChecker("setMarkerValueIf", $indent)
    <table>
     <tr>
      <td>
-      <a href="$link.setPage("Index.vm")"><img src="$staticLink.setPath("/images/logo.gif")" alt="Scarab" width="118" height="23" border="0" /></a>
+      #set ($productLogo = "#getProperty('scarab.product.logo')")
+      #if ($productLogo.length() > 0)
+      <a href="$link.setPage("Index.vm")"><img src="$staticLink.setPath("$productLogo")" alt="$productLogo" width="118" height="23" border="0" /></a>
+      #end
      </td>
      <td valign="middle">
       <table border="0" cellpadding="0" cellspacing="0">
