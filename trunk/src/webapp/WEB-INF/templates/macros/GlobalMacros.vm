@@ -6,9 +6,7 @@
 ##
 ## Call example: :#getProperty("scarab.site.logo")
 ##
-#macro (getProperty $key)
-$scarabG.getTurbineConfiguration().getString($key)
-#end
+#macro (getProperty $key)$scarabG.getTurbineConfiguration().getString($key)#end
 
 
 #macro (CanMakeTransitionForOption $fromValue $option $issue $multiple)
