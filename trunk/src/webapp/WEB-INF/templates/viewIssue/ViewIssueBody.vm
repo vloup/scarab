@@ -175,7 +175,7 @@
     </select>
     </span>
     <span>
-      <input type="submit" name="eventSubmit_doAddwatchers" title="$l10n.format("AssignOtherWatcher", $watchedRMA.DisplayValue)" value="$l10n.As $watchedRMA.DisplayValue" class="button" />
+    <input type="submit" name="eventSubmit_doAddwatchers" title="$l10n.format("AssignOtherWatcher", $watchedRMA.DisplayValue)" value="$l10n.As $watchedRMA.DisplayValue" class="button" />
     </span>
 #end
 
@@ -227,7 +227,7 @@
 
 
   #if ($tab.equals("all"))
-    <h3 class="functnbar" style="background-color: #668DB2;margin-left:-1px;margin-right:-1px;">$l10n.Issue $currentIssue.UniqueId:
+    <h3 class="functnbar">$l10n.Issue $currentIssue.UniqueId:
          (<strong>$currentIssue.DefaultText</strong>)
     </h3>
   #end
@@ -271,6 +271,9 @@
     $renderer.render("viewIssue", "ViewIssueTab5.vm")
   #end
 
+
+  #set ($extended_footer = "#getProperty('scarab.extended.footer')" )
+  #if ($extended_footer == true)
 
   ## ==========================================================================
   ## Create the bottom navigation buttons:
@@ -387,5 +390,5 @@
     </span>
         
   </div>
-
+ #end
 </div>
