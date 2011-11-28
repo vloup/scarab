@@ -1472,10 +1472,18 @@ public class ScarabRequestTool
     private void getNewReportingIssue()
         throws Exception
     {
-        reportingIssue = getCurrentModule().getNewIssue(getCurrentIssueType());
-        String key = ((ScarabUser)data.getUser())
-            .setReportingIssue(reportingIssue);
-        data.getParameters().add(ScarabConstants.REPORTING_ISSUE, key);
+        IssueType currentIssueType = getCurrentIssueType();
+        if (currentIssueType != null)
+        {
+            Module currentModule = getCurrentModule();
+            if(currentModule != null)
+            {
+                reportingIssue = currentModule.getNewIssue(currentIssueType);
+                String key = ((ScarabUser)data.getUser())
+                    .setReportingIssue(reportingIssue);
+                data.getParameters().add(ScarabConstants.REPORTING_ISSUE, key);
+            }
+        }
     }
 
     public void setReportingIssue(Issue issue)
