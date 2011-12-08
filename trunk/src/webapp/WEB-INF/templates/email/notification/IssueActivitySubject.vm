@@ -1,1 +1,5 @@
-#set ($args = [$issue.Module.RealName.toUpperCase(), $issue.UniqueId, $l10n.get($changeKey, true), $issue.defaultText, $issue.FirstAssignedTo.Name]) $l10n.format("DefaultModifyIssueEmailSubject", $args)
+#set ($fat = $issue.FirstAssignedTo.Name)
+#if (!$fat || $fat == 'null')
+#set ($fat = "" )
+#end
+#set ($args = [$issue.Module.RealName.toUpperCase(), $issue.UniqueId, $l10n.get($changeKey, true), $issue.defaultText, $fat]) $l10n.format("DefaultModifyIssueEmailSubject", $args)
