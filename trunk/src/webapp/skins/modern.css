@@ -82,7 +82,7 @@
     font-size: 1.25em;
     border-top: 1px solid #369;
     background-color: #ccc;
-    background-image:url(mycompany.png);
+    background-image:url(companylogo.png);
     background-position: center top;
     height:90px;
     color: #fff;
@@ -461,7 +461,7 @@ a:link .selfref,a:visited .selfref {
 }
 
 a:active,a:hover,#leftcol a:active,#leftcol a:hover {
-	color: #FD5A1E !important;
+	color: #c60004 !important;
 }
 
 #leftcol a {
@@ -1272,7 +1272,7 @@ ul {
 
 .scarab-toolgroup a,.scarab-toolgroup a:visited,.scarab-toolgroup a:active,.scarab-toolgroup a:link,.collapsed a,.collapsed a:visited,.collapsed a:active,.collapsed a:link
 	{
-	color: #FD5A1E;
+	color: #c60004;
 	margin-left: 0px;
 	cursor: pointer;
 	cursor: hand;
@@ -1378,7 +1378,7 @@ ul {
 
 
 a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
-	color:#FD5A1E;
+	color:#c60004;
 }
 
 .app h3 {
@@ -1392,7 +1392,7 @@ a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
 }
 
 .app h3 a:link,.app h3 a:visited,.app h4 a:link,.app h4 a:visited {
-	color: #FD5A1E !important;
+	color: #c60004 !important;
 	text-decoration: underline;
 }
 
