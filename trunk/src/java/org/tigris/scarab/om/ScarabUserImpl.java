@@ -438,8 +438,26 @@ public class ScarabUserImpl
                             if(role != null)
                             {
                                 ScarabUser su = (ScarabUser)this;
-                                TurbineSecurity.grant(su, module, role);
-                                hasRoles = true;
+                                try
+                                {
+                                    TurbineSecurity.grant(su, module, role);
+                                    hasRoles = true;
+                                }
+                                catch (DataBackendException e)
+                                {
+                                    // maybe the role request was approved 
+                                    // by another admin?
+                                    AccessControlList acl = su.getACL();
+                                    if (acl.hasRole( role, (Group) module ) )
+                                    {
+                                        hasRoles = true;
+                                    }
+                                    else
+                                    {
+                                        // Something went wrong, ignore for now.
+                                    }
+                                }
+                                
         
                                 // TODO: Needs to be refactored into the Users system?
                                 ScarabUserManager.getMethodResult().remove(this, ScarabUserManager.GET_ACL);
