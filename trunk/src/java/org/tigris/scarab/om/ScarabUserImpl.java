@@ -426,16 +426,16 @@ public class ScarabUserImpl
                     ScarabModule module = (ScarabModule)scarabModules.get(i);
                     Integer moduleId = module.getModuleId();
                     boolean hasRoles = this.hasAnyRoleIn(module);
+                    String moduleName = module.getName();
                     
                     if(!hasRoles)
                     {
-                        String defaultRoleName = ScarabGlobalTool.getTurbineProperty("scarab.default.role");
+                        String defaultRoleName = getDefaultRoleForModule(moduleName);                        
                         if(defaultRoleName != null)
                         {
                             Role role = TurbineSecurity.getRole(defaultRoleName);
                             if(role != null)
                             {
-                                User x = null;
                                 ScarabUser su = (ScarabUser)this;
                                 TurbineSecurity.grant(su, module, role);
                                 hasRoles = true;
@@ -486,6 +486,26 @@ public class ScarabUserImpl
             result = (Module[])obj;
         }
         return result;
+    }
+
+    private String getDefaultRoleForModule(String moduleName) 
+    {
+        String moduleRoleName = ScarabGlobalTool.getTurbineProperty("scarab.default.role");
+        String defaultRoleName = null;
+
+        if(moduleRoleName != null)
+        {
+            int index = moduleRoleName.lastIndexOf('.');
+            if(index > 0)
+            {
+                String mod = moduleRoleName.substring(0,index);
+                if(mod.equals(moduleName))
+                {
+                    defaultRoleName = moduleRoleName.substring(index+1);
+                }
+            }
+        }
+        return defaultRoleName;
     }
     
     /**
