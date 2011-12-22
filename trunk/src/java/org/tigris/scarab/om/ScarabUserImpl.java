@@ -83,6 +83,7 @@ import org.apache.turbine.Turbine;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.services.security.ScarabSecurity;
+import org.tigris.scarab.tools.ScarabGlobalTool;
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
 import org.xbill.DNS.Record;
@@ -412,7 +413,7 @@ public class ScarabUserImpl
                      TurbineRolePermissionPeer.PERMISSION_ID);
             crit.addJoin(TurbineRolePermissionPeer.ROLE_ID, 
                          TurbineUserGroupRolePeer.ROLE_ID);
-            crit.add(TurbineUserGroupRolePeer.USER_ID, getUserId());
+            //crit.add(TurbineUserGroupRolePeer.USER_ID, getUserId());
             crit.addJoin(ScarabModulePeer.MODULE_ID, 
                          TurbineUserGroupRolePeer.GROUP_ID);
             
@@ -422,16 +423,42 @@ public class ScarabUserImpl
                 // check for permissions in global, if so get all modules
                 for (int i=scarabModules.size()-1; i>=0; i--) 
                 {
-                    if (Module.ROOT_ID.equals(
-                     ((Module)scarabModules.get(i)).getModuleId())) 
+                    ScarabModule module = (ScarabModule)scarabModules.get(i);
+                    Integer moduleId = module.getModuleId();
+                    boolean hasRoles = this.hasAnyRoleIn(module);
+                    
+                    if(!hasRoles)
                     {
-                        crit = new Criteria();
-                        if (!showDeletedModules)
+                        String defaultRoleName = ScarabGlobalTool.getTurbineProperty("scarab.default.role");
+                        if(defaultRoleName != null)
                         {
-                            crit.add(ScarabModulePeer.DELETED, 0);
+                            Role role = TurbineSecurity.getRole(defaultRoleName);
+                            if(role != null)
+                            {
+                                User x = null;
+                                ScarabUser su = (ScarabUser)this;
+                                TurbineSecurity.grant(su, module, role);
+                                hasRoles = true;
+        
+                                // TODO: Needs to be refactored into the Users system?
+                                ScarabUserManager.getMethodResult().remove(this, ScarabUserManager.GET_ACL);
+                                ScarabUserManager.getMethodResult().remove(this, ScarabUserManager.HAS_ROLE_IN_MODULE, (Serializable)role, module);
+                            }
                         }
-                        scarabModules = ScarabModulePeer.doSelect(crit);
-                        break;
+                    }
+                    
+                    if(hasRoles)
+                    {
+                        if (Module.ROOT_ID.equals(moduleId)) 
+                        {
+                            crit = new Criteria();
+                            if (!showDeletedModules)
+                            {
+                                crit.add(ScarabModulePeer.DELETED, 0);
+                            }
+                            scarabModules = ScarabModulePeer.doSelect(crit);
+                            break;
+                        }
                     }
                 }
                 
