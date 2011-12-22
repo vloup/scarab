@@ -419,11 +419,12 @@ public class ScarabUserImpl
             
             try
             {
-                List scarabModules = ScarabModulePeer.doSelect(crit);
+                List initialScarabModules = ScarabModulePeer.doSelect(crit);
                 // check for permissions in global, if so get all modules
-                for (int i=scarabModules.size()-1; i>=0; i--) 
+                List<ScarabModule> scarabModules = new ArrayList<ScarabModule>();
+                for (int i=initialScarabModules.size()-1; i>=0; i--) 
                 {
-                    ScarabModule module = (ScarabModule)scarabModules.get(i);
+                    ScarabModule module = (ScarabModule)initialScarabModules.get(i);
                     Integer moduleId = module.getModuleId();
                     boolean hasRoles = this.hasAnyRoleIn(module);
                     String moduleName = module.getName();
@@ -459,6 +460,7 @@ public class ScarabUserImpl
                             scarabModules = ScarabModulePeer.doSelect(crit);
                             break;
                         }
+                        scarabModules.add(0, module);
                     }
                 }
                 
