@@ -23,6 +23,11 @@
 	If you don't want to bother to run the unit tests, then run: <source>maven site -Dmaven.test.skip=true</source>
 	This will generate all the site documentation, as well as the FAQ, Javadocs, and various code analysis reports in the directory /target/docs.
 	</p>
+	<p>So far so good, but: For compatibility reasons maven site plugin cannot handle the docs if velocity version is set to any wrong version.
+	It is recommended to use 1.5 here. See documentation site for maven xdoc plugin, too. Problem is: Scarab uses another version of velocity,
+	as it is good for the xdoc plugin. This is why another important build property named: maven.velocity.version, exists. 
+	To build the docs properly you have to set this property manually: <source>maven site -Dmaven.velocity.version=1.5</source> or use an adapted batch script.
+	</p>
 	</subsection>
 	<subsection name="Used Plugins">
 	<p>

@@ -542,7 +542,7 @@
     <dependency>
       <groupId>velocity</groupId>
       <artifactId>velocity</artifactId>
-      <version>1.6.3</version>
+      <version>${maven.velocity.version}</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
