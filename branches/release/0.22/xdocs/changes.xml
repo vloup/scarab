@@ -11,6 +11,18 @@
 		Moved velocity to 1.6.3.
 		</action>
 		<action dev="jhoech" type="fix">
+		If an assigned user was removed from issue, related issues weren't removed from according search result.
+		</action>
+		<action dev="jhoech" type="update">
+		Moved torque from 3.3-RC2 to 3.3
+		</action>
+		<action dev="jhoech" type="fix">
+		Changed value for boolean values in table SCARAB_GLOBAL_PARAMETER in scarab's database from single characters into long form.
+		</action>
+		<action dev="jhoech" type="fix">
+		Fix for popup calendar, which adds a method for stopping event "onmouseup" for drop downs.
+		</action>
+		<action dev="jhoech" type="fix">
 		Implemented property for maximum file size of uploads: scarab.file.max.size
 		</action>
 		<action dev="jhoech" type="fix">
@@ -23,7 +35,7 @@
 		Support threads for notifications by email.
 		</action>
 		<action dev="jhoech" type="add">
-		Reworked dependency tab: More conservative evaluation of blocking states and accroding conditions, modifiable display attributes for dependant issues.
+		Reworked dependency tab: More conservative evaluation of blocking states and according conditions, modifiable display attributes for dependant issues.
 		</action>
 		<action dev="jhoech" type="add">
 		Changes for report engine: support for date ranges, report can be displayed on module home page.
@@ -36,9 +48,6 @@
 		</action>
 		<action dev="ronvoe122" type="fix">
 		Reworked search engine.
-		</action>
-		<action dev="ronvoe122" type="add">
-		Now using Torque 3.3 RC2
 		</action>
 		<action dev="spjames" type="add">
 		Adds support for multi-part MIME email for sending plain-text-with-HTML email.
@@ -61,7 +70,7 @@
        <a href="howto/windowsdomain-howto.html">this howto</a>.
       </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1565">
-      Date and user of issue-creation and last-modification are now availaible in search results' output.
+      Date and user of issue-creation and last-modification are now available in search results' output.
       </action>
       <action dev="jorgeuriarte" type="fix" due-to="Ricardo Amillategui" fix="SCB1708">
        Attribute fields could not be undefined once setted.
