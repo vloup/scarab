@@ -6,7 +6,10 @@
   </properties>
 
   <body>
-	<release version="b22" date="16-MARCH-2010">
+	<release version="b22" date="21-FEB-2012">
+		<action dev="jhoech" type="update">
+		Moved velocity to 1.6.3.
+		</action>
 		<action dev="jhoech" type="fix">
 		Implemented property for maximum file size of uploads: scarab.file.max.size
 		</action>
