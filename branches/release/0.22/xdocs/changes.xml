@@ -14,7 +14,7 @@
 		If an assigned user was removed from issue, related issues weren't removed from according search result.
 		</action>
 		<action dev="jhoech" type="update">
-		Moved torque from 3.3-RC2 to 3.3
+		Moved torque to 3.3
 		</action>
 		<action dev="jhoech" type="fix">
 		Changed value for boolean values in table SCARAB_GLOBAL_PARAMETER in scarab's database from single characters into long form.
