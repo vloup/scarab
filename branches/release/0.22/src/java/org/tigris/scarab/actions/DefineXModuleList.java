@@ -130,8 +130,9 @@ public class DefineXModuleList extends RequireLoginFirstAction
         throws Exception
     {
         // add any last minute additions
-        addSelectedRMITs(data, context);
         ScarabUser user = (ScarabUser)data.getUser();
+        user.setCurrentMITList(new MITList());
+        addSelectedRMITs(data, context);
         MITList currentList = user.getCurrentMITList();
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
