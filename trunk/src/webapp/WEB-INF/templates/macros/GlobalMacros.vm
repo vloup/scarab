@@ -555,21 +555,29 @@ $displayValue
  #end
 #end
 
-#macro (indexedRowsWithIdleHours $count $hours)
+#macro (indexedElementWithIdleHours $element $count $hours)
  #if    ($hours <=  0) #set ($extra = "")
- #elseif($hours <  12) #set ($extra = "_attention1")
- #elseif($hours <  36) #set ($extra = "_attention2")
- #elseif($hours < 120) #set ($extra = "_attention3")
- #elseif($hours < 240) #set ($extra = "_attention4")
+ #elseif($hours < 168) #set ($extra = "_attention1")
+ #elseif($hours < 336) #set ($extra = "_attention2")
+ #elseif($hours < 400) #set ($extra = "_attention3")
+ #elseif($hours < 500) #set ($extra = "_attention4")
  #else
    #set ($extra = "_attention5")
  #end
   
  #if ($count % 2 > 0)
-    <tr class="a$extra">
+    <$element class="a$extra">
  #else
-    <tr class="b$extra">
+    <$element class="b$extra">
  #end
+#end
+
+#macro (indexedRowsWithIdleHours $count $hours)
+ #indexedElementWithIdleHours("tr" $count $hours)
+#end
+
+#macro (indexedColumnsWithIdleHours $count $hours)
+ #indexedElementWithIdleHours("td" $count $hours)
 #end
 
 #macro (indexedRowsWithStyle $count $style)

@@ -173,16 +173,19 @@
   #foreach ($record in $qrIterator)
     #set ($issue = $scarabR.getIssue($record.UniqueId))
     $qrIterator.initializeLink($link)
+    #indexedRows($velocityCount)
+    <td>
+      <input type="hidden" name="all_issue_ids" value="$record.UniqueId" />
+      <input type="checkbox" name="issue_ids" value="$record.UniqueId" />
+    </td>
+  
     #if ($issue.isOnHold() || $issue.isSealed())
-      #indexedRows($velocityCount)
+      <td>
     #else
-      #indexedRowsWithIdleHours($velocityCount $issue.HoursIdle)
+      #indexedColumnsWithIdleHours($velocityCount $issue.HoursIdle)
     #end
-  <td>
-   <input type="hidden" name="all_issue_ids" value="$record.UniqueId" />
-   <input type="checkbox" name="issue_ids" value="$record.UniqueId" />
-  </td>
-  <td><a href="$link">$record.UniqueId</a></td>
+  
+    <a href="$link">$record.UniqueId</a></td>
   #if (!$record.AttributeValuesAsCSV)
     <td>$issue.DefaultText</td>
   #end

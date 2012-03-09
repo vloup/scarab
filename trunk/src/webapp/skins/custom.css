@@ -121,21 +121,22 @@ div.tree_popup ol.treeview li ol.treeview li.leaf a {
 	color:red;
 }
 
+/*
 // colrized issuelists
 // the schema is:
 //
-//
+*/
 
-.a_attention1 td {background: #fee378;}
-.b_attention1 td {background: #fdebad;}
-.a_attention2 td {background: #ffb573;}
-.b_attention2 td {background: #fec08e;}
-.a_attention3 td {background: #ffb573;}
-.b_attention3 td {background: #fec08e;}
-.a_attention4 td {background: #ffb573;}
-.b_attention4 td {background: #fec08e;}
-.a_attention5 td {background: #fa686b;}
-.b_attention5 td {background: #fc8689;}
+td.a_attention1 {vertical-align:middle;                                                                                     background-color:#dddddd;}
+td.b_attention1 {vertical-align:middle;                                                                                     background-color:#efefef;}
+td.a_attention2 {vertical-align:middle; background: url(images/attention_low.png) no-repeat scroll 95% 52% transparent;     background-color:#dddddd;}
+td.b_attention2 {vertical-align:middle; background: url(images/attention_low.png) no-repeat scroll 95% 52% transparent;     background-color:#efefef;}
+td.a_attention3 {vertical-align:middle; background: url(images/attention_medium.png) no-repeat scroll 95% 52% transparent;  background-color:#dddddd;}
+td.b_attention3 {vertical-align:middle; background: url(images/attention_medium.png) no-repeat scroll 95% 52% transparent;  background-color:#efefef;}
+td.a_attention4 {vertical-align:middle; background: url(images/attention_high.png) no-repeat scroll 95% 52% transparent;    background-color:#dddddd;}
+td.b_attention4 {vertical-align:middle; background: url(images/attention_high.png) no-repeat scroll 95% 52% transparent;    background-color:#efefef;}
+td.a_attention5 {vertical-align:middle; background: url(images/attention_highest.png) no-repeat scroll 95% 52% transparent; background-color:#dddddd;}
+td.b_attention5 {vertical-align:middle; background: url(images/attention_highest.png) no-repeat scroll 95% 52% transparent; background-color:#efefef;}
 
 // experimental stuff will be removed later.
 

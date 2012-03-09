@@ -469,11 +469,11 @@ a:active,a:hover,#leftcol a:active,#leftcol a:hover {
 }
 
 .a td {
-	background: #ddd;
+	background-color: #ddd;
 }
 
 .b td {
-	background: #efefef;
+	background-color: #efefef;
 }
 
 table,th,td {
