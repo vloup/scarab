@@ -971,6 +971,25 @@ public class ScarabGlobalTool
         String [] result = ScarabModule.getAutoApprovedRoles();
         return (result == null) ? EMPTY_STRING:result;
     }    
+
+    /**
+     * @param roleName
+     * @return Returns if the given Role is autoApproved
+     */
+    public static boolean getIsAutoApprovedRole(String roleName)
+    {
+        boolean result = false;
+        String[] autoApprovedRoles = getAutoApprovedRoles();
+        for(int index=0; index < autoApprovedRoles.length; index++)
+        {
+            if (autoApprovedRoles[index].equals(roleName))
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
     
     /**
      * @return  Return the current turbine configuration with all keys included
