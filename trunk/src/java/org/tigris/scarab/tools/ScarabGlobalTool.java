@@ -139,6 +139,8 @@ public class ScarabGlobalTool
 
     private static final Logger LOG = 
         Logger.getLogger("org.tigris.scarab");
+    
+    public static final String[] EMPTY_STRING = new String[0];
 
     /**
      * holds the Scarab constants
@@ -959,6 +961,17 @@ public class ScarabGlobalTool
         return getModuleCodeLength() + 6;
     }
 
+    /**
+     * @return Return a String array containing The names of roles
+     *         which can be auto approved. If no roles exist, 
+     *         return an Empty list
+     */
+    public static String[] getAutoApprovedRoles()
+    {
+        String [] result = ScarabModule.getAutoApprovedRoles();
+        return (result == null) ? EMPTY_STRING:result;
+    }    
+    
     /**
      * @return  Return the current turbine configuration with all keys included
      */
