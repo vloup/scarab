@@ -1034,7 +1034,7 @@ public class ScarabModule
      * returns an array of Roles that can be approved without need for
      * moderation.
      */
-    public String[] getAutoApprovedRoles()
+    public static String[] getAutoApprovedRoles()
     {
         return Turbine.getConfiguration()
             .getStringArray(ScarabConstants.AUTO_APPROVED_ROLES);
