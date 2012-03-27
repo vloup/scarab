@@ -1,0 +1,107 @@
+#*
+ * This template assumes it will get in the context:
+ * o $issue: The issue on the notification is created
+ * o $link: Scarab link tool
+ * o $boundary: MIME multi-part boundary marker
+ * o $creators: Set with the different users whose activity is reported
+ * o $firstNotification: The older notificationstatus of this report
+ * o $lastNotification: The younger notificationstatus of this report
+ * o $ActivityIssue: General issue activities to be reported
+ * o $ActivityPersonnelChanges: Personnel changes to be notified
+ * o $ActivityAttributeChanges:
+ * o $ActivityAssociatedInfo: URL/Attachment changes
+ * o $ActivityDependencies: Dependency changes
+ * o $ActivityComments: Comments generated during this report's scope
+ * o $multipleActivity: "true" or "false", depending on the notification scoping
+ *   several activities or just one.
+*#
+#set ($issueURL = "$link.getIssueIdLink($issue)")
+#set ($user = $issue.ModifiedBy)
+#set ($defaultText = $issue.DefaultText)
+#set ($module = $issue.Module)
+#set ($issueType   = $issue.issueType)
+#set ($rmit        = $module.getRModuleIssueType($issueType))
+$l10n.ActivityReportOn
+
+  #markup('b')$rmit.displayName $issue.UniqueId - $issue.DefaultText#markup('b')
+
+
+  $l10n.ScarabLink: $issueURL
+  $l10n.CapModule: $module.Name
+
+
+#if ($multipleActivity)
+  $l10n.ActivityGeneratedBy
+#foreach ($creat in $creators)
+  - $creat.Name ($creat.Email)
+#end
+  $l10n.ActivityBetween $firstNotification.getActivityCreationDate($l10n) $l10n.ActivityAnd $lastNotification.getActivityCreationDate($l10n).
+#else
+  ${l10n.ActivityGeneratedBy}#foreach ($creat in $creators) $creat.Name ($creat.Email)#end $l10n.ActivityAt $firstNotification.getActivityCreationDate($l10n)
+#end
+
+#if ($ActivityReasons)
+  #markup('b')$l10n.ActivityReasons#markup('b')
+
+#foreach ($reason in $ActivityReasons)
+  - $reason
+#end
+#end
+
+
+#if ($ActivityIssue)
+#foreach ($not in $ActivityIssue)
+  ** $not.Activity.getDescription($l10n) **
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityPersonnelChanges)
+  #markup('b')$l10n.ActivityPersonnelChanges#markup('b')
+
+#foreach ($not in $ActivityPersonnelChanges)
+  - $not.Activity.getDescription($l10n)
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityAttributeChanges)
+  #markup('b')$l10n.ActivityAttributeChanges#markup('b')
+
+#foreach ($not in $ActivityAttributeChanges)
+#if ($not.Activity.Attribute.AttributeType.Name == "long-string")
+  - $l10n.format("AttributeSetTo", $not.Activity.DisplayName):
+    "$not.Activity.NewValue"
+#else
+  - $not.Activity.getDescription($l10n)
+#end
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityAssociatedInfo)
+  #markup('b')$l10n.ActivityAssociatedInfo#markup('b')
+
+#foreach ($not in $ActivityAssociatedInfo)
+  - $not.Activity.getDescription($l10n)
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityDependencies)
+  #markup('b')$l10n.ActivityDependencies#markup('b')
+
+#foreach ($not in $ActivityDependencies)
+  - $not.Activity.getDescription($l10n)
+#end
+
+-------------------------------------------------------------------------------
+#end
+#if ($ActivityComments)
+  #markup('b')$l10n.ActivityComments#markup('b')
+#foreach ($not in $ActivityComments)
+
+  - $l10n.By $not.Creator.Name - $not.getActivityCreationDate($l10n) ---
+  "$not.Activity.Attachment.Data"
+#end
+#end

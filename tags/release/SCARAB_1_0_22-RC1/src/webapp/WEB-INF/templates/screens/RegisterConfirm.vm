@@ -1,0 +1,43 @@
+<div id="registerconfirm" class="app">
+
+#set ($regGroup = $intake.Register.Default)
+
+<p>
+$l10n.ConfirmAccuracy
+</p>
+
+<h3>$l10n.Confirmation</h3>
+
+<form action="$link.setPage("RegisterConfirm.vm")" method="post">
+<input type="hidden" name="action" value="Register" />
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="Confirm.vm" />
+<input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="Register.vm" />
+<input name="$regGroup.FirstName.Key" value="$regGroup.FirstName" type="hidden"  />
+<input name="$regGroup.LastName.Key" value="$regGroup.LastName" type="hidden"  />
+<input name="$regGroup.Email.Key" value="$regGroup.Email" type="hidden"  />
+<input name="$regGroup.UserName.Key" value="$regGroup.UserName" type="hidden" />
+<div class="axial">
+<table cellpadding="3" cellspacing="2" border="0">
+ <tr>
+  <th>$l10n.FullName</th>
+  <td>$regGroup.FirstName $regGroup.LastName</td>
+ </tr>
+ <tr>
+  <th>$l10n.Email</th>
+  <td>$regGroup.Email</td>
+ </tr>
+ <tr>
+  <th>$l10n.Username</th>
+  <td>$regGroup.UserName</td>
+ </tr>
+</table>
+</div>
+
+<div class="functnbar2">
+<input type="submit" name="eventSubmit_doBack" value="$l10n.Back" />&#160;
+<input type="submit" name="eventSubmit_doConfirmRegistration" value="$l10n.Confirm" />
+</div>
+$intake.declareGroups()
+
+</form>
+</div>

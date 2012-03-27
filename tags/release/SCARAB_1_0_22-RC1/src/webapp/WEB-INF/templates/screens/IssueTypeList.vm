@@ -1,0 +1,19 @@
+##
+## This template expects some context variables from the java screen class:
+## - $issueTypesAvailaible: if FALSE, current module has no associated issuetypes
+##                          and so querymatrix cannot be displayed.
+##
+## TODO: Where is this template used from? Is it redundant with QueryMatrix.vm?
+##
+
+#set ($user = $data.User)
+$user.setHomePage("matrix")
+
+
+<div class="app" id="xmodulelist">
+  #if ($user.hasAnySearchableRMITs() && $issueTypesAvailaible)
+    #renderQueryMatrix()
+  #else
+    <p><em>$l10n.NoMoreIssueTypes</em></p>
+  #end
+</div>
