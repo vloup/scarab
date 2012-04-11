@@ -25,7 +25,7 @@
 <subsection name="Upgrading the database">
 	<subsection name="The quick step migration procedure">
 	<ul>
-	<li>We assume, you have already built the "b21" web application either with Ant or with Maven. It is the same for other versions, too, e.g. "b22".</li>
+	<li>We assume, you have already built the "b21" web application either with Ant or with Maven. It is the same for other versions, too, e.g. "22".</li>
 	<li>Change to the build/ directory of your generated web application and run the appropriate target for the predecessor's version number, e.g. for "b21":
 	<source>ant migrate-from-b20</source></li>
 	<li>
@@ -53,7 +53,7 @@
 	</li>
     </ul>
 	</subsection>
-	<subsection name="Details of b22 migration task">
+	<subsection name="Details of 22 migration task">
 		<p>
 		This migration contains following database relevant modifications:
 		</p>

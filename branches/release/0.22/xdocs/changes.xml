@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-	<release version="b22" date="21-FEB-2012">
+	<release version="22" date="21-FEB-2012">
 		<action dev="jhoech" type="update">
 		Moved velocity to 1.6.3.
 		</action>
