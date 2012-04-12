@@ -79,6 +79,7 @@ import org.tigris.scarab.om.MITList;
 import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabPaginatedList;
@@ -735,7 +736,7 @@ public class ScarabModule
             // a way to satisfy method signature regarding "throws" for Torque class and Group class.
             // that is hide it all by throwing a RuntimeException.
             // usuages of this method must be careful of this!
-            throw new ScarabRuntimeException(new L10NKey("ScarabModule.save TorqueException <localize me>"),e); //EXCEPTION
+            throw new ScarabRuntimeException((Localizable)null,e); //EXCEPTION
         }
     }
 
@@ -776,7 +777,7 @@ public class ScarabModule
                         new ScarabException(
                                 L10NKeySet.ExceptionModuleAllreadyExists,
                         getRealName(), 
-                        getParentId()));
+                        getParent().getName()));
             }
 
             final String code = getCode();
