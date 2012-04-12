@@ -19,6 +19,12 @@
 #if ($issueList)
   #foreach ($issueId in $issueList)
      #set ($currentIssue = $scarabR.getIssue($issueId))
+     
+     ##detect current module from first issue as in MoveIssue.java
+     #if(!$issueModule)
+     	#set ($issueModule= $currentIssue.Module)
+     #end
+
      #if ($currentIssue && $scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $currentIssue.Module))
      <input type="hidden" name="issue_ids" value="$issueId" />
      <input type="hidden" name="id" value="$issueId" />
