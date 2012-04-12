@@ -255,6 +255,7 @@ Ensure that "maven.velocity.version" is set to
 an applicable version number, such as 1.5 or 1.4.
 Current value is: ${maven.velocity.version}
 		</echo>
+	   <attainGoal name="changes:report"/>
        <attainGoal name="sdocbook"/>
 <!--        <attainGoal name="torque:doc"/> -->
        <attainGoal name="javadoc"/>
