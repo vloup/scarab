@@ -70,6 +70,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
@@ -173,9 +174,11 @@ public class ModifyModule extends RequireLoginFirstAction
                         // FIXME: Using SQL because IDBroker doesn't have a Peer yet.
                         String idTable = IDBroker.TABLE_NAME.substring(0, 
                                 IDBroker.TABLE_NAME.indexOf('.'));
+                        String instanceId = GlobalParameterManager
+                        .getString(ScarabConstants.INSTANCE_ID);
                         String sql = "update " + idTable 
-                         + " SET TABLE_NAME='" + newCode + "' WHERE TABLE_NAME='" +
-                         origCode + "'";
+                         + " SET TABLE_NAME='" + instanceId + "-" + newCode + "' WHERE TABLE_NAME='" +
+                         instanceId + "-" + origCode + "'";
                         BasePeer.executeStatement(sql);                                                
                     }
                     else
