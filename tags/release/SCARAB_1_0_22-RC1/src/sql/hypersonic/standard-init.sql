@@ -1,1 +1,0 @@
-set write_delay 20 millis;

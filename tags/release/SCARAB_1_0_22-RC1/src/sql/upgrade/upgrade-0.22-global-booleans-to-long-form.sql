@@ -1,5 +1,0 @@
-/*
- * Converts all short form booleans into long form for SCARAB_GLOBAL_PARAMETER.
- */
-UPDATE SCARAB_GLOBAL_PARAMETER SET VALUE = 'TRUE' WHERE upper(VALUE) = 'T';
-UPDATE SCARAB_GLOBAL_PARAMETER SET VALUE = 'FALSE' WHERE upper(VALUE) = 'F';
