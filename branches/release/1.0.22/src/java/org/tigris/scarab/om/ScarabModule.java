@@ -741,6 +741,22 @@ public class ScarabModule
     }
 
     /**
+     * Return duplicates for given name and parent.
+     * @param realName : Real name.
+     * @param parentId  : Id of parent module.
+     * @return : List of duplicates.
+     * @throws TorqueException
+     */
+    public List getDuplicatesByNameAndParent(String realName, Integer parentId) throws TorqueException{
+    	
+    	final Criteria crit = new Criteria();
+        crit.add(ScarabModulePeer.MODULE_NAME, realName);
+        crit.add(ScarabModulePeer.PARENT_ID, parentId);
+        return ScarabModulePeer.doSelect(crit);
+        
+    }
+    
+    /**
      * Saves the module into the database. Note that this
      * cannot be used within a activitySet if the module isNew()
      * because dbCon.commit() is called within the method. An
@@ -752,17 +768,10 @@ public class ScarabModule
         // if new, make sure the code has a value.
         if (isNew())
         {
-            final Criteria crit = new Criteria();
-            crit.add(ScarabModulePeer.MODULE_NAME, getRealName());
-            crit.add(ScarabModulePeer.PARENT_ID, getParentId());
-            // FIXME: this should be done with a method in Module
-            // that takes the two criteria values as a argument so that other 
-            // implementations can benefit from being able to get the 
-            // list of modules. -- do not agree - jdm
 
             List result;
             try {
-                result = ScarabModulePeer.doSelect(crit);
+                result = getDuplicatesByNameAndParent(getRealName(), getParentId());
             }
             catch (TorqueException te)
             {

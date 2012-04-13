@@ -261,6 +261,12 @@ public interface Module
     int getDedupeSequence(IssueType issueType)
         throws TorqueException;
 
+    /**
+     * Gets duplicate modules for given real module name and parent.
+     */
+    List getDuplicatesByNameAndParent(String realName, Integer parentId) 
+    	throws TorqueException;
+    
     List getRModuleAttributes(IssueType issueType, boolean activeOnly,
                                      String attributeType)
         throws TorqueException;
