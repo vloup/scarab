@@ -2930,7 +2930,7 @@ public class Issue
             .getInstance(NUMBERKEY_0);
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
-                                ActivityType.ISSUE_MOVED,
+                                ActivityType.ISSUE_COPIED,
                                 getUniqueId(), newIssue.getUniqueId());
 
         newIssue.index();
