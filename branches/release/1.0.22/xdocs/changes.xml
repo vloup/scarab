@@ -6,7 +6,25 @@
   </properties>
 
   <body>
-	<release version="22" date="21-FEB-2012">
+	<release version="22" date="13-APRIL-2012">
+		<action dev="mcoss" type="fix">
+		Some localization issues.
+		</action>
+		<action dev="mcoss" type="fix">
+		Show confirmed users only in list of module's assignable personnel.
+		</action>
+		<action dev="mcoss" type="fix">
+		Show information message if there are no issues in currently selected results page.
+		</action>
+		<action dev="mcoss" type="fix">
+		Some minor email layout fixes.
+		</action>
+		<action dev="mcoss" type="fix">
+		Reason of change for issue delete actions.
+		</action>
+		<action dev="mcoss" type="fix">
+		Notifications for moving and copying issues.
+		</action>
 		<action dev="jhoech" type="update">
 		Moved velocity to 1.6.3.
 		</action>
