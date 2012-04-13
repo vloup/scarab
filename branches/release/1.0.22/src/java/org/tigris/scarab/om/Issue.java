@@ -3203,16 +3203,20 @@ public class Issue
             for (Iterator it = dependencies.iterator(); it.hasNext(); )
             {
                 Depend depend = (Depend)it.next();
-                ActivitySet deleteSet = 
-                    this.doDeleteDependency(activitySet, depend, user);
-                for (Iterator act = deleteSet.getActivityList().iterator(); act.hasNext(); )
-                {
-                    activitySet.addActivity((Activity)act.next());
-                }
-                NotificationManagerFactory.getInstance()
-                        .addActivityNotification(ActivityType.ISSUE_DELETED,
-                                activitySet, this, user);
+                if(!depend.getDeleted()){
+                	ActivitySet deleteSet = 
+                        this.doDeleteDependency(activitySet, depend, user);
+                    for (Iterator act = deleteSet.getActivityList().iterator(); act.hasNext(); )
+                    {
+                        activitySet.addActivity((Activity)act.next());
+                    }
+                }        
             }
+            
+            NotificationManagerFactory.getInstance()
+            .addActivityNotification(ActivityType.ISSUE_DELETED,
+                    activitySet, this, user);
+            
             save();
         }
     }    
