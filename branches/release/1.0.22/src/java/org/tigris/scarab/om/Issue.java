@@ -2939,6 +2939,7 @@ public class Issue
         attachment.save();
 
         // Create activitySet for the MoveIssue activity
+        // NOTE: There is no distinction bewteen copy and move actions in ActivitySetTypePeer.
         final ActivitySet activitySet2 = 
         	newIssue.attachActivitySet(null, user, attachment, ActivitySetTypePeer.MOVE_ISSUE__PK);
 
@@ -4225,7 +4226,7 @@ public class Issue
     }    
     
     /**
-     * Returns a list of issues that actually "block" this issue, i.e., that
+     * Returns a list of issues that currently "block" this issue, i.e., that
      * are related via a "is blocked by" dependency, and are "blocking".
      * @return
      */
@@ -4243,7 +4244,7 @@ public class Issue
     }
     
     /**
-     * Returns a list of issues that are blockable by this issue, via a "is_blocked_by"
+     * Returns a list of issues that might be blocked by this issue, via a "is_blocked_by"
      * relationship. 
      * @return
      * @throws TorqueException
