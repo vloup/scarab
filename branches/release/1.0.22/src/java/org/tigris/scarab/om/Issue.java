@@ -3207,6 +3207,19 @@ public class Issue
         {
             ActivitySet activitySet = attachActivitySet(null, user);
             ActivityManager.createDeleteIssueActivity(this, activitySet);
+            
+            Attachment attachment = new Attachment();
+            
+            String note = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "DeletedIssueNote");
+            
+            attachment.setData(note);
+            attachment.setName(note);
+            attachment.setTextFields(user, this, Attachment.MODIFICATION__PK);
+            attachment.save();         
+            
             this.setDeleted(true);
             List dependencies = this.getDependsRelatedByObservedId();
             dependencies.addAll(this.getDependsRelatedByObserverId());
@@ -3222,6 +3235,8 @@ public class Issue
                     }
                 }        
             }
+            
+            activitySet.setAttachment(attachment);
             
             NotificationManagerFactory.getInstance()
             .addActivityNotification(ActivityType.ISSUE_DELETED,
