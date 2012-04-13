@@ -492,6 +492,13 @@ public class ScarabUpdateHelper {
 
     }
 
+    /**
+     * Returns if issue type has a parent id which isn't 0,
+     * which is the defintion for an issue type template.
+     * 
+     * @param it : Issue type.
+     * @return
+     */
     private boolean isIssueTypeTemplate(IssueType it) {
         return it.getParentId().intValue() != 0;
     }
