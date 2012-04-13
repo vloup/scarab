@@ -1,0 +1,44 @@
+<chapter>
+<title>Manage users and permissions in Scarab</title>
+	<sect1>
+		<title>Administrator</title>	
+		<simpara>Each Scarab installation has a global administrator. His/her login is &quot;Administrator&quot; by default. But this may have been changed when building Scarab. The initial password is &quot;1&quot;. This <emphasis>should</emphasis> have been changed after building Scarab.</simpara>
+		<simpara>This native Administrator account has all necessary permissions to manage yout installation of Scarab. Note that most permission for a role are stored for every module separately. If you add a new module, you have to edit user's permissions for this new module. Because of this there is no real administrator account which have all rights all over Scarab.</simpara>
+	</sect1>
+	<sect1>
+		<title>Creating Users</title>	
+		<itemizedlist>
+		<listitem>Goto the section for user's in navigation for administrators.</listitem>
+		<listitem>Select screen for creating a new user in navigation.</listitem>
+		<listitem>Enter all user data for the new user. No field should be left blank.</listitem>
+		<listitem>Save your sattings and the new user will be created.</listitem>
+		</itemizedlist>
+	</sect1>
+	<sect1>
+		<title>Edit Users</title>
+		<itemizedlist>
+		<listitem>Goto the section for user's in navigation for administrators.</listitem>
+		<listitem>Select screen for managing users in navigation.</listitem>
+		<listitem>Select a user you want to edit and press button for "edit user", or if you want to "delete user"</listitem>
+		</itemizedlist>
+	</sect1>
+	<sect1>
+		<title>Creating Roles</title>
+		<itemizedlist>
+		<listitem>Goto the section for roles in navigation for administrators.</listitem>
+		<listitem>Here you are able to edit, create or delete roles. For creating a new role you have to use the button for add/create a new role.</listitem>
+		<listitem>If you want to create a new role you only have to enter a name first. Afterwards click "Save" to continue.</listitem>
+		<listitem>You will be guided to a new screen where you have to choose one ore more permission for your newly created role. Every user with this role will have these permission.</listitem>
+		<listitem>Save your settings. The screen for overview of roles should show your new role for selection.</listitem>
+		<listitem>Editing a role is very similar. The name of a role is not editable.</listitem>
+		</itemizedlist>
+	</sect1>
+	<sect1>
+		<title>Managing User Roles</title>
+		<itemizedlist>
+		<listitem>Goto the section for user's in navigation for administrators and select a specfic user by user's search.</listitem>
+		<listitem>After you have selected a user you can edit the roles for the user by using the related button.</listitem>
+		<listitem>Select a role for all modules the user should have any permissions and save your settings.</listitem>
+		</itemizedlist>
+	</sect1>
+</chapter>

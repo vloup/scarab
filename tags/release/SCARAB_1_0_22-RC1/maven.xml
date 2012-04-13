@@ -1,0 +1,416 @@
+<project default="war:war" 
+    xmlns:j="jelly:core" 
+    xmlns:util="jelly:util" 
+    xmlns:ant="jelly:ant" 
+    xmlns:i="jelly:interaction" 
+    xmlns:bsh="jelly:beanshell" 
+    xmlns:maven="jelly:maven">
+    
+    <maven:property name="root.dir" defaultValue="${basedir}"/>
+    <maven:property name="applicationRoot" defaultValue="${root.dir}/target/scarab"/>
+    <j:set var="maven.build.dest" value="${root.dir}/target/scarab/WEB-INF/classes"/>
+
+    <maven:property name="maven.changes.issue.template" defaultValue="%URL%/issues?id=%ISSUE%"/>
+    <ant:property environment="env"/>
+    <maven:property name="maven.nsis.exe" defaultValue="${env.ProgramFiles}/NSIS/makensis.exe"/>
+
+    <maven:property name="debian.package.name" defaultValue="scarab-${scarab.context}-${version}" />
+   <maven:property name="debian.package.dir" defaultValue="${root.dir}/target/${debian.package.name}" />
+   <maven:property name="debian.tomcat.version" defaultValue="tomcat4" />
+
+    <goal name="scarab:create-db">
+        <ant:ant antfile="build/build.xml"
+             target="create-db" 
+        	 inheritAll="false"
+        	 dir="${root.dir}">
+        </ant:ant>
+    </goal>
+
+    <goal name="scarab:migrate-from-0.21">
+        <ant:ant antfile="build/build.xml"
+             target="migrate-from-0.21"
+                 inheritAll="false"
+                 dir="${root.dir}">
+        </ant:ant>
+    </goal>
+
+    <goal name="scarab:migrate-from-b20">
+        <ant:ant antfile="build/build.xml"
+             target="migrate-from-b20"
+                 inheritAll="false"
+                 dir="${root.dir}">
+        </ant:ant>
+    </goal>
+    
+    <goal name="scarab:windows-installer" 
+          description="Create a windows installer"
+          prereqs="scarab:base-distribution,nsis"/>
+ 
+    <goal name="scarab:base-distribution" description="Create an out of the box ready distribution">
+        
+        <ant:condition property="database.is.default.hypersonic">
+           <ant:equals arg1="${scarab.database.type}" arg2="hypersonic"/>
+        </ant:condition> 
+        
+        <ant:fail unless="database.is.default.hypersonic" message="Database type must be hypersonic and all database settings must have the default values"/>
+
+        <maven:property name="maven.test.skip" defaultValue="true"/>
+
+        <attainGoal name="war:webapp"/>
+
+        <ant:ant antfile="build/build.xml"
+             target="generate-all-sql" 
+        	 inheritAll="false"
+        	 dir="${root.dir}">
+        </ant:ant>
+
+        <ant:ant antfile="build/build.xml"
+             target="create-db" 
+        	 inheritAll="false"
+        	 dir="${root.dir}">
+        </ant:ant>
+
+        <ant:mkdir dir="target/dist"/>
+
+        <ant:copy todir="target/dist/scarab">
+            <ant:fileset dir="target/scarab"> 
+              <exclude name="logs/*.*"/>
+              <exclude name="WEB-INF/index/*"/>
+            </ant:fileset>
+        </ant:copy>
+
+        <ant:copy todir="target/dist/tomcat">
+            <ant:fileset dir="tomcat"> 
+              <exclude name="logs/*.*"/>
+              <exclude name="webapps/scarab*.*"/>
+            </ant:fileset>
+        </ant:copy>
+
+        <ant:copy file="tomcat/webapps/scarab.allinone.xml.off" 
+            tofile="target/dist/tomcat/webapps/scarab.xml"/>
+    </goal>
+
+
+
+    <goal name="set-xml-transformer">
+        <j:set var="version">${java.version}</j:set>
+        <j:if test='${version.startsWith("1.5")}'>
+          ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+        </j:if>
+    </goal>
+
+    <!-- ======================================================== -->
+    <!-- P R O P E R T Y  -  M A I N T E N A N C E                -->
+    <!-- ======================================================== -->
+    <!-- This goal creates                                        -->
+    <!-- project.properties                                       -->
+    <!-- wizzard.properties and                                   -->
+    <!-- minimal.properties out of the source file                -->
+    <!-- scarab_properties.xml                                    -->
+    <!--                                                          -->
+    <!-- This goal should be run everytime when the               -->
+    <!-- scarab_properties.xml has changed                        -->
+    <!--                                                          -->
+    <!-- Manual run command:                                      -->
+    <!--                                                          -->
+    <!--     Maven scarab:update-properties                       -->
+    <!--                                                          -->
+    <!-- ======================================================== -->
+    <goal
+        name="scarab:update-properties"
+        description="update the scarab project.properties"
+        prereqs="set-xml-transformer">
+
+        <ant:style  
+             in="scarab_properties.xml"
+             out="project.properties"
+             style="project.xsl">
+             <outputproperty name="method" value="text"/>
+        </ant:style> 
+
+        <ant:style  
+             in="scarab_properties.xml"
+             out="minimal.properties"
+             style="minimal.xsl">
+             <outputproperty name="method" value="text"/>
+        </ant:style> 
+
+        <ant:style  
+             in="scarab_properties.xml"
+             out="wizzard.properties"
+             style="wizzard.xsl">
+             <outputproperty name="method" value="text"/>
+        </ant:style> 
+
+    </goal>
+    
+    <!-- ===================================================== -->
+    <!-- R E P O S I T O R Y  -  M A I N T E N A N C E         -->
+    <!-- ===================================================== -->
+    <!-- This goal checks for all dependencies of this project -->
+    <!-- and copies them to our local repository in            -->
+    <!--                                                       -->
+    <!--     www/repository                                    -->
+    <!--                                                       -->
+    <!-- This goal should be run everytime when the            -->
+    <!-- dependencies have changed                             -->
+    <!--                                                       -->
+    <!-- Manual run command:                                   -->
+    <!--                                                       -->
+    <!--     Maven scarab:update-repo                          -->
+    <!-- ===================================================== -->
+    <goal
+        name="scarab:update-repo"
+        description="update the Scarab www/repository">
+  
+        <!-- ============================ -->
+        <!-- get the project dependencies -->
+        <!-- ============================ -->
+        <j:useList var="deplist" class="java.util.Vector"/>
+        <j:forEach var="dep" items="${pom.dependencies}">
+          <j:set var="rc" value="${deplist.add(dep)}"/>
+        </j:forEach>
+    
+        <!-- ============================================ -->
+        <!-- Add missing resource to local www/repository -->
+        <!-- ============================================ -->
+        <j:forEach var="dep" items="${deplist}">
+          <j:set var="item">
+            ${repo}/${dep.artifactDirectory}/${dep.type}s/${dep.artifact}
+          </j:set> 
+
+          <util:file var="file" name="www/repository/${item}"/>
+          <j:if test="${!file.exists()}">
+               <echo>create ${file.getPath()}</echo>
+               <j:set var="from" value="${pom.getDependencyPath(dep.getId())}"/>
+               <ant:copy file="${from}" tofile="${file.getPath()}"/>
+          </j:if>
+        </j:forEach>
+    
+        <!-- =============================================== -->
+        <!-- determine existing resources in www/repository -->
+        <!-- ============================================== -->    
+        <j:useList var="replist" class="java.util.Vector"/>
+        <util:file var="repo" name="www/repository"/>
+        <j:forEach var="package" items="${repo.listFiles()}">
+          <j:if test="${package.isDirectory()}">
+            <j:forEach var="jars" items="${package.listFiles()}">
+              <j:if test='${jars.getName().equals("jars")}'>
+                <j:forEach var="resource" items="${jars.listFiles()}">
+                  <j:if test="${resource.isFile()}">
+                    <j:set var="rc" value="${replist.add(resource)}"/>
+                  </j:if>
+                </j:forEach>
+              </j:if>
+            </j:forEach>    
+          </j:if>      
+        </j:forEach>
+
+        <!-- ============================================= -->
+        <!-- remove obsolete resources from www/repository -->
+        <!-- ============================================ -->
+        <j:forEach var="resource" items="${replist}">
+          <j:set var="found" value="false"/>
+          <j:forEach var="dep" items="${deplist}">
+            <j:set var="item">
+              ${repo}/${dep.artifactDirectory}/${dep.type}s/${dep.artifact}
+            </j:set> 
+            <util:file var="file" name="${item}"/>
+            <j:if test="${file.getPath().equals(resource.getPath())}">
+             <j:set var="found" value="true"/>
+             <j:break/>
+            </j:if>
+          </j:forEach>
+          <j:if test="${found==false}">
+            <ant:delete file="${resource.getPath()}"/>
+          </j:if>
+        </j:forEach>
+    
+    </goal>
+
+    
+    <preGoal name="java:compile">
+        <ant:ant antfile="build/build.xml"
+             target="generate-om" 
+        	 inheritAll="false"
+        	 dir="${root.dir}">
+        </ant:ant>
+    </preGoal>
+    
+    <postGoal name="java:compile">
+        <ant:ant antfile="build/build.xml"
+             target="create-custom-property-file"
+                 inheritAll="false"
+                 dir="${root.dir}"
+        >
+        </ant:ant>
+    </postGoal>
+    
+	<!-- =============================================== -->
+    <!-- build docs before maven site is generated       -->
+	<!-- =============================================== -->
+    <preGoal name="site">
+		<echo>
+Ensure that "maven.velocity.version" is set to 
+an applicable version number, such as 1.5 or 1.4.
+Current value is: ${maven.velocity.version}
+		</echo>
+	   <attainGoal name="changes:report"/>
+       <attainGoal name="sdocbook"/>
+<!--        <attainGoal name="torque:doc"/> -->
+       <attainGoal name="javadoc"/>
+<!--        <attainGoal name="scarab:check-locales"/> -->
+    </preGoal>    
+ 
+    <postGoal name="clean:clean">
+        <ant:ant antfile="build/build.xml"
+             target="clean" 
+          inheritAll="false"
+          dir="${root.dir}">
+        </ant:ant>
+    </postGoal>
+
+	<!-- generates source file for properties guide from scarab_properties file --> 
+    <postGoal name="xdoc:init"> 
+        <attainGoal name="set-xml-transformer"/>
+        <j:set var="genDocs" value="${maven.gen.docs}"/> 
+        <ant:style destdir="${genDocs}" in="scarab_properties.xml" out="${genDocs}/scarab_properties_final.xml"
+        style="properties.xsl" /> 
+    </postGoal>
+      
+    <!-- ===================================================== -->
+    <!-- R E S S O U R C E - F I L E   M A I N T E N A N C E   -->    
+    <!-- ===================================================== -->    
+    
+    <goal name="scarab:check-locales"
+          prereqs="java:compile"
+          description="Check language translations">
+		<ant:taskdef
+            name="checkLocaleBundles" 
+            classname="org.tigris.scarab.util.build.AntL10AnalysisTask" >
+            <ant:classpath>
+            	<ant:pathelement location="${maven.build.dest}" />
+            	<ant:path refid="maven.dependency.classpath" />
+            </ant:classpath>
+        </ant:taskdef>
+        
+        <echo>Checking localisations</echo>
+        <ant:checkLocaleBundles
+        	refFile="${maven.src.dir}/conf/classes/ScarabBundle_en.properties"
+        	verbose="2"
+        	outfile="xdocs/localeerrs.xml"
+        	>
+            <ant:fileset dir="${maven.src.dir}/conf/classes" >
+            	<include name="**/ScarabBundle_??.properties"/>
+		<include name="**/ScarabBundle_??_??.properties"/>
+                <exclude name="**/ScarabBundle_en.properties"/>
+            </ant:fileset>
+
+            <ant:messageSet error="NotInReference" severity="ERROR" />
+            <ant:messageSet error="NoTransAllowed" severity="ERROR" />
+            <ant:messageSet error="TranslationRequired" severity="ERROR" />
+            <ant:messageSet error="TranslatedTwiceDiff" severity="ERROR" />
+            <ant:messageSet error="IllegalPattern" severity="ERROR" />
+            <ant:messageSet error="DifferentAttributeCount" severity="ERROR" />
+            <ant:messageSet error="CantParseLine" severity="ERROR" />
+
+            <ant:messageSet error="DefinedTwice" severity="ERROR" />
+            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
+
+            <ant:messageSet error="TranslatedTwice" severity="INFORMATION" />
+            <ant:messageSet error="TranslationMissing" severity="INFORMATION" />
+            <ant:messageSet error="NotTranslated" severity="INFORMATION" />
+        </ant:checkLocaleBundles>
+
+        <echo>Checking Database localisations</echo>
+        <ant:checkLocaleBundles
+        	refFile="${maven.src.dir}/conf/classes/InitDbScarabBundle_en.properties"
+        	verbose="1"
+        	outfile="xdocs/localeerrs_db.xml"
+        	>
+            <ant:fileset dir="${maven.src.dir}/conf/classes" >
+            	<include name="**/InitDbScarabBundle_??.properties"/>
+                <exclude name="**/InitDbScarabBundle_en.properties"/>
+            </ant:fileset>
+
+            <ant:messageSet error="NotInReference" severity="ERROR" />
+            <ant:messageSet error="NoTransAllowed" severity="ERROR" />
+            <ant:messageSet error="TranslationRequired" severity="ERROR" />
+            <ant:messageSet error="TranslatedTwiceDiff" severity="ERROR" />
+            <ant:messageSet error="IllegalPattern" severity="ERROR" />
+            <ant:messageSet error="DifferentAttributeCount" severity="ERROR" />
+            <ant:messageSet error="CantParseLine" severity="ERROR" />
+
+            <ant:messageSet error="DefinedTwice" severity="ERROR" />
+            <ant:messageSet error="DefinedTwiceDiff" severity="ERROR" />
+
+            <ant:messageSet error="TranslatedTwice" severity="INFORMATION" />
+            <ant:messageSet error="TranslationMissing" severity="INFORMATION" />
+            <ant:messageSet error="NotTranslated" severity="INFORMATION" />
+        </ant:checkLocaleBundles>
+
+	    <!--  same for InitDb bundles -->   	
+    </goal>
+    
+    <!-- ===================================================== -->
+    <!-- DEBIAN PACKAGE CREATION FOR A SCARAB INSTANCE         -->
+    <!-- ===================================================== -->
+    <goal name="scarab:debian-package">
+	<attainGoal name="war:war"/>
+	<ant:mkdir dir="${debian.package.dir}/DEBIAN" />
+	<ant:mkdir dir="${debian.package.dir}/var/lib/${debian.tomcat.version}/webapps"/>
+	<ant:mkdir dir="${debian.package.dir}/etc/default"/>
+	<ant:mkdir dir="${debian.package.dir}/etc/${debian.tomcat.version}/policy.d"/>
+	<ant:mkdir dir="${debian.package.dir}/etc/cron.daily"/>
+	<ant:mkdir dir="${debian.package.dir}/usr/share/doc/scripts"/>
+	<ant:copy file="${root.dir}/target/${scarab.context}.war" todir="${debian.package.dir}/var/lib/${debian.tomcat.version}/webapps" />
+
+	<ant:filter token="CONTEXT" value="${scarab.context}"/>
+	<ant:filter token="VERSION" value="${version}-${DSTAMP}${TSTAMP}"/>
+	<ant:filter token="TOMCAT" value="${debian.tomcat.version}"/>
+	<ant:filter token="ATTACHMENTS" value="${scarab.attachments.repository}"/>
+	<ant:filter token="DBTYPE" value="${scarab.database.type}"/>
+	<ant:filter token="DBNAME" value="${scarab.database.name}"/>
+	<ant:filter token="DBUSER" value="${scarab.database.username}"/>
+	<ant:filter token="DBPASS" value="${scarab.database.password}"/>
+
+	<ant:copy file="${root.dir}/target/${scarab.context}.war" 
+		todir="${debian.package.dir}/var/lib/${debian.tomcat.version}/webapps/"/>
+	<ant:copy file="${root.dir}/build/policy.template" 
+		tofile="${debian.package.dir}/etc/${debian.tomcat.version}/policy.d/${scarab.context}.policy" 
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/default.template" 
+		tofile="${debian.package.dir}/etc/default/scarab-${scarab.context}" 
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/maintenance.template" 
+		tofile="${debian.package.dir}/etc/cron.daily/scarab-${scarab.context}-maint.sh" 
+		filtering="true"/>
+	<ant:chmod file="${debian.package.dir}/etc/cron.daily/scarab-${scarab.context}-maint.sh" perm="+x"/>
+	<ant:copy file="${root.dir}/build/control.template" 
+		tofile="${debian.package.dir}/DEBIAN/control"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/conffiles.template" 
+		tofile="${debian.package.dir}/DEBIAN/conffiles"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/copyright.template" 
+		tofile="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/copyright"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/changelog.template" 
+		tofile="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/changelog.Debian"
+		filtering="true"/>
+	<ant:copy file="${root.dir}/build/README.Debian.template" 
+		tofile="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/README.Debian"
+		filtering="true"/>
+    <ant:copy todir="${debian.package.dir}/usr/share/doc/scarab-${scarab.context}/scripts"
+    		filtering="true">
+        <ant:fileset dir="${root.dir}/build/scripts"> 
+          <include name="*.*"/>
+        </ant:fileset>
+    </ant:copy>
+
+	<ant:exec executable="/usr/bin/dpkg">
+		<arg line="-b ${debian.package.dir} ${debian.package.dir}-${DSTAMP}${TSTAMP}.deb"/>
+	</ant:exec>
+    </goal>
+
+</project>

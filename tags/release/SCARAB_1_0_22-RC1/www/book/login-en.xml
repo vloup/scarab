@@ -1,0 +1,65 @@
+<!-- $Id -->
+<chapter>
+	<title>Connecting to Scarab</title>
+	<abstract>
+		<simpara>To use Scarab, after having connected to the URL of your installation using your web browser, you can or must identify yourself. Thereafter, you need to choose the module in which you will work.</simpara>
+	</abstract>
+	<sect1>
+		<title>Anonymous access</title>
+		<screenshot>
+			<graphic fileref="images/anonymous.png"/>
+		</screenshot>
+		<simpara>Anonymous access may be granted to certain modules. These modules are listed on the home page of your Scarab installation and you don't have to login to access them.</simpara>
+		<simpara>If you have a Scarab account, or if you can create one, you'll probably able to access other modules, or you'll be able to perform more operations on the modules to which an anonymous access is granted.</simpara>
+	</sect1>
+	<sect1>
+		<title>Logging in</title>
+		<screenshot>
+			<graphic fileref="images/login.png"/>
+		</screenshot>
+		<simpara>In a corporate environment, someone may have created your account beforehand and may have given you your Scarab user name and password.</simpara>
+		<simpara>In other situations, or if you do not have a user account, usually you may create one using the &quot;Register&quot; link. In the register process, you will need to use an email address to which you really have access. Otherwise, the whole communication between Scarab and you will not work.</simpara>
+		<screenshot>
+			<graphic fileref="images/account1.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/account2.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/account3.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/account4.png"/>
+		</screenshot>
+		<simpara>If you forgot your password, you may have it reinitialized using the &quot;Reset password&quot; link. You will then receive a new password by email. During your next connection, after having typed the password you have been sent, you will be asked to change it immediately.</simpara>
+		<simpara/>
+		<screenshot>
+			<graphic fileref="images/forgot-password1.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/forgot-password2.png"/>
+		</screenshot>
+		<screenshot>
+			<graphic fileref="images/forgot-password3.png"/>
+		</screenshot>
+	</sect1>
+	<sect1>
+		<title>Choosing a module</title>
+		<screenshot>
+			<graphic fileref="images/select.png"/>
+		</screenshot>
+		<simpara>In the home screen (for anonymous access) or immediately after logging in, you will choose the module in which you plan to work.</simpara>
+		<simpara>You may also ask to access other modules if their manager has configured them so. For this, click the &quot;Ask roles&quot; button.</simpara>
+		<note>
+			<simpara>If you have access to only one module, You are automatically redirected to this module home page after logging in.</simpara>
+			<simpara>This module selection screen would not appear.</simpara>
+		</note>
+	</sect1>
+	<sect1>
+		<title>Logging out</title>
+		<simpara>At the end of your Scarab session, we suggest that you disconnect cleanly, using the link located at the top right of every Scarab screen.</simpara>
+		<screenshot>
+			<graphic fileref="images/disconnect.png"/>
+		</screenshot>
+	</sect1>
+</chapter>

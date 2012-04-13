@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+
+<!-- This script is included by bugzilla-scarab.xsl to configure Bugzilla to
+     Scarab transform. You must adjust these parameters to your needs.
+     For importing with the GUI, adjust the parameter default values here.
+     For importing at the command line, you can alternatively specify the
+     parameter values there. 
+  -->
+
+<!-- Only Bugzilla bugs matching this Bugzilla Product will be transformed -->
+<xsl:variable name="bz_product" as="xs:string">EASI-Studio III &amp; EDS</xsl:variable>
+
+<!-- Bugzilla exports dates but does not specify their timezone
+     So we'll tell Scarab that Bugzilla dates are in this timezone.
+  -->
+<xsl:variable name="bz_timezone" as="xs:string">GMT</xsl:variable>
+
+</xsl:stylesheet>

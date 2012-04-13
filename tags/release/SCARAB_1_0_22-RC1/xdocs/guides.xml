@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Scarab Guides</title>
+ </properties>
+
+ <body>
+
+ <section name="Scarab Guides">
+ <p>
+    You can access the Scarab Guides here.
+ </p>
+ <p>
+    We're actively improving the content of this guides, so please send to Scarab <a href="http://scarab.tigris.org/servlets/ProjectMailingListList">
+    mailing lists</a> your doubts or improvements.
+ </p>
+ <subsection name="Scarab User's Guide">
+    <ul>
+    <li>English version <a href="docbook/scarab-user-en.pdf">PDF</a> <a href="docbook/scarab-user-en.html">HTML</a></li>
+    </ul>
+ </subsection> 
+ <subsection name="Scarab Administration Guide">
+    <ul>
+    <li>English version <a href="docbook/scarab-admin-en.pdf">PDF</a> <a href="docbook/scarab-admin-en.html">HTML</a></li>
+    </ul>
+ </subsection>
+ <subsection name="Scarab Developer's Guide">
+    <ul>
+    <li>English version <a href="docbook/scarab-dev-en.pdf">PDF</a> <a href="docbook/scarab-dev-en.html">HTML</a></li>
+    </ul>
+ </subsection>
+ <p>
+   <i>If you get an Internet Explorer error message trying to read the PDF guides online, try to download them instead.
+   This is an Apache configuration issue we will try to sort out someday.</i>
+ </p>
+ </section>
+ </body>
+ </document>
