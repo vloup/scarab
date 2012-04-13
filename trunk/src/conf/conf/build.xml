@@ -210,6 +210,8 @@
             <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-fill_activity_type.sql"/>
             <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-attributegroup-viewrole.sql"/>
             <transaction src="${sql.current.upgrade.dir}/upgrade-0.22-add-scarab-issues-email-references.sql"/>
+			<transaction src="${sql.current.upgrade.dir}/upgrade-0.22-add-new-permissions.sql"/>
+			<transaction src="${sql.current.upgrade.dir}/upgrade-0.22-global-booleans-to-long-form.sql"/>
         </sql>
     </target>
 

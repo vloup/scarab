@@ -2871,7 +2871,7 @@
       </property>
       <property>
         <name>maven.repo.remote</name>
-        <default>file:www/repository,http://www.ibiblio.org/maven/,http://mirrors.ibiblio.org/pub/mirrors/maven/,http://guest:guest@PROJECT.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven, http://www.apache.org/dist/java-repository/</default>
+        <default>file:www/repository,http://www.ibiblio.org/maven/,http://repo2.maven.org/maven/,http://mirrors.ibiblio.org/pub/mirrors/maven,http://guest:guest@PROJECT.tigris.org/svn/scarab/trunk/www/repository/,http://maven-plugins.sourceforge.net/maven,http://www.apache.org/dist/java-repository/</default>
         <type>Build</type>
          <customization modification="optional">advanced</customization>
         <file/>

@@ -746,6 +746,36 @@ public class IssueSearch
         
         attributeIds.add(attributeId);
     }
+    
+    /**
+     * Returns reversed list of search users.
+     * Old order = user: attr1, attr2, attr3, ...
+     * New order = attr: user1, user2, user3, ... 
+     * @return
+     */
+    private Map getSearchUserAttributes(){
+    	 
+    	Map searchUserAttributes = new HashMap();
+    	for (Iterator i=searchUsers.entrySet().iterator(); i.hasNext();) 
+         {    
+    		
+             Map.Entry entry = (Map.Entry)i.next();
+             String userId = (String)entry.getKey();
+             Set attrIds = (Set)entry.getValue();
+             
+             for ( Iterator i2 = attrIds.iterator(); i2.hasNext();)
+             {  
+            	 String strAttributeId = (String)i2.next();
+            	 Set users = (Set)searchUserAttributes.get(strAttributeId);
+            	 if(users == null){
+            		 users = new HashSet();
+            	 }
+            	 users.add(userId);
+            	 searchUserAttributes.put(strAttributeId, users);
+             }
+         }
+    	return searchUserAttributes;
+    }
 
     public Integer getALL_TEXT()
     {
@@ -1436,7 +1466,6 @@ public class IssueSearch
     {        
         List anyUsers = new ArrayList();
         List creatorUsers = new ArrayList();
-        Map attrUsers = new HashMap();
 
         for (Iterator i = searchUsers.entrySet().iterator(); i.hasNext();)
         {                
@@ -1463,19 +1492,13 @@ public class IssueSearch
     	        }
     	        else 
     	        {
-    	            List userIds = (List)attrUsers.get(attrId);
-    	            if (userIds == null) 
-    	            {
-    	                userIds = new ArrayList();
-    	                attrUsers.put(attrId, userIds);
-    	            }
-    	            userIds.add(userId);
+    	           //Normal user attributes will be added as attributes in 'addAttributeOptionCriteria'.
     	        }
 
             }
         }
 
-        if (anyUsers.size()>0 || attrUsers.size()>0 || creatorUsers.size()>0)
+        if (anyUsers.size()>0 || creatorUsers.size()>0)
         {
             crit.addAlias("USER_TABLE", ActivityPeer.TABLE_NAME);
             crit.addJoin( 
@@ -1489,36 +1512,7 @@ public class IssueSearch
         {
             crit.addIn(useAlias("USER_TABLE",ActivityPeer.NEW_USER_ID), anyUsers);
         }                                     
-        if (attrUsers.size()>0) 
-        {
-            for (Iterator i = attrUsers.entrySet().iterator(); i.hasNext();)
-            {                
-                Map.Entry entry = (Map.Entry)i.next();
-                String attrId = (String)entry.getKey();
-                List userIds = (List)entry.getValue();
-                
-                Criteria.Criterion userIds4attrId = crit.getNewCriterion(
-                    useAlias("USER_TABLE",ActivityPeer.NEW_USER_ID),
-                    userIds,
-                    Criteria.IN
-                );
-                userIds4attrId.and(crit.getNewCriterion(
-                    useAlias("USER_TABLE",ActivityPeer.ATTRIBUTE_ID),
-                    attrId,
-                    Criteria.EQUAL
-                ));
-                
-                Criteria.Criterion c = crit.getCriterion(useAlias("USER_TABLE",ActivityPeer.NEW_USER_ID));
-                if(c!=null)
-                {
-                	c.or(userIds4attrId);
-                }
-                else
-                {
-                	crit.add(userIds4attrId);
-                }
-            }
-        }
+        
         if (anyUsers.size()>0 || creatorUsers.size()>0)
         {
             List anyAndCreators = new ArrayList();
@@ -1596,6 +1590,7 @@ public class IssueSearch
     {
         List setAttValues = getSetAttributeValues();
 
+		//get attributes avlues as flat list
         Map attrMap = new HashMap((int)(setAttValues.size()*1.25));
         for (int j=0; j<setAttValues.size(); j++) 
         {
@@ -1628,6 +1623,7 @@ public class IssueSearch
             }
         }
 
+		//add misc attribute values for search
         for (Iterator i=attrMap.entrySet().iterator(); i.hasNext();) 
         {
             Map.Entry options4Attribute = (Map.Entry)i.next();
@@ -1645,6 +1641,42 @@ public class IssueSearch
                 crit.or(useAlias(alias, AttributeValuePeer.OPTION_ID), (Object) null, Criteria.ISNULL);
             }
         }
+
+        Map searchUserAttributes = getSearchUserAttributes();
+        
+		//add values for user attributes
+        for (Iterator i=searchUserAttributes.entrySet().iterator(); i.hasNext();) 
+        {
+        	
+            Map.Entry entry = (Map.Entry)i.next();
+            String strAttributeId = (String)entry.getKey();
+            Set userIds = (Set)entry.getValue();
+            List searchUsersList = new ArrayList();
+        	
+            if(!ANY_KEY.equals(strAttributeId)
+        			&& !CREATED_BY_KEY.equals(strAttributeId)){
+        		int attributeId = Integer.parseInt(strAttributeId);
+            	//add search values for user attributes
+            	String alias = "av" + attributeId;            
+                crit.addAlias(alias, AttributeValuePeer.TABLE_NAME);
+                joinAttributeValue(crit, alias, attributeId, Criteria.LEFT_JOIN);
+                
+                for ( Iterator i2 = userIds.iterator(); i2.hasNext();)
+                {          	           	
+                	String strUserId = (String)i2.next();
+                	if(SEARCHING_USER_KEY.equalsIgnoreCase(strUserId)) 
+        	        {
+                		//Special user criteria. These are handled by method 'addUserCriteria'.
+        	        }
+        	        else{
+    	                searchUsersList.add(strUserId);
+        	        }
+                }
+                crit.andIn(useAlias(alias, AttributeValuePeer.USER_ID), searchUsersList );
+        	}                      
+            
+        }
+
     }
 
     private void joinAttributeValue(Criteria crit, String alias, Integer attributeId, SqlEnum operator)
