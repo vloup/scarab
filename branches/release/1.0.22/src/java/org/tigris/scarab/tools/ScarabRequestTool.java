@@ -2237,12 +2237,13 @@ e.printStackTrace();
                                                     int resultsPerPage,
                                                     String sortColumn,
                                                     String sortPolarity,
-                                                    boolean includeCommitters)
+                                                    boolean includeCommitters,
+                                                    boolean confirmedOnly)
         throws Exception
     {
         return userFilteredSearchResults(mitList, pageNum, resultsPerPage,
                                          sortColumn, sortPolarity, "", "",
-                                         includeCommitters);
+                                         includeCommitters, confirmedOnly);
     }
 
     /**
@@ -2251,7 +2252,7 @@ e.printStackTrace();
      */
     public ScarabPaginatedList getUserFilteredSearchResults(MITList mitList,
         int pageNum, int resultsPerPage,  String sortColumn,
-        String sortPolarity, boolean includeCommitters)
+        String sortPolarity, boolean includeCommitters, boolean confirmedOnly)
         throws Exception
     {
         String searchString = data.getParameters()
@@ -2267,7 +2268,7 @@ e.printStackTrace();
 
         return userFilteredSearchResults(mitList, pageNum, resultsPerPage,
                                          sortColumn, sortPolarity,
-                                         searchString, searchField, includeCommitters);
+                                         searchString, searchField, includeCommitters, confirmedOnly);
 
     }
 
@@ -2278,7 +2279,7 @@ e.printStackTrace();
                                                           String sortPolarity,
                                                           String searchString,
                                                           String searchField,
-                                                          boolean includeCommitters)
+                                                          boolean includeCommitters, boolean confirmedOnly)
         throws Exception
     {
         ScarabPaginatedList list = null;
@@ -2299,7 +2300,7 @@ e.printStackTrace();
             list = getCurrentModule().getUsers(name, userName, mitList,
                                                pageNum, resultsPerPage,
                                                sortColumn, sortPolarity,
-                                               includeCommitters);
+                                               includeCommitters, confirmedOnly);
         }
         catch (Exception e)
         {
