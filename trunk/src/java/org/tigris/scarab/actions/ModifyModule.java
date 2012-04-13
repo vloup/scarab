@@ -70,6 +70,8 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
+import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
  * This class is responsible for creating / updating Scarab Modules
@@ -172,9 +174,11 @@ public class ModifyModule extends RequireLoginFirstAction
                         // FIXME: Using SQL because IDBroker doesn't have a Peer yet.
                         String idTable = IDBroker.TABLE_NAME.substring(0, 
                                 IDBroker.TABLE_NAME.indexOf('.'));
+                        String instanceId = GlobalParameterManager
+                        .getString(ScarabConstants.INSTANCE_ID);
                         String sql = "update " + idTable 
-                         + " SET TABLE_NAME='" + newCode + "' WHERE TABLE_NAME='" +
-                         origCode + "'";
+                         + " SET TABLE_NAME='" + instanceId + "-" + newCode + "' WHERE TABLE_NAME='" +
+                         instanceId + "-" + origCode + "'";
                         BasePeer.executeStatement(sql);                                                
                     }
                     else
@@ -260,6 +264,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
         IntakeTool intake = getIntakeTool(context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabLocalizationTool l10n = getLocalizationTool(context);
         
         if (intake.isAllValid())
         {
@@ -282,16 +287,28 @@ public class ModifyModule extends RequireLoginFirstAction
             }
             else
             {
-                me.setOwnerId(user.getUserId());
-                me.save();
-                
-                updateModuleParameters(data, me);
-
-                data.setACL(((ScarabUser)data.getUser()).getACL());
-                data.save();
-
-                scarabR.setConfirmMessage(L10NKeySet.NewModuleCreated);
-                intake.remove(moduleGroup);
+            	try{
+	                me.setOwnerId(user.getUserId());
+	                me.save();
+	                
+	                updateModuleParameters(data, me);
+	
+	                data.setACL(((ScarabUser)data.getUser()).getACL());
+	                data.save();
+	
+	                scarabR.setConfirmMessage(L10NKeySet.NewModuleCreated);
+	                intake.remove(moduleGroup);
+            	}
+                catch(Exception e){
+                	if(e instanceof ScarabRuntimeException){
+                		scarabR.setAlertMessage(((ScarabRuntimeException)e).getMessage(l10n));  
+                		setTarget(data, template);
+                		return;
+                	}
+                	else{
+                		throw e; // TODO: don't knwo what to do here.
+                	}
+                }
             }
         }
         else

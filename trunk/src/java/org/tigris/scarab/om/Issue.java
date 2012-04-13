@@ -3122,7 +3122,7 @@ public class Issue
             .getInstance(NUMBERKEY_0);
         ActivityManager
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
-                                ActivityType.ISSUE_MOVED,
+                                ActivityType.ISSUE_COPIED,
                                 getUniqueId(), newIssue.getUniqueId());
 
         newIssue.index();
@@ -3395,16 +3395,20 @@ public class Issue
             for (Iterator it = dependencies.iterator(); it.hasNext(); )
             {
                 Depend depend = (Depend)it.next();
-                ActivitySet deleteSet = 
-                    this.doDeleteDependency(activitySet, depend, user);
-                for (Iterator act = deleteSet.getActivityList().iterator(); act.hasNext(); )
-                {
-                    activitySet.addActivity((Activity)act.next());
-                }
-                NotificationManagerFactory.getInstance()
-                        .addActivityNotification(ActivityType.ISSUE_DELETED,
-                                activitySet, this, user);
+                if(!depend.getDeleted()){
+                	ActivitySet deleteSet = 
+                        this.doDeleteDependency(activitySet, depend, user);
+                    for (Iterator act = deleteSet.getActivityList().iterator(); act.hasNext(); )
+                    {
+                        activitySet.addActivity((Activity)act.next());
+                    }
+                }        
             }
+            
+            NotificationManagerFactory.getInstance()
+            .addActivityNotification(ActivityType.ISSUE_DELETED,
+                    activitySet, this, user);
+            
             save();
         }
     }    

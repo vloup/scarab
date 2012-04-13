@@ -83,6 +83,7 @@ import org.tigris.scarab.om.ScarabUserManager;
 import org.tigris.scarab.tools.ScarabUserTool;
 import org.tigris.scarab.tools.localization.L10NKey;
 import org.tigris.scarab.tools.localization.L10NKeySet;
+import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabPaginatedList;
@@ -738,10 +739,26 @@ public class ScarabModule
             // a way to satisfy method signature regarding "throws" for Torque class and Group class.
             // that is hide it all by throwing a RuntimeException.
             // usuages of this method must be careful of this!
-            throw new ScarabRuntimeException(new L10NKey("ScarabModule.save TorqueException <localize me>"),e); //EXCEPTION
+            throw new ScarabRuntimeException((Localizable)null,e); //EXCEPTION
         }
     }
 
+    /**
+     * Return duplicates for given name and parent.
+     * @param realName : Real name.
+     * @param parentId  : Id of parent module.
+     * @return : List of duplicates.
+     * @throws TorqueException
+     */
+    public List getDuplicatesByNameAndParent(String realName, Integer parentId) throws TorqueException{
+    	
+    	final Criteria crit = new Criteria();
+        crit.add(ScarabModulePeer.MODULE_NAME, realName);
+        crit.add(ScarabModulePeer.PARENT_ID, parentId);
+        return ScarabModulePeer.doSelect(crit);
+        
+    }
+    
     /**
      * Saves the module into the database. Note that this
      * cannot be used within a activitySet if the module isNew()
@@ -754,17 +771,10 @@ public class ScarabModule
         // if new, make sure the code has a value.
         if (isNew())
         {
-            final Criteria crit = new Criteria();
-            crit.add(ScarabModulePeer.MODULE_NAME, getRealName());
-            crit.add(ScarabModulePeer.PARENT_ID, getParentId());
-            // FIXME: this should be done with a method in Module
-            // that takes the two criteria values as a argument so that other 
-            // implementations can benefit from being able to get the 
-            // list of modules. -- do not agree - jdm
 
             List result;
             try {
-                result = ScarabModulePeer.doSelect(crit);
+                result = getDuplicatesByNameAndParent(getRealName(), getParentId());
             }
             catch (TorqueException te)
             {
@@ -779,7 +789,7 @@ public class ScarabModule
                         new ScarabException(
                                 L10NKeySet.ExceptionModuleAllreadyExists,
                         getRealName(), 
-                        getParentId()));
+                        getParent().getName()));
             }
 
             final String code = getCode();
