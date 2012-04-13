@@ -173,12 +173,12 @@
           </td>
          #foreach ($attr in $additionalDisplayAttributes)
             <td width="100%" #addBackground("$blockingStatus" "$status")>
-            #set ($attrvalue=$depend.getAttributeValue($attr.AttributeId))
-            #if($attrvalue.Value)
-               $attrvalue.Value
-            #else
-               $l10n.None
-            #end 
+				#set ($attrvalue=$depend.getAttributeValue($attr.AttributeId))
+				#if($depend.getAttributeValue($attr.AttributeId))## null value does not override other values for variable $attrvalue
+					$attrvalue.Value
+				#else
+					------
+				#end 
             </td>
          #end
         </tr>
