@@ -122,7 +122,7 @@ class DataExport extends Default
             // we want to set a charset on the response -- so clients
             // can detect it properly -- if we have a known encoding
             String encoding = getEncodingForExport(data);
-            String contentType = "text/plain";
+            String contentType = "text/tab-separated-values";
             if (encoding != null && !encoding.equals(""))
             {
                 contentType = contentType + "; charset=" + encoding;
