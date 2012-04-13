@@ -2681,6 +2681,11 @@ public class Issue
 
         newIssue.index();
         
+        //send notification
+        NotificationManagerFactory.getInstance().addActivityNotification(
+                ActivityType.ISSUE_MOVED,
+                activitySet2, newIssue, user);
+        
         return newIssue;
     }
     
@@ -2932,7 +2937,12 @@ public class Issue
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
                                 ActivityType.ISSUE_COPIED,
                                 getUniqueId(), newIssue.getUniqueId());
-
+        
+        //send notification
+        NotificationManagerFactory.getInstance().addActivityNotification(
+                ActivityType.ISSUE_COPIED,
+                activitySet2, newIssue, user);
+        
         newIssue.index();
         
         return newIssue;
