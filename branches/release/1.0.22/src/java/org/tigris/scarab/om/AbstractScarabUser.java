@@ -92,7 +92,7 @@ public abstract class AbstractScarabUser
         "getRModuleUserAttribute";
 
     private static final String[] HOME_PAGES = {"home,EnterNew.vm", 
-        "query", "Index.vm"};
+        /*"query",*/ "Index.vm"};
 
     private static final int MAX_INDEPENDENT_WINDOWS = 10;
 
@@ -772,30 +772,36 @@ public abstract class AbstractScarabUser
                 {
                     homePage = "SelectModule.vm";
                 }
-                else if ("query".equals(homePage))
+                /*
+                 * Disabled user several home pages for module switch [by mcoss], as
+                 * feature gave not the correct results. The cause was that the by this feature 
+                 * selected "random" target pages sometimes contain invalid data.
+                 */
+                 else if ("query".equals(homePage))
                 {
-                    homePage = getQueryTarget();
+                    homePage = HOME_PAGES[0];//getQueryTarget();
                 }
                 else if ("matrix".equals(homePage))
                 {
-                    homePage = getMatrixTarget();
+                    homePage = HOME_PAGES[0];//getMatrixTarget();
                 }
                 // protect against removal of old screens
                 else if (homePage != null && 
                     (homePage.endsWith("ModuleQuery.vm") ||
                      homePage.endsWith("XModuleList.vm"))) 
                 {
-                    homePage = getQueryTarget();
+                    homePage = HOME_PAGES[0];//getQueryTarget();
                 }
 
                 int i = 0;
                 while (homePage == null || !isHomePageValid(homePage, module)) 
                 {
                     homePage = HOME_PAGES[i++];
-                    if ("query".equals(homePage)) 
+                    /* Obsolete as value "query" was commented
+                     * if ("query".equals(homePage)) 
                     {
                         homePage = getQueryTarget();
-                    }
+                    }*/
                 }
             }
         }

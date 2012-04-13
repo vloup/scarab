@@ -38,7 +38,7 @@ public class ModuleSwitchingLink extends ScarabLink
      */
     public TemplateLink setPage(String moduleId)
     {
-        String homePage = null;
+        String homePage = "Index.vm";
         try
         {
             Module module = ModuleManager
