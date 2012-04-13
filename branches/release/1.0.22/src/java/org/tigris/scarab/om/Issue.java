@@ -2658,6 +2658,12 @@ public class Issue
                getLocale(),
                "AllCopied"));
         }
+        
+        attachmentBuf.append(Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "MovedIssueNote"));
+        
         attachment.setData(attachmentBuf.toString());
 
         attachment.setName(Localization.getString(
@@ -2915,6 +2921,12 @@ public class Issue
                getLocale(),
                "AllCopied"));
         }
+        
+        attachmentBuf.append(Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "CopiedIssueNote"));
+        
         attachment.setData(attachmentBuf.toString());
 
 
