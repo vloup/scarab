@@ -22,11 +22,11 @@
 	WARNING: Before performing any of the operations outlined by this 
 	document, please BACKUP YOUR DATABASE!!!
 </p>
-<subsection name="Upgrading the database from b20 to 0.21">
+<subsection name="Upgrading the database">
 	<subsection name="The quick step migration procedure">
 	<ul>
-	<li>We assume, you have already built the 0.21 web application either with Ant or with Maven.</li>
-	<li>Change to the build/ directory of your generated web application. From there run the database migration procedure as follows:
+	<li>We assume, you have already built the "b21" web application either with Ant or with Maven. It is the same for other versions, too, e.g. "22".</li>
+	<li>Change to the build/ directory of your generated web application and run the appropriate target for the predecessor's version number, e.g. for "b21":
 	<source>ant migrate-from-b20</source></li>
 	<li>
 		<p>REMEMBER: Not all the information is inside the database!</p>
@@ -53,7 +53,44 @@
 	</li>
     </ul>
 	</subsection>
-	<subsection name="Details of the migration tasks">
+	<subsection name="Details of 22 migration task">
+		<p>
+		This migration contains following database relevant modifications:
+		</p>
+		<table>
+		<tr>
+			<td>SCB2307 Now there is an own permission constraint for requesting roles.</td>
+			<td>upgrade-0.22-add-new-permission.sql</td>
+			<td>Adds new permission into TURBINE_PERMISSION 'Role | Request'</td>
+		</tr>
+		<tr>
+			<td>SCB845: All emails from one issue belonging to same mail thread.</td>
+			<td>upgrade-0.22-add-scarab-issues-email-references.sql</td>
+			<td>Adds field SCARAB_ISSUE.EMAIL_REFERENCES</td>
+		</tr>
+		<tr>
+			<td>Activity list should not show restricted attributegroup's attributes.</td>
+			<td>upgrade-0.22-attributegroup-viewrole.sql</td>
+			<td>Adds field SCARAB_ATTRIBUTE_GROUP.VIEW_ROLE_ID</td>
+		</tr>
+		<tr>
+			<td>Activity type is now mandatory</td>
+			<td>upgrade-0.22-fill_activity_type.sql</td>
+			<td>Updates values for field SCARAB_ACTIVITY.ACTIVITY_TYPE</td>
+		</tr>
+		<tr>
+			<td>Technical update</td>
+			<td>upgrade-0.22-global-booleans-to-long-form.sql</td>
+			<td>Change boolean values in SCARAB_GLOBAL_PARAMETER to their long form, e.g. turn "T" into "TRUE"</td>
+		</tr>
+		<tr>
+			<td>Technical update</td>
+			<td>upgrade-0.22-resize_id_prefix.sql</td>
+			<td>Resizes field length for SCARAB_ISSUE.ID_PREFIX and SCARAB_MODULE.MODULE_CODE</td>
+		</tr>
+		</table>    	
+	</subsection>
+	<subsection name="Details of b21 migration task">
 		<p>
 		This migration contains following database relevant modifications:
 		</p>

@@ -2932,6 +2932,15 @@
          <customization modification="optional">advanced</customization>
         <file/>
       </property>
+	  <property>
+			<name>maven.velocity.version</name>
+			<default>1.6.3</default>
+			<type>Build</type>
+			<details>Version flag for velocity used by maven build. 
+			You have to change this value e.g. to "1.5" for maven goal "site".
+			This is necessary for the sake of version incompatiblities
+			of the maven xdoc plugin.</details>
+	  </property>
     </group>
 
     <group name="eclipse">
