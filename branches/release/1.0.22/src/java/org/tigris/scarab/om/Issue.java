@@ -1431,7 +1431,7 @@ public class Issue
         ActivitySet t = null;
         if (!isNew()) 
         {
-            Object obj = ScarabCache.get(this, GET_LAST_TRANSACTION); 
+            Object obj = ScarabCache.get(this, GET_LAST_TRANSACTION, this.getLastTransId());
             if (obj == null) 
             {        
                 Criteria crit = new Criteria();
@@ -1450,7 +1450,7 @@ public class Issue
                 {
                     t = (ActivitySet)activitySets.get(0);
                 }
-                ScarabCache.put(t, this, GET_LAST_TRANSACTION);
+                ScarabCache.put(t, this, GET_LAST_TRANSACTION, this.getLastTransId());
             }
             else 
             {
@@ -3856,6 +3856,7 @@ public class Issue
             activitySet.save();
             ScarabCache.clear();
         }
+
         setLastTransId(activitySet.getActivitySetId());
         save();
         return activitySet;
