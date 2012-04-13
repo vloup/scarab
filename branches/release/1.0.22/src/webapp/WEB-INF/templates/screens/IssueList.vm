@@ -26,7 +26,7 @@
 <td width="100%">
 #exportFormats('')
 #if (!$mitlist || $mitlist.isSingleModuleIssueType())
-  #processQueryResults('' $issueListSize)
+  #processQueryResults('' $queryResults.size())
 #end
 </td>
 
