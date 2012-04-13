@@ -48,6 +48,8 @@
 
     table, th, td {
         border: none;
+		word-break:break-all;
+		word-wrap:break-word;
     }
 
     #breadcrumbs {
@@ -83,6 +85,12 @@
     pre {
         font-family: 'Andale Mono', Courier, monospace;
         font-size: small;
+		
+		/* do line wrap for pre tag */
+        white-space: pre-wrap; /* css-3*/
+        white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+        word-wrap: break-word; /* Internet Explorer 5.5+ */
+        width: 99%;
     }
 
     body, .app h3 {
@@ -171,8 +179,11 @@
     .functnbar {
         background-color: #668DB2;
         color:#fff;
-        white-space:nowrap;
-        margin-bottom:0px;
+		
+        word-break:break-all;
+		word-wrap:break-word;
+        
+		margin-bottom:0px;
         margin-left:-1px;
         margin-right:-1px;
     }

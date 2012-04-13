@@ -377,6 +377,25 @@ public class ScarabModule
                                         final boolean includeCommitters)
         throws TorqueException, DataSetException
     {
+    	return getUsers(name, username, mitList, pageNum, resultsPerPage, sortColumn, sortPolarity, includeCommitters, false);
+    	
+    }
+
+    /**
+     * @see org.tigris.scarab.om.Module#getUsers(String, String, String, String, IssueType)
+     * @param mitList MITs to restrict the user's search. If null, it will not be restricted.
+     */
+    public ScarabPaginatedList getUsers(final String name, 
+                                        final String username, 
+                                        final MITList mitList, 
+                                        final int pageNum, 
+                                        final int resultsPerPage,
+                                        final String sortColumn, 
+                                        final String sortPolarity,
+                                        final boolean includeCommitters,
+                                        final boolean confirmedOnly)
+        throws TorqueException, DataSetException
+    {
         final int polarity = sortPolarity.equals("asc") ? 1 : -1; 
         List result = null;
         ScarabPaginatedList paginated = null; 
@@ -429,6 +448,7 @@ public class ScarabModule
             critCount.addJoin(TurbineUserGroupRolePeer.ROLE_ID, TurbineRolePermissionPeer.ROLE_ID);
             critCount.addJoin(TurbineRolePermissionPeer.PERMISSION_ID, TurbinePermissionPeer.PERMISSION_ID);            
 
+			//user by name
             if (name != null)
             {
                 int nameSeparator = name.indexOf(" ");
@@ -484,6 +504,12 @@ public class ScarabModule
                 crit.addDescendingOrderByColumn(col);
             }
             
+            //confirmed users only
+            if(confirmedOnly){
+            	crit.add(ScarabUserImplPeer.CONFIRM_VALUE, (Object)"CONFIRMED", Criteria.EQUAL);
+            }
+
+			//finish query
             final int totalResultSize = ScarabUserImplPeer.getUsersCount(critCount);
             
             crit.setOffset((pageNum - 1)* resultsPerPage);

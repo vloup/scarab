@@ -70,6 +70,7 @@ import org.tigris.scarab.om.IssueType;
 import org.tigris.scarab.om.IssueTypeManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
+import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -231,6 +232,9 @@ public class MoveIssue extends BaseModifyIssue
     public void doSaveissue(RunData data, TemplateContext context)
         throws Exception
     {
+    	//Clear cache for stability reasons, to avoid missing, cached values
+    	IssueManager.getMethodResult().clear();
+    	
         boolean collisionOccurred = isCollision(data, context);
         context.put("collisionDetectedOnMoveAttempt", collisionOccurred ? Boolean.TRUE : Boolean.FALSE);
         if (collisionOccurred)

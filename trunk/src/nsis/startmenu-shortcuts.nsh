@@ -1,3 +1,6 @@
+#  If you provide this file, the installer will allow the user to choose
+#  whether or not to create shortcuts in the <code>Start Menu</code>.
+#  The shortcuts specified in this file will be created.
 SetOutPath $INSTDIR\scarab\WEB-INF\conf
 CreateShortCut "${PROJECT_STARTMENU_FOLDER}\Create Database.lnk" "$INSTDIR\scarab\WEB-INF\conf\create-db.bat" "" "$INSTDIR\scarab\WEB-INF\conf\create-db.bat" 0
 

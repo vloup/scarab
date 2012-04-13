@@ -1567,7 +1567,7 @@ public class Issue
         ActivitySet t = null;
         if (!isNew()) 
         {
-            Object obj = ScarabCache.get(this, GET_LAST_TRANSACTION); 
+            Object obj = ScarabCache.get(this, GET_LAST_TRANSACTION, this.getLastTransId());
             if (obj == null) 
             {        
                 Criteria crit = new Criteria();
@@ -1586,7 +1586,7 @@ public class Issue
                 {
                     t = (ActivitySet)activitySets.get(0);
                 }
-                ScarabCache.put(t, this, GET_LAST_TRANSACTION);
+                ScarabCache.put(t, this, GET_LAST_TRANSACTION, this.getLastTransId());
             }
             else 
             {
@@ -2850,6 +2850,12 @@ public class Issue
                getLocale(),
                "AllCopied"));
         }
+        
+        attachmentBuf.append(Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "MovedIssueNote"));
+        
         attachment.setData(attachmentBuf.toString());
 
         attachment.setName(Localization.getString(
@@ -2872,6 +2878,11 @@ public class Issue
                                 getUniqueId(), newIssue.getUniqueId());
 
         newIssue.index();
+        
+        //send notification
+        NotificationManagerFactory.getInstance().addActivityNotification(
+                ActivityType.ISSUE_MOVED,
+                activitySet2, newIssue, user);
         
         return newIssue;
     }
@@ -3102,6 +3113,12 @@ public class Issue
                getLocale(),
                "AllCopied"));
         }
+        
+        attachmentBuf.append(Localization.getString(
+                ScarabConstants.DEFAULT_BUNDLE_NAME,
+                getLocale(),
+                "CopiedIssueNote"));
+        
         attachment.setData(attachmentBuf.toString());
 
 
@@ -3114,6 +3131,7 @@ public class Issue
         attachment.save();
 
         // Create activitySet for the MoveIssue activity
+        // NOTE: There is no distinction bewteen copy and move actions in ActivitySetTypePeer.
         final ActivitySet activitySet2 = 
         	newIssue.attachActivitySet(null, user, attachment, ActivitySetTypePeer.MOVE_ISSUE__PK);
 
@@ -3124,7 +3142,12 @@ public class Issue
             .createTextActivity(newIssue, zeroAttribute, activitySet2,
                                 ActivityType.ISSUE_COPIED,
                                 getUniqueId(), newIssue.getUniqueId());
-
+        
+        //send notification
+        NotificationManagerFactory.getInstance().addActivityNotification(
+                ActivityType.ISSUE_COPIED,
+                activitySet2, newIssue, user);
+        
         newIssue.index();
         
         return newIssue;
@@ -3389,6 +3412,19 @@ public class Issue
         {
             ActivitySet activitySet = attachActivitySet(null, user);
             ActivityManager.createDeleteIssueActivity(this, activitySet);
+            
+            Attachment attachment = new Attachment();
+            
+            String note = Localization.getString(
+                    ScarabConstants.DEFAULT_BUNDLE_NAME,
+                    getLocale(),
+                    "DeletedIssueNote");
+            
+            attachment.setData(note);
+            attachment.setName(note);
+            attachment.setTextFields(user, this, Attachment.MODIFICATION__PK);
+            attachment.save();         
+            
             this.setDeleted(true);
             List dependencies = this.getDependsRelatedByObservedId();
             dependencies.addAll(this.getDependsRelatedByObserverId());
@@ -3404,6 +3440,8 @@ public class Issue
                     }
                 }        
             }
+            
+            activitySet.setAttachment(attachment);
             
             NotificationManagerFactory.getInstance()
             .addActivityNotification(ActivityType.ISSUE_DELETED,
@@ -4010,6 +4048,7 @@ public class Issue
             activitySet.save();
             ScarabCache.clear();
         }
+
         setLastTransId(activitySet.getActivitySetId());
         save();
         return activitySet;
@@ -4380,7 +4419,7 @@ public class Issue
     }    
     
     /**
-     * Returns a list of issues that actually "block" this issue, i.e., that
+     * Returns a list of issues that currently "block" this issue, i.e., that
      * are related via a "is blocked by" dependency, and are "blocking".
      * @return
      */
@@ -4398,7 +4437,7 @@ public class Issue
     }
     
     /**
-     * Returns a list of issues that are blockable by this issue, via a "is_blocked_by"
+     * Returns a list of issues that might be blocked by this issue, via a "is_blocked_by"
      * relationship. 
      * @return
      * @throws TorqueException

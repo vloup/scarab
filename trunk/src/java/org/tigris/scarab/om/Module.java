@@ -141,6 +141,23 @@ public interface Module
                                         String sortColumn, String sortPolarity,
                                         boolean includeCommitters)
         throws TorqueException,DataSetException;
+    
+    /**
+     * Gets users for a given criteria, starting at a particular offset, 
+     * for a given length, and have at least one permission that is 
+     * applicable to user attributes active in the given issue type. 
+     * This method handles the case where limiting the result size
+     * is best accomplished by limiting the database transaction 
+     * size, and not postfiltering the list. This is extremely helpful
+     * with large user datasets. 
+     */
+    ScarabPaginatedList getUsers(String name, String username,  
+                                        MITList mitList,
+                                        int offset, int resultSize, 
+                                        String sortColumn, String sortPolarity,
+                                        boolean includeCommitters,
+                                        boolean confirmedOnly)
+        throws TorqueException,DataSetException;
 
     /**
      * This method is only used by the Turbine Group interface.

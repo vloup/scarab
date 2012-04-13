@@ -26,7 +26,7 @@
 <td width="100%">
 #exportFormats('')
 #if (!$mitlist || $mitlist.isSingleModuleIssueType())
-  #processQueryResults('' $issueListSize)
+  #processQueryResults('' $queryResults.size())
 #end
 </td>
 
@@ -45,11 +45,12 @@
 </div>
 #end
 
-#if ($issueListSize == 0)
-  ## There are no matching issues
-<h3>$page.Title</h3>
-  <p><em>$l10n.NoMatchingIssues</em></p>
+#if ($queryResults.size() == 0)
+	## There are no matching issues
+	<h3>$page.Title</h3>
+	<p><em>$l10n.NoMatchingIssues</em></p>
 #else
+
 ## START OF ISSUES LIST
 <form action="$link.setPage('IssueList.vm').setAction('Search')" method="post">
 #if ($searchType)

@@ -8,6 +8,7 @@
 #if ($issueList)
   #foreach ($issueId in $issueList)
      #set ($currentIssue = $scarabR.getIssue($issueId))
+     #set ($numDependencies  = ($currentIssue.Children.size() + $currentIssue.Parents.size()))
      #if ($currentIssue && $scarabR.hasPermission($scarabG.Permission.ISSUE__VIEW, $currentIssue.Module))
        <h2>$currentIssue.UniqueId</h2>
        <form method="post" name="form" action="$action" enctype="multipart/form-data">

@@ -54,6 +54,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import org.apache.log4j.Logger;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
@@ -86,6 +87,9 @@ import org.tigris.scarab.util.export.ExportFormat;
  */
 class DataExport extends Default
 {
+	
+	private Logger log = Logger.getLogger(DataExport.class.getName());
+	
     /**
      * What to show if a cell is empty.  The empty string is dealt
      * with best by spreadsheet applications.
@@ -103,6 +107,8 @@ class DataExport extends Default
         super.doBuildTemplate(data, context);
         String format = ScarabUtil.findValue(data, ExportFormat.KEY_NAME);
 
+       log.debug("Export for format: " + format);
+        
         // look for a configuration toggle for the encoding to which to
         // export.  TODO : make this per request configurable (with a per-
         // language default) to allow use of scarab in a multilingual 
@@ -116,7 +122,7 @@ class DataExport extends Default
             // we want to set a charset on the response -- so clients
             // can detect it properly -- if we have a known encoding
             String encoding = getEncodingForExport(data);
-            String contentType = "text/plain";
+            String contentType = "text/tab-separated-values";
             if (encoding != null && !encoding.equals(""))
             {
                 contentType = contentType + "; charset=" + encoding;

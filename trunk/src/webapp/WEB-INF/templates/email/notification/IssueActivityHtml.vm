@@ -85,7 +85,7 @@
 
 
 <div id="breadcrumbs" >
-  <table border="0" cellspacing="0" cellpadding="8" width="100%">
+  <table style="table-layout: fixed"  border="0" cellspacing="0" cellpadding="8" width="100%">
    <tr>
     <td>
       $l10n.Modules &gt;

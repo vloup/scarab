@@ -68,7 +68,7 @@ public class ScarabUserTest extends BaseTurbineTestCase
 
         ScarabUser user = testUsers.getUser1();
         Calendar cal = Calendar.getInstance();
-        cal.set(2010, 9, 2);
+        cal.set(2030, 9, 2);
         user.setPasswordExpire(cal);
         assertEquals(user.isPasswordExpired(), false);
         cal.set(2001, 9, 2);

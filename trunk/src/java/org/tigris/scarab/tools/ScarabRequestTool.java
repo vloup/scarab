@@ -2451,12 +2451,13 @@ public class ScarabRequestTool
                                                     int resultsPerPage,
                                                     String sortColumn,
                                                     String sortPolarity,
-                                                    boolean includeCommitters)
+                                                    boolean includeCommitters,
+                                                    boolean confirmedOnly)
         throws Exception
     {
         return userFilteredSearchResults(mitList, pageNum, resultsPerPage,
                                          sortColumn, sortPolarity, "", "",
-                                         includeCommitters);
+                                         includeCommitters, confirmedOnly);
     }
 
     /**
@@ -2465,7 +2466,7 @@ public class ScarabRequestTool
      */
     public ScarabPaginatedList getUserFilteredSearchResults(MITList mitList,
         int pageNum, int resultsPerPage,  String sortColumn,
-        String sortPolarity, boolean includeCommitters)
+        String sortPolarity, boolean includeCommitters, boolean confirmedOnly)
         throws Exception
     {
         String searchString = data.getParameters()
@@ -2481,7 +2482,7 @@ public class ScarabRequestTool
 
         return userFilteredSearchResults(mitList, pageNum, resultsPerPage,
                                          sortColumn, sortPolarity,
-                                         searchString, searchField, includeCommitters);
+                                         searchString, searchField, includeCommitters, confirmedOnly);
 
     }
 
@@ -2492,7 +2493,7 @@ public class ScarabRequestTool
                                                           String sortPolarity,
                                                           String searchString,
                                                           String searchField,
-                                                          boolean includeCommitters)
+                                                          boolean includeCommitters, boolean confirmedOnly)
         throws Exception
     {
         ScarabPaginatedList list = null;
@@ -2513,7 +2514,7 @@ public class ScarabRequestTool
             list = getCurrentModule().getUsers(name, userName, mitList,
                                                pageNum, resultsPerPage,
                                                sortColumn, sortPolarity,
-                                               includeCommitters);
+                                               includeCommitters, confirmedOnly);
         }
         catch (Exception e)
         {
