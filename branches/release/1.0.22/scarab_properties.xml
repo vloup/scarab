@@ -2348,7 +2348,7 @@
     </property>
     <property>
       <name>version</name>
-      <default>1.0.22-RC1</default>
+      <default>1.0.22-RC2-dev</default>
       <details>Project version.</details>
       <type>Build</type>
        <customization modification="optional">advanced</customization>
