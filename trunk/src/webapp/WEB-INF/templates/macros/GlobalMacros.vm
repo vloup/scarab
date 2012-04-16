@@ -966,7 +966,7 @@ selected the radio button.
 #end
 
 
-#macro (userList $mitList $includeAny $includeCommittedBy $parameters $activeOnly)
+#macro (userList $mitList $includeAny $includeCommittedBy $parameters $activeOnly $confirmedOnly)
 #set ($userAttrs = $mitList.getCommonUserAttributes($activeOnly))
 #set ($modules = $mitList.Modules)
 
@@ -997,13 +997,13 @@ selected the radio button.
 </div>
 
 #if ($searchString && $searchString.length() > 0)
-    #set ($searchResults = $scarabR.getUserFilteredSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy))
+    #set ($searchResults = $scarabR.getUserFilteredSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy, $confirmedOnly))
     #if ( $searchResults.getList().isEmpty())
         <p class="infomark"><em>$l10n.NoUsersMatch</em></p>
-        #set ($searchResults = $scarabR.getUserSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy))
+        #set ($searchResults = $scarabR.getUserSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy, $confirmedOnly))
     #end
 #else
-    #set ($searchResults = $scarabR.getUserSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy))
+    #set ($searchResults = $scarabR.getUserSearchResults($mitList, $pageNum, $resultsPerPage, $sortColumn, $sortPolarity, $includeCommittedBy, $confirmedOnly))
 #end 
 
 #set ($searchResultsSize = $searchResults.getTotalListSize())
