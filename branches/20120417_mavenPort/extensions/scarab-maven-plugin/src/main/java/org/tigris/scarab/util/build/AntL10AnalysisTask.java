@@ -51,12 +51,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.Map;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.shared.model.fileset.FileSet;
+import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import org.tigris.scarab.util.build.l10nchecker.L10nInspector;
 import org.tigris.scarab.util.build.l10nchecker.L10nIssue;
@@ -65,77 +65,92 @@ import org.tigris.scarab.util.build.l10nchecker.L10nMessage;
 
 /**
  * 
- * Ant task to check for localisation problems.
- * 
- * <p>Ant parameters:
- * 
- * <ul>
- * <li>FileSet: Files to check
- * <li>messageSet: Set the severity for a particular message.
- *     This is done by setting the attributes <code>error</code> to the
- *     issue that has to be used (e.g. <code>error="CantParseIssue"</code>)
- *     and <code>severity</code> to one of the defined severity levels:
- *     <ul>
- *  	<li><strong>ERROR</strong>: This issue will be marked as error
- *  	<li><strong>WARNING</strong>: This issue will be marked as error
- *  	<li><strong>INFORMATION</strong>: This issue will be marked as error
- *  	<li><strong>IGNORED</strong>: This issue will be marked to be 
- *                 ignored. By default all issues are marked as "IGNORED".
- *     </ul>
- * <li>reffile: Reference file
- * <li>verbose: Verbosity:
- * <ul>
- * <li>0: Errors only
- * <li>1: Errors and warnings
- * <li>2: Errors, warnings and information. 
- * </ul>
- * <li>outfile: IF given, all output is written to this file
- * <li>failonerr: Stop after first checked file in case of errors.
- * </ul>
- * 
- * In case the output is redirected to a file, summary information is displayed 
- * on the ant output.
+ * Goal to check for localisation problems.
  *  
  * @author sreindl
+ * @goal check-l10n
  *  
  */
-public class AntL10AnalysisTask extends Task
+public class AntL10AnalysisTask extends AbstractMojo
 {
-    /* intput files */
-    private Vector filesets = new Vector();
+	/**
+	 * Files to check
+	 * @parameter
+	 */
+    private FileSet fileset;
     
-    /* message set settings */
-    private Vector messages = new Vector ();
+    /**
+     * Set the severity for a particular message.
+	 *     This is done by setting the attributes <code>error</code> to the
+	 *     issue that has to be used (e.g. <code>error="CantParseIssue"</code>)
+	 *     and <code>severity</code> to one of the defined severity levels:
+	 *     <ul>
+	 *  	<li><strong>ERROR</strong>: This issue will be marked as error
+	 *  	<li><strong>WARNING</strong>: This issue will be marked as error
+	 *  	<li><strong>INFORMATION</strong>: This issue will be marked as error
+	 *  	<li><strong>IGNORED</strong>: This issue will be marked to be 
+	 *                 ignored. By default all issues are marked as "IGNORED".
+	 *     </ul>
+     * @parameter
+     */
+    private Map messageSettings;
     
-    /* verbosity */
+    /**
+     * Verbosity
+     * <ul>
+	 * <li>0: Errors only
+	 * <li>1: Errors and warnings
+	 * <li>2: Errors, warnings and information. 
+	 * </ul>
+     */
     private int verbose = 0;
 
+    /**
+     * Base file for reference.
+     * @parameter
+     */
     private String refFile;
 
+    /**
+     * Stop after first checked file in case of errors.
+     */
     private boolean failonerr = false;
 
+    /**
+     * Name of output file.
+     * @parameter
+     */
     private String outFileName = null;
 
-    private BufferedWriter outFile = null;
-
+    /**
+     * IF given, all output is written to this file
+     */
+    private BufferedWriter outFileBuffer;
+    
+    
     /*
      * Read all parameters and execute
      * 
      * @see org.apache.tools.ant.Task#execute()
      */
-    public void execute() throws BuildException
+    public void execute() throws MojoExecutionException
     {
         L10nInspector ins = null;
-        DirectoryScanner ds;
+
         if (outFileName != null)
         {
             try
             {
-                outFile = new BufferedWriter(new FileWriter(outFileName));
+            	File outFile = new File(outFileName);
+            	if(outFile.exists()){
+            		outFile.delete();
+            	}
+        		outFile.createNewFile();
+        		outFileBuffer = new BufferedWriter(new FileWriter(outFile));
             }
             catch (IOException eIO)
             {
-                throw new BuildException(eIO);
+                throw new MojoExecutionException(eIO.getMessage());
             }
         }
 	output("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>");
@@ -144,12 +159,14 @@ public class AntL10AnalysisTask extends Task
 	output("<body>");
         try
         {
-            ins = new L10nInspector();
+            ins = new L10nInspector(getLog());
             // set severities
-            Iterator it = messages.iterator();
+            Iterator it = messageSettings.keySet().iterator();
             while (it.hasNext())
             {
-                Message msg = (Message)it.next();
+                Message msg = new Message();
+                msg.setError((String)it.next());
+                msg.setSeverity((String)messageSettings.get(msg.id));
                 try
                 {
                     Class _clazz = Class.forName("org.tigris.scarab.util.build.l10nchecker.issues." + msg.id + "Issue");
@@ -157,7 +174,7 @@ public class AntL10AnalysisTask extends Task
                 }
                 catch (ClassNotFoundException ex_cnf)
                 {
-                    throw new BuildException ("Cannot locate issue " + msg.id);
+                    throw new MojoExecutionException ("Cannot locate issue " + msg.id);
                 }
             }
 	    output("<section name=\"Reference file "+refFile.substring(refFile.lastIndexOf("/")+1)+"\"><pre>");
@@ -177,21 +194,15 @@ public class AntL10AnalysisTask extends Task
             }
 	    output("</pre></section>");
             output(""); // empty line for readability
-            it = filesets.iterator();
-            while (it.hasNext())
-            {
-                FileSet fs = (FileSet) it.next();
-                ds = fs.getDirectoryScanner(this.getProject());
-                ds.scan();
-                File srcDir = fs.getDir(getProject());
-                String[] files = ds.getIncludedFiles();
+            FileSetManager fileSetManager = new FileSetManager();
+
+                String[] files = fileSetManager.getIncludedFiles(fileset);
                 for (int i = 0; i < files.length; i++)
                 {
                     File f = new File (files[i]);
                     output("");
                     output("<section name=\"Checking bundle " + files[i] +"\"><pre>", true);
-                    int transcount = ins.checkFile(srcDir.getAbsolutePath()
-                            + "/" + files[i]);
+                    int transcount = ins.checkFile(fileset.getDirectory() + "/" + files[i]);
                     output("Translations found: " + transcount, true);
                     if (ins.getErrors().size() > 0)
                     {
@@ -220,7 +231,7 @@ public class AntL10AnalysisTask extends Task
                         }
                         if (failonerr)
                         {
-                            throw new BuildException(
+                            throw new MojoExecutionException(
                                     "Failed due to errors in reference bundle");
                         }
                     }
@@ -256,14 +267,14 @@ public class AntL10AnalysisTask extends Task
                     }
 		    output("</pre></section>");
                 }
-            }
+
 	    output("</body>");
 	    output("</document>");
         }
         catch (Exception e)
         {
-            log("Exception " + e + " raised");
-            throw new BuildException(e);
+            getLog().error("Exception " + e + " raised");
+            throw new MojoExecutionException(e.getMessage());
         }
     }
 
@@ -307,19 +318,6 @@ public class AntL10AnalysisTask extends Task
         this.failonerr = failonerr;
     }
 
-    /**
-     * Files to load
-     * 
-     * @return A new {@link org.apache.tools.ant.types.FileSet} that 
-     * represents a list of files to be read. 
-     */
-    public FileSet createFileset()
-    {
-        FileSet set = new FileSet();
-        filesets.add(set);
-        return set;
-    }
-
     
     /* output routines */
     private void output(String what)
@@ -332,38 +330,25 @@ public class AntL10AnalysisTask extends Task
      */
     private void output(String what, boolean dumpToConsole)
     {
-        if (outFile != null)
+        if (outFileBuffer != null)
         {
             try
             {
-                outFile.write(what);
-                outFile.newLine();
-                outFile.flush();
+            	outFileBuffer.write(what);
+            	outFileBuffer.newLine();
+            	outFileBuffer.flush();
             }
             catch (IOException eIO)
             {
-                log("Cannot write " + what + " to " + outFileName + " ("
+            	getLog().error("Cannot write " + what + " to " + outFileName + " ("
                         + eIO.getMessage() + ")");
             }
         }
-        if (null == outFile || dumpToConsole)
+        if (null == outFileBuffer || dumpToConsole)
         {
-            log(what);
+            getLog().info(what);
         }
     }
-    
-    /**
-     * ant handler for the messageSet token
-     * 
-     * @return a new allocated message
-     */
-    public Message createMessageSet ()
-    {
-        Message msg = new Message ();
-        messages.add(msg);
-        return msg;
-    }
-
 
     /**
      * sub Class that represents a severity setting message

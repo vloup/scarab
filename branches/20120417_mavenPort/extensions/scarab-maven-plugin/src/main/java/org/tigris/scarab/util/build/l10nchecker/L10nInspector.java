@@ -62,7 +62,7 @@ import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 
-import org.tigris.scarab.util.Log;
+import org.apache.maven.plugin.logging.Log;
 import org.tigris.scarab.util.build.l10nchecker.issues.CantParseLineIssue;
 import org.tigris.scarab.util.build.l10nchecker.issues.DefinedTwiceIssue;
 import org.tigris.scarab.util.build.l10nchecker.issues.DifferentAttributeCountIssue;
@@ -128,11 +128,15 @@ public class L10nInspector
     /* messages generated during parsing */
     private List messages = null;
     
+    private Log log;
+    
     /**
      * Create a standard instance
      */
-    public L10nInspector() throws MalformedPatternException
+    public L10nInspector(Log log) throws MalformedPatternException
     {
+    	this.log = log;
+    	
         try
         {
             L10nIssueTemplates.reset();
@@ -141,7 +145,7 @@ public class L10nInspector
             transPattern = compiler.compile (COMMENT_TRANS);
         } catch (MalformedPatternException exMP)
         {
-            Log.get().fatal(exMP);
+            log.error(exMP);
             throw exMP; // rethrow
         }
         messages = new ArrayList();
@@ -384,7 +388,7 @@ public class L10nInspector
             }
         } catch (IOException exIO)
         {
-            Log.get().error(exIO);
+            log.error(exIO);
             exIO.printStackTrace();
             // cleanup resources
             refProperties.clear();
@@ -392,7 +396,7 @@ public class L10nInspector
             throw exIO; // rethrow
         } catch (Exception e)
         {
-            Log.get().error(e);
+        	log.error(e);
             e.printStackTrace();
             // cleanup resources
             refProperties.clear();
@@ -516,14 +520,14 @@ public class L10nInspector
         } catch (IOException exIO)
         {
             exIO.printStackTrace();
-            Log.get().error(exIO);
+            log.error(exIO);
             // cleanup resources
             refProperties.clear();
             messages.clear();
             throw exIO; // rethrow
         } catch (Exception e)
         {
-            Log.get().error(e);
+        	log.error(e);
             // cleanup resources
             e.printStackTrace();
             refProperties.clear();
@@ -557,7 +561,7 @@ public class L10nInspector
         System.err.println ("This is only used for internal tests");
         try
         {
-            ins = new L10nInspector();
+            ins = new L10nInspector(null);
         } catch (MalformedPatternException exMP)
         {
             System.exit(1); // we cannot continue
