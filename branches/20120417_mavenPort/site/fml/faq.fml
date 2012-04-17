@@ -161,8 +161,8 @@ NOTE: If you get a 'Server configuration denies access to data source'
 </p>
       
 <p>
-NOTE: Sometimes it may be useful to use "ant create-db" rather than any script
-      to diagnose connection issues since ant uses jdbc and the same URL
+NOTE: Sometimes it may be useful to use "mvn scarab:create-db" rather than any script
+      to diagnose connection issues since this Mojo uses jdbc and the same URL
       that Scarab does while running.
  
 </p>
@@ -417,7 +417,7 @@ issue, but we are not quite there yet.
       <answer>
 <p>
 There are special build targets for this, e.g.:
-<code>ant war</code>
+<code>mvn clean package -Dmaven.test.skip=true</code>
 </p>
   </answer>
     </faq> 
