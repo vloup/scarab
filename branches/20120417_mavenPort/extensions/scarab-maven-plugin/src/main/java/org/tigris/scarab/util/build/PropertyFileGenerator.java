@@ -55,10 +55,13 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * This class is used as ant task backend for the generation
@@ -85,7 +88,14 @@ public class PropertyFileGenerator
      * online property settings.
      */
     private File customFile;
+    
+    private File propertyTypes;
 
+    /**
+     * 
+     */
+    private File emptyCustomFile;
+    
     /**
      * This Map contains the user specified properties
      * defined in the list of property files given 
@@ -107,6 +117,28 @@ public class PropertyFileGenerator
         if(!templateFile.exists())
         {
             status = false;
+        }
+        return status;
+    }
+    
+    public boolean setEmptyCustom(String theCustomPath)
+    {
+        boolean status = true;
+        emptyCustomFile = new File(theCustomPath);
+        if(emptyCustomFile.exists())
+        {
+            status = emptyCustomFile.delete();
+        }
+        return status;
+    }
+    
+    public boolean setPropertyTypes(String thePropertyTypePath)
+    {
+        boolean status = true;
+        propertyTypes = new File(thePropertyTypePath);
+        if(propertyTypes.exists())
+        {
+            status = propertyTypes.delete();
         }
         return status;
     }
@@ -171,18 +203,17 @@ public class PropertyFileGenerator
     public boolean setProperties(String theUserPathes)
     {
         List filePathes = createPathList(theUserPathes);
-
-        if(filePathes != null)
-        {
-            userProperties = new Hashtable();
-            for(int index=0; index<filePathes.size(); index++)
-            {
-                File file = new File((String)filePathes.get(index));
+        userProperties = new Hashtable();
+        Iterator iterFilePathes = filePathes.iterator();
+        while(iterFilePathes.hasNext()){
+            System.out.println("read");
+        	String filePath = (String)iterFilePathes.next();
+        	File file = new File(filePath);
                 if(file.exists())
                 {
                     if(!file.canRead())
                     {
-                        throw new RuntimeException("No Read permission for file ["+filePathes.get(index)+"]");
+                        throw new RuntimeException("No Read permission for file ["+filePath+"]");
                     }
                     try
                     {
@@ -190,10 +221,10 @@ public class PropertyFileGenerator
                     }
                     catch (IOException e)
                     {
-                        throw new RuntimeException("Could not read file ["+filePathes.get(index)+"]");
+                        throw new RuntimeException("Could not read file ["+filePath+"]");
                     }
                 }
-            }
+
         }
         return true;
     }
@@ -253,7 +284,7 @@ public class PropertyFileGenerator
      */
     private List createPathList(String theUserPathes)
     {
-        List result = null;
+        List result = new Vector();
         StringTokenizer stok = new StringTokenizer(theUserPathes,":");
         while(stok.hasMoreTokens())
         {
@@ -262,11 +293,6 @@ public class PropertyFileGenerator
             {
              // deal with windows drive letters, e.g. "c:scarab/build.properties"
              path+=":"+stok.nextToken();
-            }
-
-            if(result == null)
-            {
-                result = new Vector();
             }
             
             result.add(path);
@@ -293,9 +319,10 @@ public class PropertyFileGenerator
      * </ul>
      * 
      */
-    public void execute(PropertyGetter props) throws IOException {
+    public void execute() throws IOException {
         
- 
+    		createEmptyCustomPropertyFile();
+    		
             Reader reader = new FileReader(templateFile);
             Writer writer = new FileWriter(customFile);
             BufferedReader br = new BufferedReader(reader);
@@ -313,7 +340,7 @@ public class PropertyFileGenerator
                 }
                 else 
                 {
-                    String resultLine = createResultLine(line, props);
+                    String resultLine = createResultLine(line);
                     pw.println(resultLine);
                 }
             }
@@ -322,6 +349,23 @@ public class PropertyFileGenerator
         
     }
 
+    /**
+     * Creates empty custom properties file.
+     */
+    private void createEmptyCustomPropertyFile(){
+    	
+    	if(emptyCustomFile.exists()){
+    		emptyCustomFile.delete();
+    	}
+    	try {
+			emptyCustomFile.createNewFile();
+		} catch (IOException e) {
+				// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
     /**
      * Read the current line and behave according to 
      * following rule set:
@@ -342,7 +386,7 @@ public class PropertyFileGenerator
      * @param props
      * @return
      */
-    private String createResultLine(String line, PropertyGetter props)
+    private String createResultLine(String line)
     {
         String propertyName  = null;
         String templateValue = null;
@@ -368,7 +412,7 @@ public class PropertyFileGenerator
 
         if(newValue == null)
         {
-            newValue = (String) props.getProperty(propertyName,templateValue);
+            newValue = templateValue;
             if(newValue == null)
             {
                 newValue = "";
@@ -376,7 +420,7 @@ public class PropertyFileGenerator
         }
         else if(newValue.equalsIgnoreCase("**generated**"))
         {
-            String dbtype = (String)props.getProperty("scarab.database.type","hypersonic");
+            String dbtype = (String)userProperties.get("scarab.database.type");
             if(dbtype.equals(""))
             {
                 dbtype="hypersonic";

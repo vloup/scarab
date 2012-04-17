@@ -46,11 +46,10 @@ package org.tigris.scarab.util.build;
  * individuals on behalf of Collab.Net.
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+
 
 /**
  * This class is used as ant task backend for the generation
@@ -58,30 +57,64 @@ import org.apache.tools.ant.Task;
  *
  * @author <a href="mailto:dabbous@saxess.com">Hussayn Dabbous</a>
  * @version $Id$
+ * 
+ * @goal generate-custom-properties
+ * 
  */
 
-public class AntPropertyFileGenerator extends Task implements PropertyGetter
+public class AntPropertyFileGenerator extends AbstractMojo
 {
-    
-    /**
-     * Setter: set the path to the template file.
-     * Throws an exception, if the template file does not exist.
-     * @param theTemplatePath
-     */
+ 
+	/**
+	 * Output directory for generated configuration files.
+	 * @parameter
+	 */
+	private String configurationDirectory;
     
     /**
      * The reusable property file generator
      */
     private PropertyFileGenerator generator = new PropertyFileGenerator();
     
-    public void setTemplate(String theTemplatePath)
+    public void setTemplate() throws MojoExecutionException
     {
-        boolean status = generator.setTemplate(theTemplatePath);
+        boolean status = generator.setTemplate("project.properties");
         if(!status)
         {
-           throw new BuildException("the template["
-                + theTemplatePath
-                + "] does not exist.");
+            throw new MojoExecutionException("the path ["
+                    + configurationDirectory
+                    + "] for project.properties is not writeable.");
+        }
+    }
+
+    public void setEmptyCustom() throws MojoExecutionException
+    {
+        boolean status = generator.setEmptyCustom(configurationDirectory + "/custom.properties");
+        if(!status)
+        {
+           throw new MojoExecutionException("the path ["
+                + configurationDirectory
+                + "] for custom.properties is not writeable.");
+        }
+    }
+    
+    
+    /**
+     * Setter: set the path to the final property file.
+     * Throws an exception, if the customFile exist, 
+     * but can't be overwritten (due to permission settings).
+     * @param theCustomPath
+     * @throws MojoExecutionException 
+     */
+    public void setCustom() throws MojoExecutionException
+    {
+        boolean status = generator.setCustom(configurationDirectory + "/defaultCustom.properties");
+        if(!status)
+        {
+            throw new MojoExecutionException("defaultCustom file for ["
+                    + configurationDirectory
+                    + "] is not writeable.");
+
         }
     }
 
@@ -90,32 +123,15 @@ public class AntPropertyFileGenerator extends Task implements PropertyGetter
      * Throws an exception, if the customFile exist, 
      * but can't be overwritten (due to permission settings).
      * @param theCustomPath
+     * @throws MojoExecutionException 
      */
-    public void setCustom(String theCustomPath)
+    public void setProperties() throws MojoExecutionException
     {
-        boolean status = generator.setCustom(theCustomPath);
+        boolean status = generator.setProperties("build.properties:project.properties");
         if(!status)
         {
-            throw new BuildException("custom file ["
-                    + generator.getCustom()
-                    + "] is not writable.");
-
-        }
-    }
-
-    /**
-     * Setter: set the path to the final property file.
-     * Throws an exception, if the customFile exist, 
-     * but can't be overwritten (due to permission settings).
-     * @param theCustomPath
-     */
-    public void setProperties(String thePropertyFilePathes)
-    {
-        boolean status = generator.setProperties(thePropertyFilePathes);
-        if(!status)
-        {
-            throw new BuildException("problem with the propretyFilePathlist["
-                    + thePropertyFilePathes
+            throw new MojoExecutionException("problem with the propretyFilePathlist["
+                    + ""
                     + "] one file is not readable.");
 
         }
@@ -141,22 +157,20 @@ public class AntPropertyFileGenerator extends Task implements PropertyGetter
      * 
      */
     public void execute() {
-        log("Create custom file: '" + generator.getCustom() + "'.");
-        log("Using  template   : '" + generator.getTemplate() );
-        
+                   
         try {
-            generator.execute(this);
-        }
-        catch (FileNotFoundException e)
-        {
-            throw new BuildException( "File not found: " + e.getMessage() );
-        }
-        catch (IOException e)
-        {
-            throw new BuildException("Error during read from ["
-                    + generator.getTemplate()
-                    + "]: "+e.getMessage());
-        }
+        	setEmptyCustom();
+            setTemplate();
+            setCustom();
+            setProperties();
+            
+            getLog().info("Create custom file: '" + generator.getCustom() + "'.");
+            getLog().info("Using  template   : '" + generator.getTemplate() );
+            
+            generator.execute();
+        } catch (Exception e) {
+			getLog().error(e.getMessage(), e);
+		}
 
     }
 
@@ -173,7 +187,7 @@ public class AntPropertyFileGenerator extends Task implements PropertyGetter
         String value = (String) def;
         if (value==null || !value.startsWith("$"))
         {
-            result = getProject().getProperty(name);
+            result = (String) this.getPluginContext().get(name);
         }
         if(result == null)
         {
