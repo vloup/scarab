@@ -165,8 +165,15 @@
 ###########################################################################################-->
 
 <build>
-       <sourceDirectory>${basedir}/src</sourceDirectory>
+       <sourceDirectory>${basedir}/src/java</sourceDirectory>
        <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
+       <testResources>
+	      <testResource>
+	        <directory>src/conf/classes</directory>
+	      </testResource>
+	    </testResources>
+       
+       <finalName>${artifactId}</finalName>
        <plugins>
 	   
 		<!--
@@ -191,19 +198,33 @@
               <fileset>
                 <directory>${basedir}/src/java/org/tigris/scarab/om</directory>
                 <includes>
+					<!-- remove generated om java files -->
                     <include>Base*.java</include>
-                    <include>map/*.java</include>
+					<include>Turbine*.java</include>
+					<include>NotificationDefault*.java</include>
+					<include>ScarabRole*.java</include>
+					<include>IdTable*.java</include>
+                    <include>TransactionsPer*.java</include>
+					<include>map/*.java</include>
                 </includes>
               </fileset>
-              <fileset>
+			  <fileset>
                 <directory>${basedir}/src/java</directory>
                 <includes>
-                  <include>report.*.generation</include>
+                    <include>*.sql</include>
+                    <include>report.*.generation</include>
                 </includes>
-              </fileset>              
+              </fileset>
+			   <fileset>
+                <directory>${basedir}/src/conf/conf</directory>
+                <includes>
+                    <include>defaultCustom.properties</include>
+                    <include>custom.properties</include>
+                </includes>
+              </fileset>
             </filesets>
             </configuration>
-          </plugin>          
+          </plugin> 
 
 		<!--
 			Maven plugin for torque tasks:
@@ -216,12 +237,8 @@
           <groupId>org.apache.db.torque</groupId>
           <artifactId>torque-maven-plugin</artifactId>
           <configuration>
-            <targetDatabase>mysql</targetDatabase>
+            <targetDatabase>${scarab.database.type}</targetDatabase>
             <targetPackage>org.tigris.scarab.om</targetPackage>
-            <driver>org.gjt.mm.mysql.Driver</driver>
-            <url>jdbc:mysql://localhost:3306/scarab</url>
-            <user>root</user>
-            <password/>
             <baseOutputDir>${basedir}/src/java</baseOutputDir>
             <outputDir>src/java</outputDir>
             <baseReportFile>report.${project.artifact.artifactId}.om.base.generation</baseReportFile>
@@ -237,7 +254,6 @@
               <phase>generate-sources</phase>
               <goals>
                 <goal>om</goal>
-                <goal>documentation</goal>
               </goals>
             </execution>
           </executions>
@@ -256,7 +272,7 @@
 		<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
-            <version>2.0.2</version>
+            <version>2.2</version>
             <configuration>
                <warName>scarab</warName>
                <containerConfigXML>tomcat/conf/server.xml</containerConfigXML>
@@ -264,15 +280,95 @@
                <webResources>
                  <resource>
                    <directory>src/conf/conf</directory>
-                   <targetPath>WEB-INF/classes</targetPath>
                    <targetPath>WEB-INF/conf</targetPath>
+				   <filtering>true</filtering>
+                 </resource>
+				  <resource>
+                   <directory>src/conf/classes</directory>
+                   <targetPath>WEB-INF/classes</targetPath>
                  </resource>
                  <resource>
                    <directory>src/webapp</directory>
                  </resource>
                </webResources>
             </configuration>
+            <executions>
+	            <execution>
+	              <phase>generate-test-resources</phase>
+	              <goals>
+	                <goal>war</goal>
+	              </goals>
+	            </execution>
+          	</executions>
           </plugin>
+		  
+		  <!--
+			Initialize database and other Scarab related stuff:
+				- init-db : fill database
+				- generateProperties : create defaultCustom.properties
+		  -->
+		  <plugin>
+			<groupId>org.tigris.scarab</groupId>
+			<artifactId>scarab-maven-plugin</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<configuration>
+				<dbType>${scarab.database.type}</dbType>
+				<dbUser>${scarab.database.admin.username}</dbUser>
+				<dbPassword>${scarab.database.admin.password}</dbPassword>
+				<dbServerUrl>${jdbc}:${scarab.jdbc.handler}://${scarab.database.host}:${scarab.database.port}</dbServerUrl>
+				<dbFullUrl>${scarab.database.url}</dbFullUrl>
+				<dbDriver>${scarab.database.jdbc.driver}</dbDriver>
+				<configurationDirectory>src/conf/conf</configurationDirectory>
+			</configuration>
+			<executions>
+				<execution><id>package</id><phase>validate</phase><goals><goal>generate-custom-properties</goal></goals></execution>
+				<execution><id>site</id><phase>pre-site</phase><goals><goal>prepare-site-docs</goal></goals></execution>
+            </executions>
+			 <dependencies>
+				<dependency>
+				  <artifactId>mysql-connector-java</artifactId>
+				  <groupId>mysql</groupId>
+				  <version>5.1.18</version>
+				</dependency>
+			    <dependency>
+			      <groupId>hsqldb</groupId>
+			      <artifactId>hsqldb</artifactId>
+			      <version>1.8.0.7</version>
+			    </dependency>
+			</dependencies>
+		  </plugin>
+		  
+		  <!--
+			Read in defaultCustom.properties during "initialize"
+		  -->
+		  <plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>properties-maven-plugin</artifactId>
+			<version>1.0-alpha-2</version>
+				<configuration>
+					<files>
+						<file>src/conf/conf/defaultCustom.properties</file>
+					</files>
+				</configuration>
+				<executions>
+					<execution><phase>initialize</phase><goals><goal>read-project-properties</goal></goals></execution>
+				</executions>
+		  </plugin>
+		  
+	
+		<!-- 
+			Build of Scarab source archives 
+		-->		
+		<plugin>
+	        <artifactId>maven-assembly-plugin</artifactId>
+	        <version>2.3</version>
+	        <configuration>
+	          <descriptors>
+	            <descriptor>source-archives.xml</descriptor>
+	          </descriptors>
+	        </configuration>
+		</plugin>
+		  
     </plugins>
  </build>
  
@@ -281,6 +377,12 @@
 ###########################################################################################-->
 
  <dependencies>
+	<dependency>
+     <groupId>javax.servlet</groupId>
+     <artifactId>servlet-api</artifactId>
+     <version>2.5</version>
+	 <scope>provided</scope>
+   </dependency>  
    <dependency>
      <groupId>rome</groupId>
      <artifactId>rome</artifactId>
@@ -294,13 +396,12 @@
    <dependency>
      <groupId>javax.activation</groupId>
      <artifactId>activation</artifactId>
-     <version>1.0.2</version>
+     <version>1.1.1</version>
    </dependency>
    <dependency>
      <groupId>axis</groupId>
      <artifactId>axis</artifactId>
-     <version>1.4</version>
-     <scope>runtime</scope>
+     <version>1.1</version>
    </dependency>
    <dependency>
      <groupId>commons-configuration</groupId>
@@ -312,10 +413,16 @@
       <artifactId>commons-email</artifactId>
       <version>1.0</version>
     </dependency>
+	<dependency>
+	  <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-javamail</artifactId>
+      <version>1.3.1-rc3</version>
+	  <scope>provided</scope><!-- sun's javamail is used -->
+	</dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.4</version>
+      <version>2.3</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -342,6 +449,11 @@
       <artifactId>commons-fileupload</artifactId>
       <version>1.1.1</version>
     </dependency>
+	<dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+    </dependency>
     <dependency>
       <groupId>dnsjava</groupId>
       <artifactId>dnsjava</artifactId>
@@ -352,7 +464,22 @@
       <artifactId>dom4j</artifactId>
       <version>1.3</version>
     </dependency>
-
+	<dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.4</version>
+    </dependency>
+	<dependency>
+      <groupId>javax.xml</groupId>
+      <artifactId>jaxrpc</artifactId>
+      <version>1.1</version>
+    </dependency>
+	<dependency>
+		<groupId>aspectj</groupId>
+		<artifactId>aspectjrt</artifactId>
+		<version>1.2.1</version>
+	</dependency>
+	
     <dependency>
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
@@ -419,10 +546,58 @@
       <version>1.0.2</version>
     </dependency>  
     <dependency>
-      <groupId>cactus</groupId>
-      <artifactId>cactus</artifactId>
-      <version>13-1.7.2</version>
-    </dependency>
+      <groupId>bsh</groupId>
+      <artifactId>bsh</artifactId>
+      <version>2.0b1</version>
+    </dependency> 
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-interaction</artifactId>
+      <version>1.0</version>
+    </dependency>              
+   <dependency>
+     <groupId>opensymphony</groupId>
+     <artifactId>quartz</artifactId>
+     <version>1.5.0</version>
+   </dependency>     
+   <dependency>
+     <groupId>org.samba.jcifs</groupId>
+     <artifactId>jcifs</artifactId>
+     <version>1.2.6</version>
+   </dependency>     
+   <dependency>
+     <groupId>radeox</groupId>
+     <artifactId>radeox</artifactId>
+     <version>1.0-b2</version>
+   </dependency>
+   <dependency>
+     <groupId>radeox</groupId>
+     <artifactId>radeox-api</artifactId>
+     <version>1.0-b2</version>
+   </dependency>
+   <dependency>
+     <groupId>net.sf.saxon</groupId>
+     <artifactId>saxon</artifactId>
+     <version>8.7</version>
+   </dependency>  
+   <dependency>
+     <groupId>net.sf.saxon</groupId>
+     <artifactId>saxon-dom</artifactId>
+     <version>8.7</version>
+   </dependency>   
+   <dependency>
+     <groupId>net.sf.saxon</groupId>
+     <artifactId>saxon-xpath</artifactId>
+     <version>8.7</version>
+   </dependency>
+     <!-- was former Scarab depend
+   <dependency>
+     <groupId>stratum</groupId>
+     <artifactId>stratum</artifactId>
+     <version>1.0</version>
+   </dependency--> 
+
+    
   <!-- Avalon Container and Components -->
     <dependency>
       <groupId>fulcrum</groupId>
@@ -478,7 +653,31 @@
       <groupId>avalon-framework</groupId>
       <artifactId>avalon-framework-impl</artifactId>
       <version>4.2.0</version>
-    </dependency>         
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-xmlrpc</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-testcontainer</artifactId>
+      <version>1.0.4</version>
+    </dependency> 
+    
+    <!-- hack to provide other velocity version during runtime as transitive depends say -->
+    <dependency>
+    	<groupId>velocity</groupId>
+    	<artifactId>velocity</artifactId>
+    	<version>1.5</version>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.velocity</groupId>
+    	<artifactId>velocity</artifactId>
+    	<version>1.6.3</version>
+    	<scope>runtime</scope>
+    </dependency>     
     
   <!-- Begin Database Dependencies -->
 
@@ -505,61 +704,8 @@
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
-    </dependency>        
-    
-  <!-- End Database Dependencies -->    
-    <dependency> 
-      <groupId>maven-plugins</groupId> 
-      <artifactId>maven-findbugs-plugin</artifactId> 
-      <version>1.3.1</version> 
-      <type>plugin</type>
-    </dependency> 
-    
-    <dependency> 
-      <groupId>statcvs</groupId> 
-      <artifactId>maven-statcvs-plugin</artifactId> 
-      <version>2.4</version> 
-      <type>plugin</type>
-    </dependency>    
+    </dependency>         
 
-    <!-- Needed for Building -->
-    <dependency>
-      <groupId>bsh</groupId>
-      <artifactId>bsh</artifactId>
-      <version>2.0b1</version>
-    </dependency>   
-    <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-interaction</artifactId>
-      <version>1.0</version>
-    </dependency>     
-    <dependency>
-      <groupId>fulcrum</groupId>
-      <artifactId>fulcrum-xmlrpc</artifactId>
-      <version>1.0.5</version>
-    </dependency>
-    
-    <!-- Needed for testing -->
-    <dependency>
-      <groupId>fulcrum</groupId>
-      <artifactId>fulcrum-testcontainer</artifactId>
-      <version>1.0.4</version>
-    </dependency>        
-   <dependency>
-     <groupId>opensymphony</groupId>
-     <artifactId>quartz</artifactId>
-     <version>1.5.0</version>
-   </dependency>     
-   <dependency>
-     <groupId>org.samba.jcifs</groupId>
-     <artifactId>jcifs</artifactId>
-     <version>1.2.6</version>
-   </dependency>     
-   <dependency>
-     <groupId>radeox</groupId>
-     <artifactId>radeox</artifactId>
-     <version>1.0-b2</version>
-   </dependency> 
   </dependencies>
   
   <properties>

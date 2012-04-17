@@ -1,3 +1,3 @@
-drop database if exists @DB_NAME@;
-create database @DB_NAME@;
-grant all on @DB_NAME@.* to @DATABASE_USERNAME@ identified by '@DATABASE_PASSWORD@';
+drop database if exists ${scarab.database.name};
+create database ${scarab.database.name};
+grant all on ${scarab.database.name}.* to ${scarab.database.username} identified by '${scarab.database.password}';
