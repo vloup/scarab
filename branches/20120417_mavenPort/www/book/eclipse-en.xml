@@ -62,6 +62,9 @@
 			<simpara>The Sysdeo Tomcat plugin allows you to start and stop Tomcat from Eclipse and makes debugging the application under development easier.</simpara>
 			<simpara>Download the 3.1 beta version from this URL: <ulink url="http://www.sysdeo.com/eclipse/tomcatplugin">http://www.sysdeo.com/eclipse/tomcatplugin</ulink>.</simpara>
 			<simpara>To install this plugin, all you need is to uncompress the ZIP archive in the <computeroutput>plugins</computeroutput> directory of your Eclipse installation.</simpara>
+			<note>
+				<simpara>Please note, that maven 1.x was removed and another, incompatible Maven version, 2 or higer, is used for building Scarab now. Current doumentation files are therefore outdated.</simpara>
+			</note>
 		</sect2>
 		<sect2>
 			<title>Generating the required files with Maven</title>
