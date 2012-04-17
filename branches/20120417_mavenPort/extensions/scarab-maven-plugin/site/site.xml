@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Scarab">
+
+  <body>
+    <menu name="Overview">
+      <item name="Goals"               		href="/plugin-info.html"/>
+    </menu>
+  
+	<menu ref="reports" inherit="bottom" />	
+
+  </body>
+</project>
