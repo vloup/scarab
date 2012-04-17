@@ -7,7 +7,7 @@
 
   <body>
 	<release version="23" date="17-APRIL-2012">
-		<action dev="mcoss" type="update">
+		<action dev="mcoss" type="update" fix="SCB3096">
 		Maven 3 is preferred build tool.
 		</action>
 	</release>
