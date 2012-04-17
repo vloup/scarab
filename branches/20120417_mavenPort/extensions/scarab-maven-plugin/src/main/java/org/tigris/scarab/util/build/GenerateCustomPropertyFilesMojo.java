@@ -62,7 +62,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * 
  */
 
-public class AntPropertyFileGenerator extends AbstractMojo
+public class GenerateCustomPropertyFilesMojo extends AbstractMojo
 {
  
 	/**

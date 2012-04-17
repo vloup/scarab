@@ -71,7 +71,7 @@ import org.tigris.scarab.util.build.l10nchecker.L10nMessage;
  * @goal check-l10n
  *  
  */
-public class AntL10AnalysisTask extends AbstractMojo
+public class L10AnalysisMojo extends AbstractMojo
 {
 	/**
 	 * Files to check
