@@ -4,7 +4,7 @@
 -- Remember to set a good password for this user in a production system!
 
 INSERT INTO TURBINE_USER (USER_ID, LOGIN_NAME, PASSWORD_VALUE, FIRST_NAME, LAST_NAME, EMAIL, CONFIRM_VALUE, MODIFIED, CREATED, LAST_LOGIN) 
-    VALUES (1, '@ADMIN_USERNAME@', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Scarab', 'Administrator', 'Administrator@scarab.example.org', 'CONFIRMED', null, null, null);
+    VALUES (1, '${scarab.user.username}', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 'Scarab', 'Administrator', 'Administrator@scarab.example.org', 'CONFIRMED', null, null, null);
 
 -- root module
 INSERT INTO SCARAB_MODULE(MODULE_ID, MODULE_NAME, MODULE_CODE, MODULE_DESCRIPTION, MODULE_URL, PARENT_ID, CLASS_KEY)
@@ -210,11 +210,11 @@ insert into TURBINE_ROLE_PERMISSION (ROLE_ID, PERMISSION_ID)
 drop table xxxx_populate_RolePermission;
 
 
--- Assign the user '@ADMIN_USERNAME@' a system-wide role 'Root'
+-- Assign the user '${scarab.user.username}' a system-wide role 'Root'
 
 INSERT INTO TURBINE_USER_GROUP_ROLE ( USER_ID, GROUP_ID, ROLE_ID ) 
 SELECT TURBINE_USER.USER_ID, SCARAB_MODULE.MODULE_ID, TURBINE_ROLE.ROLE_ID from 
 TURBINE_USER, SCARAB_MODULE, TURBINE_ROLE 
-WHERE TURBINE_USER.LOGIN_NAME = '@ADMIN_USERNAME@' AND 
+WHERE TURBINE_USER.LOGIN_NAME = '${scarab.user.username}' AND 
 SCARAB_MODULE.MODULE_ID = 0
 AND TURBINE_ROLE.ROLE_NAME in ('Root');
