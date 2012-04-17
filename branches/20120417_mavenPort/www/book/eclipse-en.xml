@@ -5,23 +5,23 @@
 		<sect2>
 			<title>Getting the subclipse plugin</title>
 			<simpara>You will need the Subclipse plugin to connect to the Subversion repository that hosts and manages the Scarab source code base.</simpara>
-			<simpara>If you do not have this plugin already installed, you will find detailed installation instructions at this URL&nbsp;:
+			<simpara>If you do not have this plugin already installed, you will find detailed installation instructions at this URL:
 		<ulink url="http://subclipse.tigris.org/install.html">http://subclipse.tigris.org/install.html</ulink>
 			</simpara>
 		</sect2>
 		<sect2>
 			<title>Connecting to the Scarab Subversion repository</title>
-			<para>Select the &apos;SVN Repository Exploring&apos; perspective&nbsp;:</para>
+			<para>Select the 'SVN Repository Exploring' perspective:</para>
 			<screenshot>
 				<graphic fileref="images/svn03.png"/>
 			</screenshot>
-			<para>Right-click in the SVN Repository view to connect to a new Subversion repository&nbsp;:</para>
+			<para>Right-click in the SVN Repository view to connect to a new Subversion repository:</para>
 			<screenshot>
 				<graphic fileref="images/svn04.png"/>
 			</screenshot>
-			<para>The connection URL is&nbsp;:: <emphasis>http://scarab.tigris.org/svn/scarab</emphasis>
+			<para>The connection URL is: <emphasis>http://scarab.tigris.org/svn/scarab</emphasis>
 			</para>
-			<simpara>and the Root URL is&nbsp;: <emphasis>http://scarab.tigris.org/svn</emphasis>
+			<simpara>and the Root URL is: <emphasis>http://scarab.tigris.org/svn</emphasis>
 			</simpara>
 			<para>If you are a Scarab committer, use your tigris.org login and password to connect; otherwise you do not need any particular identification and you may leave the <emphasis>User</emphasis> and
 	    <emphasis>Password</emphasis> fields blank (though it seems that any <emphasis>User/Password</emphasis> will work here).</para>
@@ -32,11 +32,11 @@
 			<screenshot>
 				<graphic fileref="images/svn06.png"/>
 			</screenshot>
-			<para>You can then use &apos;Checkout As Project&apos;, which allows you to rename the project (otherwise Eclipse would name it <emphasis>trunk</emphasis>, which is not that meaningful). </para>
+			<para>You can then use 'Checkout As Project, which allows you to rename the project (otherwise Eclipse would name it <emphasis>trunk</emphasis>, which is not that meaningful). </para>
 			<screenshot>
 				<graphic fileref="images/svn07.png"/>
 			</screenshot>
-			<para>The &apos;New Project&apos; wizard appears. Choose &apos;Java project&apos;.</para>
+			<para>The 'New Project' wizard appears. Choose 'Java project'.</para>
 			<screenshot>
 				<graphic fileref="images/svn08.png"/>
 			</screenshot>
@@ -48,7 +48,7 @@
 			<screenshot>
 				<graphic fileref="images/svn09b.png"/>
 			</screenshot>
-			<para>Last step&nbsp;: it is best to change the <emphasis>Default output folder</emphasis> to&nbsp;:<computeroutput>scarab/target/webapps/scarab/scarab/WEB-INF/classes</computeroutput>
+			<para>Last step: it is best to change the <emphasis>Default output folder</emphasis> to:<computeroutput>scarab/target/webapps/scarab/scarab/WEB-INF/classes</computeroutput>
 			</para>
 			<screenshot>
 				<graphic fileref="images/svn10.png"/>
@@ -65,7 +65,7 @@
 		</sect2>
 		<sect2>
 			<title>Generating the required files with Maven</title>
-			<simpara>At the root of your project, type the following commands&nbsp;:</simpara>
+			<simpara>At the root of your project, type the following commands:</simpara>
 			<simpara>
 				<computeroutput>maven war:inplace</computeroutput>
 			</simpara>
@@ -91,7 +91,7 @@
 						<simpara>Select the 4.0.x version</simpara>
 					</listitem>
 					<listitem>
-						<simpara>Tomcat directory&nbsp;: the <computeroutput>tomcat</computeroutput> directory in your Scarab project</simpara>
+						<simpara>Tomcat directory: the <computeroutput>tomcat</computeroutput> directory in your Scarab project</simpara>
 					</listitem>
 					<listitem>
 						<simpara>Context declaration in server.xml</simpara>
@@ -100,7 +100,7 @@
 			</sect3>
 			<sect3>
 				<title>Setting the project Tomcat properties</title>
-				<simpara>In Project | Properties | Tomcat&nbsp;:</simpara>
+				<simpara>In Project | Properties | Tomcat:</simpara>
 				<screenshot>
 					<graphic fileref="images/sysdeo1.png"/>
 				</screenshot>

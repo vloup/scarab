@@ -4,10 +4,10 @@
 	<sect1>
 		<title>Introduction</title>
 		<simpara>Workflow has been a widely debated concept for the life of Scarab. In the lighter part of what's been called &quot;workflow&quot; there is the enforcement of certain conditions on the issues, based on the value of its attributes, its so called &quot;state&quot;, or other conditions. In a deeper understanding of the term, workflow deals with the integration between the Scarab actions and other systems/processes.</simpara>
-		<simpara>Scarab supports <emphasis>pluggable workflows</emphasis>. Until the milestone 19, the default workflow was not to have one. In fact there was a default workflow that did nothing and allowed all transitions. From milestone 20 upwards, the default option is to use a simple workflow called &apos;BasicWorkflow&apos;; the behaviour of this workflow is explained below.</simpara>
+		<simpara>Scarab supports <emphasis>pluggable workflows</emphasis>. Until the milestone 19, the default workflow was not to have one. In fact there was a default workflow that did nothing and allowed all transitions. From milestone 20 upwards, the default option is to use a simple workflow called 'BasicWorkflow'; the behaviour of this workflow is explained below.</simpara>
 		<note>
 			<title>Changing workflow</title>
-			<simpara>If you want to change workflow to use another one or design your own, read the <emphasis>Workflow</emphasis> chapter in the <emphasis>Scarab Developer&apos;s Guide</emphasis>.</simpara>
+			<simpara>If you want to change workflow to use another one or design your own, read the <emphasis>Workflow</emphasis> chapter in the <emphasis>Scarab Developer's Guide</emphasis>.</simpara>
 		</note>
 	</sect1>
 	<sect1>
