@@ -1,0 +1,33 @@
+---
+--- b20-b21 Migration.
+---
+--- SCB1565: Include 'last modified' and 'creation' information in search results
+---  - Modifications on SCARAB_R_MODULE_USER_ATTRIBUTE
+---  - Dump and recreate SCARAB_ISSUE with the new field (LAST_TRANS_ID) loaded
+---
+
+---
+--- SCB1565: Creation and Last Modification date and users in Query Results
+---
+--- - Add new column to SCARAB_R_MODULE_USER_ATTRIBUTE and modify the unique constraint
+---
+ALTER TABLE SCARAB_R_MODULE_USER_ATTRIBUTE ADD INTERNAL_ATTRIBUTE VARCHAR(20) NULL;
+
+ALTER TABLE SCARAB_R_MODULE_USER_ATTRIBUTE DROP CONSTRAINT SCARAB_R_MODULE_USER_ATTRIBUTE_U_1;
+
+CREATE UNIQUE INDEX SCARAB_R_MODULE_USER_ATTRIBUTE_U_1 ON SCARAB_R_MODULE_USER_ATTRIBUTE (LIST_ID,MODULE_ID,USER_ID,ISSUE_TYPE_ID,ATTRIBUTE_ID,INTERNAL_ATTRIBUTE);
+
+---
+--- Add new column to SCARAB_ISSUE with LAST_TRANS_ID, setting its value to
+--- the older activity ID related to every issue
+---
+ALTER TABLE SCARAB_ISSUE ADD COLUMN LAST_TRANS_ID INT8;
+
+ALTER TABLE SCARAB_ISSUE
+  ADD FOREIGN KEY (LAST_TRANS_ID) REFERENCES SCARAB_TRANSACTION (TRANSACTION_ID);
+
+UPDATE SCARAB_ISSUE SET LAST_TRANS_ID = ( 
+   SELECT MAX(activity.TRANSACTION_ID)
+   FROM SCARAB_ACTIVITY activity 
+   WHERE scarab_issue.ISSUE_ID = activity.ISSUE_ID 
+);

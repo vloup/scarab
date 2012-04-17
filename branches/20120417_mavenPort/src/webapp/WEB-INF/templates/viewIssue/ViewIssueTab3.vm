@@ -1,0 +1,82 @@
+#set ($canAddComment = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
+#set ($canEditComments = $scarabR.hasPermission($scarabG.Permission.MODULE__EDIT))
+#set ($isEditComments = $canEditComments && $data.Parameters.getBoolean("edit_comments"))
+#set ($isEditAttributes = $canEdit && $data.Parameters.getBoolean("edit_attributes"))
+#set ($comments = $currentIssue.getComments($fullComments.equals("true")))
+
+#macro (commentList)
+   #if ($currentIssue.isCommentsLong())
+     #if ($fullComments.equals("true"))
+       #set ($commentsLink = $link.setPage("ViewIssue.vm").addPathInfo("id", $currentIssue.UniqueId).addPathInfo("fullcomments", "false").addPathInfo("tab", $tab).addPathInfo("edit_comments", $isEditComments))
+     <a href="$commentsLink">$l10n.HideCommentList</a>
+     #else
+       #set ($commentsLink = $link.setPage("ViewIssue.vm").addPathInfo("id", $currentIssueId).addPathInfo("fullcomments", "true").addPathInfo("tab", $tab).addPathInfo("edit_comments", $isEditComments))
+       #set ($hiddenCommentCount = $currentIssue.CommentsCount - $currentIssue.CommentsLimit)
+       
+       <a href="$commentsLink">$l10n.ShowCommentList</a> ($l10n.format("ThereAreMoreComments", $hiddenCommentCount))
+     #end
+   #end
+#end
+
+#tabHeading("comments" $l10n.format("CommentsNavi", $numComments))
+<div id='comments'>
+#if ($comments.isEmpty() && !$canAddComment)
+  $l10n.NoComments
+#else
+  #if ($canAddComment && !$isEditComments && (!$tab.equals("all") || !$isEditAttributes))
+   <h4>$l10n.EnterComment</h4>
+   <table cellspacing="2" cellpadding="3" border="0" width="100%">
+     <tr>
+       <td>
+          #set ($commentGroup = $intake.Attachment.setKey("commentKey"))
+          #textAreaLarge("$commentGroup.Data.Key" "")
+          #fieldErrorMsg($commentGroup.Data "")
+          <input type="hidden" name="$commentGroup.Name.Key" value="comment" />
+       </td>
+     </tr>
+   </table>
+   <div class="functnbar3">
+      <input type="submit" value="$l10n.Save" name="eventSubmit_doSubmitcomment" />
+   </div>
+   <h4>$l10n.Comments</h4>
+  #end
+
+  #set ($comment_counter=$numComments)
+  #foreach ($comment in $comments)
+    <div class="scb_comment">
+      #set ($commentUser = $scarabR.getUser($comment.CreatedBy))
+      <h4>
+      <span class="counter">$comment_counter: </span> #userTimeStamp( $commentUser $comment.CreatedDate) 
+      </h4>
+    
+      <div class="content">
+        #if ($isEditComments)
+          #textAreaLarge( "edit_comment_$comment.AttachmentId" $comment.Data)
+        #else
+          $scarabG.textToHTML($l10n.getIgnoreMissingResource($comment.Data), $link, $scarabR.CurrentModule)
+        #end
+      </div>
+    
+    </div>
+    #set ($comment_counter = $comment_counter - 1)
+  #end
+
+  #if ($isEditComments)
+   <div class="functnbar3">
+     <input type="submit" value="$l10n.SaveComment" name="eventSubmit_doEditcomment" />
+     <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+     #commentList()
+   </div>
+  #elseif ($canEditComments && !$comments.isEmpty())
+   <div class="functnbar3">
+     <input type="hidden" value="$fullComments" name="fullcomments" />
+     <input type="submit" value="$l10n.EditComment" name="eventSubmit_doEditcommentpage" />
+     #commentList()
+   </div>
+  #elseif (!$comments.isEmpty() && $currentIssue.isCommentsLong())
+   <div class="functnbar3">
+     #commentList()
+   </div>
+  #end
+#end
+</div>

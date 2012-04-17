@@ -1,0 +1,181 @@
+      <div class="axial">
+        <table cellpadding="3" cellspacing="2" border="0">
+
+          #* ================================================================ *#
+          #* INPUT TYPE                                                       *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.InputType</th>
+            <td colspan="2">
+              #set ($types = $attribute.CompatibleAttributeTypes)
+              #if ($types.isEmpty())
+                <input type="hidden" name="$attgroup.TypeId.Key" value="$attribute.TypeId" />
+                $attribute.AttributeType.Name <p><em>$l10n.TypeCannotChange</em></p>
+              #elseif ($immutable)
+                <input type="hidden" name="$attgroup.TypeId.Key" value="$attribute.TypeId" />
+                $attribute.AttributeType.Name
+              #else
+                <select name="$attgroup.TypeId.Key" size="1">
+                  #foreach ($atype in $types)
+                    #if (!$atype.Name.equals("user"))
+                      <option value="$atype.AttributeTypeId" #if($attribute.TypeId && $attribute.TypeId == $atype.AttributeTypeId)selected#end>$atype.Name</option>
+                    #end
+                  #end
+                </select>
+              #end
+            </td>
+          </tr> 
+
+
+          #* ================================================================ *#
+          #* FIELD NAME                                                       *#
+          #* ================================================================ *#
+          <tr>
+            <th>* $l10n.Name</th>
+            <td colspan="2">
+              #fieldErrorMsg($attgroup.Name "")
+              #if(!$immutable)
+                <input type="text" name="$attgroup.Name.Key" value="$!attgroup.Name" />
+              #else
+                <input type="hidden" name="$attgroup.Name.Key" value="$!attgroup.Name" />
+                $!attgroup.Name
+              #end
+            </td>
+          </tr>
+
+
+          #* ================================================================ *#
+          #* FIELD SIZE                                                       *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.DisplaySize</th>
+            <td>
+              #if(!$immutable)
+                <input type="text" name="$attgroup.FieldSize.Key" value="$!attgroup.FieldSize" />
+              #else
+                <input type="hidden" name="$attgroup.FieldSize.Key" value="$!attgroup.FieldSize" />
+                $!attgroup.Name
+              #end
+            </td>
+            <td width="100%">$l10n.DisplaySizeExplained</td>
+          </tr>
+
+
+          #* ================================================================ *#
+          #* FIELD STYLE                                                     *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.DisplayStyle</th>
+            <td>
+              #if(!$immutable)
+                <input type="text" name="$attgroup.Style.Key" value="$!attgroup.Style" />
+              #else
+                <input type="hidden" name="$attgroup.Style.Key" value="$!attgroup.Style" />
+                $!attgroup.Name
+              #end
+            </td>
+            <td>$l10n.DisplayStyleExplained</td>
+          </tr>
+
+
+          #* ================================================================ *#
+          #* FIELD FORMAT                                                     *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.FormatString</th>
+            <td>
+              #if(!$immutable)
+                <input type="text" name="$attgroup.Format.Key" value="$!attgroup.Format" />
+              #else
+                <input type="hidden" name="$attgroup.Format.Key" value="$!attgroup.Format" />
+                $!attgroup.Name
+              #end
+            </td>
+            <td>$l10n.FormatStringExplained</td>
+          </tr>
+
+
+          #* ================================================================ *#
+          #* FIELD FORMAT HINT                                                *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.FormatHint</th>
+            <td>
+              #if(!$immutable)
+                <input type="text" name="$attgroup.Hint.Key" value="$!attgroup.Hint" />
+              #else
+                <input type="hidden" name="$attgroup.Hint.Key" value="$!attgroup.Hint" />
+                $!attgroup.Name
+              #end
+            </td>
+            <td>$l10n.FormatHintExplained</td>
+          </tr>
+
+
+          #* ================================================================ *#
+          #* FIELD DESCRIPTION                                                *#
+          #* ================================================================ *#
+          <tr>
+            <th>* $l10n.Description</th>
+            <td colspan="2">
+              #fieldErrorMsg($attgroup.Description "")
+              <textarea rows="4" 
+                        cols="40"
+                        name="$attgroup.Description.Key">$!attgroup.Description</textarea>
+            </td>
+          </tr>
+
+          #* ================================================================ *#
+          #* META DATA                                                        *#
+          #* ================================================================ *#
+          #if (!$createNew)            
+
+            #* ================================================================ *#
+            #* CREATION DATA                                                    *#
+            #* ================================================================ *#
+            #if ($attribute.CreatedDate)
+              <tr>
+                <th>$l10n.CreatedBy</th>
+                <td colspan="2">#attributeCreatedBy($attribute)</td>
+              </tr>
+              <tr>
+                <th>$l10n.CreationDate</th>
+                <td>
+                  $format.getDate($scarabR.DateFormat, $attribute.CreatedDate)
+                </td>
+              </tr>
+            #end
+
+            #* ================================================================ *#
+            #* DELETION MARKER                                                  *#
+            #* ================================================================ *#
+            <tr>
+              <th>$l10n.Deleted</th>
+              #if(!$immutable)
+                <td colspan="2">#booleanCheckbox ($attgroup.Deleted)</td>
+              #else
+                <td colspan="2">#booleanCheckboxLock ($attgroup.Deleted $immutable)</td>
+              #end
+            </tr>
+          #end
+
+
+          #* ================================================================ *#
+          #* REQUIRED CONSTRAINTS                                             *#
+          #* ================================================================ *#
+          <tr>
+            <th>$l10n.RequiredIf</th>
+            <td colspan="2">
+            #if ($attribute.isConditioned())
+              #set ($requiredOptions = $attribute.Conditions)
+              #foreach ($o in $requiredOptions)
+                $o.attributeOption.attribute.name = $o.attributeOption.name<br/>
+              #end   
+            #set ($conditionsLink = $link.setPage("admin,ConditionEdit.vm").addPathInfo("$scarabG.Constant.CANCEL_TEMPLATE","admin,GlobalAttributeEdit.vm").addPathInfo("obj_type", $scarabG.Constant.GLOBAL_ATTRIBUTE_OBJECT).addPathInfo("attId", $attribute.attributeId))
+            #else
+            <em>$l10n.NoConditionsDefined</em>
+            #end
+            </td>
+          </tr> 
+        </table>
+      </div>

@@ -1,0 +1,11 @@
+#set ($module = $scarabR.CurrentModule)
+
+#if ($module)
+
+  ## DEFAULT-USER Shortcuts
+  $renderer.render("navigations", "CommonLinks.vm")
+
+  ## AMINISTRATION Shortcuts
+  $renderer.render("navigations", "Administration.vm")
+
+#end

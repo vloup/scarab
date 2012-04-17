@@ -1,0 +1,21 @@
+<div id="updatesearchindex" class="app">
+
+<form action="$link.setPage("admin,UpdateSearchIndex.vm").setAction("admin.UpdateSearchIndex")" method="get" name="updatesearchindex">
+<input type="hidden" name="$scarabG.Constant.NEXT_TEMPLATE" value="admin,UpdateSearchIndex.vm" />
+
+ <h3>$l10n.UpdateSearchIndex</h3>
+
+<p>
+$l10n.UpdateSearchIndexBody
+</p>
+
+<div class="functnbar2">
+#if ($rebuildInProgress)
+   <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+#else
+   <input type="submit" value="$l10n.UpdateSearchIndex" name="eventSubmit_doPerform" />
+#end
+ </div>
+
+</form>
+</div>

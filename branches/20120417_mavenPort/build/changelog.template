@@ -1,0 +1,7 @@
+scarab-@CONTEXT@ (@VERSION@) unstable contrib; urgency=low
+
+ * automatically created debian package for scarab
+ This is the initial attempt to generate debian packages for scarab instances
+
+ -- Peter Tillemans <pti@elex.be> October 20, 2006
+
