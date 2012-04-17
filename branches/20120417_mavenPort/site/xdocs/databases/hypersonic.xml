@@ -15,7 +15,7 @@ very basic settings, but it worked right from the start.
 Everything you will need for a very basic installation, is already included into Scarab.
 </p>
 <p>
-Set property for database type: 
+Edit your build.properties and the property for database type to: 
 <source>scarab.database.type=hypersonic</source>
 </p>
 <p>
@@ -29,7 +29,11 @@ scarab.database.password=
 </source>
 </p>
 <p>
-Then run <source>ant create-db</source> and it should work.
+Then run 
+<source>
+mvn clean package -Dmaven.test.skip=true
+mvn initialize scarab:create-db -Dscarab.database.build.mode=sample -DapplicationRoot=target/scarab
+</source> and it should work.
 </p>
 </section>
 </body>

@@ -11,11 +11,13 @@
 <body>
 
 <section name="Preparations before cutting">
+<subsection name="Introduction">
 <p>
 	Basically you need to test and build the distribution, and 
 	then build and commit the generated documentation.
 </p>
-	<a name="buildtest"/><subsection name="Building a Distribution">
+</subsection>
+<a name="buildtest"/><subsection name="Building a Distribution">
 	<p>
       Make sure your working copy has no local modifications and is 
 	  up-to-date. Starting with a fresh copy is recommended using:
@@ -26,9 +28,9 @@
 	<p>
 	  Build and execute tests.
       <source>
-      maven -Dmaven.test.skip=true
-      maven scarab:create-db
-      maven test
+      mvn clean initialize scarab:create-db -Dscarab.database.build.mode=sample
+      mvn clean package -Dmaven.test.skip=true
+      mvn test
       </source>
 	</p>
 	<p>
@@ -38,14 +40,13 @@
 	  Edit scarab/scarab_properties.xml and change the 
       property with name "version" removing the "-dev" appendix from
       the final version number for the release.<br/>
-      Do the same in the &lt;currentVersion&gt; tag in project.xml file.
+      Do the same in the &lt;version&gt; tag in pom.xml file.
 	</p>
 
     <p>
       Run the property file generator and update the www/repository:
       <source>
-      maven scarab:update-repo
-      maven scarab:update-properties
+      mvn initialize scarab:update-properties
       </source>
     </p>
 	
@@ -86,10 +87,9 @@
 	<p>
 	  Build a source release. 
       This will create a .tar.gz and a .zip file in
-      the scarab directory.
+      the target directory.
       <source>
-      cd scarab/build
-      ant package
+      mvn clean assembly:single -Dmaven.test.skip=true
       </source>	       
 	</p>
 </subsection>
@@ -102,12 +102,12 @@
     Edit scarab/xdocs/scarab_properties.xml and change the 
     property with name "version" to the next version with the "-dev" appendix from
     the final version number for the release.<br/>
-    Do the same in the &lt;currentVersion&gt; tag of project.xml file.
+    Do the same in the &lt;version&gt; tag of pom.xml file.
   </p>
   <p>
     Update the property files again.
     <source>
-      maven scarab:update-properties
+      mvn initialize scarab:update-properties
     </source>
   </p>
   <p>

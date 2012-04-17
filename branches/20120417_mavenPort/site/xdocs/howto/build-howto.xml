@@ -10,7 +10,9 @@
 <body>
 <section name="The Scarab Build System">
 <subsection name="Introduction">
-
+<p>
+This document is for installation of Scarab. Please see <a href="maven-build-howto.html">Maven Build How-To</a> for clearification about the build process itself.
+</p>
 <p>
 The installation and configuration of Scarab is intended to be as simple as 
 possible. This document outlines the directory structure of the distribution, the requirements for running Scarab,
@@ -51,34 +53,15 @@ system running.
       the SDK is included.
     </p>
     <p>
-      When compiling Scarab with Jikes, version 1.18 or higher is
-      required.  Please do not try with Jikes 1.17, as it is buggy.
+      Compiling Scarab with Jikes, is not supported.
     </p>
 </li>
 
-<li>Maven-1.x available from
+<li>Maven-3.0.3 or higher available from
     <p>
       <code>
         <a href="http://maven.apache.org/">http://maven.apache.org/</a>
       </code>
-    </p>
-    <p>
-    Note: If you prefer to use Ant (see below), you don't need to install Maven.
-    If you want to contribute to Scarab Source code, or you need to rebuild all
-    bits and pieces of Scarab, you will be more happy with Maven though.
-    </p>
-</li>
-
-<li>Ant 1.5 or higher available from
-    <p>
-      <code>
-        <a href="http://ant.apache.org/">http://ant.apache.org/</a>
-      </code>
-    </p>
-    <p>
-    If you prefer to use Maven (see above), you don't need to install Ant.
-    If you only want to install, configure and use Scarab, Ant is your 
-    best choice.
     </p>
 </li>
 
@@ -204,7 +187,7 @@ system running.
 <source>
 export MYSQL_HOME=/path/to/mysql-install
 export JAVA_HOME=/path/to/jdk-install
-export PATH=${PATH}:${ANT_HOME}/bin:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
+export PATH=${PATH}:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
 </source>
   <p>
     	Put these settings into your ~/.bashrc or ~/.login file
@@ -214,7 +197,7 @@ export PATH=${PATH}:${ANT_HOME}/bin:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
 <source>
 setenv MYSQL_HOME /path/to/mysql-install
 setenv JAVA_HOME /path/to/jdk-install
-setenv PATH ${PATH}:${ANT_HOME}/bin:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
+setenv PATH ${PATH}:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
 </source>
   <p>        
         Put these statements into your ~/.cshrc file
@@ -224,7 +207,7 @@ setenv PATH ${PATH}:${ANT_HOME}/bin:${MYSQL_HOME}/bin:${JAVA_HOME}/bin
 <source>
 set MYSQL_HOME=\path\to\mysql-install
 set JAVA_HOME=\path\to\jdk-install
-set PATH=%PATH%;%ANT_HOME%\bin;%MYSQL_HOME%\bin;%JAVA_HOME%\bin
+set PATH=%PATH%;%MYSQL_HOME%\bin;%JAVA_HOME%\bin
 </source>
   <p>
         Add these settings to your Environment ( start settings system )  
@@ -294,7 +277,8 @@ scarab
       +- book              &lt;-- xml versions of manuals (guides)
       +- dtd               &lt;-- DTD's
       +- repository        &lt;-- The .jar repository for jars used by Scarab.
-  +- xdocs                 &lt;-- xml files for maven site (misc documentation files, howtos etc)
+  +- site
+      +- xdocs             &lt;-- xml files for maven site (misc documentation files, howtos etc)
 </source>
 <p>
 Within the /src directory you find following subdirectories...
@@ -607,22 +591,14 @@ Now go to the Scarab root directory and start the Scarab build system as
 follows:
 </p>
 <source>
-with ant:
 
-    cd build
-    ant
-
-with Maven:
-
-    maven java:compile
-    maven war:webapp -Dmaven.test.skip
+    mvn clean package -Dmaven.test.skip=true
     
 </source>
 <p>
 After the build system finishes, the directory <code>target/scarab</code> 
 contains the Scarab webapplication. We provide additional informations about
-the <a href="ant-build-howto.html">Ant build system</a> 
-and the <a href="maven-build-howto.html">Maven build system</a>
+the Maven build system <a href="maven-build-howto.html">here</a>
 </p>
 <p>
 NOTE: Make sure that your TOMCAT_HOME environment variable is defined
@@ -656,7 +632,7 @@ NOTE: There may be problems building and running Scarab with Tomcat 3.x.
 <p>
 NOTE: You should use the copy of Xerces that is included with Scarab
       and make sure that no other copies of Xerces are in your 
-      JAVA_HOME, ANT_HOME or your CLASSPATH. Otherwise,
+      JAVA_HOME, or your CLASSPATH. Otherwise,
       you may get build errors.
 </p>
 
@@ -670,7 +646,7 @@ one of the supported RDBM's on your system and put the path to the database
 binaries into your PATH environment variable.
 </p>
 <p>
-Simply put, the idea is that the database creation scripts and the Java
+The idea is that the database creation scripts and the Java
 database driver (JDBC) need the ability to connect to the database. In
 order to do this, the code needs to be given a host machine, database
 name, database-username and password.
@@ -682,14 +658,9 @@ if you have MySQL up and running with no username/password for localhost
 access, you can simply execute the following:
 </p>
 <source>
-with ant:
 
-    cd build
-    ant create-db
+	mvn clean initialize scarab:create-db
 
-with Maven:
-
-    maven scarab:create-db
 </source>
 <p>
 If you need to specify a host/username/password/databasename, you will
@@ -707,20 +678,13 @@ scarab.database.password
 You find more informations about the settings in <code>project.properties</code>
 </p>
 <p>
-NOTE: If you would like to only load the required database data and not
-      the sample/default data, you can do so by passing the property
+NOTE: If you would like to load not only the required database data, e.g.
+      the sample/default data, you can do so by passing the property <i>scarab.database.build.mode</i>,
+	  see <a href="maven-build-howto.html">Maven Build</a> for more informations.
 </p>
-      <source>ant create-db -Dskip.sample.data=true -Dskip.default.data=true -Dskip.jira.templates.data=true</source>
-<p>
-      to your JVM upon startup of the build processs or by adding the 
-      same property to your <i>build.properties</i>:  
-</p>
-      <code>skip.sample.data=true
-      ...
-      </code>
 <p>
 NOTE: The create scripts will attempt to first drop your scarab database
-      and then recreate it. If you execute "ant create-db", all of your
+      and then recreate it. If you execute "mvn clean initialize scarab:create-db", all of your
       previous data in that database will be lost without warning!
 </p>
 <p>

@@ -9,6 +9,7 @@
 <body>
 
 <section name="Scarab Migration Guide">
+<subsection name="Introduction">
 <p>
 	This document outlines data migration between versions of Scarab.
 	It aplies only for already existing installations, which are upgrading
@@ -22,12 +23,13 @@
 	WARNING: Before performing any of the operations outlined by this 
 	document, please BACKUP YOUR DATABASE!!!
 </p>
+</subsection>
 <subsection name="Upgrading the database">
 	<subsection name="The quick step migration procedure">
 	<ul>
-	<li>We assume, you have already built the "b21" web application either with Ant or with Maven. It is the same for other versions, too, e.g. "22".</li>
+	<li>We assume, you have already built the "b22" web application with Maven.</li>
 	<li>Change to the build/ directory of your generated web application and run the appropriate target for the predecessor's version number, e.g. for "b21":
-	<source>ant migrate-from-b20</source></li>
+	<source>mvn clean scarab:migrate-1b20-to-1b21</source></li>
 	<li>
 		<p>REMEMBER: Not all the information is inside the database!</p>
 		<p>
@@ -114,7 +116,10 @@
 	</subsection>
 	
 </subsection>
-<subsection name="Migrating from older releases">
+<subsection name="Migrating for older releases">
+<p>
+This obviously outdated section is kept because of backwards compatibility reasons, but there should be still some of the migration tasks working for Maven, as stated in section above.
+</p>
 <source>
 ,-------------------------------------------------------------------------.
 | 2. Migrating from older releases                                        |
