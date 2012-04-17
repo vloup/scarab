@@ -319,6 +319,7 @@
 				<dbFullUrl>${scarab.database.url}</dbFullUrl>
 				<dbDriver>${scarab.database.jdbc.driver}</dbDriver>
 				<configurationDirectory>src/conf/conf</configurationDirectory>
+				<xdocDirectory>${basedir}/site/xdocs</xdocDirectory>
 			</configuration>
 			<executions>
 				<execution><id>package</id><phase>validate</phase><goals><goal>generate-custom-properties</goal></goals></execution>
@@ -355,6 +356,92 @@
 				</executions>
 		  </plugin>
 		  
+		  <!-- 
+		  	Basic configuration for maven site
+		   -->
+		  <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-site-plugin</artifactId>
+			<version>3.0</version>
+			<configuration>
+			  <siteDirectory>${basedir}/site</siteDirectory>
+			   <moduleExcludes>
+			    <xdoc>changes.xml</xdoc>
+			  </moduleExcludes>
+			  <xdocDirectory>${basedir}/site/xdocs</xdocDirectory>
+			</configuration>
+		  </plugin>
+
+		  <!-- 
+		  	Build of Scarab guides, in html and pdf, from dokbook files. 
+		   -->		  
+		  <plugin>  
+			 <groupId>com.agilejava.docbkx</groupId>  
+			 <artifactId>docbkx-maven-plugin</artifactId>
+			 <version>2.0.14</version>
+			 <dependencies>  
+			  <dependency>  
+			   <groupId>org.docbook</groupId>  
+			   <artifactId>docbook-xml</artifactId>  
+			   <version>4.4</version>  
+			   <scope>runtime</scope>  
+			  </dependency>  
+			 </dependencies>  
+			  
+			 <executions>  
+			  <execution>
+			   <phase>pre-site</phase>  
+			   <goals>  
+			    <goal>generate-html</goal>
+			    <goal>generate-pdf</goal> 
+			   </goals>  
+			  </execution>  
+			 </executions> 
+			 
+			 <configuration>
+			  <sourceDirectory>${basedir}/www/book</sourceDirectory>
+			</configuration>
+		</plugin>
+		
+		<!-- 
+			Copy guides (an included image folder) to finish site build ready for deploy.
+		 -->	
+		<plugin>
+	        <artifactId>maven-resources-plugin</artifactId>
+	        <version>2.5</version>
+	        <executions>
+	          <execution>
+	            <id>copy-resources</id>
+	            <phase>site</phase>
+	            <goals>
+	              <goal>copy-resources</goal>
+	            </goals>
+	            <configuration>
+	              <outputDirectory>${project.build.directory}/site/docbook</outputDirectory>
+	              <resources>          
+	                <resource>
+	                  <directory>${project.build.directory}/docbkx/html</directory>
+	                  <includes>
+	                  	<include>**/scarab-*.html</include>
+	                  </includes>
+	                </resource>
+	                <resource>
+	                  <directory>${project.build.directory}/docbkx/pdf</directory>
+	                  <includes>
+	                  	<include>**/scarab-*.pdf</include>
+	                  </includes>
+	                </resource>
+	                <resource>
+	                  <directory>${basedir}/www/book</directory>
+				      <excludes>
+				        <exclude>**/*.xml</exclude>
+				      </excludes>
+	                </resource>
+	              </resources>              
+	            </configuration>            
+	          </execution>
+	        </executions>
+	      </plugin>
 	
 		<!-- 
 			Build of Scarab source archives 
@@ -371,6 +458,40 @@
 		  
     </plugins>
  </build>
+ 
+ <!--######################################################################################
+			Reportings for maven site.
+###########################################################################################-->
+ 
+ 	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<links>
+						<link>http://commons.apache.org/lang/api</link>
+						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+					</links>
+				</configuration>
+			</plugin>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-changes-plugin</artifactId>
+		        <version>2.6</version>
+		        <configuration>
+		        	<xmlPath>${basedir}/site/xdocs/changes.xml</xmlPath>
+		        </configuration>
+		        <reportSets>
+		          <reportSet>
+		            <reports>
+		              <report>changes-report</report>
+		            </reports>
+		          </reportSet>
+		        </reportSets>
+	        </plugin>
+		</plugins>
+	</reporting>
  
 <!--######################################################################################
 			Dependencies
