@@ -6,6 +6,11 @@
   </properties>
 
   <body>
+	<release version="23" date="17-APRIL-2012">
+		<action dev="mcoss" type="update">
+		Maven 3 is preferred build tool.
+		</action>
+	</release>
 	<release version="22" date="13-APRIL-2012">
 		<action dev="mcoss" type="fix">
 		Some localization issues.
