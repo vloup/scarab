@@ -85,7 +85,7 @@
       </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1407">
        Added support for NTLM (Windows) login integration. Take a look at
-       <a href="howto/windowsdomain-howto.html">this howto</a>.
+       howto/windowsdomain-howto.html.
       </action>
       <action dev="jorgeuriarte" type="add" fix="SCB1565">
       Date and user of issue-creation and last-modification are now available in search results' output.
