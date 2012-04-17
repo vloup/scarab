@@ -5,7 +5,7 @@
 <artifactId>scarab</artifactId>
 <packaging>war</packaging>
 <name>Scarab Tracker</name>
-<version>0.22</version>
+<version>1.0b23-mavenPort-dev</version>
 <build>
        <sourceDirectory>${basedir}/src</sourceDirectory>
        <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
