@@ -274,7 +274,7 @@
             <artifactId>maven-war-plugin</artifactId>
             <version>2.2</version>
             <configuration>
-               <warName>scarab</warName>
+               <warName>${scarab.context}</warName>
                <containerConfigXML>tomcat/conf/server.xml</containerConfigXML>
                <webXml>src/webapp/WEB-INF/web.xml</webXml>
                <webResources>
