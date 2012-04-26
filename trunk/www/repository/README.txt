@@ -15,6 +15,9 @@ LIBRARIES
 These libraries are critical to the basic Scarab functionality and are
 required additionally to official Maven respositories.
 
+Please install the versions you get from this directory (www/repository)
+into your local maven repository first.
+
 * fulcrum*.jar
 
   Singleton Services framework. Part of the Jakarta Turbine Project.
