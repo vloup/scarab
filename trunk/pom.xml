@@ -10,7 +10,7 @@
 <artifactId>scarab</artifactId>
 <packaging>war</packaging>
 <name>Scarab Tracker</name>
-<version>1.0b23-mavenPort-dev</version>
+<version>1.0.23-dev</version>
   
   <organization>
     <name>Tigris.org</name>
