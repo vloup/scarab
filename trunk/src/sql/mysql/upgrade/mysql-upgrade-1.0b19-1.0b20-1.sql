@@ -8,10 +8,10 @@
  * dropdown list attribute.
  */
 UPDATE ID_TABLE 
-       SET TABLE_NAME = REPLACE(TABLE_NAME,'@SCARAB.HTTP.DOMAIN@','@SCARAB.INSTANCE.ID@')
-       WHERE TABLE_NAME LIKE '@SCARAB.HTTP.DOMAIN@%';       
-UPDATE SCARAB_GLOBAL_PARAMETER set VALUE='@SCARAB.INSTANCE.ID@' where NAME='@SCARAB.HTTP.DOMAIN@';
-UPDATE SCARAB_GLOBAL_PARAMETER set VALUE='@SCARAB.INSTANCE.ID@' where NAME='module-domain';
+       SET TABLE_NAME = REPLACE(TABLE_NAME,'${scarab.http.domain}','${scarab.instance.id}')
+       WHERE TABLE_NAME LIKE '${scarab.http.domain}%';       
+UPDATE SCARAB_GLOBAL_PARAMETER set VALUE='${scarab.instance.id}' where NAME='${scarab.http.domain}';
+UPDATE SCARAB_GLOBAL_PARAMETER set VALUE='${scarab.instance.id}' where NAME='module-domain';
 UPDATE SCARAB_GLOBAL_PARAMETER set VALUE='@SCARAB.HTTP.PORT@'    where NAME='scarab.http.port';
-UPDATE SCARAB_MODULE set DOMAIN='@SCARAB.INSTANCE.ID@';
-UPDATE SCARAB_ISSUE  set ID_DOMAIN='@SCARAB.INSTANCE.ID@';
+UPDATE SCARAB_MODULE set DOMAIN='${scarab.instance.id}';
+UPDATE SCARAB_ISSUE  set ID_DOMAIN='${scarab.instance.id}';

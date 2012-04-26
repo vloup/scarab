@@ -2,7 +2,7 @@
 		<title>Workflow</title>
 		<sect1>
 			<title>Introduction</title>
-			<simpara>As has been said in the <emphasis>Workflow</emphasis> chapter of the <emphasis>Scarab User&apos;s Guide</emphasis>, Scarab has no &quot;hard-coded&quot; workflow. When saving issues, all state transitions are allowed and there is no interaction with any external system ever.</simpara>
+			<simpara>As has been said in the <emphasis>Workflow</emphasis> chapter of the <emphasis>Scarab User's Guide</emphasis>, Scarab has no &quot;hard-coded&quot; workflow. When saving issues, all state transitions are allowed and there is no interaction with any external system ever.</simpara>
 			<simpara>Now let's have a look at how this is implemented.</simpara>
 		</sect1>
 		<sect1>
@@ -25,7 +25,7 @@ scarab.workflow.classname=org.tigris.scarab.workflow.CheapWorkflow
 		</sect1>
 		<sect1>
 			<title>BasicWorkflow</title>
-			<simpara>This is the default workflow for all Scarab versions from milestone 20. The way it works from the user point of view is explained in the <emphasis>User&apos;s Guide</emphasis>.</simpara>
+			<simpara>This is the default workflow for all Scarab versions from milestone 20. The way it works from the user point of view is explained in the <emphasis>User's Guide</emphasis>.</simpara>
 			<simpara>This workflow is implemented in the <computeroutput>org.tigris.scarab.workflow.CheapWorkflow</computeroutput> class (againts the odds). It implements the <emphasis>Workflow</emphasis> interface indirectly by inheriting from the default workflow, <computeroutput>DefaultWorkflow</computeroutput> probably not to redefine certain default behaviours.</simpara>
 		</sect1>
 		<sect1>

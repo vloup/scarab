@@ -18,8 +18,8 @@ INSERT INTO SCARAB_GLOBAL_PARAMETER VALUES (1003,'module-domain','10.0.0.1',1005
 
 
 -- Id table
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (1000, '@SCARAB.INSTANCE.ID@-PACD',2,1);
-INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (1001, '@SCARAB.INSTANCE.ID@-PACS',2,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (1000, '${scarab.instance.id}-PACD',2,1);
+INSERT INTO ID_TABLE (id_table_id, table_name, next_id, quantity) VALUES (1001, '${scarab.instance.id}-PACS',2,1);
 
 -- R_MODULE_ISSUE_TYPE
 -- module_id, issue_type_id,active,display, preferred_order, dedupe,

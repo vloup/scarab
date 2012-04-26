@@ -98,7 +98,7 @@
 		</sect2>
 		<sect2>
 			<title>Gathering the other elements required for the Scarab installation</title>
-			<para>To perform the Scarab installation, you will need three more things: a Java SDK, Ant and -- of course -- Scarab itself.</para>
+			<para>To perform the Scarab installation, you will need three more things: a Java SDK, Maven and -- of course -- Scarab itself.</para>
 			<sect3>
 				<title>Download and install a Java SDK</title>
 				<para>If you don't have a Java SDK handy (pre-installed on some systems such as MacOS X or certain Linux distributions), you need to download and install one. Be careful: you need a Java 2 SDK and not only a JRE (Java Runtime Environment) because you will need to compile Scarab.</para>
@@ -107,27 +107,15 @@
 				<para>Make sure the JAVA_HOME environment variable correctly points to the directory in which your SDK is installed.</para>
 			</sect3>
 			<sect3>
-				<title>Download and install Ant</title>
-				<para>To build Scarab, you will need the Ant build system.</para>
-				<para>You can download Ant from <ulink url="http://ant.apache.org">http://ant.apache.org</ulink>.</para>
-				<para>The Ant version should be 1.5.1 or greater.</para>
-				<para>Make sure the ANT_HOME environment variable correctly points to the directory in which Ant is installed</para>
-				<caution>
-				  <simpara>The version of ant that is supplied by RedHat with RHEL3 (latest update is ant-1.5.2-23) throws an exception when running the create-db target.</simpara>
-				  <simpara>The exception is:</simpara>
-				  <simpara>
-				    <computeroutput>BUILD FAILED file:/export/home/admin/scarab/target/scarab/WEB-INF/conf/runtime-torque.xml:72: taskdef class org.apache.torque.task.TorqueDocumentationTask cannot be found</computeroutput>
-				  </simpara>
-				  <simpara>Work Around: use the version of ant that comes bundled with SCARAB:</simpara>
-				  <itemizedlist>
-				    <listitem><simpara>Copy it from <computeroutput>$SCARAB_ROOT/www/repository/ant/jars/ant-1.5.3-1.jar</computeroutput> to <computeroutput>$SCARAB_ROOT}/build</computeroutput></simpara></listitem>
-				    <listitem><simpara>From $SCARAB_ROOT/build run <computeroutput>java –jar ant-1.5.3-1.jar create-db</computeroutput></simpara></listitem>
-				  </itemizedlist>
-				</caution>
+				<title>Download and install Maven</title>
+				<para>To build Scarab, you will need the Maven build system.</para>
+				<para>You can download Maven from <ulink url="http://maven.apache.org">http://maven.apache.org</ulink>.</para>
+				<para>The Maven version should be 3.0.3 or greater.</para>
+				<para>Make sure the MAVEN_HOME environment variable correctly points to the directory in which Maven is installed</para>
 			</sect3>
 			<sect3>
 				<title>Download Scarab</title>
-				<para>You need of course to download Scarab itself. You will find the latest version (1.0-b21) at the following URL: <ulink url="http://scarab.tigris.org/servlets/ProjectDocumentList">http://scarab.tigris.org/servlets/ProjectDocumentList</ulink>.</para>
+				<para>You need of course to download Scarab itself. You will find the latest version (1.0.23) at the following URL: <ulink url="http://scarab.tigris.org/servlets/ProjectDocumentList">http://scarab.tigris.org/servlets/ProjectDocumentList</ulink>.</para>
 			</sect3>
 		</sect2>
 	</sect1>
@@ -412,31 +400,24 @@ scarab.database.port=**GENERATED**    #unchanged
 				<simpara>Go to the build directory and launch ant</simpara>
 				<informalexample>
 					<programlisting>
-    ant
+    mvn clean compile
             </programlisting>
 				</informalexample>
 				<simpara>This command simply compiles the source code. Run the following command to get a WAR file for Scarab:</simpara>
 				<informalexample>
 					<programlisting>
-    ant war
+    mvn clean package
             </programlisting>
 				</informalexample>
 				<simpara>The compiled and archived output should be found in <computeroutput>/target</computeroutput> directory of Scarab.</simpara>
 			</sect2>
 			<sect2>
 				<title>Rebuild Scarab after failure</title>
-				<simpara>The whole property settings have been copied from the build environment, thus the configuration may be invalid. In order to fix this you must regenerate the configuration (not the class files!). You can use ant for this:</simpara>
-				<informalexample>
-					<programlisting>
-	cd build
-	ant create-custom-property-file
-            </programlisting>
-				</informalexample>
+				<simpara>The whole property settings have been copied from the build environment, thus the configuration may be invalid. In order to fix this you must regenerate the configuration (not the class files!).</simpara>
 				<simpara>But definitely the safest way to proceed is simply rebuilding everything:</simpara>
 				<informalexample>
 					<programlisting>
-	ant clean
-	ant
+	mvn clean package
             </programlisting>
 				</informalexample>
 			</sect2>
@@ -450,44 +431,42 @@ scarab.database.port=**GENERATED**    #unchanged
 				<simpara>Run the following command to build Scarab's deafult database including all default and sample data:</simpara>
 				<informalexample>
 					<programlisting>
-    ant create-db
+    mvn initialize scarab:create-db
             </programlisting>
 				</informalexample>
 			    </sect3>
 				<sect3>
 				<title>JIRA templates</title>
 				<simpara>
-				  By default, a module is created with issue-types that match the
-                  structure of JIRA, enabling transfer of issues from JIRA to Scarab.
-                  If you don't want this extra module in your issue tracker, then you
-                 can pass the option "-Dskip.jira.templates.data=true" to ant, e.g.:
+				  To import some issue-types that match the
+                  structure of JIRA, build the Scarab database and run the following command.
                 </simpara>
 				<informalexample>
 					<programlisting>
-    ant create-db -Dskip.jira.templates.data=true
+    mvn initialize scarab:import-jira-templates
             </programlisting>
 				</informalexample>
 				<note>
-					<simpara>This option is independent of 'skip.sample.data' or 'skip.default.data' (see next chapter), so they can be specified together.</simpara>
+					<simpara>This option is not independent of 'scarab.database.build.mode'. You have to install the default data as well.</simpara>
 				</note>
 				</sect3>
 				<sect3>
 				<title>Sample data</title>
 				<simpara>
-				  By default, some sample data are put into Scarab's database. There are 
-				  some modules and already entered issues. To avoid this,
-                 you can pass the option "-Dskip.sample.data=true" to ant. To skip all 
+				  By default, only basic data are put into Scarab's database. There are no
+				  modules and no already entered issues. You may want to avoid this e.g. for presentation or tests. If so
+                 you can pass the option "scarab.database.build.mode" to Maven. To import all 
 				 default global data, too, as there are some attributes, issue-types and so on,
-				 you can additionally pass the option "-Dskip.default.data=true" to ant:
+				 pass the option like this:
                 </simpara>
 				<informalexample>
 					<programlisting>
-    ant create-db -Dskip.sample.data=true -Dskip.default.data=true
+    mvn initialize scarab:create-db -Dscarab.database.build.mode=default
             </programlisting>
 				</informalexample>
-				<note>
-					<simpara>This options are independent of 'skip.jira.templates.data', so they can be specified together.</simpara>
-				</note>
+				<simpara>
+				or use "sample" as value for "scarab.database.build.mode" to import some sample moudles and stuff, too.
+				</simpara>
 				</sect3>				
 			</sect2>
 			<sect2>

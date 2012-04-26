@@ -2,23 +2,23 @@
 <chapter>
 	<!-- Source: ##UserIssues section of the online help  -->
 	<title>Entering and managing issues</title>
-	<para>Scarab has a very dynamic issue management strategy. Committing, tracking and modifying issues is a simple process. Scarab has the following issue management features&nbsp;:</para>
+	<para>Scarab has a very dynamic issue management strategy. Committing, tracking and modifying issues is a simple process. Scarab has the following issue management features:</para>
 	<itemizedlist>
 		<listitem>
 			<para>
-				<emphasis role="bold">Relations&nbsp;:</emphasis> Scarab can track relationships between issues. Dependencies between issues can be flagged and tracked through either the issue entry process or while reviewing one or multiple issues. </para>
+				<emphasis role="bold">Relations:</emphasis> Scarab can track relationships between issues. Dependencies between issues can be flagged and tracked through either the issue entry process or while reviewing one or multiple issues. </para>
 		</listitem>
 		<listitem>
 			<para>
-				<emphasis role="bold">Change tracking&nbsp;:</emphasis> All changes made along with information about the user who made the change, when the change was made and any comments committed along with the change are tracked with the issue.</para>
+				<emphasis role="bold">Change tracking:</emphasis> All changes made along with information about the user who made the change, when the change was made and any comments committed along with the change are tracked with the issue.</para>
 		</listitem>
 		<listitem>
 			<para>
-				<emphasis role="bold">Comment viewing and editing:&nbsp;:</emphasis> All comments made to the issue are tracked. Comments allow support or other type conversations to be viewable and editable by any parties interested in the progress of an issue. </para>
+				<emphasis role="bold">Comment viewing and editing:</emphasis> All comments made to the issue are tracked. Comments allow support or other type conversations to be viewable and editable by any parties interested in the progress of an issue. </para>
 		</listitem>
 		<listitem>
 			<para>
-				<emphasis role="bold">Save frequently entered information:&nbsp;:</emphasis> The issue entry template feature allows you to create a frequently used set of data points for attributes in a template. When a template is used, the issue entry form is pre-populated and the user can alter information as needed.</para>
+				<emphasis role="bold">Save frequently entered information:</emphasis> The issue entry template feature allows you to create a frequently used set of data points for attributes in a template. When a template is used, the issue entry form is pre-populated and the user can alter information as needed.</para>
 		</listitem>
 	</itemizedlist>
 	<sect1>

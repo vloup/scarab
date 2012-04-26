@@ -3,43 +3,43 @@
 	<title>Introduction</title>
 	<sect1>
 		<!-- Source: the ##Introduction section in the online help -->
-		<title>What is Scarab&nbsp;?</title>
+		<title>What is Scarab?</title>
 		<para>Scarab is a highly configurable issue tracking tool that can be used for all types of projects: technical and non-technical alike. Because all parameters in the system are configurable, this tool meets the needs of the project as well as the individual user. Each implementation can be configured directly to the workflow processes of the project through the definition of issue types and attributes. The user interface is designed to be accessible and constant: once you become familiar with the look and feel you will find new processes quick to master.</para>
-		<para>Scarab provides a robust set of tools for issue management&nbsp;:</para>
+		<para>Scarab provides a robust set of tools for issue management:</para>
 		<itemizedlist>
 			<listitem>
 				<para>
-					<emphasis role="bold">Issue entry&nbsp;:</emphasis> The issue entry process is designed to help users create meaningful issues and avoid duplication.  Attributes are used to describe issues and to check the issue database for similar entries. If any duplicates are found, the user has the opportunity to review potential duplicates, add comments to like issues or modify their issue before committing it to the database. </para>
+					<emphasis role="bold">Issue entry:</emphasis> The issue entry process is designed to help users create meaningful issues and avoid duplication.  Attributes are used to describe issues and to check the issue database for similar entries. If any duplicates are found, the user has the opportunity to review potential duplicates, add comments to like issues or modify their issue before committing it to the database. </para>
 			</listitem>
 			<listitem>
 				<para>
-					<emphasis role="bold">Templates for issue entry&nbsp;:</emphasis> Frequently entered issue criteria can be saved in templates for speedy entry. Files can be attached to an issue, and are tracked directly with their issue. Users can add and edit comments to issues as needed. Users can access and review the complete issue history while viewing an issue. </para>
+					<emphasis role="bold">Templates for issue entry:</emphasis> Frequently entered issue criteria can be saved in templates for speedy entry. Files can be attached to an issue, and are tracked directly with their issue. Users can add and edit comments to issues as needed. Users can access and review the complete issue history while viewing an issue. </para>
 			</listitem>
 			<listitem>
 				<para>
-					<emphasis role="bold">Issue query&nbsp;:</emphasis> Accessing issues in the database is simple using the query feature. Users can easily find, access and modify issues individually or in groups. The advanced query feature allows the user to create detailed issue searches, specifying values for multiple attributes and limiting their search to specific date or issue number ranges. The Custom Query feature allows the user to search by text string-the user can specify a set of information to compare against issues in the database. Frequently used queries can be saved and easily run.</para>
+					<emphasis role="bold">Issue query:</emphasis> Accessing issues in the database is simple using the query feature. Users can easily find, access and modify issues individually or in groups. The advanced query feature allows the user to create detailed issue searches, specifying values for multiple attributes and limiting their search to specific date or issue number ranges. The Custom Query feature allows the user to search by text string-the user can specify a set of information to compare against issues in the database. Frequently used queries can be saved and easily run.</para>
 			</listitem>
 			<listitem>
 				<para>
-					<emphasis role="bold">Reports&nbsp;:</emphasis> The robust reports interface allows the user to create and save reports. Reports provide customizable and meaningful metrics.</para>
+					<emphasis role="bold">Reports:</emphasis> The robust reports interface allows the user to create and save reports. Reports provide customizable and meaningful metrics.</para>
 			</listitem>
 			<listitem>
 				<para>
-					<emphasis role="bold">Email notifications&nbsp;:</emphasis> As important events occur, email is generated and sent to all parties associated with the event. Alert emails contain links to views of the event.</para>
+					<emphasis role="bold">Email notifications:</emphasis> As important events occur, email is generated and sent to all parties associated with the event. Alert emails contain links to views of the event.</para>
 			</listitem>
 		</itemizedlist>
 		<para>Scarab is written in Java and based on web technologies. Scarab stores its informations in a database, often MySQL but other databases such as Oracle and PostgreSQL are supported.</para>
 		<sect2>
-			<title>How does Scarab differ from other issue-tracking systems&nbsp;?</title>
+			<title>How does Scarab differ from other issue-tracking systems?</title>
 			<para>Scarab is highly customisable. Scarab has no predefined or hard-coded workflow (that would define what happens as an issue changes from the 'Open' to the 'Closed' status. There are no predefined artefact types (such as bug report, improvement, etc.) You are completely free to define your issue types the way that suits you best. Scarab may be less easy to understand and use at the beginning but you will get a tool that suits your needs better at the end.</para>
 			<para>Most other issue tracking systems (open-source or commercial) have an issue processing logic that is embedded in the application. This means that you are often caught in the logic defined by these systems. Scarab does not limit you that way.</para>
 		</sect2>
 	</sect1>
 	<sect1>
 		<title>Scarab history</title>
-		<para>To stay short, let's say that Scarab was born from the passion of a highly talented developer&nbsp;: Jon Scott Stevens. Jon was a key figure in the Apache Jakarta project, where he played a major role in the Velocity and Turbine projects.</para>
+		<para>To stay short, let's say that Scarab was born from the passion of a highly talented developer: Jon Scott Stevens. Jon was a key figure in the Apache Jakarta project, where he played a major role in the Velocity and Turbine projects.</para>
 		<para>His aim was to design and develop a compelling replacement for Bugzilla.</para>
-		<para>CollabNet gave him an opportunity to develop this software in open-source &mdash; but also to integrate this tool in their collaborative development suite.</para>
+		<para>CollabNet gave him an opportunity to develop this software in open-source, but also to integrate this tool in their collaborative development suite.</para>
 		<para>Today, CollabNet is no longer the driving force behind the development of Scarab; they left this role to a small team of developers from around the world but continue to provide support and useful advice on certain occasions.</para>
 	</sect1>
 	<sect1>
@@ -47,28 +47,28 @@
 		<title>Scarab functionality at a glance</title>
 		<itemizedlist>
 			<listitem>
-				<para>A full set of functions such as those found in other issue tracking systems&nbsp;: issue entry, queries, reports, event notification, collaborative accumulation of comments, dependency tracking.</para>
+				<para>A full set of functions such as those found in other issue tracking systems: issue entry, queries, reports, event notification, collaborative accumulation of comments, dependency tracking.</para>
 			</listitem>
 			<listitem>
 				<para>On top of these standard functions, Scarab provides an unlimited number of fully configurable modules (your projects), of artefact types (Defect, Improvement request, Requirements,...), of Attributes (Operating system, Status, Priority, etc.), of Attribute options (P1, P2, P3) that can all be defined on a per-module basis, so that any module can be configured for specific needs..</para>
 			</listitem>
 			<listitem>
-				<para>Import/Export interface via XML&nbsp;: allows an easy migration from other tracking systems (e.g. Bugzilla).</para>
+				<para>Import/Export interface via XML: allows an easy migration from other tracking systems (e.g. Bugzilla).</para>
 			</listitem>
 			<listitem>
 				<para>Modular code design: allows manageable modifications of existing and new features over time.</para>
 			</listitem>
 			<listitem>
-				<para>Integrated customization UI&nbsp;: Scarab is fully customizable through a set of administrative pages.</para>
+				<para>Integrated customization UI: Scarab is fully customizable through a set of administrative pages.</para>
 			</listitem>
 			<listitem>
 				<para>Easily modifiable UI look and feel.</para>
 			</listitem>
 			<listitem>
-				<para>Integration&nbsp;:Scarab can be integrated into larger systems by re-implementing key interfaces.</para>
+				<para>Integration: Scarab can be integrated into larger systems by re-implementing key interfaces.</para>
 			</listitem>
 			<listitem>
-				<para>Based on application server technologies&nbsp;:Scarab is built using Java Servlet technology for speed, scalability, maintainability, and ease of installation.</para>
+				<para>Based on application server technologies, Scarab is built using Java Servlet technology for speed, scalability, maintainability, and ease of installation.</para>
 			</listitem>
 		</itemizedlist>
 	</sect1>
