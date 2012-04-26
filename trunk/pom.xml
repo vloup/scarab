@@ -84,13 +84,15 @@
       <name>Eric Pugh</name>
       <id>epugh</id>
       <email>epugh_at_upstate_dot_com</email>
-      <organization>www.OpenSourceConnections.com</organization>
+      <url>http://www.OpenSourceConnections.com</url>
+      <organization>OpenSource Connections</organization>
     </developer> 
     <developer>
       <name>Hussayn Dabbous</name>
       <id>hdabbous</id>
       <email>dabbous_at_saxess_dot_com</email>
-      <organization>www.saxess.com</organization>
+      <organization>Saxess GmbH</organization>
+      <url>http://www.saxess.com</url>
     </developer>
     <developer>
       <name>Peter Ledbrook</name>
@@ -106,6 +108,7 @@
       <name>Mick Semb Wever</name>
       <id>hair</id>
       <email>mick_at_wever.org</email>
+      <url>http://michael.semb.wever.org</url>
       <organization>michael.semb.wever.org</organization>
     </developer>
     <developer>
@@ -133,7 +136,8 @@
       <name>Johannes Hoechstaedter</name>
       <id>jhoech</id>
       <email>jhoechstaedter_at_memocomp_dot_de</email>
-      <organization>www.memocomp.de</organization>
+      <organization>memoComp</organization>
+      <url>http://www.memocomp.de</url>
     </developer> 
   </developers>
 
