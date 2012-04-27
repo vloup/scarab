@@ -98,10 +98,9 @@
     the information of the next release.
   </p>
   <p>
-    Edit scarab/xdocs/scarab_properties.xml and change the 
-    property with name "version" to the next version with the "-dev" appendix from
-    the final version number for the release.<br/>
-    Do the same in the &lt;version&gt; tag of pom.xml file.
+    Edit pom.xml and change the 
+    attribute with name "version" to the next version with the "-dev" appendix from
+    the final version number for the release.
   </p>
   <p>
     Update the property files again.
