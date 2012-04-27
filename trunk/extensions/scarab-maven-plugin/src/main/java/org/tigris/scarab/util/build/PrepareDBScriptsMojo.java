@@ -131,16 +131,23 @@ public class PrepareDBScriptsMojo extends AbstractMojo{
          File[] sampleSqlFiles = {
         		 new File(scriptDir, "scarab-sample-data.sql"),
         		};
+         File[] jiraSqlFiles = {
+        		 new File(scriptDir, "scarab-jira-templates-data.sql"),
+        		};
          
          List sqlFiles = null;    
          sqlFiles = new ArrayList(Arrays.asList(schemaSqlFiles));
          sqlFiles.addAll(new ArrayList(Arrays.asList(basicSqlFiles)));
-         if(dbMode.equalsIgnoreCase("default")){
+         if(dbMode.indexOf("default") != -1){
         	 sqlFiles.addAll(new ArrayList(Arrays.asList(preconfiguredSqlFiles)));
          }
-         else if(dbMode.equalsIgnoreCase("sample")){
+         else if(dbMode.indexOf("sample") != -1){
         	 sqlFiles.addAll(new ArrayList(Arrays.asList(preconfiguredSqlFiles)));
         	 sqlFiles.addAll(new ArrayList(Arrays.asList(sampleSqlFiles)));
+         }
+         
+         if(dbMode.indexOf("_jira") != -1){
+        	 sqlFiles.addAll(new ArrayList(Arrays.asList(jiraSqlFiles)));
          }
          
          return sqlFiles;
