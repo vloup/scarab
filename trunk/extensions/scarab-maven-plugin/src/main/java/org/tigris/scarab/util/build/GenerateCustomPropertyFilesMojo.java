@@ -81,9 +81,7 @@ public class GenerateCustomPropertyFilesMojo extends AbstractMojo
         boolean status = generator.setTemplate("project.properties");
         if(!status)
         {
-            throw new MojoExecutionException("the path ["
-                    + configurationDirectory
-                    + "] for project.properties is not writeable.");
+            throw new MojoExecutionException("the file project.properties is not readable.");
         }
     }
 
