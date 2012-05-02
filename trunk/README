@@ -26,15 +26,15 @@ Note: you will need Maven installed on your box:
     2.) go to the installation root
     3.) call maven:
 
-        maven xdoc:transform
+        mvn site:site
 
 The full documentation set will be generated to
 
-   $SCARAB_ROOT/target/docs
+   $SCARAB_ROOT/target/site
    
 The installation guide can be found at the location:
 
-   $SCARAB_ROOT/target/docs/howto/build-howto.html
+   $SCARAB_ROOT/target/site/howto/build-howto.html
 
 ,-----------------------------------------------------------------------.
 | K N O W N   I S S U E S                                               |
