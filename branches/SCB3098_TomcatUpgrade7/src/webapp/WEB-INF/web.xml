@@ -24,7 +24,7 @@
             </param-value>            
         </init-param> 	
         <!-- Load this servlet at server startup time -->
-        <load-on-startup/>
+		<load-on-startup>1</load-on-startup>
 
     </servlet>
     <servlet>
