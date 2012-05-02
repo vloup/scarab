@@ -17,7 +17,7 @@ the installation guide in the documents section:
 We highly recommend, that you first read the installation guide in the 
 documents section. You can find a ready made version at
 
-    http://www.solitone.org/scarab-trunk-doc/
+    http://www.memocomp.de/scarab/1.0.22/
 
 Alternatively you can generate the documentation set locally as follows.
 Note: you will need Maven installed on your box:
