@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//Tigris//DTD XHTML 1.0 Transitional//EN"
+    "$staticLink.setPath("/style/tigris_transitional.dtd")">
+<html>
+  <head>
+    #if ($currentIssue)
+      ## Use the current issue ID for the page title
+      #set ($title = $currentIssue.UniqueId)
+    #end
+    <title>${l10n.ScarabWordMark}#if ($title): ${title}#end</title>
+    <meta http-equiv="Content-type" content="$data.ContentType" />
+    <link rel="shortcut icon" href="/scarab/images/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/x-icon" href="/scarab/images/favicon.ico" />
+    #if ($updateFrequency && $updateFrequency.length() > 0)
+      <meta http-equiv="refresh" content="$updateFrequency" />
+    #end
+
+    #set ($style_file = "/skins/#getProperty('scarab.site.style').css")
+    <link rel="stylesheet" type="text/css" href="$staticLink.setPath($style_file)" />
+    <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/custom.css")" />
+
+    <script src="$staticLink.setPath("/scripts/debug.js")" type="text/javascript"></script>
+    <script src="$staticLink.setPath("/scripts/inputs.js")" type="text/javascript"></script>
+    <script src="$staticLink.setPath("/scripts/main.js")" type="text/javascript"></script>
+    <script src="$staticLink.setPath("/scripts/CalendarPopup.js")"></script>
+    <script src="$staticLink.setPath("/scripts/sstree.js")"></script>
+    <script src="$staticLink.setPath("/scripts/tooltips.js")"></script>
+    <script src="$staticLink.setPath("/scripts/guiUtils.js")"></script>
+    <script src="$staticLink.setPath("/scripts/jquery.js")"></script>
+
+    <script language="Javascript" id="js1">
+      var calPopup = new CalendarPopup("datePopupDiv");
+      calPopup.showNavigationDropdowns();
+      calPopup.setMonthNames("$l10n.January", "$l10n.February", "$l10n.March", "$l10n.April", "$l10n.May", "$l10n.June", "$l10n.July", "$l10n.August", "$l10n.September", "$l10n.October", "$l10n.November", "$l10n.December");
+      calPopup.setWeekStartDay($l10n.DateFirstWeekDay);
+      calPopup.setDayHeaders($l10n.DateWeekDays);
+      calPopup.setTodayText("$l10n.DateToday");
+      calPopup.setCleanText("$l10n.DateClean");
+    </script>
+
+    #set ($hide_bars = $scarabG.getTurbineConfiguration().getString("scarab.dhtml.hide_bars").toLowerCase().equals("true"))
+    #set ($autoresize = $scarabG.getTurbineConfiguration().getString("scarab.dhtml.autoresize_textarea").toLowerCase().equals("true"))
+    #set ($iconCollapse="/images/icon_expand3.gif")
+    #set ($iconExpand="/images/icon_collapse3.gif")
+
+    <script src="$staticLink.setPath("/scripts/scarabutil.js")"></script>
+    <script language="Javascript">
+
+      function hideScarableftNav() {
+        document.getElementById('leftcol').style.display="none"
+        #if ($scarabR.CurrentModule)
+          document.getElementById('closing-slider').style.display="none"
+        #end
+        document.getElementById('showleftcol').style.display=""
+        setCookieScarableftNav("ScarableftNav","0")
+      }
+  
+      function showScarableftNav() {
+        document.getElementById('leftcol').style.display=""
+        #if ($scarabR.CurrentModule)
+          document.getElementById('closing-slider').style.display=""
+        #end
+        document.getElementById('showleftcol').style.display="none"
+        setCookieScarableftNav("ScarableftNav","1")
+      }
+
+      function initializeAll() {
+        #if ($hide_bars)
+          setLeftcolAndBanner();
+        #end
+        #if ($autoresize)
+          initialRows();
+        #end
+        observer.subscribe(conditions_observer);
+
+        ## Add your own observers below
+        ##  An observer receives a data array containing the following
+        ##  informations:
+        ##
+        ##  data[0] = observerId
+        ##  data[1] = attributeName (as defined in RModuleIssueType)
+        ##  data[2] = key           (optionId)
+        ##  data[3  = value         (optionValueId)
+        ##  data[4] = display       (DisplayName)
+        ##
+             
+        initializeTreeview();
+                
+      }
+
+     function getElementByIdCompatible (the_id) 
+     {
+         if (typeof the_id != 'string') 
+         {
+             return the_id;
+         }
+
+         if (typeof document.getElementById != 'undefined') 
+         {
+             return document.getElementById(the_id);
+         }
+         else if (typeof document.all != 'undefined') 
+         {
+             return document.all[the_id];
+         }
+         else if (typeof document.layers != 'undefined') 
+         {
+             return document.layers[the_id];
+         }
+         else
+         {
+             return null;
+         }
+      }      
+
+      // Helper array contains all RequiredMarkup elements
+      // which have already been visited form the current call of
+      // the conditions_observer. It is needed to correctly
+      // set the display mode (inline/none) of all visited markers.
+      
+      var visitedMarkers = {};
+      
+      /**
+      This function takes care about the "required attribute" markup.
+      It adjusts the markup dynamically while the user edits the issue.
+      */
+      function conditions_observer(data)
+      {
+        if(data[0] == "treeview")
+        {   
+            var attributeName = data[1];
+            var displayValue  = data[4];
+            
+            //alert(data[1] + "=" + data[4]);
+            
+            #if ($currentIssue)
+#set ($indent=12)
+$currentIssue.createIssueChecker("setMarkerValueIf", $indent)
+            #end
+            
+            visitedMarkers = {};
+
+        }
+      }
+
+      /**
+        This helper function actually makes the requiredMarkup
+        visible or hides it depending on the condition.
+        Note: Currently only OR conditions are supported here!!!
+      */      
+      function setMarkerValueIf(condAttName, isRequired)
+      {
+          var cid = "conditional:"+condAttName;
+          var element = getElementByIdCompatible(cid);
+          if (element != null)
+          {
+              if(isRequired)
+              {
+                visitedMarkers[condAttName] = "inline";
+              }
+              else
+              {
+                if (visitedMarkers[condAttName]==null)              
+                {
+                   visitedMarkers[condAttName] = "none";
+                }
+              }
+              //alert ("Set " + cid + " to " + visitedMarkers[condAttName] );
+              element.style.display = visitedMarkers[condAttName];              
+            }
+      }      
+      
+    </script>
+
+  </head>
+
+#set ($view = $data.Parameters.get("view") )
+#if ($view && $view.length()>0)
+    $renderer.render("views/$view/layouts", "Default.vm")
+#else
+ ################################################################
+ ## Top row
+ ################################################################
+ <body marginwidth="0" 
+       marginheight="0" 
+       class="scb_page" 
+       onload="initializeAll()">
+
+
+  <div id="datePopupDiv" class="scb_calendar"></div>
+
+  ################################################################
+  ## The banner row
+  ################################################################
+
+  <div id="scb_banner" #if($hide_bars) ondblclick="hideBanner()" #end>
+   <table>
+    <tr>
+     <td>
+      #set ($productLogo = "#getProperty('scarab.product.logo')")
+      #if ($productLogo.length() > 0)
+      <a href="$link.setPage("Index.vm")"><img src="$staticLink.setPath("$productLogo")" alt="$productLogo" width="118" height="23" border="0" /></a>
+      #end
+     </td>
+     <td valign="middle">
+      <table border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td>$scarabG.SiteName</td>
+        <td>
+          #if($scarabG.SiteLogo.trim().length() > 0)
+            <img hspace="10"
+                 src="$staticLink.setPath("$scarabG.SiteLogo")"
+                 border="0"/>
+          #end
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>
+  </div>
+
+  #########################################################################
+  ## Bread crumb row, only when logged in ??
+  #########################################################################
+  #if ($data.User.hasLoggedIn())
+    <div id="breadcrumbs"  #if($hide_bars) ondblclick="showBanner()" #end>
+      <table border="0" cellspacing="0" cellpadding="4" width="100%">
+       <tr>
+        <td class="location">
+          #if ($scarabR.CurrentModule)
+            $scarabR.CurrentModule.Name
+            #set ($currentIssueId = $data.parameters.getString('id', ''))
+            #if ($currentIssueId != '')
+              #set ($currentIssue = $scarabR.getIssue($currentIssueId))
+              #if ($currentIssue)
+                &gt; <span class="issueId">$l10n.Issue $currentIssue.UniqueId:</span> 
+                (<span class="issueText">$currentIssue.DefaultText</span>)
+              #end
+            #end
+          #end
+        </td>
+
+        <td>
+          <div align="right">
+            <div>
+              #if ($data.User.isUserAnonymous())
+                #if ($currentIssueId && ($currentIssueId.length()>0) )
+                    $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login").setPathInfo("viewIssueId", $currentIssueId)
+                #else
+                    $link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Login")
+                #end
+              #else
+                <span class="logout">$link.omitModule().setPage("Login.vm").setAction("Logout").setLabel("$l10n.Logout")</span>
+                <span class="username">$!data.User.FirstName $!data.User.LastName 
+                #set ($roleNames = $!data.User.currentRoleNames)
+                #set ($roleCounter = 0)
+                #if ($roleNames.size() >0)
+                 (#foreach ($roleName in $roleNames)#if ($roleCounter > 0)|#end#set ($roleCounter=$roleCounter+1)$roleName#end)
+                #end
+                </span>
+              #end    
+            </div>
+          </div>
+        </td>
+    
+        <td width="1">
+          <img src="$staticLink.setPath('/images/icon_help_sml.gif')"
+               onClick="showDelayedTooltip('scarab.help',0)"
+           >
+           <div class="scarab-tooltip" id="scarab.help" onclick="hideTooltip()">
+             <div class="scarab-toolgroup">
+               <div class="label"><strong>$l10n.HowDoI</strong></div>
+               <div class="body">
+                 $renderer.render("navigations", "Help.vm")
+               </div>
+             </div>
+           </div>
+        </td>
+
+       </tr>
+      </table>
+    </div>
+  #end
+
+ #######################################################################
+ ## Main Canvas
+ #######################################################################
+ 
+ <table width="100%" 
+        height="100%"
+        style="height:100%;"
+        cellspacing="0"
+        cellpadding="0"
+        id="main">
+
+  <tr valign="top">
+
+
+   ######
+   ## The clickable left column
+   ######
+   <td height="100%"
+       #if ($scarabR.CurrentModule) 
+       background="$staticLink.setPath("/images/opening-separator.gif")"
+       #end
+       style="height:100%;background-image:url($staticLink.setPath("/images/opening-separator.gif"));"
+       id="showleftcol" 
+       #if($hide_bars) onclick="showScarableftNav()" #end>
+       <table height="100%"
+              style="height:100%;"
+              border="0" 
+              cellpadding="0" 
+              cellspacing="0">
+         <tr>
+           <td>
+                      #if($hide_bars)
+               <img style="margin-left:0px; margin-top:50px;" src="$staticLink.setPath("/images/opening-slider.gif")" border="0"/>
+               #end
+           </td>
+         </tr>
+       </table>
+   </td>
+
+   ######
+   ## The navigation column
+   ######
+   <td width="1" 
+       id="leftcol" 
+       style="height:100%;" >
+     <table height="100%" 
+       border="0"
+       cellspacing="0"
+       cellpadding="0"
+       style="height:100%;">
+      <tr>
+       <td>  
+         <div id="navcolumn" style="margin:4px;height:100%">
+            <div style="text-align:left;white-space:nowrap;height:100%">
+              $renderer.render("navigations", $template, "Default.vm")
+            </div>
+     
+            ## This is temporary: Control whether to place an issue
+            ## navigation box into the left navigation column of the
+            ## screen. If the left navigation bar survives the ongoing
+            ## layout transition, we should think about a more general
+            ## approach.[HD]
+            #if ($currentIssue)
+              #viewIssueTab()
+     
+              #if ($tab.equals("all"))
+                <div style="white-space:nowrap;height:100%">
+                  $renderer.render("navigations", "Issue.vm")
+                </div>
+              #end
+            #end
+            ## End of issue navigation bar calculations
+         </div>          
+        </td>
+      </tr>
+     </table>
+   </td>
+
+   #if ($scarabR.CurrentModule && $hide_bars)
+     <td style="height:100%;background-repeat:repeat-y;background-image:url($staticLink.setPath("/images/closing-separator.gif"));"
+       #if($hide_bars) onclick="hideScarableftNav()" #end
+       id="closing-slider"
+       >
+      <img style="margin-left:0px; margin-top:50px;" src="$staticLink.setPath("/images/closing-slider.gif")" border="0"/>           
+     </td>
+   #end
+     
+   <td width="100%">
+    <table width="100%" cellspacing="0" cellpadding="0">
+     <tr>
+      
+      ######
+      ## The main canvas column
+      ######
+      <td width="*" >
+       #if (!$data.Parameters.getString("nonav") && !$data.Parameters.getString("nosearchnav"))
+        $renderer.render("navigations", "SearchNav.vm")
+       #end
+       <div id="bodycol">
+        <!-- Scarab - App -->
+        #set ($attributeTreePopupHelper = [])
+        $renderer.render("layouts", "MainContent.vm")
+        <!-- Structural Elements -->
+       </div>
+      </td>
+
+      #######
+      ## The initial hint column (only rendered in SelectModule.vm)
+      #######
+      #if ($template.equals("SelectModule.vm"))
+       <td id="rightcol" width="20%" >
+        $renderer.render("layouts", "/ModuleHelp.vm")
+       </td>
+      #end
+
+     </tr>
+    </table>
+   </td>
+  </tr>
+ </table>
+ #############################################################
+ ## End of canvas
+ #############################################################
+
+ #############################################################
+ ## functional buttons
+ #############################################################
+ $renderer.render("navigations", "/ScarabBottom.vm")
+ 
+ <script language="Javascript">
+   // Sticky navigation is not yet fully implemented.
+   // Therefore the statement below is currently 
+   // commented out.[HD]
+   // stickyNavigationBar();
+ </script>
+
+ ## render the popup used to display selection trees
+ #foreach ($attributeTreePopup in $attributeTreePopupHelper)
+  <script type="text/javascript">renderJSONTreePopup('$attributeTreePopup.get(0)', '$attributeTreePopup.get(1)', $attributeTreePopup.get(2), '$staticLink.setPath("/images")');</script>
+ #end
+ 
+</body>
+#end
+</html>

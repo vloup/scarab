@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+	<!ENTITY intro SYSTEM "intro-en.xml">
+	<!ENTITY ergonomy SYSTEM "ergonomy-en.xml">
+	<!ENTITY login SYSTEM "login-en.xml">
+	<!ENTITY issues SYSTEM "issues-en.xml">
+	<!ENTITY queries SYSTEM "queries-en.xml">
+	<!ENTITY reports SYSTEM "reports-en.xml">
+	<!ENTITY modules SYSTEM "modules-en.xml">
+	<!ENTITY bestpractices SYSTEM "bestpractices-en.xml">
+	<!ENTITY workflow SYSTEM "workflow1-en.xml">
+	<!ENTITY superadmin SYSTEM "superadmin-en.xml">
+	<!ENTITY xml SYSTEM "xml-import-export-en.xml">
+	<!ENTITY integration SYSTEM "integration-en.xml">
+	<!ENTITY userroles SYSTEM "manage-user-roles-en.xml">
+]>
+<!-- $Id -->
+<book>
+	<bookinfo>
+		<title>Scarab - User's Guide</title>
+		<subtitle>Scarab for mere mortals</subtitle>
+		<corpauthor>The Scarab Development Team</corpauthor>
+		<editor>
+			<firstname>Jean-François</firstname>
+			<surname>El Fouly</surname>
+		</editor>
+	</bookinfo>
+	<part>
+		<title>What is Scarab?</title>
+	    &intro;
+	</part>
+	<part>
+		<title>Scarab for everyone</title>
+		&login;
+	    &ergonomy;
+		&issues;
+	    &queries;
+	    &reports;
+	</part>
+	<part>
+		<title>Scarab for module administrators</title>
+		&modules;
+		&userroles;
+		&bestpractices;
+	    &workflow;
+	    &superadmin;
+	</part>
+	<part>
+		<title>Advanced topics</title>
+	    &xml;
+		&integration;
+	</part>
+</book>

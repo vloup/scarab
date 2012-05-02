@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//CollabNet//DTD XHTML 1.0 Transitional//EN"
+    "$staticLink.setPath("/style/tigris_transitional.dtd")">
+
+#set ($page.Title = $l10n.Title)
+<html>
+ <head>
+  <title>$page.Title</title>
+  <meta http-equiv="Content-type" content="$data.ContentType" />
+  <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/classic.css")" />
+  <link rel="stylesheet" type="text/css" href="$staticLink.setPath("/skins/custom.css")" />
+ </head>
+ <body class="docs" onload="self.focus()">
+  $renderer.render("screens", $template)
+ </body>
+</html>

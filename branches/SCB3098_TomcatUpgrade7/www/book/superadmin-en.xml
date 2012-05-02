@@ -1,0 +1,10 @@
+<!-- $Id -->
+<chapter>
+	<title>Display an informational message</title>	
+	<simpara>This allows the administrator to display an informational message to all users, connected or about to connect. For instance, to plan a maintenance operation.</simpara>
+	<simpara>Access this function using the &quot;Set default informational message&quot; link.</simpara>
+	<screenshot><graphic fileref="images/messaging0.png"/></screenshot>
+	<simpara>The entered message now appears on top of every page (including the home page), to all users.</simpara>
+	<screenshot><graphic fileref="images/messaging1.png"/></screenshot>
+	<note><para>The informational message is not persistent: it is reset if you restart the web application.</para></note>
+</chapter>

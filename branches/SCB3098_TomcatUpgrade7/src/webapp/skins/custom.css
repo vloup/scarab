@@ -1,0 +1,168 @@
+/*
+   This file contains custom classes. Classes specified here override
+   scarab default settings. Data in this file is considered as testdata
+   only and can safely be removed.
+   
+   NOTE: This is work in progress. The final custom css file will probably be
+   located elsewhere !(Hussayn, May-2009)
+*/
+
+/* attribute specific classes */
+
+td.status,
+td.status_new,
+td.status_assigned,
+td.status_reopened,
+td.status_inreview,
+td.status_processing,
+td.status_closed
+ {
+    display:inline;
+	background-repeat: no-repeat;
+	position:relative;
+    background-position: 0px 0px;
+    padding-left:20px;
+    font-weight:bold;
+}
+
+.status_new {
+ color:#888;
+}
+
+td.status_assigned {
+ color:red;
+ background-image: url(images/unassigned.png);
+}
+ 
+.status_reopened {
+ color:magenta;
+ background-image: url(images/reopened.png);
+}
+
+.status_inreview {
+ color:blue;
+ background-image: url(images/inreview.png);
+}
+
+.status_processing {
+ color:orange;
+ background-image: url(images/inprogress.png);
+}
+
+.status_closed {
+ color:green;
+ background-image: url(images/closed.png);
+}
+  
+
+.treeview_button {
+ background-image: url(images/treeview_open.gif);
+ width:19px;
+ height:14px;
+ padding-left:0px;
+ position:relative;
+ left:-3px;
+ top:-1px;
+ text-decoration:none;
+ background-repeat: no-repeat;
+ display:inline-block;
+ vertical-align:middle;
+}
+
+div.tree_popup {
+	background-color: #ffffe8;
+	display: none;	
+    height: 200px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: absolute;
+	width: 250px;
+	border-style:dotted;
+	border-width:1px;
+	border-color:#92b9d8;
+}
+
+div.tree_popup {
+	max-height: 200px;
+}
+
+div.tree_popup ol.treeview {
+	list-style: none;
+	padding: 5px;
+	margin: 0px;
+}
+
+div.tree_popup ol.treeview li a.folder {
+	padding-left:0px;
+}
+
+div.tree_popup ol.treeview li.leaf {
+	font-size: x-small;
+	margin-bottom: 1px;
+	margin-top: 3px;
+	padding-left: 15px;
+}
+
+div.tree_popup ol.treeview li a {
+	color:#000;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+div.tree_popup ol.treeview li ol.treeview li.leaf a {
+	font-size: x-small;
+	margin-bottom: 1px;
+	margin-top: 3px;
+	padding-left: 20px;
+	color:#025dae;
+}
+
+.asterisk {
+	color:red;
+}
+
+/*
+// colrized issuelists
+// the schema is:
+//
+*/
+
+td.a_attention1 {vertical-align:middle;                                                                                     background-color:#dddddd;}
+td.b_attention1 {vertical-align:middle;                                                                                     background-color:#efefef;}
+td.a_attention2 {vertical-align:middle; background: url(images/attention_low.png) no-repeat scroll 95% 52% transparent;     background-color:#dddddd;}
+td.b_attention2 {vertical-align:middle; background: url(images/attention_low.png) no-repeat scroll 95% 52% transparent;     background-color:#efefef;}
+td.a_attention3 {vertical-align:middle; background: url(images/attention_medium.png) no-repeat scroll 95% 52% transparent;  background-color:#dddddd;}
+td.b_attention3 {vertical-align:middle; background: url(images/attention_medium.png) no-repeat scroll 95% 52% transparent;  background-color:#efefef;}
+td.a_attention4 {vertical-align:middle; background: url(images/attention_high.png) no-repeat scroll 95% 52% transparent;    background-color:#dddddd;}
+td.b_attention4 {vertical-align:middle; background: url(images/attention_high.png) no-repeat scroll 95% 52% transparent;    background-color:#efefef;}
+td.a_attention5 {vertical-align:middle; background: url(images/attention_highest.png) no-repeat scroll 95% 52% transparent; background-color:#dddddd;}
+td.b_attention5 {vertical-align:middle; background: url(images/attention_highest.png) no-repeat scroll 95% 52% transparent; background-color:#efefef;}
+
+// experimental stuff will be removed later.
+
+.wiedervorlagedatum {
+	color:red;
+}
+
+
+	
+a.link_button, a.link_button:visited, a.link_button:active {
+	background-color:#e9f1f9;
+    border-left: 1px solid #abc4db;
+    border-top: 1px solid #abc4db;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-style: outset;
+    border-width:2px;
+    text-decoration: none;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:1px;
+    padding-bottom:1px;
+    color:black;
+    font-weight:bold;
+    font-size:0.8em;
+}
+#navcolumn a.activeQuery, #navcolumn a.activeQuery:visited, #navcolumn a.activeQuery:active {
+    font-weight:bold;
+}

@@ -1,0 +1,149 @@
+<!-- $Id$ -->
+<chapter>
+	<title>Integrating Scarab and other tools</title>
+	<sect1>
+		<title>Integrating Scarab in Eclipse</title>
+		<simpara>An interesting way to bring Scarab information into Eclipse is probably to use an RSS reader, for example <ulink url="http://morphine.sourceforge.net/presence/projects/rss/index.html">Eclipse RSS Reader</ulink>. Let us use this plugin as an example.</simpara>
+		<simpara>You can keep an eye on a given issue or on the result of any public query (except for multi-module queries). Say you want to keep an eye on the history of the PACS1 issue in Scarab. In the bottom right corner of the issue page in Scarab, you have RSS and ATOM links.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss1.png"/>
+		</screenshot>
+		<simpara>Copy the URL in the RSS link.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss2.png"/>
+		</screenshot>
+		<simpara>Now, in Eclipse, create a new RSS channel.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss3.png"/>
+		</screenshot>
+		<simpara>Paste the issue RSS feed URL and click &quot;Load&quot;.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss4.png"/>
+		</screenshot>
+		<simpara>There is only one translator available for this feed format, so you may proceed.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss5.png"/>
+		</screenshot>
+		<simpara>Now you must choose a project and a file name for your RSS feed.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss6.png"/>
+		</screenshot>
+		<simpara>The RSS appears now among your project resources in the Package Explorer.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss7.png"/>
+		</screenshot>
+		<simpara>When you click the feed, you get a new window with the history. The &quot;Browse&quot; link brings you back to Scarab in the issue page.</simpara>
+		<screenshot>
+			<graphic fileref="images/pacs1-rss8.png"/>
+		</screenshot>
+	</sect1>
+	<sect1>
+		<title>Integrating Scarab in Netbeans</title>
+		<abstract>
+			<para>A NetBeans plugin allows to include Scarab issues in the to-do list.</para>
+			<para>This plug-in (.nbm) is currently available from the NetBeans tracker at this URL: <ulink url="http://tasklist.netbeans.org/issues/show_bug.cgi?id=69572">http://tasklist.netbeans.org/issues/show_bug.cgi?id=69572</ulink></para>
+		</abstract>
+	</sect1>
+	<sect1>
+	  <title>Integrating Scarab and Maven (Maven 1)</title>
+	  <sect2>
+	    <title>Connecting your Maven project and Scarab</title>
+	    <simpara>As you probably know, you can fill in the Scarab URL in the POM of your project.</simpara>
+	    <simpara>To do this, you need to add the <computeroutput></computeroutput> entity to your <computeroutput>project.xml</computeroutput> file:</simpara>
+	    <informalexample>
+	      <programlisting><![CDATA[<issueTrackingUrl>http://192.168.0.151:8888/scarab/</issueTrackingUrl>]]></programlisting>
+	    </informalexample>
+	    <simpara>This will create a link to Scarab in the Project Info part of your Maven-generated project site:</simpara>
+	    <screenshot>
+	      <graphic fileref="images/maven-scarab1.png" />
+	    </screenshot>
+	  </sect2>
+	  <sect2>
+	    <title>Linking the Changes plugin and Scarab</title>
+	    <simpara>You can go a step further and connect now your changes, as detailed in the <computeroutput>./xdocs/changes.xml</computeroutput> file, and Maven issues.</simpara>
+	    <simpara>Add this to your <computeroutput>build.properties</computeroutput> file:</simpara>
+	    <informalexample>
+	      <programlisting>
+# For the changes plugin
+maven.changes.issue.template=%URL%/issues/id/%ISSUE%	      
+	      </programlisting>
+	    </informalexample>
+	    <simpara>Now you can create links from your changes (in <computeroutput>changes.xml</computeroutput>) to Scarab. Example:</simpara>
+	    <informalexample>
+	      <programlisting>
+	        <![CDATA[
+    <release version="1.22" date="2006-02-01">
+      <action dev="jean-francois.elfouly" type="fix" issue="VDCO134">
+        Modified FaringServicesBean to fix a bug related to the faring in city pairs where
+        the departure date determines the season.
+      </action>
+      <action dev="jean-francois.elfouly" type="add" issue="VDCO135">
+        Modified FaringServicesBean to add a faring rule for fare bases with specified
+        travel dates (inbound, outbound or both).
+      </action>            
+    </release>
+	        ]]>
+	      </programlisting>
+	    </informalexample>
+	    <simpara>will create nicely formatted links in the generated <computeroutput>changes-report.html</computeroutput> page:</simpara>
+	    <screenshot>
+	      <graphic fileref="images/maven-scarab1.png" />
+	    </screenshot>
+	  </sect2>
+	</sect1>
+	<sect1>
+		<title>Integrating Scarab in TWiki</title>
+		<abstract><simpara>Use an RSS feed with TWiki for Status and Progress Reporting</simpara></abstract>
+		<simpara>
+	      TWiki is an enterprise collaboration platform and has a plugin for showing the 
+          content of RSS and Atom feeds (HeadlinesPlugin). The results can be formatted 
+          as a table. This can be used to show the results of a public Scarab query. 
+          Use this, for example, to create a TWiki topic that shows all the Defects 
+          that are currently at Status of Assigned. You could even create a table to 
+          list which issues were changed to a Status of Resolved in the current month.
+	  </simpara>
+		<orderedlist>
+			<listitem>
+				<para>
+				  Create a public query that finds the issues you want to report. For 
+                  example, search for all issues with Status equal to Assigned or Reopened.
+                  Use a public query so that TWiki will be able to get a feed from it without 
+                  needing to provide credentials. Alternatively you must include private 
+                  credentials as part of the feed URL.
+	      </para>
+			</listitem>
+			<listitem>
+				<para>Run the query from the Advanced query pull-down list. Verify that the query reports what you expect.</para>
+			</listitem>
+			<listitem>
+				<para>
+				  Use your browser to copy the address of the RSS or Atom feed for this 
+                  query. You would normally do this by right-clicking on the feed name at the 
+                  top (and bottom) of the query results table.
+                </para>
+			</listitem>
+			<listitem>
+				<para>On a TWiki topic, use the %HEADLINES% variable to pull the feed into the topic.</para>
+				<para>
+					<computeroutput>
+					  %HEADLINES{ href="http://www.saxess.de/testscarab/issues/curmodule/1/tqk/0/template/RSSDataExport.vm/feedType/QueryFeed/queryId/10000/userId/1/type/rss_2.0" 
+                      refresh="1" header="| *$title* | *$description* |" format="$t| [[$link]
+                      [$title]] | $description |" }%
+                    </computeroutput>
+				</para>
+			</listitem>
+		</orderedlist>
+		<simpara>You will see a formatted table of the query results, just as Scarab showed them.</simpara>
+		<simpara>
+		  The first column shows the issue name and the second column shows the Status, 
+          Summary and AssignedTo attribute values. The entries in the first column also 
+          link to the original issue in Scarab.
+        </simpara>
+		<simpara>
+		  Beware that the headlines plugin will cache its results to avoid excessive 
+          loading on the feed source. The default refresh timeout is 60 minutes. In the 
+          example above, the refresh parameter is used to set the refresh time to only 
+          one minute.
+        </simpara>
+	</sect1>
+</chapter>

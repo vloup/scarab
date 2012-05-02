@@ -1,0 +1,50 @@
+### PERSONNEL
+#tabHeading("personnel" $l10n.format("PersonnelNavi", $numUsers))
+<div id='personnel'>
+  <table width="100%" border="1" cellspacing="2" cellpadding="3">
+    <tr>
+      <th>$l10n.Name</th>
+      <th>$l10n.Username</th>
+      <th>$l10n.Association</th>
+    </tr>
+
+    <tr class="a">
+      #set ($createdUser = $currentIssue.CreatedBy)
+      <td><a href="mailTo:$createdUser.Email">$!createdUser.Name</a></td>
+      <td>$createdUser.UserName</td>
+      <td>$l10n.CreatedBy</td>
+    </tr>
+
+    #set ($userAttVals = $currentIssue.UserAttributeValues)
+    #set ($myselfInList = false)
+    #foreach ($attVal in $userAttVals)
+      #indexedRows($velocityCount)
+      #set ($userId = $attVal.UserId)
+      #set ($assignedUser = $scarabR.getUser($userId))
+      #if  ($data.User.userId.equals($userId))
+        #set ($myselfInList = true)
+        #set ($myattid = $attVal.AttributeId)
+      #end
+      <td>
+        <a href="mailto:$assignedUser.Email">$!assignedUser.Name</a>
+        #if (!$assignedUser.hasPermission($attVal.Attribute.Permission, $module))
+            <strong>$l10n.ParenDisabled</strong>
+        #end
+      </td>
+      <td>$assignedUser.UserName</td>
+      <td>$attVal.rModuleAttribute.displayValue </td>
+      </tr>
+    #end
+
+
+  </table>
+
+  #if ($canEdit)
+    <div class="functnbar3">
+      #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
+        <input type="submit" value="$l10n.EditList" name="eventSubmit_doEditassignees" />&nbsp;
+      #end
+    </div>
+  #end
+
+</div>
