@@ -194,7 +194,7 @@
 
     <property>
       <name>scarab.database.type</name>
-      <default>mysql</default>
+      <default>hypersonic</default>
       <type>Build</type>
        <customization modification="optional">basic</customization>
       <file/>
