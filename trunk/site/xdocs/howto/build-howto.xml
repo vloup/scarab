@@ -652,10 +652,11 @@ order to do this, the code needs to be given a host machine, database
 name, database-username and password.
 </p>
 <p>
-By default, the scripts assume a database called 'scarab' and no
-username/password to connect to the database on localhost. For example,
-if you have MySQL up and running with no username/password for localhost
-access, you can simply execute the following:
+By default, the scripts assume a hypersonic database called 'scarab' and no special
+username/password to connect to the database on localhost.
+</p>
+<p>
+To create a new database, basically you need to execute the following only:
 </p>
 <source>
 
