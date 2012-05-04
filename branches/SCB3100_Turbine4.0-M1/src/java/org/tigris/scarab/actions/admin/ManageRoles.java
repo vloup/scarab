@@ -182,7 +182,7 @@ public class ManageRoles extends RequireLoginFirstAction
             String rolePermission = roleName + permissionName;
             
             String formRolePermission = data.getParameters().getString(rolePermission);
-            Permission permission = TurbineSecurity.getPermission(permissionName);
+            Permission permission = TurbineSecurity.getPermissionByName(permissionName);
             
             
             if (formRolePermission != null && !rolePermissions.contains(permission))

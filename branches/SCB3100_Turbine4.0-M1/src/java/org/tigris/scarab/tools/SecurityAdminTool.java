@@ -121,7 +121,7 @@ public class SecurityAdminTool
     public Permission getPermissionByName(String name) throws Exception
     {
         Permission permission = null;
-        permission = TurbineSecurity.getPermission(name);
+        permission = TurbineSecurity.getPermissionByName(name);
         
         return permission;
     }
