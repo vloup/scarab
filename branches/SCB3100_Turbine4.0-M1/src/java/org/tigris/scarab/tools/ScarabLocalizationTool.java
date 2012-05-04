@@ -61,7 +61,7 @@ import org.apache.fulcrum.localization.LocaleTokenizer;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.localization.LocalizationService;
 import org.apache.turbine.util.RunData;
-import org.apache.turbine.tool.LocalizationTool;
+import org.apache.turbine.services.localization.LocalizationTool;
 import org.tigris.scarab.tools.localization.Localizable;
 import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Log;
