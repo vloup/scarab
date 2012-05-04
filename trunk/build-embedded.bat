@@ -9,11 +9,11 @@ call mvn clean
 
 if errorlevel 1 goto BatchException
 
-call mvn package -Dmaven.test.skip=true
+call mvn initialize scarab:create-db -Dscarab.database.build.mode=default -DapplicationRoot=target/scarab
 
 if errorlevel 1 goto BatchException
 
-call mvn initialize scarab:create-db -Dscarab.database.build.mode=default -DapplicationRoot=target/scarab
+call mvn package -Dmaven.test.skip=true
 
 :BatchException
 
