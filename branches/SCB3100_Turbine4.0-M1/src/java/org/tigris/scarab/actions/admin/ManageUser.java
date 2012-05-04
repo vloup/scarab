@@ -53,7 +53,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.Role;
 import org.apache.turbine.om.security.User;
 import org.apache.turbine.util.security.AccessControlList;

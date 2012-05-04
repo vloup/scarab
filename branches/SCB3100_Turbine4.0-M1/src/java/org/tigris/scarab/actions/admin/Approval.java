@@ -51,7 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.Group;
 import org.apache.turbine.om.security.Role;
 import org.apache.turbine.util.security.AccessControlList;

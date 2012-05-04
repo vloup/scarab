@@ -54,7 +54,7 @@ import org.apache.torque.util.Criteria;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.ScarabException;
 
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 
 /** 
  * This class manages ScarabUser objects.

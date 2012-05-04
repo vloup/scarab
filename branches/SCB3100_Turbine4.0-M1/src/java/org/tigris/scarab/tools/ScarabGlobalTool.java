@@ -63,7 +63,7 @@ import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.fulcrum.TurbineServices;
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.User;
 import org.apache.fulcrum.velocity.TurbineVelocityService;
 import org.apache.fulcrum.velocity.VelocityService;

@@ -50,7 +50,7 @@ package org.tigris.scarab.services.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.fulcrum.security.impl.db.DBSecurityService;
+import org.apache.turbine.services.security.impl.db.DBSecurityService;
 
 import org.apache.turbine.om.security.Group;
 

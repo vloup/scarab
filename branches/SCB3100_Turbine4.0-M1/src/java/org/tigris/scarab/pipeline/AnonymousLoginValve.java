@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.util.TurbineException;

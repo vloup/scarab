@@ -53,10 +53,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
 
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.Group;
 import org.apache.turbine.om.security.Role;
-import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
+import org.apache.turbine.services.security.impl.db.entity.TurbineRolePeer;
 import org.apache.turbine.util.security.AccessControlList;
 import org.apache.turbine.util.security.DataBackendException;
 import org.apache.turbine.util.security.GroupSet;

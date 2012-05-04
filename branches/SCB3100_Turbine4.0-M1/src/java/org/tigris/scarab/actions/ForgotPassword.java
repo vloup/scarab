@@ -55,7 +55,7 @@ import org.apache.velocity.context.Context;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.modules.ContextAdapter;
 
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.turbine.util.security.TurbineSecurityException;

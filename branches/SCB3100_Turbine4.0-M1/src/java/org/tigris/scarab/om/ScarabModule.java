@@ -69,7 +69,7 @@ import org.apache.torque.util.Criteria;
 import org.apache.torque.util.SqlEnum;
 
 import java.sql.Connection;
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.util.security.RoleSet;
 import org.apache.turbine.util.security.TurbineSecurityException;
 import org.apache.turbine.om.security.User;
@@ -94,13 +94,13 @@ import org.tigris.scarab.services.cache.ScarabCache;
 // FIXME! do not like referencing servlet inside of business objects
 // though I have forgotten how I might avoid it
 import org.apache.turbine.Turbine;
-import org.apache.fulcrum.security.impl.db.entity
+import org.apache.turbine.services.security.impl.db.entity
     .TurbinePermissionPeer;
-import org.apache.fulcrum.security.impl.db.entity
+import org.apache.turbine.services.security.impl.db.entity
     .TurbineUserGroupRolePeer;
-import org.apache.fulcrum.security.impl.db.entity
+import org.apache.turbine.services.security.impl.db.entity
     .TurbineRolePermissionPeer;
-import org.apache.fulcrum.security.impl.db.entity.TurbineUserPeer;
+import org.apache.turbine.services.security.impl.db.entity.TurbineUserPeer;
 import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**

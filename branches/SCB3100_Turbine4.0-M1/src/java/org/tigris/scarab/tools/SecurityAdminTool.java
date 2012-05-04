@@ -52,7 +52,7 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.io.Serializable;
 
-import org.apache.fulcrum.security.TurbineSecurity;
+import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.Group;
 import org.apache.turbine.om.security.Permission;
 import org.apache.turbine.util.security.RoleSet;
