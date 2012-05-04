@@ -59,7 +59,7 @@ import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.localization.Localization;
-import org.apache.fulcrum.security.entity.Group;
+import org.apache.turbine.om.security.Group;
 import org.apache.regexp.RECompiler;
 import org.apache.regexp.REProgram;
 import org.apache.regexp.RESyntaxException;

@@ -53,10 +53,10 @@ import java.util.Iterator;
 import java.io.Serializable;
 
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Permission;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Permission;
 import org.apache.fulcrum.security.util.RoleSet;
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.turbine.om.security.Role;
 import org.apache.fulcrum.security.util.AccessControlList;
 
 import org.apache.torque.util.Criteria;

@@ -72,9 +72,9 @@ import java.sql.Connection;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.util.RoleSet;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.fulcrum.security.entity.User;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.turbine.om.security.User;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Role;
 
 // Scarab classes
 import org.tigris.scarab.om.Module;

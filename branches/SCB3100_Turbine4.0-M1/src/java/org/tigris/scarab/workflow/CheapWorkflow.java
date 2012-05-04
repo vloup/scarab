@@ -54,7 +54,7 @@ import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabException;
 
 import org.apache.torque.TorqueException;
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.turbine.om.security.Role;
 
 import java.util.ArrayList;
 import java.util.Iterator;

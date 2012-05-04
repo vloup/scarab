@@ -50,7 +50,7 @@ package org.tigris.scarab.om;
 import java.util.List;
 
 // Turbine classes
-import org.apache.fulcrum.security.entity.Group;
+import org.apache.turbine.om.security.Group;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.BasePeer;
 import org.apache.torque.util.Criteria;

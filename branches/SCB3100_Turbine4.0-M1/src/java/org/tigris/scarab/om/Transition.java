@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.turbine.om.security.Role;
 import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
 import org.apache.torque.NoRowsException;
 import org.apache.torque.TooManyRowsException;

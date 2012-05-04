@@ -49,7 +49,7 @@ package org.tigris.scarab.actions;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.modules.actions.AccessController;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.User;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.fulcrum.security.util.AccessControlList;
 

@@ -54,8 +54,8 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.om.security.User;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;

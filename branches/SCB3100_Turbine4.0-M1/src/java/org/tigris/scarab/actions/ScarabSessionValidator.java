@@ -46,7 +46,7 @@ package org.tigris.scarab.actions;
  * individuals on behalf of Collab.Net.
  */ 
 
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.User;
 
 import org.apache.velocity.context.Context;
 import org.apache.turbine.util.RunData;

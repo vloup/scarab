@@ -51,8 +51,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 
-import org.apache.fulcrum.security.entity.Role;
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.Role;
+import org.apache.turbine.om.security.User;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.EntityExistsException;

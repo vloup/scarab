@@ -54,8 +54,8 @@ import java.util.LinkedList;
 import java.util.Iterator;
 
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Role;
 import org.apache.fulcrum.security.impl.db.entity.TurbineRolePeer;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;

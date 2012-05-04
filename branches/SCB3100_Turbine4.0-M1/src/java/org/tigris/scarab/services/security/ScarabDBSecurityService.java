@@ -52,7 +52,7 @@ import java.util.List;
 
 import org.apache.fulcrum.security.impl.db.DBSecurityService;
 
-import org.apache.fulcrum.security.entity.Group;
+import org.apache.turbine.om.security.Group;
 
 import org.apache.fulcrum.security.util.GroupSet;
 import org.apache.fulcrum.security.util.DataBackendException;

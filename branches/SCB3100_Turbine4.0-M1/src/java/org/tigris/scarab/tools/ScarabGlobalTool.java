@@ -64,7 +64,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.fulcrum.TurbineServices;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.User;
+import org.apache.turbine.om.security.User;
 import org.apache.fulcrum.velocity.TurbineVelocityService;
 import org.apache.fulcrum.velocity.VelocityService;
 import org.apache.oro.text.perl.Perl5Util;

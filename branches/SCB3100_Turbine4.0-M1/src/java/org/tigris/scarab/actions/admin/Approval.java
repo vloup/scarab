@@ -52,8 +52,8 @@ import java.util.List;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.entity.Group;
-import org.apache.fulcrum.security.entity.Role;
+import org.apache.turbine.om.security.Group;
+import org.apache.turbine.om.security.Role;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.torque.om.NumberKey;
