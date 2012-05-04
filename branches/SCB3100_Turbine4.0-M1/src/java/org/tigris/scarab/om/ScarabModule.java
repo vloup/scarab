@@ -94,11 +94,11 @@ import org.tigris.scarab.services.cache.ScarabCache;
 // FIXME! do not like referencing servlet inside of business objects
 // though I have forgotten how I might avoid it
 import org.apache.turbine.Turbine;
-import org.apache.turbine.services.security.impl.db.entity
+import org.apache.turbine.services.security.torque.om
     .TurbinePermissionPeer;
-import org.apache.turbine.services.security.impl.db.entity
+import org.apache.turbine.services.security.torque.om
     .TurbineUserGroupRolePeer;
-import org.apache.turbine.services.security.impl.db.entity
+import org.apache.turbine.services.security.torque.om
     .TurbineRolePermissionPeer;
 import org.apache.turbine.services.security.torque.om.TurbineUserPeer;
 import org.tigris.scarab.util.ScarabRuntimeException;
