@@ -1,0 +1,59 @@
+<!-- $Id -->
+<chapter>
+	<title>Maven</title>
+	<abstract>
+		<simpara>You will need Maven to access all development functionalities, among which documentation generation.</simpara>
+	</abstract>
+	<sect1>
+		<title>Maven 3</title>
+		<simpara>You can use Maven 2 instead of Maven 3, too, but the build will not be fully functional.</simpara>
+		<para>So you will need to install Maven 3 (3.0.3 or later) from this URL:  <ulink url="http://http://maven.apache.org">http://http://maven.apache.org</ulink>
+		</para>
+	</sect1>
+	<sect1>
+		<title>Building Scarab with Maven</title>
+		<sect2>
+			<title>Normal (full) build</title>
+			<simpara>Go to the <computeroutput>$SCARAB_ROOT</computeroutput> directory.</simpara>
+			<simpara>Launch Maven:</simpara>
+			<simpara>mvn clean package<computeroutput/>
+			</simpara>
+		</sect2>
+		<sect2>
+			<title>Quick build</title>
+			<simpara>Go to the <computeroutput>$SCARAB_ROOT</computeroutput> directory.</simpara>
+			<simpara>Launch Maven:</simpara>
+			<simpara>mvn clean package -Dmaven.test.skip<computeroutput/>
+			</simpara>
+			<simpara>
+				<computeroutput>-Dmaven.test.skip</computeroutput> skips the execution of unit tests.
+			  Scarab unit tests have been designed to be executed against a database; if yours is not (yet) configured, they will most certainly fail.
+	      </simpara>
+		</sect2>
+		<sect2>
+			<title>Running the tests</title>
+			<simpara>Just launch:</simpara>
+			<simpara>
+				<computeroutput>mvn clean test</computeroutput>
+			</simpara>
+			<simpara>The results of the tests will be in <computeroutput>$(SCARAB_HOME)/target/test-results/</computeroutput>
+			</simpara>
+			<simpara>If you'd like to make your tests with another db environment, follow these steps:</simpara>
+			<orderedlist>
+				<listitem>
+					<simpara>
+						<computeroutput>mvn clean</computeroutput> (you better start from scratch if you gonna test)</simpara>
+				</listitem>
+				<listitem>
+					<simpara>Configure your <computeroutput>build.properties</computeroutput> to contain at least the correct <computeroutput>scarab.database.type</computeroutput> value.</simpara>
+				</listitem>
+				<listitem>
+					<simpara>mvn initialize scarab:create-db (make sure you choose the same database than before!!)</simpara>
+				</listitem>
+				<listitem>
+					<simpara>mvn test</simpara>
+				</listitem>
+			</orderedlist>
+		</sect2>
+	</sect1>
+</chapter>

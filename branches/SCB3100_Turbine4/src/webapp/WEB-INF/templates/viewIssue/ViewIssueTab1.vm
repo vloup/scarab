@@ -1,0 +1,395 @@
+#set ($canAddComment    = $scarabR.hasPermission($scarabG.Permission.ISSUE__COMMENT, $module) && $rmit.Active)
+#set ($wantEdit         = $scarabU.wantEdit($user,$currentIssue,$data))
+#set ($isEditAttributes = $canEdit && $wantEdit)
+#set ($currentRow       = 0)
+#set ($currentColumn    = 0)
+
+## =======================================================================================
+## MACRO SECTION
+## =======================================================================================
+
+#macro (displayAttributeInCanvas $att $colspan)
+
+  ## =================================================================
+  ## Note that this macro depends on 2 global variables:
+  ##
+  ## $currentRow    CurrentRow Counter (may be 0, if no row has been created yet)
+  ## $currentColumn Number of items which are ALLREADY rendered into the current Row
+  ##
+  ## if ($currentRow == 0)    We are right at the begin of the data list
+  ## if ($currentColumn == 0) There is no item in the current Row
+  ## =================================================================
+
+  #set ($rma = $module.getRModuleAttribute($att, $issueType))
+  #if ($rma.Active)
+  
+  
+    ## define $attVal
+    ## define $attrInput
+    #set ($attVal = $attrValues.get($att.getName().toUpperCase()))
+    #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
+
+    ## define $field
+    #if ($att.AttributeType.ValidationKey)
+      #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
+    #elseif ($att.isOptionAttribute())
+      #set ($field = "OptionId")
+    #else
+      #set ($field = "Value")
+    #end
+
+    ## define $fieldSize
+    ## define $fieldHint
+    ## define $fieldStyle
+    #set ($fieldSize = 0)
+    #set ($fieldSize = $!attVal.Attribute.FieldSize)
+    #set ($fieldHint  = "")
+    #set ($fieldHint  = $!attVal.Attribute.Hint)
+    #set ($fieldStyle = "")
+    #set ($fieldStyle = $!attVal.Attribute.Style)
+
+    ## define $display
+    ## refine $fieldStyle
+    #set ($display = true)
+    #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
+    #if ($isOptionAttr)
+      #set ($fieldStyle = $!attVal.AttributeOption.Style)
+      #if ($attVal.AttributeOption.Deleted.toString().equals("true"))
+        #set ($display = false)
+      #end
+    #end
+    
+    ## define $fieldExtraHeader
+    #set ($fieldExtraHeader = "")
+    #if  ($!attVal.Attribute.Description.startsWith("hint:"))
+      #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
+    #end
+
+    ## define $isHidden
+    ## define $displayValue
+    ## define $onSameLine
+    #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
+    #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
+    #if ($index > 6)
+      #set ($displayValue = $rma.DisplayValue.substring($index))
+      #set ($onSameLine = true)
+      #set ($currentColumn = $currentColumn + 1)
+    #else
+      #set ($displayValue = $rma.DisplayValue)
+      #set ($onSameLine = false)
+      #set ($currentColumn = 1)
+      #set ($currentRow = $currentRow + 1)
+    #end
+
+
+    #if ($isEditAttributes)
+      
+      #if ($onSameLine)
+        #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
+        #if ($currentRow==0)
+          <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #else style="visibility:visible;" #end>
+          <th style="text-align:right;">
+        #else
+          <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
+        #end
+        <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+        #if ($currentRow==0)
+          </th>
+          <td colspan="$colspan">
+        #end
+      #else
+        #if ($currentRow > 1)
+          </td>
+          </tr>
+        #end
+        <tr>
+          <th style="text-align:right;"> 
+            <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+            #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
+              <pre>$fieldExtraHeader</pre>
+            #end
+          </th>
+          <td colspan="$colspan">
+        #set ($newline = false)
+      #end
+      <span style="display:inline;margin-left:0px; margin-right:10px;">
+        #if ($att.isOptionAttribute())
+          #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
+          #attrValueErrorMsg ($attVal $field)
+        #elseif ($att.isIntegerAttribute())
+          #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
+          #attrValueErrorMsg($attVal "NumericValue")
+        #else
+          #attrValueText($attVal $attrInput.Value $fieldSize $fieldHint)
+          #attrValueErrorMsg($attVal "Value")
+        #end
+        <span id="${displayValue}:Hint" ></span>         
+      </span>
+      #if ($onSameLine)
+        </span>
+      #end
+
+    #elseif ($attVal.isSet())
+      #if ($display)
+        #if ($onSameLine)
+          #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
+          #if ($currentRow==0)
+            <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #else style="visibility:visible;" #end>
+            <th style="text-align:right;">
+          #else
+            <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
+          #end
+          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
+          #if ($currentRow==0)
+            </th>
+            <td colspan="$colspan">
+          #end
+        #else
+          #if ($currentRow > 1)
+            </td>
+            </tr>
+          #end
+          <tr>
+            <th style="text-align:right;"> 
+              <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
+              #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
+                <pre>$fieldExtraHeader</pre>
+              #end
+            </th>
+            <td $fieldStyle colspan="$colspan">
+          #set ($newline = false)
+        #end
+        <span style="display:inline;margin-left:0px; margin-right:10px;">
+          #if ($att.isOptionAttribute())
+            #if (!$attVal.AttributeOption)
+	                --
+	            #else
+                #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
+                  $!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
+                #else
+                 [I]$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
+                #end
+            #end
+          #elseif ($att.AttributeType.Name == "long-string")
+            ## Convert the raw text to formatted HTML before
+            ## displaying it.
+            $!scarabG.textToHTML($attrInput.Value.toString(), $link, $scarabR.CurrentModule)
+          #elseif ($att.isIntegerAttribute())
+            #attrValueErrorMsg($attVal "NumericValue")
+            #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
+          #elseif ($att.AttributeType.Name == "date")
+              $scarabR.formatDate($!attrInput.Value.value)
+          #elseif ($att.AttributeType.Name == "integer")
+            $!attrInput.NumericValue.value
+          #else
+            ## Just output the raw value directly.
+            $!attrInput.Value
+          #end
+          <span id="${displayValue}:Hint" ></span>         
+        </span>
+        #if ($onSameLine)
+          </span>
+        #end
+      #end      
+    #end
+    
+  #else
+	    #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
+    #set ($attVal = $allAttrValues.get($att.getName().toUpperCase()))
+    #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
+    #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
+    #if ($attVal.isSet() && (!$attrInput.Value.toString().trim().equals("") || !$attrInput.NumericValue))
+      <tr>
+    	  <th>[I] $displayValue</th>
+        <td colspan="$colspan">
+          #if ($isOptionAttr)
+			            #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
+              	$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
+			            #else
+              	[I]$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
+			            #end
+          #elseif ($att.AttributeType.Name == "integer")
+            $!attrInput.NumericValue.value
+          #else
+            $!attrInput.Value
+          #end 
+          <span id="${displayValue}:Hint" ></span>
+        </td>
+      </tr>
+	    #end
+  #end 
+#end
+
+## =========================================================================================
+## Canvas Section
+## =========================================================================================
+
+#tabHeading("properties" $l10n.IssueAttributesNavi)
+<div id='properties'>
+
+  ## ------------------------------------------------------------------
+  ## Setup the top row of the Issue attributes tab.
+  ## The row contains:
+  ## 
+  ## IssueType
+  ## IssueId
+  ## Associated active user (if exists)
+  ## Date of creation
+  ## Date of last change
+  ## -------------------------------------------------------------------
+  
+  
+  ## ===============================================================================
+  ## The Tab header
+  ## ===============================================================================
+  
+  
+  <div class="header">
+    <div class="group">
+      <table>
+        <tr>
+          <th style="text-align:right;">$currentIssue.RModuleIssueType.DisplayName</th>
+          <td>$currentIssue.UniqueId</td>
+        </tr>
+        <tr>
+          <th style="text-align:right;">$assignedRMA.DisplayValue</th>
+          <td> #assignedUsers( $myself $isEditAttributes )</td>
+        </tr>
+        #set ($myStatusAttribute      = $currentIssue.MyStatusAttribute)
+        #if ($myStatusAttribute)
+          ## tell the macro where we are in the table and then execute it
+          #set ($currentRow=0)
+          #set ($currentColumn=0)
+          #displayAttributeInCanvas ($myStatusAttribute 1)
+          </td></tr>
+        #end
+      </table>
+      
+    </div>
+
+    <div class="group">
+      <table>    
+        <tr>
+          <th style="text-align:right;">$l10n.DateCommitted</th>
+          #userTimeStamp_td( $currentIssue.CreatedBy $currentIssue.CreatedDate)
+        </tr>
+        <tr>
+          <th style="text-align:right;">$l10n.LastModified</th>
+          #userTimeStamp_td( $currentIssue.ModifiedBy $currentIssue.ModifiedDate)
+        </tr>
+        #set ($myOnHoldExpirationDate = $currentIssue.MyOnHoldExpirationDate)
+        #if ($myOnHoldExpirationDate)
+          ## tell the macro where we are in the table and then execute it
+          #set ($currentRow=0)
+          #set ($currentColumn=1)
+          #displayAttributeInCanvas ($myOnHoldExpirationDate 2)
+          </td></tr>
+        #end 
+      </table>
+    </div>
+
+    <div class="group">
+      <table>    
+        #if ($currentIssue.isBlocked())      
+          <tr>
+            <td>
+              <a class="blockedmark" STYLE="text-decoration: none" title="$l10n.IssueCurrentlyBlocked" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockedWarning</a>
+            </td>
+          </tr>
+        #end
+        #if ($currentIssue.isBlockingAnyIssue())
+          <tr>
+            <td>
+              <a class="blockingmark" STYLE="text-decoration: none" title="$l10n.IssueDoesBlockOtherIssues" href='$tabLink.addPathInfo("tab", "6")'>$l10n.BlockingWarning</a>
+            </td>
+          </tr>
+        #end
+      </table>
+    </div>
+    
+  </div>
+
+  ## ===============================================================================
+  ## The Attribute-groups area
+  ## ===============================================================================
+  #set ($moduleAttributeGroups = $issueType.getAttributeGroups($module, true))
+  <div class="axial">
+    #foreach ($group in $moduleAttributeGroups)
+      #set ($attributes = $group.Attributes)
+      #if ($attributes && !$attributes.isEmpty() && $group.isVisible4User($user))
+        <h4>$group.Name #if ($isEditAttributes)#asterisk()#end</h4>
+        <table cellpadding="3" cellspacing="2" border="0" width="100%">
+          #set ($appendToNextLine = "")
+
+          ## tell the macro where we are in the table and then execute it 
+          ## looping over all available attributes in the current group
+          #set ($currentRow=0)
+          #set ($currentColumn=0)
+          #foreach ($att in $attributes)
+            #if ($att.equals($myStatusAttribute))
+              ##  Discard the status attribute
+            #elseif ($att.equals($myOnHoldExpirationDate))
+              ## Discard the ExpirationDate
+            #else
+              #displayAttributeInCanvas ($att 1)
+            #end
+          #end
+          </td></tr>
+        </table>
+      #end
+    #end
+  </div>
+ 
+ 
+  ## ===============================================================================
+  ## The reason field (if visible)
+  ## ===============================================================================
+  
+  #set ($reasonIsVisible  = $module.isIssueReasonVisible()  )
+  #if ($isEditAttributes)
+    #set ($attCommentGroup = $intake.Attachment.setKey("attCommentKey$currentIssue.QueryKey"))
+    #if ($reasonIsVisible)
+      #set ($reasonIsRequired = $module.isIssueReasonRequired() )
+      <h4>$l10n.SaveChanges#if($reasonIsRequired) #asterisk()#end</h4>
+      <div class="axial">
+        <table cellpadding="3" cellspacing="2" border="0" width="100%">
+          <tr>
+              <th nowrap="nowrap"> #if($reasonIsRequired) #showAsterisk()#end$l10n.ReasonSavedAs</th>
+              <td>
+                  <input type="radio" name="saveReasonAs" value="history" checked="checked"> $l10n.History</input>
+                  #if ($canAddComment)
+                      <input type="radio" name="saveReasonAs" value="comment" > $l10n.Comment </input>
+                  #end
+                  $l10n.EnterReasonAs
+
+                  #fieldErrorMsg($attCommentGroup.Data "")
+                  <p>#textAreaMedium("$attCommentGroup.Data.Key" $attCommentGroup.Data.Value)</p>
+              </td>
+          </tr>
+        </table>
+      </div>
+    #else
+      <input type="hidden" name="$attCommentGroup.Data.Key" value="" />
+    #end
+    <input type="hidden" name="$attCommentGroup.Name.Key" value="comment" />
+  #end
+
+  ## ===============================================================================
+  ## The local function bar for this Tab
+  ## ===============================================================================
+
+  #if($canEdit)
+    <div class="functnbar3">
+     #if(!$isEditAttributes)
+        <input type="submit" value="$l10n.Edit" name="eventSubmit_doEditattributespage" />
+     #end
+     #if($isEditAttributes)
+      <input type="submit" value="$l10n.Done"   name="eventSubmit_doSubmitattributes" />
+      <input type="submit" value="$l10n.Cancel" name="eventSubmit_doCancel" />
+      <input type="hidden" value="false"        name="edit_attributes" />
+     #end
+    </div>
+  #end
+
+</div>
+

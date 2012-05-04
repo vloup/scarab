@@ -1,0 +1,44 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>src</id>
+  <baseDirectory>/</baseDirectory>
+  <formats>
+    <format>zip</format>
+	<format>tar.gz</format>
+  </formats>
+  <fileSets>
+  	<fileSet>
+      <directory>build</directory>
+	  <outputDirectory>build</outputDirectory>
+    </fileSet>
+	<fileSet>
+      <directory>src</directory>
+	  <outputDirectory>src</outputDirectory>
+    </fileSet>
+	<fileSet>
+      <directory>extensions</directory>
+	  <outputDirectory>extensions</outputDirectory>
+    </fileSet>
+	<fileSet>
+      <directory>tomcat</directory>
+	  <outputDirectory>tomcat</outputDirectory>
+    </fileSet>
+	<fileSet>
+      <directory>xdocs</directory>
+	  <outputDirectory>xdocs</outputDirectory>
+    </fileSet>
+	<fileSet>
+      <directory>www</directory>
+	  <outputDirectory>www</outputDirectory>
+    </fileSet>
+	<fileSet>
+      <includes>
+		<include>*.xml</include>
+		<include>*.xsl</include>
+		<include>*.bat</include>
+		<include>*.sh</include>
+		<include>*.properties</include>
+	  </includes>
+    </fileSet>	
+  </fileSets>
+</assembly>

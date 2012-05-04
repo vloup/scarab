@@ -1,0 +1,394 @@
+#set ($module         = $currentIssue.Module)
+#set ($issueType      = $currentIssue.IssueType)
+#set ($fullHistory    = $data.Parameters.getString("fullhistory",""))
+#set ($fullComments   = $data.Parameters.getString("fullcomments",""))
+#set ($rmit           = $module.getRModuleIssueType($issueType))
+#set ($permission     = $scarabG.getRequiredModifyPermission($currentIssue) )
+#set ($canEdit        = $scarabR.hasPermission($permission, $module) && $rmit.Active)
+#set ($attrValues     = $currentIssue.ModuleAttributeValuesMap)
+#set ($currentIssueId = $currentIssue.UniqueId)
+
+#set ($myself = $data.User.userId)
+
+## --------------------------------------------------------------------------
+## Search for an active assigned user
+## This is a user, who is associated to
+## an attribute, which is SingleValued (Attribute.getMultiValue == 0)
+## Attention: It may be possible, that no activeUser exists.
+## --------------------------------------------------------------------------
+
+#set ($assignedUserId = -1)  ## contains the user id who has been associated as "active user" (if any)
+
+## ----------------------------------------------------------------------------------
+## The following attributes will be determined from the currently existing userlist.
+## It may be possible, that they can NOT be resolved. IN that case see below 
+## ----------------------------------------------------------------------------------
+#set ($assignedAttrib = -1) ## The user attribute, which is interpreted as "active userAttribute"
+#set ($assignedRMA    = "") ## to get the correct display value
+#set ($watchedAttrib  = -1) ## The attribute, which is ionterpreted as "watching userAttribute"
+#set ($watchedRMA     = "") ## to get the correct display value
+#set ($watcherIdList = [])
+
+#set ($userAttVals = $currentIssue.UserAttributeValues)
+#foreach ($attVal in $userAttVals)
+  #set ($isSingleValue = ( !$attVal.Attribute.MultiValue  ) )
+  #if ($isSingleValue)
+    #set ($assignedUserId = $attVal.UserId)
+    #set ($assignedAttrib = $attVal.Attribute)
+    #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
+  #else
+    #set ($dummy = $watcherIdList.add($attVal.UserId))
+    #if ($watchedAttrib == -1)
+       #set ($watchedAttrib = $attVal.Attribute)
+       #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
+    #end
+  #end
+#end
+
+## -------------------------------------------------------------------------
+## Take care for the situaion where no active assignee and or no watcher
+## has been found in the userlist. In this case search for an Attribute, 
+## which will have to be assigned to a potential new active assignee
+## And determine the "watcher" attribute
+## -------------------------------------------------------------------------
+
+#if ($assignedAttrib == -1 || $watchedAttrib == -1)
+  #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+    ##if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+      #if ($selectUserAttr.getMultiValue() == false)
+        #set ($assignedAttrib = $selectUserAttr)
+        #set ($assignedRMA = $module.getRModuleAttribute($assignedAttrib, $issueType))
+      #end
+      #if ($watchedAttrib == -1)
+        #set ($watchedAttrib = $selectUserAttr)
+        #set ($watchedRMA = $module.getRModuleAttribute($watchedAttrib, $issueType))
+      #end
+    ##end
+  #end
+#end
+
+
+## -----------------
+## Issue self assign
+## -----------------
+#set ($userAttVals = $currentIssue.UserAttributeValues)
+#set ($myselfInList = false)
+#foreach ($attVal in $userAttVals)
+    #set ($userId = $attVal.UserId)
+    #set ($assignedUser = $scarabR.getUser($userId))
+    #if  ($data.User.userId.equals($userId))
+        #set ($myselfInList = true)
+        #set ($myAttrib = $attVal.AttributeId)
+        #set ($myRMA    = $module.getRModuleAttribute($attVal.Attribute, $issueType))
+    #end
+#end
+
+
+## --------------------------------------------------------------
+## Create the selection box for all assignable users
+## This macro is called from the initialisation code below.
+## --------------------------------------------------------------
+
+#macro (assignedUsers $myself $isEditAttributes)
+    #set ($users = $module.getUsers("Issue | Edit"))
+    #if ($isEditAttributes)
+
+      <input type="hidden" name="id" value="$currentIssueId" />
+      <input type="hidden" name="issue_ids" value="$currentIssueId" />
+
+      ## Create a selection box
+      #set ($archivingScarabUsers = $module.getArchivingScarabUsers())
+      #foreach ($user in $users)
+        #if (!$archivingScarabUsers.contains($user))
+          #set ($optionName  = "user_attr_" + $user.UserId)
+          #set ($attributeId = $assignedAttrib.AttributeId)
+          <input type="hidden" name="$optionName" value="$attributeId"/>
+        #end
+      #end
+      <select name="add_user">
+      #if ( $assignedUserId == -1 )
+         <option value="" #selected(true) >$l10n.Assign ...</option>
+      #end
+
+      #foreach ($user in $users)
+        #if (!$archivingScarabUsers.contains($user))
+          #set ($selected = ($user.UserId == $assignedUserId))
+          <option value="$user.UserId" #selected($selected) >$user.Name</option> 
+        #end
+      #end
+      </select>
+    #else
+      #if ( $assignedUserId != -1 )
+        $scarabU.getUser($assignedUserId).Name
+      #end
+    #end
+
+#end
+
+## ---------------------------------------------------------------------
+## Create the selection box for all Watchers (non active assigned users)
+## This macro is called from the initialisation code below.
+## ---------------------------------------------------------------------
+
+#macro (watchingUsers $myselfInList $assignedUserId $watchedRMA $watchedAttrib)
+    #set ($archivingScarabUsers = $module.getArchivingScarabUsers())
+    #set ($users = $module.getUsers("Issue | View"))
+    ## Create a selection box
+    #foreach ($user in $users)
+          #set ($inList=false)
+
+          #foreach ($uid in $watcherIdList)
+              #if ($uid == $user.UserId)
+                #set ($inList = true)
+                #break
+              #end
+          #end
+          
+          #if ($inList == false && !$archivingScarabUsers.contains($user))
+            #set ($optionName  = "watcher_attr_" + $user.UserId)
+            #set ($attributeId = $watchedAttrib.AttributeId)
+            <input type="hidden" name="$optionName" value="$attributeId"/>
+          #end
+    #end
+    <span>
+    <select id="add_watcher" name="add_watcher" style="position:relative; top:-1px;">
+      ##if ( $myselfInList == true )
+       <option value="" #selected(true) >$l10n.Assign ...</option>
+      ##end
+
+      #foreach ($user in $users)
+        #if ($user.UserId != $myself && $user.UserId != $assignedUserId && !$archivingScarabUsers.contains($user))
+          #set ($inList=false)
+          #foreach ($uid in $watcherIdList)
+              #if ($uid == $user.UserId)
+                #set ($inList = true)
+                #break
+              #end
+          #end
+          #if ($inList == false)
+            ## If i am the active user, i cant be assigned as a watcher
+            #set ($selected = ($user.UserId == $myself))
+            <option value="$user.UserId" #selected($selected) >$user.Name</option>
+          #end
+        #end
+      #end
+    </select>
+    </span>
+    <span>
+    <input type="submit" name="eventSubmit_doAddwatchers" title="$l10n.format("AssignOtherWatcher", $watchedRMA.DisplayValue)" value="$l10n.As $watchedRMA.DisplayValue" class="button" />
+    </span>
+#end
+
+## TODO: The getCopyToModules() can be expensive (PCN20967).  Add APIs
+## which perform the "should show" check without retrieving all the
+## associated data.
+#set ($copyToModules = $data.User.getCopyToModules($module, 'copy'))
+#set ($moveToModules = $data.User.getCopyToModules($module, 'move'))
+#set ($showCopyButton = $copyToModules && !$copyToModules.isEmpty())
+#set ($showMoveButton = $moveToModules && !$moveToModules.isEmpty())
+
+## Creates heading for given tab and title.
+## Toggles event handler, which makes it possible to the user
+## to switch current tab on or off.
+#macro (tabHeading $tabId $title)
+	#if($tab.equals("all"))
+		#set($imgName = $tabId.concat(".state"))
+		<h3 onClick=smartToggleVisibility('$tabId')><img name="$imgName" src="$staticLink.setPath($iconCollapse)"/>$title</h3>
+	#else
+		<h3>$title</h3>
+	#end
+#end
+
+<input type="hidden" name="action" value="ModifyIssue" />
+<input type="hidden" name="mod_ts" value="$scarabG.Now.Time" />
+<input type="hidden" name="id" value="$currentIssueId" />
+<input type="hidden" name="$scarabG.Constant.OTHER_TEMPLATE" value="MoveIssue.vm" />
+<input type="hidden" name="tab" value="$tab" />
+
+#if ($issueList)
+   <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="ViewIssueLong.vm" />
+#else
+   <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="ViewIssue.vm" />
+#end
+
+## uncomment to show copy and move buttons on top of the view issue page
+## #if ($showCopyButton || $showMoveButton)
+##   <div class="functnbar">
+##     #if ($showMoveButton)
+##       <input type="submit" title="$l10n.MoveIssueTo" value="$l10n.MoveIssue" name="eventSubmit_doMove" />&#160;
+##     #end
+##     #if ($showCopyButton)
+##       <input type="submit" title="$l10n.CopyIssueTo" value="$l10n.CopyIssue" name="eventSubmit_doCopy" />
+##     #end
+##   </div>
+## #end
+
+<div class="scarab-canvas">
+
+
+  #if ($tab.equals("all"))
+    <h3 class="functnbar">$l10n.Issue $currentIssue.UniqueId:
+         (<strong>$currentIssue.DefaultText</strong>)
+    </h3>
+  #end
+
+
+  #if ($rmit.Active.toString().equals("false"))
+    <div class="colbar">$l10n.IssueReadOnly</div>
+  #end
+
+
+  ##PRIMARY INFO
+  #if ($tab.equals("1") || $tab.equals("all"))
+    $renderer.render("viewIssue", "ViewIssueTab1.vm")
+  #end
+
+  ##COMMENTS
+  #if ($tab.equals("3") || $tab.equals("all"))
+    $renderer.render("viewIssue", "ViewIssueTab3.vm")
+  #end
+
+  ##PERSONNEL
+  #if ($tab.equals("2") || $tab.equals("all"))
+   $renderer.render("viewIssue", "ViewIssueTab2.vm")
+  #end 
+
+
+  ##RELATED ISSUES
+  #if ($tab.equals("6") || $tab.equals("all"))
+    $renderer.render("viewIssue", "ViewIssueTab4Dep.vm")
+  #end
+
+  ##ATTACHMENTS & RELATED LINKS
+  #if ($tab.equals("4") || $tab.equals("all"))
+    $renderer.render("viewIssue", "ViewIssueTab4Att.vm")
+    $renderer.render("viewIssue", "ViewIssueTab4Url.vm")
+  #end
+
+
+  ##ISSUE HISTORY
+  #if ($tab.equals("5") || $tab.equals("all"))
+    $renderer.render("viewIssue", "ViewIssueTab5.vm")
+  #end
+
+
+  #set ($extended_footer = "#getProperty('scarab.extended.footer')" )
+  #if ($extended_footer == true)
+
+  ## ==========================================================================
+  ## Create the bottom navigation buttons:
+  ##
+  ## Issue self assign to personell list
+  ## Issue self remove from personell list
+  ## Issue move
+  ## Issue copy
+  ## Issue remove
+  ## ==========================================================================
+  <div class="functnbar2" style="white-space:nowrap;min-height:28px;height:28px; overflow:visible;">
+
+    <span style="float:left;margin-top:4px;">  
+        #if ($canEdit)
+            #if ($myself == $assignedUserId)
+              <input type="button" name="dummy" title ="Sie sind der aktive $myRMA.DisplayValue " value="" class="watch_on" />
+            #else
+              #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__ASSIGN, $module))
+                ## ============================================================================
+                ## Find all selectable User Attributes in the given context.
+                ## Note: If a userAttribute/user combination is allready in the list, 
+                ## it can not be selected anymore here.
+                ## ============================================================================
+                #set ($options = [] )
+                #foreach ($selectUserAttr in $module.getUserAttributes($currentIssue.issueType))
+                  #if ($selectUserAttr.MultiValue == true) ## Only allow setting of non active attributes
+                    #if ($!data.User.hasPermission($selectUserAttr.Permission, $module))
+                      #set ($attid = $selectUserAttr.AttributeId)
+                      #if ($myAttrib != $attid) ## if this attribute/user is already in list, discard it
+                        #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                        #set ($dummy = $options.add($selectUserAttr))
+                      #end
+                    #end
+                  #end
+                #end
+
+                #if ( $options.size() == 1)
+                  ## Just create a button. We do not need a selector box in this case.
+                  #foreach ($selectUserAttr in $options)
+                    #set ($attid = $selectUserAttr.AttributeId)
+                    #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                    <input type="hidden" name="myself_attribute" value="$selectUserAttr.AttributeId"/>
+                    <input type="submit" name="eventSubmit_doAddmyself" value="" title='Hier k&ouml;nnen Sie sich als "$selectUserAttrName" eintragen.' class="watch_off" />
+                  #end
+         
+                #elseif ( $options.size() > 1 )
+                  ## Create a selection box
+                  <input type="submit" name="eventSubmit_doAddmyself" value="$l10n.AssignMyself"  class="buttonPassive" />
+                  <select name="myself_attribute">
+                    #foreach ($selectUserAttr in $options)
+                      #set ($attid = $selectUserAttr.AttributeId)
+                      #set ($selectUserAttrName = $module.getRModuleAttribute($selectUserAttr,$currentIssue.issueType).displayValue)
+                      <option value="$selectUserAttr.AttributeId">$selectUserAttrName</option>
+                    #end
+                  </select>
+                #end
+
+                ## ------------------------------------
+                ## Issue self remove
+                ## ------------------------------------    
+                #if ($myselfInList)
+                  <input type="submit" name="eventSubmit_doRemovemyself"  value="" title='Ihre Zuordnung zu "$myRMA.DisplayValue" wieder entfernen.' class="watch_on" />
+                #end
+              #end
+            #end
+         #end
+     </span>
+     
+     <span style="float:left;margin-left:28px;margin-top:5px;">  
+       #if ($canEdit)
+         #watchingUsers($myselfInList $assignedUserId $watchedRMA $watchedAttrib)
+       #end
+     </span>
+     
+     <span style="float:right;margin-top:5px;">   
+        ## ------------------------------------------
+        ## Issue move 
+        ## Issue copy
+        ## Issue remove
+        ## ------------------------------------------
+        #if ($showCopyButton || $showMoveButton)
+          #if ($showMoveButton)
+            <span style="color:white">
+              <input style="align:right;" type="submit" title="$l10n.MoveIssueTo" value="$l10n.Move" name="eventSubmit_doMove" class="button" />
+            </span>
+          #end
+          #if ($showCopyButton)
+            <span style="color:white">
+              <input style="align:right;" type="submit" title="$l10n.CopyIssueTo" value="$l10n.Copy" name="eventSubmit_doCopy" class="button" />
+            </span>
+          #end
+          #if ($hasDeletePermission)
+            <span style="color:white">
+              <input style="align:right;" type="submit" title="$l10n.DeleteIssueFrom" value="$l10n.Delete" name="eventSubmit_doDeleteissue" class="button" />
+            </span>
+          #end
+        #end
+
+        #* SCB2537: Feeds are currently not supported.        
+        <span style="color:white; position:relative; top:-5px; margin-left:5px; margin-right:2px;">
+          <a style="align:right;color:white" title="$l10n.IssueRSSFeed"
+           href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/rss_2.0"><img align="middle" src="$staticLink.setPath('/images/icon_rss.gif')" border="0"/></a>
+        </span>
+        <span style="color:white; position:relative; top:-5px; margin-right:0px;" >
+          <a style="align:right;color:white" title="$l10n.IssueATOMFeed"
+           href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue.UniqueId/type/atom_0.3"><img align="middle" src="$staticLink.setPath('/images/icon_atom.gif')" border="0"/></a>
+        </span>
+        *#
+        
+        <span style="color:white; position:relative; top:-5px; margin-right:0px;" >
+          <a style="align:right;color:white" title="$l10n.BookmarkToThisIssue"
+           href="$link.getIssueIdAbsoluteLink($currentIssue)"><img align="middle" src="$staticLink.setPath('/images/icon_url.gif')" alt="$l10n.SessionInfoLink $currentIssue.UniqueId" border="0"/></a>
+        </span>
+    </span>
+        
+  </div>
+ #end
+</div>

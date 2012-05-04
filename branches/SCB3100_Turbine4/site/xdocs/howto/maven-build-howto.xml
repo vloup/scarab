@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+
+<document>
+
+<properties>
+    <title>How to Build Scarab</title>
+    <author email="opensource@memocomp">Johannes Höchstädter</author>
+</properties>
+
+<body>
+
+
+<section name="Maven Build">
+
+<subsection name="Introduction">
+<p>
+In the early days of Scarab the build system was entirely based on Ant.
+We have recently switched over to use Maven 1.x and then to <a href="http://maven.apache.org">Maven 3.0.3 upwards</a> as our primary build system.
+</p>
+<p>
+The Maven based build system allows to build a Scarab instance from 
+the Source distribution and in addition adds all functionality to build
+the database, documentation-set, update the jar-repository and so on.
+</p>
+</subsection>
+<subsection name="Prerequisites">
+<p>
+Maven build is customized with the file <i>build.properties</i>.
+The location of this file is in the Scarab root directory.
+Create it from one of the already existing property files, e.g. <i>minimal.properties</i>, and adapt it to your needs, e.g the database configurations.
+The file <i>build.properties</i> is an absolutely necessary prerequisite for the build system, see <a href="build-howto.html">chapter for installation</a>, too.
+</p>
+<code>$SCARAB_ROOT/build.properties</code>
+<p>
+Before you are able to build, you have to install the follwing dependencies, which are special by license or version. See Scarab directory www/repository and pom.xml accordingly.</p>
+<ul>
+<li>turbine-20041117.142852.jar</li>
+<li>jndi-1.2.1.jar</li>
+<li>fulcrum-parser-1.0.2-dev-r223202-patched.jar</li>
+</ul>
+<p>
+You will need Scarab's own maven plugin: org.tigris.scarab.scarab-maven-plugin.
+</p>
+</subsection>
+<subsection name="Default Build">
+<p>
+In most cases you will utilize Maven as follows:
+
+<source>
+1:> cd $SCARAB_ROOT
+2:> mvn clean
+3:> mvn initialize scarab:create-db
+4:> mvn package
+</source>
+
+This will setup the database and build Scarab's webapp in target/ directory.
+
+Some more relevant Maven goals have been summarized and described in the remainder
+of this text.
+</p>
+</subsection>
+
+<subsection name="Generating Database">
+<p>
+    You can generate your database by doing this:
+    <source>mvn initialize scarab:create-db</source>
+    This will create in <code>/target/sql</code> the various SQL files 
+    that you need.  It will also install the database for certain types 
+    of databases.  
+</p>
+
+<p>
+    Use the property scarab.database.build.mode if you want to create the database with or without sample, or default data. The basic build, as described above, 
+	will build the schema, inculding the required data, only. See section for <a href="#properties">Scarab Maven Properties</a>.
+</p>
+
+</subsection>
+
+<subsection name="Testing the code">
+<p>
+    To test that everything is working properly, you should run the unit tests!
+    <source>mvn clean test</source>
+    This will compile your newly generated Torque and Scarab classes and run the unit 
+    tests.
+</p>
+</subsection>
+<subsection name="Generating the documentation">
+<p>
+    If you want to generate the entire site documenation, then you can run
+    <source>mvn clean initialize site</source>
+</p>
+</subsection>
+<subsection name="Creating a WAR file">
+<p>
+    Once things are to your liking you can use Maven to generate your WAR file:
+    <source>mvn clean package</source>
+    This will compile Scarab, run the unit tests, and then generate 
+    in <code>/target</code> a WAR file that you can then use to deploy
+    to any Servlet container.
+</p>
+</subsection>
+
+<subsection name="Updating the www/repository">
+<p>
+TODO, see SCOF156
+</p>
+</subsection>
+<subsection name="Clean target">
+<p>
+    Run the following goal to clean everything back up:
+    <source>mvn clean</source>   
+</p>
+</subsection>
+</section>
+<a name="properties" /><section name="Scarab Maven Properties">
+      <table>
+        <tr>
+          <th>Property name</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>scarab.database.build.mode</td>
+          <td>Yes</td>
+          <td>
+            Mode value to fill the database during build. Use "basic" (default value), "default" or "sample" here.
+          </td>
+        </tr>
+		<tr>
+          <td>scarab.database.build.drop</td>
+          <td>Yes</td>
+          <td>
+            Set this if you want to be sure not to loose all your data during build. Use "true" to drop the current database (default) or "false" to prevent your database to be dropped.
+			But be warned, if you set this property value to "false" not all database scripts may work correctly, because of duplicates.
+          </td>
+        </tr>
+		<tr>
+          <td>maven.test.skip</td>
+          <td>Yes</td>
+          <td>
+            Alawys good to skip unit tests for building. Use "true" to skip maven tests or "false" (default).
+          </td>
+        </tr>  		
+      </table>
+    </section>
+</body>
+</document>

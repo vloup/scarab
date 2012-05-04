@@ -1,0 +1,13 @@
+<div class="app" id="error">
+  #if ($scarabR.CurrentModule)
+    <p>No landing page defined for context: $scarabR.CurrentModule.Name</p>
+    #set ($currentIssueId = $data.parameters.getString('id', ''))
+    #if ($currentIssueId != '')
+      #set ($currentIssue = $scarabR.getIssue($currentIssueId))
+      #if ($currentIssue)
+        &gt; <span class="issueId">$l10n.Issue $currentIssue.UniqueId:</span> 
+        (<span class="issueText">$currentIssue.DefaultText</span>)
+      #end
+    #end
+  #end
+</div>

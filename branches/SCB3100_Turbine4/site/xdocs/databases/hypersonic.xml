@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+<title>Scarab - Hypersonic</title>
+<author email="opensource@memocomp.de">Johannes Hoechstaedter</author>
+</properties> 
+<body>
+
+<section name="Hypersonic">
+<p>
+Using Scarab with embedded Hypersonic/HSQL database is configured to work right from the start. 
+You don't need any special build configurations, e.g. a build.properties file.
+</p>
+<p>
+Everything you need for the embedded database, is already included into Scarab, but if you still want your customized the build in some way,
+then you are still able to provide your own build.properties. "hypersonic" is the correct value for the database type. See the following snippet for a simple sample configuration:
+<source>
+scarab.database.type=hypersonic
+scarab.database.url=jdbc:hsqldb:file:/C:/test
+scarab.database.admin.username=SA
+scarab.database.admin.password=
+scarab.database.username=SA
+scarab.database.password=
+</source>
+</p>
+<p>
+In every case you need to run the following Maven commands in Scarab's root directory:
+<source>
+mvn clean
+mvn package -Dmaven.test.skip=true
+mvn initialize scarab:create-db -Dscarab.database.build.mode=default -DapplicationRoot=target/scarab
+</source> 
+If you followed all steps above, you may run the embedded tomcat now, and you should be able to access Scarab
+using an embedded hypersonic database.
+</p>
+</section>
+</body>
+</document>

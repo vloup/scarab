@@ -1,0 +1,80 @@
+#set ($allActivitySets = $scarabG.reverse($currentIssue.activitySets))
+#set ($sizeOfHistory = $currentIssue.activitySets.size())
+#if (!$fullHistory.equals("true"))
+  #set ($allActivitySets = $scarabG.subset($allActivitySets, 0, $currentIssue.HistoryLimit))
+#end
+
+#if (!$allActivitySets.isEmpty())
+#tabHeading("history" $l10n.ChangeHistory)
+  <div id="history">
+
+    #foreach ($activitySet in $allActivitySets)
+      #set ($activitySetUser = $scarabR.getUser($activitySet.CreatedBy))
+      #set ($activities = $activitySet.getActivityListForHistory($currentIssue))
+      <h4>
+          #userTimeStamp( $activitySetUser $activitySet.CreatedDate)
+      </h4>
+      <div class="axial">
+        <table style="white-space:nowrap;">
+          #foreach ($act in $activities)
+            <tr>
+              #set ($newValue = "")
+              #set ($oldValue = "")
+              #if($currentIssue.isAttributeVisible($act.attribute, $user))
+                #set ($newValue = $act.getNewValue($currentIssue, $l10n).trim())
+                #set ($oldValue = $act.getOldValue($currentIssue, $l10n).trim())
+                <th style="width:12em;">$act.getDisplayName($l10n)</th>
+                #if( $oldValue.length()>0 )
+                  <td>$!scarabG.textToHTML($l10n.getIgnoreMissingResource($oldValue), $link, $scarabR.CurrentModule)</td>
+                  <td style="vertical-align:middle;" ><img name="change to" src="$staticLink.setPath('/images/icon_rightarrow_long.jpg')"/></td>
+                  #if ( $newValue.length() > 0 )
+                    <td>$!scarabG.textToHTML($l10n.getIgnoreMissingResource($newValue), $link, $scarabR.CurrentModule)</td>
+                  #else
+                    <td>[$l10n.Deleted]</td>
+                  #end
+                #else
+                  <td colspan="3" style="white-space:normal;"> $!scarabG.textToHTML($l10n.getIgnoreMissingResource($newValue), $link, $scarabR.CurrentModule)</td>
+                #end
+                <td width="*"> &nbsp; </td>
+              #else
+                <td colspan="5">$l10n.RestrictedActivityDescription</td>
+              #end
+      </tr>
+    #end
+
+          #set ($reason = $activitySet.getCommentForHistory($currentIssue))
+          #if($reason.length()>0)
+            <tr>
+              <th style="width:12em;">$l10n.Comment</th>
+              <td colspan="4" width="*" style="white-space:normal;">$!scarabG.textToHTML($l10n.getIgnoreMissingResource($reason), $link, $scarabR.CurrentModule)</td>
+            </tr>
+          #end
+        </table>
+      </div>
+    #end
+
+    #if ($sizeOfHistory > 5)
+      <div class="functnbar3">
+        #if ($fullHistory.equals("true"))
+          #set ($historyLink = $link.setPage("$template").addPathInfo("id", $currentIssueId).addPathInfo("fullhistory", "false").addPathInfo("tab", "5"))
+          #foreach ($issueId in $data.Parameters.getStrings("issue_ids"))
+              #set ($historyLink = $historyLink.addPathInfo("issue_ids", $issueId))
+          #end
+          #if ($resultsPerPage)
+              #set ($historyLink = $historyLink.addPathInfo("resultsPerPage", $resultsPerPage))
+          #end
+          <p><a href="$historyLink">$l10n.HideCompleteHistory</a></p>
+        #else
+          #set ($historyLink = $link.setPage("$template").addPathInfo("id", $currentIssueId).addPathInfo("fullhistory", "true").addPathInfo("tab", "5"))
+          #foreach ($issueId in $data.Parameters.getStrings("issue_ids"))
+            #set ($historyLink = $historyLink.addPathInfo("issue_ids", $issueId))
+          #end
+          #if ($resultsPerPage)
+            #set ($historyLink = $historyLink.addPathInfo("resultsPerPage", $resultsPerPage))
+          #end
+          <p><a href="$historyLink">$l10n.ShowCompleteHistory</a></p>
+        #end
+      </div>
+    #end
+  </div>
+#end
