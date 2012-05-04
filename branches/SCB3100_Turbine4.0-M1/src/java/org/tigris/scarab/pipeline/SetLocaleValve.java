@@ -55,6 +55,7 @@ import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.localization.LocalizationService;
 import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.pipeline.ValveContext;
@@ -76,9 +77,10 @@ public class SetLocaleValve extends AbstractValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke(RunData data, ValveContext context)
+    public void invoke(PipelineData pipelineData, ValveContext context)
         throws IOException, TurbineException
     {
+    	RunData data = getRunData(pipelineData);
         ScarabUser user = (ScarabUser) data.getUser();
 
         // Ensure we only deal with exsiting users
@@ -109,7 +111,7 @@ public class SetLocaleValve extends AbstractValve
             }
         }
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext(data);
+        context.invokeNext(pipelineData);
     }
 
     /**

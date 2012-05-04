@@ -54,6 +54,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
@@ -107,9 +108,10 @@ public class FreshenUserValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke(RunData data, ValveContext context)
+    public void invoke(PipelineData pipelineData, ValveContext context)
         throws IOException, TurbineException
     {
+    	RunData data = getRunData(pipelineData);
         ScarabUser user = (ScarabUser)data.getUser();
         
         try
@@ -186,7 +188,7 @@ public class FreshenUserValve
         }
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext(data);
+        context.invokeNext(pipelineData);
     }
 
     private void adjustCurrentModule(ScarabUser user, RunData data)

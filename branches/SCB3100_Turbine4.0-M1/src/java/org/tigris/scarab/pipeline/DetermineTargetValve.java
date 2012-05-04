@@ -52,6 +52,7 @@ import java.util.Enumeration;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.ValveContext;
@@ -74,9 +75,10 @@ public class DetermineTargetValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke(RunData data, ValveContext context)
+    public void invoke(PipelineData pipelineData, ValveContext context)
         throws IOException, TurbineException
     {
+    	RunData data = getRunData(pipelineData);
         ParameterParser parameters = data.getParameters();
         if (! data.hasTarget())
         {
@@ -153,7 +155,7 @@ public class DetermineTargetValve
         }
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext(data);
+        context.invokeNext(pipelineData);
     }
 
     private Object getEventKey(ParameterParser parameters) 

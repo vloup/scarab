@@ -47,7 +47,7 @@ package org.tigris.scarab.pipeline;
  */ 
 
 import java.io.IOException;
-import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.pipeline.ValveContext;
@@ -67,13 +67,13 @@ public final class ResetCacheValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public final void invoke(RunData data, ValveContext context)
+    public final void invoke(PipelineData pipelineData, ValveContext context)
         throws IOException, TurbineException
     {
         // clear the short-term cache
         ScarabCache.clear();
 
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext(data);
+        context.invokeNext(pipelineData);
     }
 }

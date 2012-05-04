@@ -50,6 +50,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.ValveContext;
 import org.apache.turbine.modules.Module;
@@ -87,9 +88,10 @@ public class TimingInfoValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke(RunData data, ValveContext context)
+    public void invoke(PipelineData pipelineData, ValveContext context)
         throws IOException, TurbineException
     {
+    	RunData data = getRunData(pipelineData);
         if (DEBUG) 
         {
             Long start = (Long)data.getRequest().getAttribute(KEY);
@@ -128,6 +130,6 @@ public class TimingInfoValve
         }
             
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext(data);
+        context.invokeNext(pipelineData);
     }
 }

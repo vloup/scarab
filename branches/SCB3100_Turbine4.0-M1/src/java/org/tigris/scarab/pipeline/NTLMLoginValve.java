@@ -14,6 +14,7 @@ import org.apache.turbine.util.security.UnknownEntityException;
 import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.ValveContext;
@@ -54,10 +55,11 @@ public class NTLMLoginValve extends AbstractValve
      * 
      * @see org.apache.turbine.pipeline.AbstractValve#invoke(org.apache.turbine.RunData, org.apache.turbine.ValveContext)
      */
-    public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
+    public void invoke(PipelineData pipelineData, ValveContext context) throws IOException, TurbineException
     {
         try
         {
+           RunData data = getRunData(pipelineData);
     	   if (bNTLMActive &&
                    (
                    ((null == data.getUserFromSession() || data.getUserFromSession().getName().trim().length()==0) && null == data.getUser())
@@ -76,7 +78,7 @@ public class NTLMLoginValve extends AbstractValve
         {
         	throw new RuntimeException(e);
         }
-    	   context.invokeNext(data);       
+    	   context.invokeNext(pipelineData);       
     }
 
     /*

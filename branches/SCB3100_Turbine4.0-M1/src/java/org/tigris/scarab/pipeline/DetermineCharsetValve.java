@@ -50,6 +50,7 @@ import java.io.IOException;
 
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
@@ -76,9 +77,11 @@ public class DetermineCharsetValve
     /**
      * @see org.apache.turbine.Valve#invoke(RunData, ValveContext)
      */
-    public void invoke(RunData data, ValveContext context)
+    public void invoke(PipelineData pipelineData, ValveContext context)
         throws IOException, TurbineException
     {
+    	
+    	RunData data = getRunData(pipelineData);
         // if we are forcing a particular charset, use it.  Hopefully
         // client has encoded for this default. This is the same 
         // property that will force the charset in our responses.
@@ -100,6 +103,6 @@ public class DetermineCharsetValve
         }
         
         // Pass control to the next Valve in the Pipeline
-        context.invokeNext(data);
+        context.invokeNext(pipelineData);
     }
 }

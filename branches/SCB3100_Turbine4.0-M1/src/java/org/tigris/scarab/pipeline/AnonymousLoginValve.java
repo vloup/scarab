@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.util.RunData;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.ValveContext;
@@ -51,8 +52,10 @@ public class AnonymousLoginValve extends AbstractValve
      * If anonymous access is allowed and current user is null the anomynous user is logged in.
      * @see org.apache.turbine.pipeline.AbstractValve#invoke(org.apache.turbine.RunData, org.apache.turbine.ValveContext)
      */
-    public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
+    public void invoke(PipelineData pipelineData, ValveContext context) throws IOException, TurbineException
     {
+    	
+    	RunData data = getRunData(pipelineData);
         String target = data.getScreenTemplate();
         
         // Only try this if accessing an authenticated page:
@@ -93,7 +96,7 @@ public class AnonymousLoginValve extends AbstractValve
                 
             }
         }
-        context.invokeNext(data);        
+        context.invokeNext(pipelineData);        
     }
 
 }
