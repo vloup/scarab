@@ -1347,7 +1347,7 @@ public class ScarabIssues implements java.io.Serializable
                                 {
                                     LOG.debug("Could not find previous AttributeValue assigning " +
                                         (oldUserOM == null ? "NULL" : 
-                                        oldUserOM.getUserName()) + 
+                                        oldUserOM.getName()) + 
                                         " to attribute " + 
                                               avalAttributeOM.getName());
                                 }                                

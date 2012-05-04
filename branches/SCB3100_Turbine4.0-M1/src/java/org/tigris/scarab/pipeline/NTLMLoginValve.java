@@ -60,7 +60,7 @@ public class NTLMLoginValve extends AbstractValve
         {
     	   if (bNTLMActive &&
                    (
-                   ((null == data.getUserFromSession() || data.getUserFromSession().getUserName().trim().length()==0) && null == data.getUser())
+                   ((null == data.getUserFromSession() || data.getUserFromSession().getName().trim().length()==0) && null == data.getUser())
                    || ((ScarabUser)data.getUserFromSession()).isUserAnonymous()
                    )
                    && ( !data.getAction().equals("Logout")

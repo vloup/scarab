@@ -294,7 +294,7 @@ public class ReportExport extends DataExport
         else if (model.isUser(cellLabel))
         {
             return l10n.get("Author") + ": "
-                + ((ScarabUser) cellLabel).getUserName();
+                + ((ScarabUser) cellLabel).getName();
         }
         else
         {

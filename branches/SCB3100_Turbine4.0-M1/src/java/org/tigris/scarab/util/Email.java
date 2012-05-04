@@ -663,7 +663,7 @@ public class Email extends TemplateHtmlEmail
             {
                 log.error(
                         "Couldn't determine locale for user " + user
-                                .getUserName(), e);
+                                .getName(), e);
             }
         }
         if (locale == null)

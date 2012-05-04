@@ -2601,7 +2601,7 @@ public class Issue
                 if (attr instanceof UserAttribute)
                 {
                     UserAttribute userAttr = (UserAttribute)attr;
-                    bRdo = userAttr.getUserName().equals(((UserAttribute)value).getUserName());
+                    bRdo = userAttr.getName().equals(((UserAttribute)value).getName());
                 }
                 else
                 {
@@ -2730,7 +2730,7 @@ public class Issue
                                 if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, att))
                                 {
                                     final boolean isUser = (att instanceof UserAttribute);
-                                    if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getUserName()+att.getAttribute().getName()))
+                                    if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getName()+att.getAttribute().getName()))
                                     {
                                     	att.setIssueId(newIssue.getIssueId());
                                     	att.setActivity(a);
@@ -2738,7 +2738,7 @@ public class Issue
                                     	att.save();
                                         if (isUser)
                                         {
-                                            alreadyAssociatedUsers.add(((UserAttribute)att).getUserName()+att.getAttribute().getName());
+                                            alreadyAssociatedUsers.add(((UserAttribute)att).getName()+att.getAttribute().getName());
                                         }
                                     }
                                 }
@@ -2821,7 +2821,7 @@ public class Issue
             {
                 final UserAttribute useratt = (UserAttribute)commentUserValues.get(i);
                 delAttrsBuf.append(useratt.getAttribute().getName() + ": " +
-                        useratt.getUserName() + "\n");
+                        useratt.getName() + "\n");
             }
            final String delAttrs = delAttrsBuf.toString();
            attachmentBuf.append(delAttrs);
@@ -2980,7 +2980,7 @@ public class Issue
                                 if (attVal != null && !isNonMatchingAttribute(nonMatchingAttributes, att))
                                 {
                                     final boolean isUser = (att instanceof UserAttribute);
-                                    if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getUserName()+att.getAttribute().getName()))
+                                    if (!isUser || !alreadyAssociatedUsers.contains(((UserAttribute)att).getName()+att.getAttribute().getName()))
                                     {
                                         final AttributeValue newAttVal = att.copy();
                                         newAttVal.setIssueId(newIssue.getIssueId());                                        
@@ -2989,7 +2989,7 @@ public class Issue
                                         newAttVal.save();
                                         if (isUser)
                                         {
-                                            alreadyAssociatedUsers.add(((UserAttribute)att).getUserName()+att.getAttribute().getName());
+                                            alreadyAssociatedUsers.add(((UserAttribute)att).getName()+att.getAttribute().getName());
                                         }
                                     }
                                 }
@@ -3084,7 +3084,7 @@ public class Issue
             {
                 final UserAttribute useratt = (UserAttribute)commentUserValues.get(i);
                 delAttrsBuf.append(useratt.getAttribute().getName() + ": " +
-                        useratt.getUserName() + "\n");
+                        useratt.getName() + "\n");
             }
            final String delAttrs = delAttrsBuf.toString();
            attachmentBuf.append(delAttrs);
@@ -3179,7 +3179,7 @@ public class Issue
         if (!getModule().allowsMultipleVoting() && previousVotes > 0)
         {
             throw new ScarabException(L10NKeySet.ExceptionMultipleVoteForUnallowed,
-                                      user.getUserName(), 
+                                      user.getName(), 
                                       getUniqueId());
         }
         
@@ -3621,7 +3621,7 @@ public class Issue
         attVal.setIssue(this);
         attVal.setAttributeId(attribute.getAttributeId());
         attVal.setUserId(assignee.getUserId());
-        attVal.setValue(assignee.getUserName());
+        attVal.setValue(assignee.getName());
         attVal.save();
 
         return activitySet;

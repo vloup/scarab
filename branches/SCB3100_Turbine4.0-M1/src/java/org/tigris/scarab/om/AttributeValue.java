@@ -496,7 +496,7 @@ Leaving here so that John can remove or fix.
         if (userId != null) 
         {
             ScarabUser user = ScarabUserManager.getInstance(userId);
-            setValueOnly(user.getUserName());
+            setValueOnly(user.getName());
         }
         else
         {
@@ -688,7 +688,7 @@ Leaving here so that John can remove or fix.
         }
         else if(getAttribute().isUserAttribute())
         {
-            displayValue = getScarabUser().getUserName();
+            displayValue = getScarabUser().getName();
         }
 		else if(getAttribute().isDateAttribute())
 		{

@@ -91,7 +91,7 @@ public class Login extends ScarabTemplateAction
 
     public static void simpleLogin(RunData data, ScarabUser user)
     {
-        if(user.getUserName().equals("")) //is it a TurbineAnonymousUser?
+        if(user.getName().equals("")) //is it a TurbineAnonymousUser?
         {
         	user.setHasLoggedIn(Boolean.FALSE);
         }

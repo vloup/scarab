@@ -67,7 +67,7 @@ public class UserAttribute extends AttributeValue
      *
      * @return    The Value value
      */
-    public String getUserName()
+    public String getName()
     {
         return getValue();
     }
@@ -81,7 +81,7 @@ public class UserAttribute extends AttributeValue
         {
             ScarabUser user = getScarabUser();
             if(user!=null)
-                return user.getUserName();
+                return user.getName();
             else
                 return null;
         }

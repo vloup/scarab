@@ -857,7 +857,7 @@ public class ScarabUserImpl
         boolean brdo = false;
         String anonymous = ScarabUserManager.getAnonymousUserName();
         if (ScarabUserManager.anonymousAccessAllowed() &&
-            anonymous != null && getUserName().equals(anonymous))
+            anonymous != null && getName().equals(anonymous))
         {
             brdo = true;
         }

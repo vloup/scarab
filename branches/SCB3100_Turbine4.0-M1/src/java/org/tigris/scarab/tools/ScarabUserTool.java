@@ -96,8 +96,8 @@ public class ScarabUserTool
                 int i = 0;
                 if ("username".equals(sortColumn))
                 {
-                    i =  polarity * ((ScarabUser)o1).getUserName()
-                         .compareTo(((ScarabUser)o2).getUserName());
+                    i =  polarity * ((ScarabUser)o1).getName()
+                         .compareTo(((ScarabUser)o2).getName());
                 }
                 else
                 {

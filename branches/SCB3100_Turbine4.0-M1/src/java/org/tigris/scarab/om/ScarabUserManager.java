@@ -271,7 +271,7 @@ public class ScarabUserManager
      */
     public static ScarabUser reactivateUserIfDeleted(ScarabUser su) throws Exception
     {
-        String username = su.getUserName();
+        String username = su.getName();
         ScarabUser reactivatedUser=(ScarabUser) TurbineSecurity.getUser(username);
         String cs = reactivatedUser.getConfirmed();
         if(cs.equals(ScarabUser.DELETED))

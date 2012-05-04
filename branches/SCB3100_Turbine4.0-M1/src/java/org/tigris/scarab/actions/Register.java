@@ -118,7 +118,7 @@ public class Register extends ScarabTemplateAction
             return;
         }
         
-        ScarabUser existingUser=ScarabUserManager.getInstance(su.getUserName());
+        ScarabUser existingUser=ScarabUserManager.getInstance(su.getName());
         if (existingUser!=null)
         {
             data.setScreenTemplate(template);
@@ -154,7 +154,7 @@ public class Register extends ScarabTemplateAction
             su = ScarabUserManager.reactivateUserIfDeleted(su);
             if (su == null)
             {
-                ScarabUser existingUser = ScarabUserManager.getInstance(su.getUserName());
+                ScarabUser existingUser = ScarabUserManager.getInstance(su.getName());
                 if(existingUser.isConfirmed())
                 {
                     Localizable msg = new L10NMessage(L10NKeySet.UsernameExistsAlready);

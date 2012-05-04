@@ -227,7 +227,7 @@ public class ManageUser extends RequireLoginFirstAction
                     // workaround.
                     //
                     User userInSession = data.getUser(); 
-                    if (userInSession.getUserName().equals(username))
+                    if (userInSession.getName().equals(username))
                     {
                         //
                         // The current user is trying to modify their
@@ -335,7 +335,7 @@ public class ManageUser extends RequireLoginFirstAction
         User user = null;
         String username = data.getParameters().getString("username");
         User userInSession = data.getUser(); 
-        if (userInSession.getUserName().equals(username)){
+        if (userInSession.getName().equals(username)){
             scarabR.setAlertMessage(L10NKeySet.UserCanNotDeleteSelf);
             return;
         }

@@ -918,7 +918,7 @@ public class ImportIssues
 //        idNode.appendChild(doc.createTextNode(String.valueOf(currModule.getModuleId())));
 //        parentIdNode.appendChild(doc.createTextNode(String.valueOf(currModule.getParentId())));
 //        nameNode.appendChild(doc.createTextNode(currModule.getName()));
-//        ownerNode.appendChild(doc.createTextNode(user.getUserName()));
+//        ownerNode.appendChild(doc.createTextNode(user.getName()));
 //        descriptionNode.appendChild(doc.createTextNode(currModule.getDescription()));
 //        urlNode.appendChild(doc.createTextNode(currModule.getUrl()));
 //        domainNode.appendChild(doc.createTextNode(currModule.getHttpDomain()));
@@ -963,7 +963,7 @@ public class ImportIssues
         idNode.setText(String.valueOf(currModule.getModuleId()));
         parentIdNode.setText(String.valueOf(currModule.getParentId()));
         nameNode.setText(currModule.getRealName());
-        ownerNode.setText(user.getUserName());
+        ownerNode.setText(user.getName());
         descriptionNode.setText(currModule.getDescription());
         urlNode.setText(currModule.getUrl());
         domainNode.setText(currModule.getHttpDomain());

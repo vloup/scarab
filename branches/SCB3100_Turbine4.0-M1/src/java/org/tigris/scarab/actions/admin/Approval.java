@@ -291,12 +291,12 @@ public class Approval extends RequireLoginFirstAction
                     ScarabUserManager.getInstance(pending.getUserId());
 
                 String checked = data.getParameters()
-                .getString("user_id_"+user.getUserName());
+                .getString("user_id_"+user.getName());
 
                 if(checked != null && checked.equals("on"))
                 {
                     String roleName = data.getParameters()
-                        .getString(user.getUserName());
+                        .getString(user.getName());
                     if (roleName != null && roleName.length() > 0) 
                     {
                         if (roleName.equalsIgnoreCase(l10n.get(L10NKeySet.Deny)))
@@ -322,7 +322,7 @@ public class Approval extends RequireLoginFirstAction
                                 if (acl.hasRole( role, (Group) module ) )
                                 {
                                     String[] args = {roleName,
-                                            user.getUserName(),
+                                            user.getName(),
                                             module.getRealName()};
                                     String msg = l10n
                                             .format(

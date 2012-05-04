@@ -193,7 +193,7 @@ public class QueryResult
         if (attributeId.equals(RModuleUserAttribute.CREATED_BY.getName()))
         {
             ScarabUser user = getIssue().getCreatedBy();
-            value.add(user.getUserName());
+            value.add(user.getName());
         }
         else if (attributeId.equals(RModuleUserAttribute.CREATED_DATE.getName()))
         {
@@ -203,7 +203,7 @@ public class QueryResult
         else if (attributeId.equals(RModuleUserAttribute.MODIFIED_BY.getName()))
         {
             ScarabUser user = getIssue().getModifiedBy();
-            value.add(user.getUserName());
+            value.add(user.getName());
         }
         else if (attributeId.equals(RModuleUserAttribute.MODIFIED_DATE.getName()))
         {

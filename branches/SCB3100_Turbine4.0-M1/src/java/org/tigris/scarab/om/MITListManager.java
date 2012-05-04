@@ -202,7 +202,7 @@ public class MITListManager
             // but its possible the system can still function under
             // this circumstance, so just log it for now.
             Log.get().error("Multiple active lists exist with list name="
-                            + name + " for user=" + user.getUserName() + 
+                            + name + " for user=" + user.getName() + 
                             "("+user.getUserId()+")");
         }
         return result;
