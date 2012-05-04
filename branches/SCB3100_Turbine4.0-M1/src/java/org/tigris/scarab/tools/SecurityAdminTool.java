@@ -134,7 +134,7 @@ public class SecurityAdminTool
     public Role getRoleByName(String name) throws Exception
     {
         Role role = null;
-        role = TurbineSecurity.getRole(name);
+        role = TurbineSecurity.getRoleByName(name);
         
         return role;
     }

@@ -305,7 +305,7 @@ public class Approval extends RequireLoginFirstAction
                         }
                         else 
                         {
-                            Role role = TurbineSecurity.getRole(roleName);
+                            Role role = TurbineSecurity.getRoleByName(roleName);
                             try
                             {
                                 TurbineSecurity.grant(user, (Group)module, role);

@@ -160,7 +160,7 @@ public class ManageRoles extends RequireLoginFirstAction
          */
         String name = data.getParameters().getString("name");
         checkParamValidity(data, context, null);
-        Role role = TurbineSecurity.getRole(name);
+        Role role = TurbineSecurity.getRoleByName(name);
         
         /*
          * Grab the permissions for the role we are
@@ -220,7 +220,7 @@ public class ManageRoles extends RequireLoginFirstAction
          * Grab the role we are trying to delete.
          */
         String name = data.getParameters().getString("name");
-        Role role = TurbineSecurity.getRole(name);
+        Role role = TurbineSecurity.getRoleByName(name);
         TurbineSecurity.removeRole(role);
         
         ScarabLocalizationTool l10n = getLocalizationTool(context);

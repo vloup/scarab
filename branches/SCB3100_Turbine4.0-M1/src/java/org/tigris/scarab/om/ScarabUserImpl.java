@@ -434,7 +434,7 @@ public class ScarabUserImpl
                         String defaultRoleName = getDefaultRoleForModule(moduleName);                        
                         if(defaultRoleName != null)
                         {
-                            Role role = TurbineSecurity.getRole(defaultRoleName);
+                            Role role = TurbineSecurity.getRoleByName(defaultRoleName);
                             if(role != null)
                             {
                                 ScarabUser su = (ScarabUser)this;

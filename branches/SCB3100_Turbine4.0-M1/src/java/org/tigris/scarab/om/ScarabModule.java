@@ -857,7 +857,7 @@ public class ScarabModule
             {
                 final User user = ScarabUserManager.getInstance(getOwnerId());
  
-                final Role role = TurbineSecurity.getRole(PROJECT_OWNER_ROLE);
+                final Role role = TurbineSecurity.getRoleByName(PROJECT_OWNER_ROLE);
                 grant (user, role);
                 setInitialAttributesAndIssueTypes();
             }
@@ -1190,7 +1190,7 @@ public class ScarabModule
             String roleName = GlobalParameterManager
                .getString(GlobalParameter.REQUIRED_ROLE_FOR_REQUESTING_ACCESS, this);
             if (roleName != null && roleName.length() > 0)
-                role = TurbineSecurity.getRole(roleName);
+                role = TurbineSecurity.getRoleByName(roleName);
         }
         catch (Exception e)
         {

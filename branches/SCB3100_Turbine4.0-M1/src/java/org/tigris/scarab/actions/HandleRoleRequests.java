@@ -118,7 +118,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
                 boolean autoApprove = Arrays.asList(autoRoles).contains(roleName);
                 if (autoApprove) 
                 {
-                    Role role = TurbineSecurity.getRole(roleName);
+                    Role role = TurbineSecurity.getRoleByName(roleName);
                     
                     TurbineSecurity.grant(user, module, role);
 
