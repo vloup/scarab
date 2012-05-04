@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.TemplateSecureAction;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.intake.IntakeTool;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabUser;

@@ -55,7 +55,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.intake.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeGroup;

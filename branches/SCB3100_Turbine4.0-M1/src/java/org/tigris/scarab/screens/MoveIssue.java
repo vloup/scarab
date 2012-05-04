@@ -49,7 +49,7 @@ package org.tigris.scarab.screens;
 // Turbine Stuff 
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.intake.IntakeTool;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;

@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.util.RunData;
 
-import org.apache.turbine.tool.IntakeTool;
+import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.torque.TorqueException;
 
