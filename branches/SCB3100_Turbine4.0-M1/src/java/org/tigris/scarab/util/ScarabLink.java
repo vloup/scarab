@@ -54,7 +54,7 @@ import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.turbine.DynamicURI;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.tool.TemplateLink;
+import org.apache.turbine.services.pull.tools.TemplateLink;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
