@@ -41,7 +41,7 @@ system running.
 <p>
 
 <ul>
-<li>SDK 1.4 or higher available from
+<li>SDK 1.6 or higher available from
     <p>
       <code>
         <a href="http://java.sun.com/">http://java.sun.com/</a>
@@ -65,14 +65,14 @@ system running.
     </p>
 </li>
 
-<li>Tomcat 4.0.4 or higher available from
+<li>Tomcat, recommended version is 7 or higher, which is available from
     <p>
       <code>
         <a href="http://jakarta.apache.org/tomcat/">http://jakarta.apache.org/tomcat/</a>
       </code>
     </p>
     <p>
-      Tomcat 4.1.x is included with Scarab.
+      Tomcat 7.0.27 is included with Scarab.
     </p>
 </li>
 
