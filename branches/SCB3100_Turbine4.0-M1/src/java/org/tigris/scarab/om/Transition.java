@@ -51,7 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.turbine.om.security.Role;
-import org.apache.turbine.services.security.impl.db.entity.TurbineRolePeer;
+import org.apache.turbine.services.security.torque.om.TurbineRolePeer;
 import org.apache.torque.NoRowsException;
 import org.apache.torque.TooManyRowsException;
 import org.apache.torque.TorqueException;

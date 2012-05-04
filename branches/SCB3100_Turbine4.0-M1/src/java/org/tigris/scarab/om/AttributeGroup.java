@@ -56,7 +56,7 @@ import java.util.Iterator;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.Group;
 import org.apache.turbine.om.security.Role;
-import org.apache.turbine.services.security.impl.db.entity.TurbineRolePeer;
+import org.apache.turbine.services.security.torque.om.TurbineRolePeer;
 import org.apache.turbine.util.security.AccessControlList;
 import org.apache.turbine.util.security.DataBackendException;
 import org.apache.turbine.util.security.GroupSet;

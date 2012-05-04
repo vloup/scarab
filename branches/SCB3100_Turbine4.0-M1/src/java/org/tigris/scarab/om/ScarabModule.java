@@ -100,7 +100,7 @@ import org.apache.turbine.services.security.impl.db.entity
     .TurbineUserGroupRolePeer;
 import org.apache.turbine.services.security.impl.db.entity
     .TurbineRolePermissionPeer;
-import org.apache.turbine.services.security.impl.db.entity.TurbineUserPeer;
+import org.apache.turbine.services.security.torque.om.TurbineUserPeer;
 import org.tigris.scarab.util.ScarabRuntimeException;
 
 /**
