@@ -666,11 +666,11 @@
       <artifactId>torque-gen-templates</artifactId>
       <version>3.3</version>
     </dependency>
-    <dependency>
-      <groupId>turbine</groupId>
-      <artifactId>turbine</artifactId>
-      <version>20041117.142852</version>
-    </dependency>
+	<dependency>
+		<groupId>org.apache.turbine</groupId>
+		<artifactId>turbine</artifactId>
+		<version>4.0-M1</version>
+	</dependency>
     <dependency>
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
