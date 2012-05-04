@@ -52,7 +52,7 @@ package org.tigris.scarab.actions.base;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
-import org.apache.turbine.TemplateAction;
+import org.apache.turbine.modules.actions.VelocityAction;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
@@ -61,13 +61,13 @@ import org.tigris.scarab.tools.ScarabUserTool;
 import org.tigris.scarab.util.ScarabConstants;
 
 /**
- *  This is a helper class that extends TemplateAction to add
+ *  This is a helper class that extends VelocityAction to add
  *  a couple methods useful for Scarab.
  *   
  *  @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  *  @version $Id$
  */
-public abstract class ScarabTemplateAction extends TemplateAction
+public abstract class ScarabTemplateAction extends VelocityAction
 {
     private static final Logger LOG = Logger.getLogger("org.tigris.scarab");
 
