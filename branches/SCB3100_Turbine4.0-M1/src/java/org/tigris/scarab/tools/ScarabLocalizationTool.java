@@ -415,7 +415,7 @@ public class ScarabLocalizationTool extends LocalizationTool
     {
         String value = null;
 
-        String templateName = data.getTarget().replace(',', '/');
+        String templateName = data.getScreenTemplate().replace(',', '/');
        
 
         String l10nKey = property;

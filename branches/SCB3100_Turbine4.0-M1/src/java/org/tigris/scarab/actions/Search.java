@@ -1248,7 +1248,7 @@ public class Search extends RequireLoginFirstAction
         if (mitlist != null && mitlist.isSingleModuleIssueType()) 
         {
             user.setSingleIssueTypeQueryTarget(
-                mitlist.getIssueType(), data.getTarget());
+                mitlist.getIssueType(), data.getScreenTemplate());
         }
         else 
         {

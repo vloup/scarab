@@ -157,7 +157,7 @@ public class FreshenUserValve
         // remove the current module/issuetype list, if needed
         String removeMitKey = 
             parameters.getString(ScarabConstants.REMOVE_CURRENT_MITLIST_QKEY);
-        String target = data.getTarget();
+        String target = data.getScreenTemplate();
         boolean xmitScreen =XMIT_SCREENS.containsKey(target); 
         if (removeMitKey != null 
             || !xmitScreen)

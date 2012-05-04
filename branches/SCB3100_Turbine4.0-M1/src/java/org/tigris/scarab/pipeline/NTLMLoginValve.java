@@ -65,8 +65,8 @@ public class NTLMLoginValve extends AbstractValve
                    )
                    && ( !data.getAction().equals("Logout")
                            && !data.getAction().equals("Login")
-                           && !data.getTarget().equals("Register.vm")
-                           && !data.getTarget().equals("ForgotPassword.vm")
+                           && !data.getScreenTemplate().equals("Register.vm")
+                           && !data.getScreenTemplate().equals("ForgotPassword.vm")
                     ))
             {
                 authenticateNtlm(data);

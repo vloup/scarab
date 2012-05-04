@@ -53,7 +53,7 @@ public class AnonymousLoginValve extends AbstractValve
      */
     public void invoke(RunData data, ValveContext context) throws IOException, TurbineException
     {
-        String target = data.getTarget();
+        String target = data.getScreenTemplate();
         
         // Only try this if accessing an authenticated page:
         if (!nonAnonymousTargets.contains(target) && target.indexOf("help,") == -1)

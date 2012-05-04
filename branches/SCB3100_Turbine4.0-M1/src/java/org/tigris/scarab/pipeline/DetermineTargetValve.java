@@ -149,7 +149,7 @@ public class DetermineTargetValve
         
         if (Log.get().isDebugEnabled())
         {
-            Log.get().debug("Target is now: " + data.getTarget());
+            Log.get().debug("Target is now: " + data.getScreenTemplate());
         }
 
         // Pass control to the next Valve in the Pipeline

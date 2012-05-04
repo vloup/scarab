@@ -112,7 +112,7 @@ public class TimingInfoValve
             else
             {
                 String s = "Action=" + data.getAction() + " and template=" + 
-                    data.getTarget() + " took: " + 
+                    data.getScreenTemplate() + " took: " + 
                     (System.currentTimeMillis() - start.longValue()) + " ms";
                 LOG.debug(s);
                 try 

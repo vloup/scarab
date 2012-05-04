@@ -138,7 +138,7 @@ public class Default extends VelocitySecureScreen
             catch (Exception e)
             {
                 Log.get().info(
-                    "Error getting page title for Screen: " + data.getTarget());
+                    "Error getting page title for Screen: " + data.getScreenTemplate());
             }
             if (title == null)
             {
@@ -164,7 +164,7 @@ public class Default extends VelocitySecureScreen
     {
         String property =
             "template."
-                + data.getTarget().replace(',', '/')
+                + data.getScreenTemplate().replace(',', '/')
                 + ".noIssueTypesForwardsTo";
         return Turbine.getConfiguration().getString(property, null);
     }
@@ -184,7 +184,7 @@ public class Default extends VelocitySecureScreen
      */
     public static boolean checkAuthorized(RunData data) throws Exception
     {
-        String template = data.getTarget();
+        String template = data.getScreenTemplate();
         {
             template = template.replace(',', '.');
             String perm = ScarabSecurity.getScreenPermission(template);
@@ -203,7 +203,7 @@ public class Default extends VelocitySecureScreen
                     // particular issue.  Until a more general formula for
                     // deciding which requests might be ok to continue after
                     // a login, we will at least allow this one.
-                    if ("ViewIssue.vm".equals(data.getTarget()))
+                    if ("ViewIssue.vm".equals(data.getScreenTemplate()))
                     {
                         data.getParameters().setString(
                             "viewIssueId",

@@ -1432,7 +1432,7 @@ public class ScarabRequestTool
      */
     public String getCurrentTemplate()
     {
-        String result = data.getTarget().replace('/',',');
+        String result = data.getScreenTemplate().replace('/',',');
         return result;
     }
 
@@ -3088,7 +3088,7 @@ public class ScarabRequestTool
     public String reportTimer(String mesg)
     {
         long endTime = System.currentTimeMillis();
-        String s = mesg + ".  Time for " + data.getTarget() + ": Lap/Split= "
+        String s = mesg + ".  Time for " + data.getScreenTemplate() + ": Lap/Split= "
             + (endTime-lapTime) + "ms; Cumulative= " +
             (endTime-startTime) + "ms";
         lapTime = endTime;
