@@ -52,7 +52,7 @@ import java.util.List;
 // Turbine Stuff
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
-import org.apache.turbine.TemplateSecureScreen;
+import org.apache.turbine.modules.screens.VelocitySecureScreen;
 import org.apache.turbine.Turbine;
 
 // Scarab Stuff
@@ -76,7 +76,7 @@ import org.tigris.scarab.om.ScarabUser;
  * @author <a href="mailto:jon@collab.net">Jon S. Stevens</a>
  * @version $Id$
  */
-public class Default extends TemplateSecureScreen
+public class Default extends VelocitySecureScreen
 {
     /**
      * Override the subclass and call doBuildTemplate. This is a hack. 
