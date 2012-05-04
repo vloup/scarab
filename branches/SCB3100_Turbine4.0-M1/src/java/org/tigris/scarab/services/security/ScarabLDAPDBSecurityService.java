@@ -32,10 +32,10 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.fulcrum.InitializationException;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.om.security.User;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.EntityExistsException;
-import org.apache.fulcrum.security.util.PasswordMismatchException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.EntityExistsException;
+import org.apache.turbine.util.security.PasswordMismatchException;
+import org.apache.turbine.util.security.UnknownEntityException;
 
 import org.apache.log4j.Logger;
 

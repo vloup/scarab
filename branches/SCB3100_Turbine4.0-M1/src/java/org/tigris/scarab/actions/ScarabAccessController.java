@@ -50,8 +50,8 @@ import org.apache.turbine.util.RunData;
 import org.apache.turbine.modules.actions.AccessController;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.om.security.User;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
-import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.turbine.util.security.TurbineSecurityException;
+import org.apache.turbine.util.security.AccessControlList;
 
 /**
  * The ScarabAccessController class is a replacement for

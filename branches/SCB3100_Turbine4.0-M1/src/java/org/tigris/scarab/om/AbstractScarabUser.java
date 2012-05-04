@@ -56,7 +56,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Comparator;
 import java.sql.Connection;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;

@@ -58,7 +58,7 @@ import org.apache.turbine.modules.ContextAdapter;
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 
 // Scarab Stuff
 import org.tigris.scarab.om.ScarabUser;

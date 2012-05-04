@@ -53,10 +53,10 @@ import java.util.Calendar;
 
 import org.apache.turbine.om.security.Role;
 import org.apache.turbine.om.security.User;
-import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.EntityExistsException;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.AccessControlList;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.EntityExistsException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.Persistent;
 import org.apache.torque.TorqueException;

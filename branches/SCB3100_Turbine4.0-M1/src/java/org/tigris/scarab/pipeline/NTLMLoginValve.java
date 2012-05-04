@@ -9,8 +9,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.om.security.User;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
 import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.util.RunData;

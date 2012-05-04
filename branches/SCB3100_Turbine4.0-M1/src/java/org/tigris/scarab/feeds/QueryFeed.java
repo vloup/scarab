@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;

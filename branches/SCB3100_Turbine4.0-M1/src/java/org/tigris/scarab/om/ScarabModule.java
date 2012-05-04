@@ -70,8 +70,8 @@ import org.apache.torque.util.SqlEnum;
 
 import java.sql.Connection;
 import org.apache.fulcrum.security.TurbineSecurity;
-import org.apache.fulcrum.security.util.RoleSet;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.RoleSet;
+import org.apache.turbine.util.security.TurbineSecurityException;
 import org.apache.turbine.om.security.User;
 import org.apache.turbine.om.security.Group;
 import org.apache.turbine.om.security.Role;

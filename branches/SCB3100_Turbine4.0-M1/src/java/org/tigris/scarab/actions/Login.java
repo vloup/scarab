@@ -57,10 +57,10 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.modules.Action;
 import org.apache.turbine.services.intake.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
-import org.apache.fulcrum.security.util.PasswordMismatchException;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.UnknownEntityException;
+import org.apache.turbine.util.security.PasswordMismatchException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;

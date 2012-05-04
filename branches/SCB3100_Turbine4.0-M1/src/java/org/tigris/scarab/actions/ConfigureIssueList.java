@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.fulcrum.security.util.TurbineSecurityException;
+import org.apache.turbine.util.security.TurbineSecurityException;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;

@@ -54,7 +54,7 @@ import org.apache.turbine.om.security.Group;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.BasePeer;
 import org.apache.torque.util.Criteria;
-import org.apache.fulcrum.security.util.DataBackendException;
+import org.apache.turbine.util.security.DataBackendException;
 
 // Local classes
 import org.tigris.scarab.om.Module;

@@ -60,7 +60,7 @@ import org.apache.turbine.util.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.om.security.Role;
-import org.apache.fulcrum.security.util.AccessControlList;
+import org.apache.turbine.util.security.AccessControlList;
 
 // Scarab Stuff
 import org.tigris.scarab.om.PendingGroupUserRolePeer;

@@ -54,10 +54,10 @@ import org.apache.fulcrum.security.impl.db.DBSecurityService;
 
 import org.apache.turbine.om.security.Group;
 
-import org.apache.fulcrum.security.util.GroupSet;
-import org.apache.fulcrum.security.util.DataBackendException;
-import org.apache.fulcrum.security.util.EntityExistsException;
-import org.apache.fulcrum.security.util.UnknownEntityException;
+import org.apache.turbine.util.security.GroupSet;
+import org.apache.turbine.util.security.DataBackendException;
+import org.apache.turbine.util.security.EntityExistsException;
+import org.apache.turbine.util.security.UnknownEntityException;
 
 import org.apache.torque.om.Persistent;
 import org.apache.torque.util.Criteria;
