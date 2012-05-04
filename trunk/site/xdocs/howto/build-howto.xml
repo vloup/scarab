@@ -659,7 +659,7 @@ access, you can simply execute the following:
 </p>
 <source>
 
-	mvn clean initialize scarab:create-db
+	mvn initialize scarab:create-db
 
 </source>
 <p>
@@ -684,7 +684,7 @@ NOTE: If you would like to load not only the required database data, e.g.
 </p>
 <p>
 NOTE: The create scripts will attempt to first drop your scarab database
-      and then recreate it. If you execute "mvn clean initialize scarab:create-db", all of your
+      and then recreate it. If you execute "mvn initialize scarab:create-db", all of your
       previous data in that database will be lost without warning!
 </p>
 <p>

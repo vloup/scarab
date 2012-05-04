@@ -28,8 +28,8 @@
 	<p>
 	  Build and execute tests.
       <source>
-      mvn clean initialize scarab:create-db -Dscarab.database.build.mode=sample
-      mvn clean package -Dmaven.test.skip=true
+	  mvn clean package -Dmaven.test.skip=true
+      mvn initialize scarab:create-db -Dscarab.database.build.mode=sample
       mvn test
       </source>
 	</p>
