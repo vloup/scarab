@@ -48,7 +48,7 @@
 					<simpara>Configure your <computeroutput>build.properties</computeroutput> to contain at least the correct <computeroutput>scarab.database.type</computeroutput> value.</simpara>
 				</listitem>
 				<listitem>
-					<simpara>mvn scarab:create-db (make sure you choose the same database than before!!)</simpara>
+					<simpara>mvn initialize scarab:create-db (make sure you choose the same database than before!!)</simpara>
 				</listitem>
 				<listitem>
 					<simpara>mvn test</simpara>

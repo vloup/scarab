@@ -161,7 +161,7 @@ NOTE: If you get a 'Server configuration denies access to data source'
 </p>
       
 <p>
-NOTE: Sometimes it may be useful to use "mvn scarab:create-db" rather than any script
+NOTE: Sometimes it may be useful to use "mvn initialize scarab:create-db" rather than any script
       to diagnose connection issues since this Mojo uses jdbc and the same URL
       that Scarab does while running.
  
