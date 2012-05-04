@@ -50,7 +50,7 @@ import org.apache.fulcrum.security.entity.User;
 
 import org.apache.velocity.context.Context;
 import org.apache.turbine.util.RunData;
-import org.apache.turbine.modules.actions.TemplateSessionValidator;
+import org.apache.turbine.modules.actions.sessionvalidator.TemplateSessionValidator;
 
 import org.tigris.scarab.util.Log;
 import org.tigris.scarab.util.ScarabConstants;
