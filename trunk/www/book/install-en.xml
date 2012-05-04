@@ -102,7 +102,7 @@
 			<sect3>
 				<title>Download and install a Java SDK</title>
 				<para>If you don't have a Java SDK handy (pre-installed on some systems such as MacOS X or certain Linux distributions), you need to download and install one. Be careful: you need a Java 2 SDK and not only a JRE (Java Runtime Environment) because you will need to compile Scarab.</para>
-				<para>The SDK version must be at least 1.4.</para>
+				<para>The SDK version must be at least 1.6.</para>
 				<para>You may download a Java SDK from <ulink url="http://java.sun.com">http://java.sun.com</ulink>.</para>
 				<para>Make sure the JAVA_HOME environment variable correctly points to the directory in which your SDK is installed.</para>
 			</sect3>
