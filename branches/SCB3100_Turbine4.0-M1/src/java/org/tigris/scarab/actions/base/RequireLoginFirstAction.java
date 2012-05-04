@@ -51,7 +51,7 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.Retrievable;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.services.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;

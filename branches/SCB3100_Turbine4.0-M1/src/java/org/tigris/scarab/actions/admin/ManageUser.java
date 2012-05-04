@@ -52,7 +52,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.Role;
 import org.apache.turbine.om.security.User;

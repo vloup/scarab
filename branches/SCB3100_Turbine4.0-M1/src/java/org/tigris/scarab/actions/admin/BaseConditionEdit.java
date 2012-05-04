@@ -48,7 +48,7 @@ package org.tigris.scarab.actions.admin;
 
 import java.util.List;
 
-import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.services.intake.model.Group;
 import org.apache.turbine.om.security.User;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;

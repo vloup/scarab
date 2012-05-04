@@ -49,7 +49,7 @@ package org.tigris.scarab.actions;
 // Turbine Stuff 
 import java.util.List;
 
-import org.apache.fulcrum.intake.model.Group;
+import org.apache.turbine.services.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.oid.IDBroker;
