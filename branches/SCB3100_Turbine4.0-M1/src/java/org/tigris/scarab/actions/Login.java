@@ -56,7 +56,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.modules.Action;
 import org.apache.turbine.services.intake.IntakeTool;
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.turbine.util.security.DataBackendException;
 import org.apache.turbine.util.security.UnknownEntityException;
 import org.apache.turbine.util.security.PasswordMismatchException;

@@ -58,7 +58,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.intake.Intake;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.torque.TorqueException;

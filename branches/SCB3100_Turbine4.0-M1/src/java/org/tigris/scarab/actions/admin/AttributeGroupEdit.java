@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;

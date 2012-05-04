@@ -55,7 +55,7 @@ import org.apache.turbine.Turbine;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.services.intake.IntakeTool;
 
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;

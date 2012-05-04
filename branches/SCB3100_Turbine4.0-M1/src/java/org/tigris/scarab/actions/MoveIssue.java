@@ -52,7 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;

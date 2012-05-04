@@ -53,7 +53,7 @@ import java.util.List;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;

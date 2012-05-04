@@ -58,7 +58,7 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.intake.model.Field;
-import org.apache.turbine.services.intake.model.Group;
+import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.util.RunData;
