@@ -54,7 +54,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
-import org.apache.turbine.TemplateScreen;
+import org.apache.turbine.modules.screens.VelocityScreen;
 import org.tigris.scarab.feeds.Feed;
 import org.tigris.scarab.feeds.IssueFeed;
 import org.tigris.scarab.om.Issue;
@@ -76,7 +76,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * 
  * @author <a href="mailto:epugh@opensourceconnections.com">Eric Pugh </a>
  */
-public class RSSDataExport extends TemplateScreen {
+public class RSSDataExport extends VelocityScreen {
 	public static final String DEFAULT_FEED_FORMAT = "atom_0.3";
 
     private static final String MIME_TYPE = "application/xml; charset=UTF-8";
