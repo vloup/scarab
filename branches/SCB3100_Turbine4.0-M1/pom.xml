@@ -10,7 +10,7 @@
 <artifactId>scarab</artifactId>
 <packaging>war</packaging>
 <name>Scarab Tracker</name>
-<version>1.0.23-dev</version>
+<version>1.0.23-Turbine-4.0-M1-dev</version>
   
   <organization>
     <name>Tigris.org</name>
