@@ -8,7 +8,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.util.TurbineException;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.pipeline.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.actions.Login;
 import org.tigris.scarab.om.ScarabUser;

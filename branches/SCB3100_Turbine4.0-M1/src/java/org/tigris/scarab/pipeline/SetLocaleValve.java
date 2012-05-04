@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.pipeline.ValveContext;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.UserPreference;
 import org.tigris.scarab.om.UserPreferenceManager;

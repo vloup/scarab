@@ -51,7 +51,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.util.TurbineException;
-import org.apache.turbine.ValveContext;
+import org.apache.turbine.pipeline.ValveContext;
 import org.apache.turbine.modules.Module;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.tools.ScarabRequestTool;
