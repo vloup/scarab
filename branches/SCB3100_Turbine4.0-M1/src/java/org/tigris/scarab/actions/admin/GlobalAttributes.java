@@ -49,7 +49,7 @@ package org.tigris.scarab.actions.admin;
 import java.util.List;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 
@@ -75,7 +75,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
     /**
      * Manages clicking of the create new button
      */
-    public void doCreatenew(RunData data, TemplateContext context)
+    public void doCreatenew(RunData data, Context context)
         throws Exception
     {
         String nextTemplate = data.getParameters().getString(
@@ -86,7 +86,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         scarabR.setAttribute(AttributeManager.getInstance());
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -105,7 +105,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
         getScarabRequestTool(context).setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));
     }
 
-    public synchronized void doCopy(RunData data, TemplateContext context)
+    public synchronized void doCopy(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();

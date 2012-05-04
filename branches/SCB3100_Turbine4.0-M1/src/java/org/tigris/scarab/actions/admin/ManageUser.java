@@ -58,7 +58,7 @@ import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.ForgotPassword;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
@@ -89,7 +89,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * This manages clicking the Add User button
      */
-    public void doAdduser(RunData data, TemplateContext context)
+    public void doAdduser(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -172,7 +172,7 @@ public class ManageUser extends RequireLoginFirstAction
     }
 
     
-    public void doEdituser(RunData data, TemplateContext context) throws Exception
+    public void doEdituser(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         String template = getCurrentTemplate(data, null);
@@ -326,7 +326,7 @@ public class ManageUser extends RequireLoginFirstAction
         }
     }
 
-    public void doDeleteuser(RunData data, TemplateContext context)
+    public void doDeleteuser(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -380,7 +380,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * This manages clicking the 'Update Roles' button
      */
-    public void doRoles(RunData data, TemplateContext context)
+    public void doRoles(RunData data, Context context)
         throws Exception
     {
         String username = data.getParameters().getString("username");
@@ -429,7 +429,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotoedituser(RunData data, TemplateContext context)
+    public void doGotoedituser(RunData data, Context context)
         throws Exception
     {
         String userName = data.getParameters().getString("username");
@@ -447,7 +447,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotoeditroles(RunData data, TemplateContext context)
+    public void doGotoeditroles(RunData data, Context context)
         throws Exception
     {
         String userName = data.getParameters().getString("username");
@@ -464,7 +464,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotodeleteuser(RunData data, TemplateContext context)
+    public void doGotodeleteuser(RunData data, Context context)
         throws Exception
     {
         setTarget(data, "admin,DeleteUser.vm");
@@ -473,7 +473,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * 
      */
-    public void doGotoadduser(RunData data, TemplateContext context)
+    public void doGotoadduser(RunData data, Context context)
         throws Exception
     {
         setTarget(data, "admin,AddUser.vm");
@@ -483,7 +483,7 @@ public class ManageUser extends RequireLoginFirstAction
      * This manages clicking the 'Search' button. Sets some data in context and delegates
      * to the page (that will make the real search).
      */
-    public void doSearch(RunData data, TemplateContext context)
+    public void doSearch(RunData data, Context context)
         throws Exception
     {
         String searchField = data.getParameters().getString("searchField");
@@ -505,7 +505,7 @@ public class ManageUser extends RequireLoginFirstAction
     /**
      * calls doSearch()
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         doSearch(data, context);

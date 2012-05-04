@@ -68,7 +68,7 @@ import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.fulcrum.InitializationException;
 import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.template.BaseTemplateEngineService;
-import org.apache.fulcrum.template.TemplateContext;
+import org.apache.fulcrum.template.Context;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -161,7 +161,7 @@ public class VelocityEmailService
     /**
      * @see org.apache.fulcrum.velocity.VelocityService
      */
-    public String handleRequest(TemplateContext context, String template)
+    public String handleRequest(Context context, String template)
         throws ServiceException
     {
         return handleRequest(new ContextAdapter(context), template);
@@ -246,7 +246,7 @@ public class VelocityEmailService
     /**
      * @see org.apache.fulcrum.template.TemplateEngineService
      */
-    public void handleRequest(TemplateContext context, String template,
+    public void handleRequest(Context context, String template,
                               OutputStream outputStream)
         throws ServiceException
     {
@@ -275,9 +275,9 @@ public class VelocityEmailService
     }
 
     /**
-     * @see BaseTemplateEngineService#handleRequest(TemplateContext, String, Writer)
+     * @see BaseTemplateEngineService#handleRequest(Context, String, Writer)
      */
-    public void handleRequest(TemplateContext context,
+    public void handleRequest(Context context,
                                        String template, Writer writer)
         throws ServiceException
     {

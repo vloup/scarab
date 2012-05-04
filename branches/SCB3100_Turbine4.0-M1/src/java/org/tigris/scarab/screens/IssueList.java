@@ -50,7 +50,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -64,7 +64,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
  */
 public class IssueList extends Default {
 
-    protected void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, Context context)
     throws Exception
     {
         super.doBuildTemplate(data, context);
@@ -72,7 +72,7 @@ public class IssueList extends Default {
         
     }
 
-    private void populateContextWithQueryResults(RunData data, TemplateContext context)
+    private void populateContextWithQueryResults(RunData data, Context context)
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         

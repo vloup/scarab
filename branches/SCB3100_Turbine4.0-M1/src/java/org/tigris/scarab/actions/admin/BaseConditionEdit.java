@@ -53,7 +53,7 @@ import org.apache.fulcrum.security.entity.User;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -78,7 +78,7 @@ import org.tigris.scarab.util.ScarabConstants;
 public class BaseConditionEdit extends RequireLoginFirstAction
 {
 
-    public void doDelete(RunData data, TemplateContext context) throws TorqueException, Exception
+    public void doDelete(RunData data, Context context) throws TorqueException, Exception
     {
         IntakeTool intake = getIntakeTool(context);
         Group attrGroup = intake.get("ConditionEdit", IntakeTool.DEFAULT_KEY);
@@ -86,7 +86,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
         updateObject(data, context, null);
     }
 
-    private void delete(RunData data, TemplateContext context) throws TorqueException, Exception
+    private void delete(RunData data, Context context) throws TorqueException, Exception
     {
         int nObjectType = data.getParameters().getInt("obj_type");
         Criteria crit = new Criteria();
@@ -127,7 +127,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
     	TransitionManager.clear();
     }
     
-    private void updateObject(RunData data, TemplateContext context, Integer aConditions[]) throws Exception
+    private void updateObject(RunData data, Context context, Integer aConditions[]) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Integer operator = data.getParameters().getInteger("combineWith");
@@ -178,7 +178,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
         }
     }
     
-    public void doSave(RunData data, TemplateContext context) throws Exception
+    public void doSave(RunData data, Context context) throws Exception
     {
         this.delete(data, context);
         IntakeTool intake = getIntakeTool(context);
@@ -188,7 +188,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
             
     }
     
-    public void doCancel(RunData data, TemplateContext context) throws Exception
+    public void doCancel(RunData data, Context context) throws Exception
     {
         String lastTemplate = getCancelTemplate(data);
         if (lastTemplate != null)

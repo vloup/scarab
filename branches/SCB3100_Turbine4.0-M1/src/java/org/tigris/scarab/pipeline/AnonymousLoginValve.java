@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;

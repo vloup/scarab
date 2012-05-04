@@ -47,7 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 import org.apache.turbine.Turbine;
 
@@ -64,7 +64,7 @@ import org.tigris.scarab.util.ScarabConstants;
 public class ViewIssue extends RequireLoginFirstAction
 {
 
-    public void doSetissueview(RunData data, TemplateContext context)
+    public void doSetissueview(RunData data, Context context)
          throws Exception
     {
         // fetch property here so it can be changed at runtime

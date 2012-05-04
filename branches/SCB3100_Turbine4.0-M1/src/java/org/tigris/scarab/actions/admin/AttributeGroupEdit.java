@@ -56,7 +56,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -94,7 +94,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Updates attribute group info.
      */
-    public boolean doSaveinfo (RunData data, TemplateContext context)
+    public boolean doSaveinfo (RunData data, Context context)
         throws Exception
     { 
         boolean success = true;
@@ -135,7 +135,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of existing AttributeGroups and their attributes.
      */
-    public boolean doSaveattributes (RunData data, TemplateContext context)
+    public boolean doSaveattributes (RunData data, Context context)
         throws Exception
     {
         boolean success = true;
@@ -312,7 +312,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of global AttributeGroups and their attributes.
      */
-    public boolean doSaveglobal (RunData data, TemplateContext context)
+    public boolean doSaveglobal (RunData data, Context context)
         throws Exception
     {
         boolean success = true;
@@ -417,7 +417,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Unmaps attributes to modules.
      */
-    public void doDeleteattributes(RunData data, TemplateContext context) 
+    public void doDeleteattributes(RunData data, Context context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -531,7 +531,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
      * This manages clicking the create new button on AttributeSelect.vm
      */
     public void doCreatenewglobalattribute(RunData data,
-                                            TemplateContext context)
+                                            Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -552,7 +552,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Selects attribute to add to issue type and attribute group.
      */
-    public void doSelectattribute(RunData data, TemplateContext context)
+    public void doSelectattribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -606,7 +606,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * Saves all data when Done is clicked.
      */
-    public void doDone (RunData data, TemplateContext context)
+    public void doDone (RunData data, Context context)
         throws Exception
     {
         String groupId = data.getParameters().getString("groupId");
@@ -632,7 +632,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
     /**
      * If user attempts to modify locked attributes, gives message.
      */
-    private void setLockedMessage (List lockedAttrs, TemplateContext context)
+    private void setLockedMessage (List lockedAttrs, Context context)
         throws Exception
     {
         StringBuffer buf = new StringBuffer();

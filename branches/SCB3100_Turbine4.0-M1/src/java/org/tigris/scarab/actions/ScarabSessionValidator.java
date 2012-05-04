@@ -48,7 +48,7 @@ package org.tigris.scarab.actions;
 
 import org.apache.fulcrum.security.entity.User;
 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 import org.apache.turbine.modules.actions.TemplateSessionValidator;
 
@@ -81,7 +81,7 @@ public class ScarabSessionValidator extends TemplateSessionValidator
             }
         }
 
-        TemplateContext context = getTemplateContext(data);
+        Context context = getContext(data);
         ScarabLocalizationTool l10n = 
             (ScarabLocalizationTool) context.get(ScarabConstants.LOCALIZATION_TOOL);
 

@@ -51,7 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.services.security.ScarabSecurity;
@@ -81,7 +81,7 @@ public class ViewIssue extends Default
      * Checks the validity of the issue before displaying the ViewIssue page, and
      * sets the proper alert messages for the cases of invalid, moved or deleted issues.
      */
-    protected void doBuildTemplate(RunData data, TemplateContext context) throws Exception
+    protected void doBuildTemplate(RunData data, Context context) throws Exception
     {
         super.doBuildTemplate(data, context);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -165,7 +165,7 @@ public class ViewIssue extends Default
 
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
-                              RunData data, TemplateContext context)
+                              RunData data, Context context)
         throws Exception
     {
         String title = (new L10NMessage(L10NKeySet.ViewIssue).getMessage(l10n));

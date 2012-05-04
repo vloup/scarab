@@ -50,7 +50,7 @@ package org.tigris.scarab.actions;
 import java.util.Locale;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.modules.ContextAdapter;
 import org.apache.turbine.tool.IntakeTool;
@@ -84,7 +84,7 @@ public class Register extends ScarabTemplateAction
      * template. As a result, the user will go to the 
      * RegisterConfirm.vm screen.
      */
-    public void doRegister(RunData data, TemplateContext context) 
+    public void doRegister(RunData data, Context context) 
         throws Exception
     {
         String template     = getCurrentTemplate(data, null);
@@ -130,7 +130,7 @@ public class Register extends ScarabTemplateAction
         setTarget(data, nextTemplate);
     }
 
-    public void doConfirmregistration(RunData data, TemplateContext context)
+    public void doConfirmregistration(RunData data, Context context)
         throws Exception
     {
         String nextTemplate = getNextTemplate(data);
@@ -178,14 +178,14 @@ public class Register extends ScarabTemplateAction
     /**
      * returns you to Register.vm
      */
-    public void doBack(RunData data, TemplateContext context) 
+    public void doBack(RunData data, Context context) 
         throws Exception
     {
         setTarget(data, data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Register.vm"));
     }
 
-    public void doPerform(RunData data, TemplateContext context) 
+    public void doPerform(RunData data, Context context) 
         throws Exception
     {
         doConfirmregistration(data, context);
@@ -196,7 +196,7 @@ public class Register extends ScarabTemplateAction
      * template. As a result, this will end up sending
      * the user to the Confirm screen.
      */
-    public void doConfirm(RunData data, TemplateContext context) 
+    public void doConfirm(RunData data, Context context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -243,7 +243,7 @@ public class Register extends ScarabTemplateAction
      * This manages clicking the "Resend code" button 
      * in the Confirm.vm template.
      */
-    public void doResendconfirmationcode(RunData data, TemplateContext context)
+    public void doResendconfirmationcode(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -279,7 +279,7 @@ public class Register extends ScarabTemplateAction
     /**
      * Send the confirmation code to the given user.
      */
-    private void sendConfirmationEmail(ScarabUser su, TemplateContext context)
+    private void sendConfirmationEmail(ScarabUser su, Context context)
         throws Exception
     {
         Email te = new Email();

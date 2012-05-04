@@ -49,7 +49,7 @@ package org.tigris.scarab.actions.admin;
 // Turbine Stuff 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.GlobalParameter;
 import org.tigris.scarab.om.GlobalParameterManager;
@@ -69,7 +69,7 @@ public class GlobalEmailSettings
          GlobalParameter.EMAIL_INCLUDE_ISSUE_DETAILS,
          GlobalParameter.EMAIL_ALLOW_MODULE_OVERRIDE};
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         ParameterParser pp = data.getParameters();

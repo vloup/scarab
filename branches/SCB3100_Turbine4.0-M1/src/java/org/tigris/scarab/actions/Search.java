@@ -63,7 +63,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -123,7 +123,7 @@ public class Search extends RequireLoginFirstAction
     /**
      *
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -275,7 +275,7 @@ public class Search extends RequireLoginFirstAction
      * Saves the query string for the logged-in user, and performs the
      * default action of {@link #doPerform}.
      */
-    public void doSearch(RunData data, TemplateContext context)
+    public void doSearch(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -289,7 +289,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Redirects to form to save the query. May redirect to Login page.
     */
-    public void doRedirecttosavequery(RunData data, TemplateContext context)
+    public void doRedirecttosavequery(RunData data, Context context)
          throws Exception
     {
         setup(data, context);
@@ -308,7 +308,7 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
+    public void doRedirecttocrossmodulelist(RunData data, Context context)
          throws Exception
     {
         data.getParameters().setString("queryString", getQueryString(data));
@@ -318,7 +318,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Saves query.
     */
-    public void doSavequery(RunData data, TemplateContext context)
+    public void doSavequery(RunData data, Context context)
          throws Exception
     {
         setup(data, context);
@@ -451,7 +451,7 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public boolean doEditqueryinfo(RunData data, TemplateContext context)
+    public boolean doEditqueryinfo(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -497,7 +497,7 @@ public class Search extends RequireLoginFirstAction
         return success;
     }
 
-    public void doPreparequery(RunData data, TemplateContext context)
+    public void doPreparequery(RunData data, Context context)
          throws Exception
     {        
         setup(data, context);
@@ -516,7 +516,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Edits the stored query.
     */
-    public void doEditstoredquery(RunData data, TemplateContext context)
+    public void doEditstoredquery(RunData data, Context context)
          throws Exception
     {        
         setup(data, context);        
@@ -534,7 +534,7 @@ public class Search extends RequireLoginFirstAction
         Runs the stored story.
         [HD: As this method is only called internally, i made it private and removed the setup() call]
     */
-    private void doRunstoredquery(RunData data, TemplateContext context)
+    private void doRunstoredquery(RunData data, Context context)
          throws Exception
     {
         //setup(data, context);
@@ -591,7 +591,7 @@ public class Search extends RequireLoginFirstAction
      * assuming the number is the query id. Else, we assume it is a
      * string and that is our template to redirect to.
      */
-    public void doSelectquery(RunData data, TemplateContext context)
+    public void doSelectquery(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -768,7 +768,7 @@ public class Search extends RequireLoginFirstAction
     /**
         redirects to AdvancedQuery.
     */
-    public void doRefinequery(RunData data, TemplateContext context)
+    public void doRefinequery(RunData data, Context context)
          throws Exception
     {        
         context.put("refine", "true");
@@ -779,7 +779,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Overrides base class.
     */
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         boolean success = doEditqueryinfo(data, context);
@@ -902,7 +902,7 @@ public class Search extends RequireLoginFirstAction
         return newIssueIdList;
     }
     
-    public void doGetissues(RunData data, TemplateContext context) throws TorqueException
+    public void doGetissues(RunData data, Context context) throws TorqueException
     {
         try
         {
@@ -978,7 +978,7 @@ public class Search extends RequireLoginFirstAction
         return newIssueIdList;
     }
 
-    public void doGotoeditlist(RunData data, TemplateContext context)
+    public void doGotoeditlist(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1001,7 +1001,7 @@ public class Search extends RequireLoginFirstAction
     /**
      * Adds users from temporary working list.
      */
-    public void doAddusers(RunData data, TemplateContext context) 
+    public void doAddusers(RunData data, Context context) 
         throws Exception
     {
         setup(data, context);
@@ -1039,7 +1039,7 @@ public class Search extends RequireLoginFirstAction
     /**
         Adds user to the search form.
     */
-    public void doAdduserbyusername(RunData data, TemplateContext context)  
+    public void doAdduserbyusername(RunData data, Context context)  
         throws Exception
     {
         setup(data, context);
@@ -1082,7 +1082,7 @@ public class Search extends RequireLoginFirstAction
     }
 
     private void addAttributeToMap(Map userMap, String userId, String attrId, 
-                                   TemplateContext context)
+                                   Context context)
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Set attrIds = (Set)userMap.get(userId);
@@ -1121,7 +1121,7 @@ public class Search extends RequireLoginFirstAction
     /**
      * Removes users from temporary working list.
      */
-    public void doRemoveusers(RunData data, TemplateContext context)
+    public void doRemoveusers(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1163,7 +1163,7 @@ public class Search extends RequireLoginFirstAction
     /**
      * Changes the user attribute a user is associated with.
      */
-    public void doUpdateusers(RunData data, TemplateContext context)
+    public void doUpdateusers(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1231,7 +1231,7 @@ public class Search extends RequireLoginFirstAction
                     for (int j=0; j<attrIds.length; j++) 
                     {
                         addAttributeToMap(userMap, userId, attrIds[j],
-                                          getTemplateContext(data));
+                                          getContext(data));
                     }
                 }
             }
@@ -1239,7 +1239,7 @@ public class Search extends RequireLoginFirstAction
         }
     }
 
-    public void doSetquerytarget(RunData data, TemplateContext context)
+    public void doSetquerytarget(RunData data, Context context)
         throws Exception
     {
         setup(data, context);
@@ -1267,7 +1267,7 @@ public class Search extends RequireLoginFirstAction
                 "Issue type list did not contain one and only one element.");
         }
     }
-    private void setup(RunData data, TemplateContext context) throws Exception{
+    private void setup(RunData data, Context context) throws Exception{
         l10n = getLocalizationTool(context);
         scarabR = getScarabRequestTool(context);
         intake = getIntakeTool(context);

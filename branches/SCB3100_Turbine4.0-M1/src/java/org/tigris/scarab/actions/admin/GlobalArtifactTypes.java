@@ -49,7 +49,7 @@ package org.tigris.scarab.actions.admin;
 import java.util.List;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.intake.model.Field;
@@ -75,7 +75,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
      * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
      * Use doAddormodifyattributeoptions to modify the options.
      */
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -124,7 +124,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
     }
                 
-    public void doCopy(RunData data, TemplateContext context)
+    public void doCopy(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -158,7 +158,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
     }
 
-    public void doDelete(RunData data, TemplateContext context)
+    public void doDelete(RunData data, Context context)
         throws Exception
     {
         String key = null;
@@ -219,7 +219,7 @@ public class GlobalArtifactTypes extends RequireLoginFirstAction
         }
     }
 
-    public void doUndelete(RunData data, TemplateContext context)
+    public void doUndelete(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();

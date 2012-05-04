@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.TorqueException;
@@ -212,7 +212,7 @@ public class Query
      */
     public boolean saveAndSendEmail(final ScarabUser user, 
             final Module module, 
-            final TemplateContext context)
+            final Context context)
         throws TorqueException, ScarabException
     {
         // If it's a module scoped query, user must have Item | Approve 

@@ -62,7 +62,7 @@ import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
@@ -122,12 +122,12 @@ public class ModifyIssue extends BaseModifyIssue
      * AssignIssue action, assigning the given list of users to the issue with 
      * the specified userattribute.
      * 
-     * @see AssignIssue#doAddmyself(RunData, TemplateContext)
+     * @see AssignIssue#doAddmyself(RunData, Context)
      * @param data
      * @param context
      * @throws Exception
      */
-    public void doAddwatchers(RunData data, TemplateContext context)
+    public void doAddwatchers(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = this.getScarabRequestTool(context);
@@ -160,7 +160,7 @@ public class ModifyIssue extends BaseModifyIssue
     
     
     
-    public void doSubmitattributes(RunData data, TemplateContext context)
+    public void doSubmitattributes(RunData data, Context context)
         throws Exception
     {
         if (isCollision(data, context)) 
@@ -444,7 +444,7 @@ public class ModifyIssue extends BaseModifyIssue
      * once all pre-conditions have been checked.
      **/
     private void submitattributesPerform(
-                final TemplateContext context,
+                final Context context,
                 final ScarabUser user,
                 RunData runData,
                 REASON_SAVE_MODE saveMode)
@@ -626,7 +626,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Modifies attachments of type "url".
      */
-    public void doSaveurl (RunData data, TemplateContext context) 
+    public void doSaveurl (RunData data, Context context) 
         throws Exception
     {
         if (isCollision(data, context)) 
@@ -733,7 +733,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Enable edition mode for the comment page.
      */
-    public void doEditcommentpage(RunData data, TemplateContext context)
+    public void doEditcommentpage(RunData data, Context context)
          throws Exception
     {
         if (isCollision(data, context)) 
@@ -763,7 +763,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Enable edition mode for the attributes page.
      */
-    public void doEditattributespage(RunData data, TemplateContext context)
+    public void doEditattributespage(RunData data, Context context)
          throws Exception
     {
         if (isCollision(data, context)) 
@@ -793,7 +793,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Adds an attachment of type "comment".
      */
-    public void doSubmitcomment (RunData data, TemplateContext context) 
+    public void doSubmitcomment (RunData data, Context context) 
          throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -850,7 +850,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Add an attachment of type "file"
      */
-    public void doSubmitfile (RunData data, TemplateContext context)
+    public void doSubmitfile (RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -997,7 +997,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Edits a comment.
      */
-    public void doEditcomment (RunData data, TemplateContext context)
+    public void doEditcomment (RunData data, Context context)
         throws Exception
     {                          
         if (isCollision(data, context)) 
@@ -1059,7 +1059,7 @@ public class ModifyIssue extends BaseModifyIssue
    /**
     *  Deletes a url.
     */
-   public void doDeleteurl (RunData data, TemplateContext context)
+   public void doDeleteurl (RunData data, Context context)
         throws Exception
     {                          
         if (isCollision(data, context)) 
@@ -1113,7 +1113,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      *  Deletes a file.
      */
-    public void doDeletefile (RunData data, TemplateContext context)
+    public void doDeletefile (RunData data, Context context)
         throws Exception
     {      
         if (isCollision(data, context)) 
@@ -1191,7 +1191,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    /*public void doDeletedependencies(RunData data, TemplateContext context)
+    /*public void doDeletedependencies(RunData data, Context context)
         throws Exception
     {
         saveDependencyDeletions(data, context);
@@ -1203,7 +1203,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    public void doSavedependencychanges(RunData data, TemplateContext context)
+    public void doSavedependencychanges(RunData data, Context context)
         throws Exception
     {
         saveDependencyChanges(data, context, false);
@@ -1213,7 +1213,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    public void doSavenewdependencies(RunData data, TemplateContext context)
+    public void doSavenewdependencies(RunData data, Context context)
         throws Exception
     {
         saveNewDependencies(data, context, false);
@@ -1223,7 +1223,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    private void saveDependencyChanges(RunData data, TemplateContext context, 
+    private void saveDependencyChanges(RunData data, Context context, 
                                        boolean doDelete)
         throws Exception
     {
@@ -1291,7 +1291,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  Modifies the dependency type between the current issue
      *  And its parent or child issue.
      */
-    private void saveNewDependencies(RunData data, TemplateContext context, 
+    private void saveNewDependencies(RunData data, Context context, 
                                        boolean doDelete)
         throws Exception
     {
@@ -1339,7 +1339,7 @@ public class ModifyIssue extends BaseModifyIssue
      *  And its parent or child issue.
      */
     /*
-    private void saveDependencyDeletions(RunData data, TemplateContext context)
+    private void saveDependencyDeletions(RunData data, Context context)
         throws Exception
     {
         if (isCollision(data, context)) 
@@ -1398,7 +1398,7 @@ public class ModifyIssue extends BaseModifyIssue
      */
     private boolean doAdddependency(Issue issue, IntakeTool intake,
                                  Group group, ScarabRequestTool scarabR,
-                                 TemplateContext context,
+                                 Context context,
                                  ScarabLocalizationTool l10n,
                                  ScarabUser user)
         throws Exception
@@ -1536,7 +1536,7 @@ public class ModifyIssue extends BaseModifyIssue
      */
     private boolean doUpdatedependencies(Issue issue, IntakeTool intake, 
                                        ScarabRequestTool scarabR,
-                                       TemplateContext context,
+                                       Context context,
                                        ScarabUser user,
                                        DependType newDependType,
                                        boolean setAsPrerequisite)
@@ -1623,7 +1623,7 @@ public class ModifyIssue extends BaseModifyIssue
      */
     private boolean doRemoveSelectedDependencies(Issue issue, IntakeTool intake, 
                                        ScarabRequestTool scarabR,
-                                       TemplateContext context,
+                                       Context context,
                                        ScarabLocalizationTool l10n,
                                        ScarabUser user)
         throws Exception
@@ -1697,7 +1697,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Redirects to AssignIssue page.
      */
-    public void doEditassignees(RunData data, TemplateContext context)
+    public void doEditassignees(RunData data, Context context)
          throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -1730,7 +1730,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Redirects to MoveIssue page with move action selected.
      */
-    public void doMove(RunData data, TemplateContext context)
+    public void doMove(RunData data, Context context)
          throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -1767,7 +1767,7 @@ public class ModifyIssue extends BaseModifyIssue
     /**
      * Redirects to MoveIssue page with copy action selected.
      */
-    public void doCopy(RunData data, TemplateContext context)
+    public void doCopy(RunData data, Context context)
          throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -1794,7 +1794,7 @@ public class ModifyIssue extends BaseModifyIssue
      * does not actually modify an issue, but sets the preferred view
      * of an issue for the current session
      */
-    public void doSetissueview(RunData data, TemplateContext context)
+    public void doSetissueview(RunData data, Context context)
          throws Exception
     {
         String tab = data.getParameters().getString("tab", 
@@ -1806,12 +1806,12 @@ public class ModifyIssue extends BaseModifyIssue
      * This action method delegates on the doAddmyself method from AssignIssue
      * action, assigning the current user to the issue in the specified userattribute.
      * 
-     * @see AssignIssue#doAddmyself(RunData, TemplateContext)
+     * @see AssignIssue#doAddmyself(RunData, Context)
      * @param data
      * @param context
      * @throws Exception
      */
-    public void doAddmyself(RunData data, TemplateContext context)
+    public void doAddmyself(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = this.getScarabRequestTool(context);
@@ -1839,7 +1839,7 @@ public class ModifyIssue extends BaseModifyIssue
         }        
     }
     
-    public void doDeleteissue(RunData data, TemplateContext context)
+    public void doDeleteissue(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = this.getScarabRequestTool(context);
@@ -1854,7 +1854,7 @@ public class ModifyIssue extends BaseModifyIssue
     }
     
         
-    public void doRemovemyself(RunData data, TemplateContext context)
+    public void doRemovemyself(RunData data, Context context)
     throws Exception
     {
         ScarabRequestTool scarabR = this.getScarabRequestTool(context);

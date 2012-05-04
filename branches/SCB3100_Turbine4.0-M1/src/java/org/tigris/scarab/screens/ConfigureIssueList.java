@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.tools.ScarabRequestTool;
 
@@ -64,7 +64,7 @@ import org.tigris.scarab.tools.ScarabRequestTool;
 public class ConfigureIssueList extends Default
 {
 
-    protected void doBuildTemplate(RunData data, TemplateContext context) throws Exception
+    protected void doBuildTemplate(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         List attributes = scarabR.getAllValidIssueListAttributes();

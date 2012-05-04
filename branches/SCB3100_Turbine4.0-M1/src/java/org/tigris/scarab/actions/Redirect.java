@@ -47,7 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 // Scarab Stuff
@@ -68,7 +68,7 @@ public class Redirect extends RequireLoginFirstAction
      * This will redirect to whatever NEXT_TEMPLATE is
      * set to be. If that isn't set, it goes to the user's homepage
      */
-    public void doRedirect(RunData data, TemplateContext context)
+    public void doRedirect(RunData data, Context context)
         throws Exception
     {
         // set the next template
@@ -82,7 +82,7 @@ public class Redirect extends RequireLoginFirstAction
     /**
      * calls doRedirect().
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         doRedirect(data, context);

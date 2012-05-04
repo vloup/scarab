@@ -49,7 +49,7 @@ package org.tigris.scarab.om;
 import java.util.Arrays;
 import org.apache.torque.TorqueException;
 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 
 import org.apache.torque.om.Persistent;
@@ -100,7 +100,7 @@ public  class IssueTemplateInfo
 
     public void saveAndSendEmail(final ScarabUser user, 
             final Module module, 
-            final TemplateContext context)
+            final Context context)
         throws TorqueException, ScarabException
     {
         // If it's a module scoped template, user must have Item | Approve 

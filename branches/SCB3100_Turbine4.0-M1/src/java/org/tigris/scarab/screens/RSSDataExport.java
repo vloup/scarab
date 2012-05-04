@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.TemplateScreen;
 import org.tigris.scarab.feeds.Feed;
 import org.tigris.scarab.feeds.IssueFeed;
@@ -100,7 +100,7 @@ public class RSSDataExport extends TemplateScreen {
 	 * assumes we're writing the reponse ourself, indicates no target to render
 	 * by setting it to <code>null</code>.
 	 */
-	public void doBuildTemplate(RunData data, TemplateContext context)
+	public void doBuildTemplate(RunData data, Context context)
 			throws Exception {
 		super.doBuildTemplate(data, context);
 
@@ -177,7 +177,7 @@ public class RSSDataExport extends TemplateScreen {
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
     protected final ScarabLocalizationTool 
-        getLocalizationTool(TemplateContext context)
+        getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool)
             context.get(ScarabConstants.LOCALIZATION_TOOL);
@@ -186,7 +186,7 @@ public class RSSDataExport extends TemplateScreen {
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public ScarabRequestTool getScarabRequestTool(Context context)
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
@@ -195,7 +195,7 @@ public class RSSDataExport extends TemplateScreen {
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabLink getScarabLinkTool(TemplateContext context)
+    public ScarabLink getScarabLinkTool(Context context)
     {
         return (ScarabLink)context
             .get(ScarabConstants.SCARAB_LINK_TOOL);

@@ -48,7 +48,7 @@ package org.tigris.scarab.screens.admin;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -65,7 +65,7 @@ public class AttributeOptionSelect extends Default
 {
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
-                              RunData data, TemplateContext context)
+                              RunData data, Context context)
         throws Exception 
    {
        String name = scarabR.getAttribute().getName();

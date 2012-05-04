@@ -47,7 +47,7 @@ package org.tigris.scarab.actions;
  */
 
 // Turbine Stuff
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
@@ -76,7 +76,7 @@ public class ChangePassword extends ScarabTemplateAction
     /**
      * This manages clicking the Change Password button
      */
-    public void doChangepassword(RunData data, TemplateContext context)
+    public void doChangepassword(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);

@@ -58,7 +58,7 @@ import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.IssueTemplateInfo;
@@ -101,7 +101,7 @@ public class Approval extends RequireLoginFirstAction
     private static final Integer REJECTED = QUERY;
     private static final Integer APPROVED = ISSUE_ENTRY_TEMPLATE;
     
-    public void doSubmit(RunData data, TemplateContext context)
+    public void doSubmit(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = (ScarabRequestTool)context
@@ -270,7 +270,7 @@ public class Approval extends RequireLoginFirstAction
         }
     }
 
-    public void doApproveroles(RunData data, TemplateContext context)
+    public void doApproveroles(RunData data, Context context)
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -359,7 +359,7 @@ public class Approval extends RequireLoginFirstAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    private SecurityAdminTool getSecurityAdminTool(TemplateContext context)
+    private SecurityAdminTool getSecurityAdminTool(Context context)
     {
         return (SecurityAdminTool)context
             .get(ScarabConstants.SECURITY_ADMIN_TOOL);

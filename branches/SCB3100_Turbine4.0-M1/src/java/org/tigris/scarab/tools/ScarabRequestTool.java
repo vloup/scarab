@@ -77,7 +77,7 @@ import org.apache.torque.om.NumberKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.services.pull.ApplicationTool;
 import org.apache.turbine.tool.IntakeTool;
@@ -364,7 +364,7 @@ public class ScarabRequestTool
      */
     private IntakeTool getIntakeTool()
     {
-        return (IntakeTool)org.apache.turbine.modules.Module.getTemplateContext(data)
+        return (IntakeTool)org.apache.turbine.modules.Module.getContext(data)
             .get(ScarabConstants.INTAKE_TOOL);
     }
 
@@ -852,8 +852,8 @@ public class ScarabRequestTool
         // DEP: Not sure about this initial list stuff, or if we need it..
         if (initialIssueListColumnsSize > issueListColumns.size())
         {
-            TemplateContext context =
-                (TemplateContext) data.getTemp(Turbine.CONTEXT);
+            Context context =
+                (Context) data.getTemp(Turbine.CONTEXT);
             context.put("columnLimitExceeded", Boolean.TRUE);
         }
         return issueListColumns;
@@ -2982,7 +2982,7 @@ public class ScarabRequestTool
     {
         try
         {
-            SecurityAdminTool sat = (SecurityAdminTool)org.apache.turbine.modules.Module.getTemplateContext(data)
+            SecurityAdminTool sat = (SecurityAdminTool)org.apache.turbine.modules.Module.getContext(data)
                 .get(ScarabConstants.SECURITY_ADMIN_TOOL);
             if (getCurrentModule().getUnapprovedQueries().isEmpty() &&
                 getCurrentModule().getUnapprovedTemplates().isEmpty() &&
@@ -3101,7 +3101,7 @@ public class ScarabRequestTool
     private ScarabLocalizationTool getLocalizationTool()
     {
         return (ScarabLocalizationTool)org.apache.turbine.modules.Module
-            .getTemplateContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
+            .getContext(data).get(ScarabConstants.LOCALIZATION_TOOL);
     }
 
     /**

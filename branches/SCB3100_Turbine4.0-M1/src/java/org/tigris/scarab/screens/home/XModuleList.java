@@ -49,7 +49,7 @@ package org.tigris.scarab.screens.home;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.screens.Default;
@@ -69,7 +69,7 @@ public class XModuleList extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);

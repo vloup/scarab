@@ -49,7 +49,7 @@ package org.tigris.scarab.actions;
 import java.util.List;
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 import org.apache.fulcrum.parser.ParameterParser;
@@ -129,7 +129,7 @@ public class Login extends ScarabTemplateAction
     /**
      * This manages clicking the Login button
      */
-    public void doLogin(RunData data, TemplateContext context)
+    public void doLogin(RunData data, Context context)
         throws Exception
     {
         data.setACL(null);
@@ -216,7 +216,7 @@ public class Login extends ScarabTemplateAction
      * If checks fail, the user is not logged in, but a failure action has been 
      * prepared for further activity (return to login page, not confirmed page, password renew page, etc..)
      */
-    public boolean checkUser(RunData data, TemplateContext context)
+    public boolean checkUser(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -384,7 +384,7 @@ public class Login extends ScarabTemplateAction
     /**
      * calls doLogin()
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         doLogin(data, context);

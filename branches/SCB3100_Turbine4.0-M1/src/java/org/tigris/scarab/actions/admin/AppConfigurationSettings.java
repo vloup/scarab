@@ -57,7 +57,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -75,7 +75,7 @@ public class AppConfigurationSettings
 {
     public static Logger log = Log.get(AppConfigurationSettings.class.getName());
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         boolean customSettingsChanged = false;

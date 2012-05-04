@@ -55,7 +55,7 @@ import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.TemplateSecureAction;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.om.Module;
@@ -96,7 +96,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     {
         boolean auth = false;
         String perm = getRequiredPermission(data);
-        TemplateContext context = getTemplateContext(data);
+        Context context = getContext(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         Module currentModule = scarabR.getCurrentModule();
@@ -145,7 +145,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     /**
      * Helper method to retrieve the IntakeTool from the Context
      */
-    public IntakeTool getIntakeTool(TemplateContext context)
+    public IntakeTool getIntakeTool(Context context)
     {
         return (IntakeTool)context.get(ScarabConstants.INTAKE_TOOL);
     }
@@ -154,7 +154,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
     protected final ScarabLocalizationTool 
-        getLocalizationTool(TemplateContext context)
+        getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool)
             context.get(ScarabConstants.LOCALIZATION_TOOL);
@@ -163,7 +163,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public ScarabRequestTool getScarabRequestTool(Context context)
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
@@ -172,7 +172,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     /**
      * Helper method to retrieve the ScarabGlobalTool from the Context
      */
-    public ScarabGlobalTool getScarabGlobalTool(TemplateContext context)
+    public ScarabGlobalTool getScarabGlobalTool(Context context)
     {
         return (ScarabGlobalTool)context
             .get(ScarabConstants.SCARAB_GLOBAL_TOOL);
@@ -274,19 +274,19 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
                    .getString(ScarabConstants.OTHER_TEMPLATE);
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
     }
 
-    public void doGonext(RunData data, TemplateContext context)
+    public void doGonext(RunData data, Context context)
         throws Exception
     {
         setTarget(data, getNextTemplate(data));
     }
 
     public void doGotoothertemplate(RunData data, 
-                                     TemplateContext context)
+                                     Context context)
         throws Exception
     {
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
@@ -294,13 +294,13 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         setTarget(data, getOtherTemplate(data));
     }
 
-    public void doRefresh(RunData data, TemplateContext context)
+    public void doRefresh(RunData data, Context context)
         throws Exception
     {
         setTarget(data, getCurrentTemplate(data));
     }
 
-    public void doRefreshresultsperpage(RunData data, TemplateContext context) 
+    public void doRefreshresultsperpage(RunData data, Context context) 
         throws Exception
     {
         ParameterParser params = data.getParameters();
@@ -321,7 +321,7 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
     }
 
 
-    public void doReset(RunData data, TemplateContext context)
+    public void doReset(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -329,13 +329,13 @@ public abstract class RequireLoginFirstAction extends TemplateSecureAction
         setTarget(data, getCurrentTemplate(data));
     }
         
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
         setTarget(data, getCancelTemplate(data));
     }
 
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         doSave(data, context);

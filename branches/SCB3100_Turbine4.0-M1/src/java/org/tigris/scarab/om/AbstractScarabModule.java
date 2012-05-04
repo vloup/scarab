@@ -71,7 +71,7 @@ import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.util.Criteria;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.reports.ReportBridge;
 import org.tigris.scarab.services.cache.ScarabCache;
@@ -1640,7 +1640,7 @@ public abstract class AbstractScarabModule
      * @return
      */
     private static boolean canMakeTransitionForOption(RunData data, String fromValue, RModuleOption option, Issue issue, boolean multiple) {
-    	TemplateContext context = org.apache.turbine.modules.Module.getTemplateContext(data);
+    	Context context = org.apache.turbine.modules.Module.getContext(data);
         ScarabRequestTool scarabR = (ScarabRequestTool) context.get(ScarabConstants.SCARAB_REQUEST_TOOL);
     	
     	boolean selected = false;

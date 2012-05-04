@@ -47,7 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 import org.tigris.scarab.om.ScarabUser;
@@ -65,7 +65,7 @@ public class SetHomePage extends RequireLoginFirstAction
     /**
      * Sets the home page to the current target
      */
-    public void doPerform(RunData data, TemplateContext context) throws Exception
+    public void doPerform(RunData data, Context context) throws Exception
     {
         String target = data.getTarget();
         //TODO [HD] Maybe this hard coded reference shall be 

@@ -55,7 +55,7 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.oid.IDBroker;
 import org.apache.torque.util.BasePeer;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.GlobalParameter;
@@ -88,7 +88,7 @@ public class ModifyModule extends RequireLoginFirstAction
     /**
      * Process Update button which updates a Module
      */
-    public void doUpdate(RunData data, TemplateContext context) 
+    public void doUpdate(RunData data, Context context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -256,7 +256,7 @@ public class ModifyModule extends RequireLoginFirstAction
     /**
      * Process Create button which creates a new Module
      */
-    public void doCreate(RunData data, TemplateContext context) 
+    public void doCreate(RunData data, Context context) 
         throws Exception
     {
         String template = getCurrentTemplate(data, null);

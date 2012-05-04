@@ -51,7 +51,7 @@ import java.text.SimpleDateFormat;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.modules.Module;
 
 // Scarab Stuff
@@ -69,7 +69,7 @@ public class ViewXMLExportSettings extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);

@@ -65,7 +65,7 @@ import javax.mail.MessagingException;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.template.TemplateContext;
+import org.apache.fulcrum.template.Context;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
@@ -120,7 +120,7 @@ public class Email extends TemplateHtmlEmail
 
     public static Logger log = Log.get(Email.class.getName());
 
-    private TemplateContext context = null;
+    private Context context = null;
     
     private String template = null;
 
@@ -573,7 +573,7 @@ public class Email extends TemplateHtmlEmail
         return nameAndAddr;
     }
 
-    private static String getSubject(TemplateContext context, String template)
+    private static String getSubject(Context context, String template)
     {
         template = prependDir(template);
         String result = null;

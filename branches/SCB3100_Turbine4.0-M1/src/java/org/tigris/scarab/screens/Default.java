@@ -51,7 +51,7 @@ import java.util.List;
 
 // Turbine Stuff
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.TemplateSecureScreen;
 import org.apache.turbine.Turbine;
 
@@ -93,7 +93,7 @@ public class Default extends TemplateSecureScreen
     /**
      * builds up the context for display of variables on the page.
      */
-    protected void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -188,7 +188,7 @@ public class Default extends TemplateSecureScreen
         {
             template = template.replace(',', '.');
             String perm = ScarabSecurity.getScreenPermission(template);
-            TemplateContext context = getTemplateContext(data);
+            Context context = getContext(data);
             ScarabRequestTool scarabR = getScarabRequestTool(context);
             ScarabLocalizationTool l10n = getLocalizationTool(context);
             Module currentModule = scarabR.getCurrentModule();
@@ -265,7 +265,7 @@ public class Default extends TemplateSecureScreen
 
     public static void setTargetSelectModule(RunData data)
     {
-        getTemplateContext(data).put(
+        getContext(data).put(
             ScarabConstants.NEXT_TEMPLATE,
             data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE));
 
@@ -278,7 +278,7 @@ public class Default extends TemplateSecureScreen
 
     public static void setTargetLogin(RunData data)
     {
-        getTemplateContext(data).put(
+        getContext(data).put(
             ScarabConstants.NEXT_TEMPLATE,
             data.getParameters().getString("template"));
         setTarget(data, "Login.vm");
@@ -287,7 +287,7 @@ public class Default extends TemplateSecureScreen
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public static ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public static ScarabRequestTool getScarabRequestTool(Context context)
     {
         return (ScarabRequestTool) context.get(
             ScarabConstants.SCARAB_REQUEST_TOOL);
@@ -296,7 +296,7 @@ public class Default extends TemplateSecureScreen
     /**
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
-    public static ScarabLocalizationTool getLocalizationTool(TemplateContext context)
+    public static ScarabLocalizationTool getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool) context.get(
             ScarabConstants.LOCALIZATION_TOOL);

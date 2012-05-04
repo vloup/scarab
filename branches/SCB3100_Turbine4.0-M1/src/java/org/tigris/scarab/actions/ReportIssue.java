@@ -60,7 +60,7 @@ import org.apache.fulcrum.intake.model.Field;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.attribute.DateAttribute;
@@ -107,13 +107,13 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * Calls do check for duplicates by default.
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         doCheckforduplicates(data, context);
     }
 
-    private boolean checkIssueTypeStatus(RunData data, TemplateContext context)
+    private boolean checkIssueTypeStatus(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -137,7 +137,7 @@ public class ReportIssue extends RequireLoginFirstAction
         return isValid;
     }
 
-    public void doCheckforduplicates(RunData data, TemplateContext context)
+    public void doCheckforduplicates(RunData data, Context context)
         throws Exception
     {
         if (checkIssueTypeStatus(data, context))
@@ -146,7 +146,7 @@ public class ReportIssue extends RequireLoginFirstAction
         }
     }
 
-    public void checkForDuplicates(RunData data, TemplateContext context)
+    public void checkForDuplicates(RunData data, Context context)
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -189,7 +189,7 @@ public class ReportIssue extends RequireLoginFirstAction
      * the screen is set to entry,Wizard2.vm so that they can be viewed.
      *
      * @param data a <code>RunData</code> value
-     * @param context a <code>TemplateContext</code> value
+     * @param context a <code>Context</code> value
      * @param threshold an <code>int</code> number of issues that determines
      * whether "entry,Wizard2.vm" screen  or the screen given by
      * nextTemplate is shown
@@ -202,7 +202,7 @@ public class ReportIssue extends RequireLoginFirstAction
      * @exception Exception if an error occurs
      */
     private boolean searchAndSetTemplate(RunData data,
-                                         TemplateContext context,
+                                         Context context,
                                          int threshold,
                                          int maxResults,
                                          Issue issue,
@@ -264,7 +264,7 @@ public class ReportIssue extends RequireLoginFirstAction
      * @exception Exception if an error occurs
      */
     private void setRequiredFlags(Issue issue, IntakeTool intake,
-    		LinkedMap avMap, TemplateContext context)
+    		LinkedMap avMap, Context context)
         throws Exception
     {
         if (issue == null)
@@ -374,7 +374,7 @@ public class ReportIssue extends RequireLoginFirstAction
      * @exception Exception pass thru
      */
     private boolean setAttributeValues(Issue issue, IntakeTool intake, 
-                                       TemplateContext context,
+                                       Context context,
                                        LinkedMap avMap)
         throws Exception
     {
@@ -422,7 +422,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * handles entering an issue
      */
-    public void doEnterissue(RunData data, TemplateContext context)
+    public void doEnterissue(RunData data, Context context)
         throws Exception
     {
         if (checkIssueTypeStatus(data, context))
@@ -434,7 +434,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * handles entering an issue
      */
-    private void enterIssue(RunData data, TemplateContext context)
+    private void enterIssue(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -650,7 +650,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * Add attachment file
      */
-    public void doAddfile(RunData data, TemplateContext context)
+    public void doAddfile(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -677,7 +677,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * Remove an attachment file
      */
-    public void doRemovefile(RunData data, TemplateContext context)
+    public void doRemovefile(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -716,7 +716,7 @@ public class ReportIssue extends RequireLoginFirstAction
      * Handles adding a comment to one or more issues. This is an option
      * which is available on Wizard2 during the dedupe process.
      */
-    public void doAddcomment(RunData data, TemplateContext context)
+    public void doAddcomment(RunData data, Context context)
         throws Exception
     {
         ScarabLocalizationTool l10n = getLocalizationTool(context);
@@ -792,7 +792,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * The button for this action is commented out on Wizard2, so it
      * will not be called
-    public void doAddvote(RunData data, TemplateContext context)
+    public void doAddvote(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -836,13 +836,13 @@ public class ReportIssue extends RequireLoginFirstAction
     }
      */
     
-    public void doGotowizard3(RunData data, TemplateContext context)
+    public void doGotowizard3(RunData data, Context context)
         throws Exception
     {
         setTarget(data, "entry,Wizard3.vm");
     }
     
-    public void doUsetemplates(RunData data, TemplateContext context)
+    public void doUsetemplates(RunData data, Context context)
         throws Exception
     {
         getIntakeTool(context).removeAll();
@@ -853,7 +853,7 @@ public class ReportIssue extends RequireLoginFirstAction
         }
     }
     
-    private void cleanup(RunData data, TemplateContext context)
+    private void cleanup(RunData data, Context context)
     {
         data.getParameters().remove(ScarabConstants.HISTORY_SCREEN);
         String issueKey = data.getParameters()
@@ -868,7 +868,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * User selects page to redirect to after entering issue.
      */
-    private void doRedirect(RunData data, TemplateContext context, 
+    private void doRedirect(RunData data, Context context, 
                             int templateCode, Issue issue)
         throws Exception
     {
@@ -956,7 +956,7 @@ public class ReportIssue extends RequireLoginFirstAction
         setTarget(data, template);
     }
 
-    public void doStart(RunData data, TemplateContext context)
+    public void doStart(RunData data, Context context)
         throws Exception
     {
         cleanOutStaleIssue(data, context);
@@ -965,7 +965,7 @@ public class ReportIssue extends RequireLoginFirstAction
     /**
      * for easy access by TemplateList action
      */
-    static void cleanOutStaleIssue(RunData data, TemplateContext context)
+    static void cleanOutStaleIssue(RunData data, Context context)
         throws Exception
     {
         String key = data.getParameters()

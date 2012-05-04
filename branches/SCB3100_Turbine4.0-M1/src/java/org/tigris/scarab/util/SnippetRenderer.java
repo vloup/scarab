@@ -82,7 +82,7 @@ public class SnippetRenderer
     }
 
     /**
-     * Render the given template. TemplateContext to use will be extracted from
+     * Render the given template. Context to use will be extracted from
      * the RunData with which this SnippetRenderer was constructer. 
      *
      * @param template name/path of template in the format expected by the
@@ -96,7 +96,7 @@ public class SnippetRenderer
         try 
         {
             result = Module.handleRequest(
-                Module.getTemplateContext(data), 
+                Module.getContext(data), 
                 Turbine.getResolver().getTemplate(SNIPPETS, template));
         }
         catch (Exception e)

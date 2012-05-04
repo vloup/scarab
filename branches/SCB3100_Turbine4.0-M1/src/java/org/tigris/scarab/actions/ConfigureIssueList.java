@@ -56,7 +56,7 @@ import java.util.Map;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.security.util.TurbineSecurityException;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeManager;
@@ -76,7 +76,7 @@ import org.tigris.scarab.util.ScarabConstants;
  */
 public class ConfigureIssueList extends RequireLoginFirstAction
 {
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -195,7 +195,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
     /**
      * Resets back to default values for module.
      */
-    public void doUsedefaults(RunData data, TemplateContext context) 
+    public void doUsedefaults(RunData data, Context context) 
         throws Exception
     {
         data.getParameters().add("usedefaults", "true"); 

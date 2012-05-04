@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 // Scarab Stuff
@@ -70,7 +70,7 @@ import org.tigris.scarab.tools.ScarabLocalizationTool;
  */
 public class BaseModifyIssue extends RequireLoginFirstAction
 {
-    protected boolean isCollision(RunData data, TemplateContext context)
+    protected boolean isCollision(RunData data, Context context)
         throws Exception
     {
         boolean isCollision = false;

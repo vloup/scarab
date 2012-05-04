@@ -53,7 +53,7 @@ import java.util.List;
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;
 import org.tigris.scarab.om.Issue;
@@ -77,7 +77,7 @@ import org.tigris.scarab.screens.Default;
 public class NotificationList extends Default
 {
 
-    protected void doBuildTemplate(RunData data, TemplateContext context) throws Exception
+    protected void doBuildTemplate(RunData data, Context context) throws Exception
     {
         List notifs = NotificationStatusManager
                 .getNotificationsFor((ScarabUser) data.getUser());

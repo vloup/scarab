@@ -52,7 +52,7 @@ import java.util.Collection;
 
 // Turbine & Apache Commons Stuff
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.commons.fileupload.FileItem;
 
 // Scarab Stuff
@@ -91,7 +91,7 @@ public class XMLImportIssuesResults extends Default
      * @param context Velocity template context
      */
     public void doBuildTemplate(final RunData data, 
-            final TemplateContext context)
+            final Context context)
         throws Exception
     {
         
@@ -202,7 +202,7 @@ public class XMLImportIssuesResults extends Default
     {
         String perm = ScarabSecurity.getScreenPermission
             ("admin.XMLImportIssuesResults.vm");
-        TemplateContext context = getTemplateContext(data);
+        Context context = getContext(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Module currentModule = scarabR.getCurrentModule();
         ScarabUser user = (ScarabUser) data.getUser();

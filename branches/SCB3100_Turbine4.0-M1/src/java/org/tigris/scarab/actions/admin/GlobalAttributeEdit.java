@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Date;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.tool.IntakeTool;
@@ -93,7 +93,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * Used on GlobalAttributeEdit.vm to modify Attribute Name/Description/Type
      * Use doSaveoptions to modify the options.
      */
-    public boolean doSaveattributedata(RunData data, TemplateContext context)
+    public boolean doSaveattributedata(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -186,7 +186,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
     /**
      * Deletes attribute and its mappings after confirmation.
      */
-    public void doDeleteattribute(RunData data, TemplateContext context)
+    public void doDeleteattribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -213,7 +213,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * AttributeOption or create a new one if the name doesn't already exist.
      */
     public synchronized boolean 
-        doSaveoptions(RunData data, TemplateContext context)
+        doSaveoptions(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = (IntakeTool)context
@@ -469,7 +469,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
     /*
      * Manages clicking of the AllDone button
      */
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         log().debug("called doDone");
@@ -499,7 +499,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * manages attribute to module/issue type mapping.
      */
 
-    private void mapAttribute(RunData data, TemplateContext context)
+    private void mapAttribute(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -577,7 +577,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * FIXME! document that the doCancel method alters the database
      * Why does it do this?!!
      */
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
         String lastTemplate = getCancelTemplate(data);
@@ -599,7 +599,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @return true if the operation gets done successfuly, false otherwise
      * @throws Exception
      */
-    public boolean doSavetransitiondata(RunData data, TemplateContext context)
+    public boolean doSavetransitiondata(RunData data, Context context)
             throws Exception
     {
         boolean bRdo = false;
@@ -651,7 +651,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @return true if the operation gets done successfuly, false otherwise
      * @throws Exception
      */
-    public boolean doDeletetransitiondata(RunData data, TemplateContext context)
+    public boolean doDeletetransitiondata(RunData data, Context context)
             throws Exception
     {
         boolean bRdo = false;
@@ -706,7 +706,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
      * @param context
      * @return
      */
-    private void updatetransitiondata(RunData data, TemplateContext context) throws Exception
+    private void updatetransitiondata(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         ScarabLocalizationTool l10n = getLocalizationTool(context);

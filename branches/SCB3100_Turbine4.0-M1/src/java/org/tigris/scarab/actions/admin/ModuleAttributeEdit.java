@@ -51,7 +51,7 @@ import java.util.List;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Attribute;
@@ -76,7 +76,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
     /**
      * Changes the properties of existing AttributeOptions.
      */
-    public synchronized void doSave (RunData data, TemplateContext context)
+    public synchronized void doSave (RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -156,7 +156,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
      * Unmaps attribute options to modules.
      */
     public void doDeleteattributeoptions(RunData data,
-                                          TemplateContext context) 
+                                          Context context) 
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -223,7 +223,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
      * Selects option to add to attribute.
      */
     public void doSelectattributeoption(RunData data, 
-                                         TemplateContext context)
+                                         Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -273,7 +273,7 @@ public class ModuleAttributeEdit extends RequireLoginFirstAction
     /**
      * Manages clicking of the Done button
      */
-    public void doDone( RunData data, TemplateContext context )
+    public void doDone( RunData data, Context context )
         throws Exception
     {
         doSave(data, context);

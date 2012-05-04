@@ -48,7 +48,7 @@ package org.tigris.scarab.screens.admin;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 
 // Scarab Stuff
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -71,7 +71,7 @@ public class ModuleAttributeEdit extends Default
 {
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
-                              RunData data, TemplateContext context)
+                              RunData data, Context context)
         throws Exception 
    {
        Attribute attribute = scarabR.getAttribute();
@@ -117,7 +117,7 @@ public class ModuleAttributeEdit extends Default
        return l10n.format("EditModuleAttribute", title);
     }
     
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
     throws Exception
     {
     	super.doBuildTemplate(data, context);

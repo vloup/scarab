@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.Module;
@@ -91,7 +91,7 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
      * @param context
      * @throws Exception
      */
-    public void doDeletenotifications( RunData data, TemplateContext context)
+    public void doDeletenotifications( RunData data, Context context)
     throws Exception
     {                
         deleteMarkedEntries(data, context);
@@ -104,7 +104,7 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
      * @param context
      * @throws Exception
      */
-    private void deleteMarkedEntries(RunData data, TemplateContext context)
+    private void deleteMarkedEntries(RunData data, Context context)
             throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -170,7 +170,7 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
     // The following methods are primary for customization issues
     // ===============================================================
 
-    public void doCustomize( RunData data, TemplateContext context)
+    public void doCustomize( RunData data, Context context)
     throws Exception
     {                
         customize(data, context);
@@ -182,7 +182,7 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
      * @param context
      * @throws TorqueException
      */
-    private void customize(RunData data, TemplateContext context) 
+    private void customize(RunData data, Context context) 
         throws Exception
     {
         String key;
@@ -323,7 +323,7 @@ public class ChangeNotificationStatus extends ScarabTemplateAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public ScarabGlobalTool getScarabGlobalTool(TemplateContext context)
+    public ScarabGlobalTool getScarabGlobalTool(Context context)
     {
         return (ScarabGlobalTool)context
             .get(ScarabConstants.SCARAB_GLOBAL_TOOL);

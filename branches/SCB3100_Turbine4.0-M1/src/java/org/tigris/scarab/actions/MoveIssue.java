@@ -55,7 +55,7 @@ import java.util.Set;
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
@@ -95,7 +95,7 @@ public class MoveIssue extends BaseModifyIssue
      * From MoveIssue.vm -> MoveIssue2.vm, we only need to validate the inputs.
      * Intake + Pull is so friggen cool.
      */
-    public void doValidate(RunData data, TemplateContext context)
+    public void doValidate(RunData data, Context context)
         throws Exception
     {
         boolean collisionOccurred = isCollision(data, context);
@@ -229,7 +229,7 @@ public class MoveIssue extends BaseModifyIssue
      * Deals with moving or copying an issue from one module to
      * another module.
      */
-    public void doSaveissue(RunData data, TemplateContext context)
+    public void doSaveissue(RunData data, Context context)
         throws Exception
     {
     	//Clear cache for stability reasons, to avoid missing, cached values
@@ -377,7 +377,7 @@ public class MoveIssue extends BaseModifyIssue
     /**
      * This manages clicking the Back button on MoveIssue2.vm
      */
-    public void doBacktoone(RunData data, TemplateContext context) throws Exception
+    public void doBacktoone(RunData data, Context context) throws Exception
     {
         setTarget(data, data.getParameters()
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));

@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import org.apache.velocity.VelocityContext;
 import org.apache.fulcrum.velocity.TurbineVelocity;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.Search;
 import org.tigris.scarab.om.Module;
@@ -80,7 +80,7 @@ public class ViewXMLExportIssues extends Default
     /**
      * builds up the context for display of variables on the page.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
               

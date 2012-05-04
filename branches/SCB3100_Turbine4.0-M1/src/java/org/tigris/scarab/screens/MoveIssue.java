@@ -48,7 +48,7 @@ package org.tigris.scarab.screens;
 
 // Turbine Stuff 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 
 // Scarab Stuff
@@ -70,7 +70,7 @@ public class MoveIssue extends Default
     private static final Integer COPY_CHOICE = new Integer(1);
     private static final String KEY = "MoveIssueTitle1";
 
-    private TemplateContext context;
+    private Context context;
     private RunData data;
     
     protected String getTitle(ScarabRequestTool scarabR,
@@ -82,7 +82,7 @@ public class MoveIssue extends Default
 
     protected String getTitle(ScarabRequestTool scarabR,
                               ScarabLocalizationTool l10n,
-                              RunData data, TemplateContext context)
+                              RunData data, Context context)
         throws Exception
     {
         String title = null;
@@ -118,7 +118,7 @@ public class MoveIssue extends Default
         return KEY;
     }
     
-    protected void doBuildTemplate(RunData data, TemplateContext context)
+    protected void doBuildTemplate(RunData data, Context context)
     	throws Exception
     {
     	this.data = data;

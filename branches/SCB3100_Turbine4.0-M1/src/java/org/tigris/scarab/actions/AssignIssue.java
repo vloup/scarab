@@ -59,7 +59,7 @@ import java.util.logging.Logger;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.notification.NotificationManagerFactory;
 import org.tigris.scarab.om.ActivitySet;
@@ -95,7 +95,7 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Adds users to temporary working list.
      */
-    public void doAdd(RunData data, TemplateContext context) 
+    public void doAdd(RunData data, Context context) 
         throws Exception
     {
         int returnCode = 0;
@@ -151,7 +151,7 @@ public class AssignIssue extends BaseModifyIssue
      * @param context
      * @throws Exception
      */
-    public void doAddmyself(RunData data, TemplateContext context)
+    public void doAddmyself(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -207,7 +207,7 @@ public class AssignIssue extends BaseModifyIssue
      * @param context
      * @throws Exception
      */
-    public void doRemovemyself(RunData data, TemplateContext context)
+    public void doRemovemyself(RunData data, Context context)
     throws Exception
     {
         ScarabRequestTool scarabR = this.getScarabRequestTool(context);
@@ -420,7 +420,7 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Removes users from temporary working list.
      */
-    private void remove(RunData data, TemplateContext context, Long issueId) 
+    private void remove(RunData data, Context context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -452,7 +452,7 @@ public class AssignIssue extends BaseModifyIssue
     /**
      * Changes the user attribute a user is associated with.
      */
-    private void update(RunData data, TemplateContext context, Long issueId) 
+    private void update(RunData data, Context context, Long issueId) 
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -495,7 +495,7 @@ public class AssignIssue extends BaseModifyIssue
         }
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         ScarabUser user = (ScarabUser)data.getUser();
@@ -663,7 +663,7 @@ public class AssignIssue extends BaseModifyIssue
         }
     }
 
-    public void doPerform(RunData data, TemplateContext context) 
+    public void doPerform(RunData data, Context context) 
         throws Exception
     {
         

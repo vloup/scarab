@@ -47,7 +47,7 @@ package org.tigris.scarab.screens;
  */ 
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
@@ -65,7 +65,7 @@ public class IssueTypeList extends Default
      * Checks if makes any sense displaying the issuetype list, depending on current module
      * existing and really having associated issuetypes.
      */
-    protected void doBuildTemplate(RunData data, TemplateContext context) throws Exception
+    protected void doBuildTemplate(RunData data, Context context) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         Module module = scarabR.getCurrentModule();

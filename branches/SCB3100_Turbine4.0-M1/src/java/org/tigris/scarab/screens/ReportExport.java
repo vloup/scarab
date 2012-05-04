@@ -55,7 +55,7 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.reports.ReportBridge;
@@ -90,7 +90,7 @@ public class ReportExport extends DataExport
      *
      * Modelled after the <code>#reportTable()</code> Velocimacro.
      */
-    public void doBuildTemplate(RunData data, TemplateContext context)
+    public void doBuildTemplate(RunData data, Context context)
         throws Exception 
     {
         super.doBuildTemplate(data, context);

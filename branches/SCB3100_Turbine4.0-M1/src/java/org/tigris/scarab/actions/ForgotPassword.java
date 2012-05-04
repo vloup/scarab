@@ -51,7 +51,7 @@ import java.util.Locale;
 
 // Turbine Stuff
 import org.apache.turbine.Turbine;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 import org.apache.turbine.modules.ContextAdapter;
 
@@ -83,7 +83,7 @@ public class ForgotPassword extends ScarabTemplateAction
     /**
      * This manages clicking the Forgot Password button
      */
-    public void doForgotpassword(RunData data, TemplateContext context)
+    public void doForgotpassword(RunData data, Context context)
         throws Exception
     {
         data.setACL(null);
@@ -98,7 +98,7 @@ public class ForgotPassword extends ScarabTemplateAction
      * This takes care of looking the user up, setting the password to an arbitrary
      * value and sending the user an email
      */
-    public boolean forgotPassword(RunData data, TemplateContext context)
+    public boolean forgotPassword(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -149,7 +149,7 @@ public class ForgotPassword extends ScarabTemplateAction
      * @param tempPassword
      * @throws Exception
      */
-    public static void sendNotificationEmail(TemplateContext context, ScarabUser user, String tempPassword) throws Exception
+    public static void sendNotificationEmail(Context context, ScarabUser user, String tempPassword) throws Exception
     {
         // place the password
         // in the context for use in the email template.

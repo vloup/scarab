@@ -53,7 +53,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateAction;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
@@ -81,7 +81,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
     /**
      * Helper method to retrieve the IntakeTool from the Context
      */
-    public IntakeTool getIntakeTool(TemplateContext context)
+    public IntakeTool getIntakeTool(Context context)
     {
         return (IntakeTool) getTool(context, 
                 ScarabConstants.INTAKE_TOOL);
@@ -90,7 +90,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    public static ScarabRequestTool getScarabRequestTool(TemplateContext context)
+    public static ScarabRequestTool getScarabRequestTool(Context context)
     {
         return (ScarabRequestTool)context
             .get(ScarabConstants.SCARAB_REQUEST_TOOL);
@@ -99,7 +99,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
     /**
      * Helper method to retrieve the ScarabUserTool from the Context
      */
-    public ScarabUserTool getScarabUserTool(TemplateContext context)
+    public ScarabUserTool getScarabUserTool(Context context)
     {
         return (ScarabUserTool)context
             .get(ScarabConstants.SCARAB_USER_TOOL);
@@ -109,7 +109,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
      * Helper method to retrieve the ScarabLocalizationTool from the Context
      */
     protected final ScarabLocalizationTool 
-        getLocalizationTool(TemplateContext context)
+        getLocalizationTool(Context context)
     {
         return (ScarabLocalizationTool)
             context.get(ScarabConstants.LOCALIZATION_TOOL);
@@ -211,19 +211,19 @@ public abstract class ScarabTemplateAction extends TemplateAction
                    .getString(ScarabConstants.OTHER_TEMPLATE);
     }
 
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
     }
 
-    public void doGonext(RunData data, TemplateContext context)
+    public void doGonext(RunData data, Context context)
         throws Exception
     {
         setTarget(data, getNextTemplate(data));
     }
 
     public void doGotoothertemplate(RunData data, 
-                                     TemplateContext context)
+                                     Context context)
         throws Exception
     {
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
@@ -231,13 +231,13 @@ public abstract class ScarabTemplateAction extends TemplateAction
         setTarget(data, getOtherTemplate(data));
     }
 
-    public void doRefresh(RunData data, TemplateContext context)
+    public void doRefresh(RunData data, Context context)
         throws Exception
     {
         setTarget(data, getCurrentTemplate(data));
     }
 
-    public void doReset(RunData data, TemplateContext context)
+    public void doReset(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -245,13 +245,13 @@ public abstract class ScarabTemplateAction extends TemplateAction
         setTarget(data, getCurrentTemplate(data));
     }
         
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
         setTarget(data, getCancelTemplate(data));
     }
 
-    public void doDone(RunData data, TemplateContext context)
+    public void doDone(RunData data, Context context)
         throws Exception
     {
         doSave(data, context);
@@ -263,7 +263,7 @@ public abstract class ScarabTemplateAction extends TemplateAction
         return LOG;
     }
 
-    public void doRefreshresultsperpage(RunData data, TemplateContext context) 
+    public void doRefreshresultsperpage(RunData data, Context context) 
         throws Exception
     {
         ParameterParser params = data.getParameters();

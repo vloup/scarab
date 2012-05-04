@@ -48,7 +48,7 @@ package org.tigris.scarab.actions.admin;
 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 // Scarab Stuff
@@ -75,7 +75,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
     //TODO static should work, because there is only one SearchIndex, but its not a clean solution
     private static boolean isRunning;
 
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -105,7 +105,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
         setTarget(data, nextTemplate);
     }
 
-    public void doCancel(RunData data, TemplateContext context)
+    public void doCancel(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);

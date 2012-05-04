@@ -47,7 +47,7 @@ package org.tigris.scarab.actions;
  */ 
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 import org.tigris.scarab.om.ScarabUser;
@@ -70,7 +70,7 @@ public class Logout extends ScarabTemplateAction
      * Logs out the currently logged-in user. Only sets the confirmation
      * message if there was a user previously logged in.
      */
-    public void doLogout(RunData data, TemplateContext context)
+    public void doLogout(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -93,9 +93,9 @@ public class Logout extends ScarabTemplateAction
     }
 
     /**
-     * @see #doLogout(RunData, TemplateContext)
+     * @see #doLogout(RunData, Context)
      */
-    public void doPerform(RunData data, TemplateContext context)
+    public void doPerform(RunData data, Context context)
         throws Exception
     {
         doLogout(data, context);

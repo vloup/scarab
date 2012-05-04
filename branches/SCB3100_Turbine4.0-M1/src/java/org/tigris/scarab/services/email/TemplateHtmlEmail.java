@@ -68,7 +68,7 @@ import org.apache.commons.lang.StringUtils;
 
 import org.apache.fulcrum.ServiceException;
 import org.apache.fulcrum.velocity.ContextAdapter;
-import org.apache.fulcrum.template.TemplateContext;
+import org.apache.fulcrum.template.Context;
 import org.apache.fulcrum.template.TurbineTemplate;
 import org.apache.log4j.Logger;
 
@@ -83,7 +83,7 @@ import org.tigris.scarab.util.ScarabConstants;
 /**
  * This is a simple class for sending html email from within the TemplateService.
  * Essentially, the bodies (text and html) of the email are a TemplateService
- * TemplateContext objects.  The beauty of this is that you can send email
+ * Context objects.  The beauty of this is that you can send email
  * from within your TemplateService template or from your business logic in
  * your Java code.  The body of the email is just a TemplateService template
  * so you can use all the template functionality of your TemplateService within
@@ -132,7 +132,7 @@ public class TemplateHtmlEmail
      * A Context object which stores the information
      * needed to construct the email.
      */
-    private TemplateContext context = null;
+    private Context context = null;
 
     /**
      * The text template to process, relative to VM's template
@@ -147,9 +147,9 @@ public class TemplateHtmlEmail
     private static Logger emailLog = Log.get("email.log");
     
     /**
-     * Constructor, sets the TemplateContext object.
+     * Constructor, sets the Context object.
      *
-     * @param data A TemplateContext object.
+     * @param data A Context object.
      * @exception MessagingException.
      */
     public TemplateHtmlEmail()
@@ -176,10 +176,10 @@ public class TemplateHtmlEmail
     /**
      * Set the template's context
      *
-     * @param TemplateContext context
+     * @param Context context
      * @return A TemplateHtmlEmail (self)
      */
-    public TemplateHtmlEmail setContext(TemplateContext context)
+    public TemplateHtmlEmail setContext(Context context)
     {
         this.context = context;
         return this;

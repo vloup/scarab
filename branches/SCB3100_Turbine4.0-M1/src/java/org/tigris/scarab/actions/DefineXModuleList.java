@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 // Turbine Stuff 
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 import org.apache.turbine.tool.IntakeTool;
@@ -85,7 +85,7 @@ import org.tigris.scarab.tools.localization.L10NKeySet;
 public class DefineXModuleList extends RequireLoginFirstAction
 {
     public void doGotoquerywithinternallist(RunData data,
-                                            TemplateContext context)
+                                            Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -126,7 +126,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }        
 
-    public void doFinished(RunData data, TemplateContext context)
+    public void doFinished(RunData data, Context context)
         throws Exception
     {
         // add any last minute additions
@@ -149,7 +149,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doFinishedreportlist(RunData data, TemplateContext context)
+    public void doFinishedreportlist(RunData data, Context context)
         throws Exception
     {
         doFinished(data, context);
@@ -186,7 +186,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
     }
 
 
-    public void doRemoveSavedlist(RunData data, TemplateContext context)
+    public void doRemoveSavedlist(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -202,7 +202,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }        
     }
 
-    public void doRemoveitemsfromlist(RunData data, TemplateContext context)
+    public void doRemoveitemsfromlist(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -221,7 +221,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doGotosavelist(RunData data, TemplateContext context)
+    public void doGotosavelist(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -250,13 +250,13 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doStartover(RunData data, TemplateContext context)
+    public void doStartover(RunData data, Context context)
         throws Exception
     {
         ((ScarabUser)data.getUser()).setCurrentMITList(null);
     }
 
-    public void doSavelist(RunData data, TemplateContext context)
+    public void doSavelist(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);
@@ -296,7 +296,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doAddselectedrmits(RunData data, TemplateContext context)
+    public void doAddselectedrmits(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -329,7 +329,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
             currentList.addAll(list);
     }
 
-    private void addSelectedRMITs(RunData data, TemplateContext context)
+    private void addSelectedRMITs(RunData data, Context context)
         throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -404,7 +404,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
     }
 
     private void setAndGetCurrentList(String listId, RunData data, 
-                                      TemplateContext context)
+                                      Context context)
         
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
@@ -429,7 +429,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         }
     }
 
-    public void doToggleothermodules(RunData data, TemplateContext context)
+    public void doToggleothermodules(RunData data, Context context)
         throws Exception
     {
         String flag = data.getParameters()

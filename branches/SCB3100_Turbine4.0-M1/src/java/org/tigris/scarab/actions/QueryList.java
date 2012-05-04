@@ -55,7 +55,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.Query;
@@ -78,7 +78,7 @@ public class QueryList extends RequireLoginFirstAction
     /**
      * This method is not used until subscribed queries is working
      */
-    public void doSave(RunData data, TemplateContext context)
+    public void doSave(RunData data, Context context)
         throws Exception
     {
         IntakeTool intake = getIntakeTool(context);        
@@ -125,7 +125,7 @@ public class QueryList extends RequireLoginFirstAction
     } 
 
 
-    public void doDeletequeries(RunData data, TemplateContext context)
+    public void doDeletequeries(RunData data, Context context)
         throws Exception
     {
         Object[] keys = data.getParameters().getKeys();
@@ -156,7 +156,7 @@ public class QueryList extends RequireLoginFirstAction
         } 
     } 
 
-    public void doCopyquery(RunData data, TemplateContext context)
+    public void doCopyquery(RunData data, Context context)
         throws Exception
     {
         ParameterParser pp = data.getParameters();
@@ -183,7 +183,7 @@ public class QueryList extends RequireLoginFirstAction
      * page. Since it is a 'create new' option, several of the session persistent
      * options are reset.
      */
-    public void doGotoadvancedquery(RunData data, TemplateContext context)
+    public void doGotoadvancedquery(RunData data, Context context)
         throws Exception
     {
         // reset the MITList
@@ -205,7 +205,7 @@ public class QueryList extends RequireLoginFirstAction
      * @param context
      * @throws Exception 
      */
-    public void doSetstartpage(RunData data, TemplateContext context) throws Exception
+    public void doSetstartpage(RunData data, Context context) throws Exception
     {
         ParameterParser pp = data.getParameters();   
         String queryId = pp.get("startpage");

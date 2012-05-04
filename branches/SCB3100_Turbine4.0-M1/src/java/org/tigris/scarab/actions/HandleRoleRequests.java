@@ -55,7 +55,7 @@ import java.util.Iterator;
 // Turbine Stuff
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.apache.turbine.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
@@ -88,7 +88,7 @@ import org.tigris.scarab.services.security.ScarabSecurity;
  */
 public class HandleRoleRequests extends RequireLoginFirstAction
 {
-    public void doRequestroles(RunData data, TemplateContext context)
+    public void doRequestroles(RunData data, Context context)
         throws Exception
     {
         String template = getCurrentTemplate(data, null);
@@ -211,7 +211,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
     /**
      * Helper method to retrieve the ScarabRequestTool from the Context
      */
-    private SecurityAdminTool getSecurityAdminTool(TemplateContext context)
+    private SecurityAdminTool getSecurityAdminTool(Context context)
     {
         return (SecurityAdminTool)context
             .get(ScarabConstants.SECURITY_ADMIN_TOOL);

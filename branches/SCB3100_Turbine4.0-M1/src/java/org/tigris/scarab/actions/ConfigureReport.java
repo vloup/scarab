@@ -59,7 +59,7 @@ import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.RunData;
-import org.apache.turbine.TemplateContext;
+import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.Report;
@@ -111,7 +111,7 @@ public class ConfigureReport
     ParameterParser params;
     ScarabUser user;
 
-    private void setup(RunData data, TemplateContext context) throws Exception{
+    private void setup(RunData data, Context context) throws Exception{
         l10n = getLocalizationTool(context);
         scarabR = getScarabRequestTool(context);
         report = scarabR.getReport();
@@ -120,7 +120,7 @@ public class ConfigureReport
         user = (ScarabUser)data.getUser();
     }
     
-    public void doSaveinfo(RunData data, TemplateContext context)
+    public void doSaveinfo(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -171,7 +171,7 @@ public class ConfigureReport
         }
     }
 
-    public void doSelectheading(RunData data, TemplateContext context)
+    public void doSelectheading(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -192,7 +192,7 @@ public class ConfigureReport
         }        
     }
 
-    public void doSettype(RunData data, TemplateContext context)
+    public void doSettype(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -234,7 +234,7 @@ public class ConfigureReport
         }
     }
 
-    public void doAddoptions(RunData data, TemplateContext context)
+    public void doAddoptions(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -364,7 +364,7 @@ public class ConfigureReport
     /**
      * Adds users to the current header.
      */
-    public void doAddusers(RunData data, TemplateContext context) 
+    public void doAddusers(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
@@ -424,7 +424,7 @@ public class ConfigureReport
     /**
      * Removes users from temporary working list.
      */
-    public void doRemoveusers(RunData data, TemplateContext context) 
+    public void doRemoveusers(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
@@ -481,7 +481,7 @@ public class ConfigureReport
     /**
      * Changes the user attribute a user is associated with.
      */
-    public void doUpdateusers(RunData data, TemplateContext context) 
+    public void doUpdateusers(RunData data, Context context) 
         throws Exception
     {
         
@@ -555,7 +555,7 @@ public class ConfigureReport
     /**
      * Changes the user attribute a user is associated with.
      */
-    public void doRemoveheading(RunData data, TemplateContext context) 
+    public void doRemoveheading(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
@@ -587,7 +587,7 @@ public class ConfigureReport
      * Redirects to screen to group the options/users in the selected
      * heading.
      */
-    public void doGotoeditgroups(RunData data, TemplateContext context) 
+    public void doGotoeditgroups(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
@@ -619,7 +619,7 @@ public class ConfigureReport
     /**
      * 
      */
-    public void doAddheading(RunData data, TemplateContext context) 
+    public void doAddheading(RunData data, Context context) 
         throws Exception
     {
         setup(data,context);
@@ -641,7 +641,7 @@ public class ConfigureReport
         scarabR.setConfirmMessage(L10NKeySet.HeadingAddedNowAddContent);
     }        
 
-    public void doAddgroup(RunData data, TemplateContext context)
+    public void doAddgroup(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -707,7 +707,7 @@ public class ConfigureReport
         }
     }
 
-    public void doDeletegroup(RunData data, TemplateContext context)
+    public void doDeletegroup(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -756,7 +756,7 @@ public class ConfigureReport
         }
     }
 
-    public void doEditgroupname(RunData data, TemplateContext context)
+    public void doEditgroupname(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -797,7 +797,7 @@ public class ConfigureReport
     }
 
 
-    public void doSavegroups(RunData data, TemplateContext context)
+    public void doSavegroups(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -888,7 +888,7 @@ public class ConfigureReport
     }
 
 
-    public void doAdddate(RunData data, TemplateContext context)
+    public void doAdddate(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -933,7 +933,7 @@ public class ConfigureReport
         scarabR.setConfirmMessage(L10NKeySet.DateAdded);
     }
     
-    public void doAdddaterange(RunData data, TemplateContext context)
+    public void doAdddaterange(RunData data, Context context)
     throws Exception
     {
     	setup(data,context);
@@ -1033,7 +1033,7 @@ public class ConfigureReport
     	   	
     }
 
-    public void doDeletedate(RunData data, TemplateContext context)
+    public void doDeletedate(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -1065,7 +1065,7 @@ public class ConfigureReport
         }
     }
     
-    public void doDeletedaterange(RunData data, TemplateContext context)
+    public void doDeletedaterange(RunData data, Context context)
     throws Exception
     {
     	setup(data,context);
@@ -1100,7 +1100,7 @@ public class ConfigureReport
 }
 
 
-    public void doRedirecttocrossmodulelist(RunData data, TemplateContext context)
+    public void doRedirecttocrossmodulelist(RunData data, Context context)
          throws Exception
     {
         setup(data,context);
@@ -1111,7 +1111,7 @@ public class ConfigureReport
         setTarget(data, "reports,XModuleList.vm");
     }
 
-    public void doConfinedataset(RunData data, TemplateContext context)
+    public void doConfinedataset(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -1144,7 +1144,7 @@ public class ConfigureReport
     }
 
 
-    public void doSwaprowcol(RunData data, TemplateContext context)
+    public void doSwaprowcol(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
@@ -1174,7 +1174,7 @@ public class ConfigureReport
         // FIXME: do we need a confirmation message? -jon
     }
 
-    public void doVerifyreport(RunData data, TemplateContext context)
+    public void doVerifyreport(RunData data, Context context)
          throws Exception
     {
         setup(data,context);
@@ -1184,7 +1184,7 @@ public class ConfigureReport
         }
     }
 
-    public void doGeneratereport(RunData data, TemplateContext context)
+    public void doGeneratereport(RunData data, Context context)
          throws Exception
     {
         setup(data,context);
@@ -1238,7 +1238,7 @@ public class ConfigureReport
         }
     }
     
-    public void doCreatenew(RunData data, TemplateContext context)
+    public void doCreatenew(RunData data, Context context)
         throws Exception
     {
         String key = data.getParameters()
@@ -1261,7 +1261,7 @@ public class ConfigureReport
     }
     
 
-    public void doSavereport(RunData data, TemplateContext context)
+    public void doSavereport(RunData data, Context context)
         throws Exception
     {
         setup(data,context);        
@@ -1317,7 +1317,7 @@ public class ConfigureReport
         }
     }
 
-    public void doDeletestoredreport(RunData data, TemplateContext context)
+    public void doDeletestoredreport(RunData data, Context context)
         throws Exception
     {
         setup(data,context);
