@@ -67,7 +67,7 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.fulcrum.InitializationException;
 import org.apache.fulcrum.ServiceException;
-import org.apache.fulcrum.template.BaseTemplateEngineService;
+import org.apache.turbine.services.template.BaseTemplateEngineService;
 import org.apache.fulcrum.template.Context;
 import org.apache.fulcrum.velocity.ContextAdapter;
 import org.apache.velocity.VelocityContext;
