@@ -257,28 +257,29 @@ we will refer to the root diretory of your distribution as <i>$SCARAB_ROOT</i>.
 </p>
 <source>
 scarab
-  +- build                 &lt;-- Ant scripts for building the sample webapp
-  |                             and creating/loading the sql scripts.
+  +- build                      &lt;-- Ant scripts for building the sample webapp
+  |                                    and creating/loading the sql scripts.
   +- extensions
-  |   +- backup            &lt;-- A tool to help backup and restore a Scarab database
-  |   +- bugzilla          &lt;-- Scripts for converting from Bugzilla to Scarab
-  |   +- dtd               &lt;-- DTD's for validating XML files
-  |   +- excel2scarab	   &lt;-- Ant build which transforms an XML input file into an XML importable by Scarab.
-  |   +- scripts           &lt;-- Helper shell scripts
-  |   +- usermods          &lt;--  place your modifications to the standard
-  |                                distribution here. These modifications will be
-  |                                incorporated into the build. This simplifies
-  |                                the process of replacing *.vm files,
-  |                                among other things.
+  |   +- backup                 &lt;-- A tool to help backup and restore a Scarab database
+  |   +- bugzilla               &lt;-- Scripts for converting from Bugzilla to Scarab
+  |   +- dtd                    &lt;-- DTD's for validating XML files
+  |   +- excel2scarab	        &lt;-- Ant build which transforms an XML input file into an XML importable by Scarab.
+  |   +- scripts                &lt;-- Helper shell scripts
+  |   +- scarab-maven-plugin    &lt;-- Source code of necessary Maven build plugin for Scarab.
+  |   +- usermods               &lt;-- place your modifications to the standard
+  |                                    distribution here. These modifications will be
+  |                                    incorporated into the build. This simplifies
+  |                                    the process of replacing *.vm files,
+  |                                    among other things.
   +- lib
-  +- src                   &lt;-- The source files.
-  +- tomcat                &lt;-- Included Tomcat configured ready to run with Scarab.
-  +- www                   &lt;-- Scarab Website
-      +- book              &lt;-- xml versions of manuals (guides)
-      +- dtd               &lt;-- DTD's
-      +- repository        &lt;-- The .jar repository for jars used by Scarab.
+  +- src                        &lt;-- The source files.
+  +- tomcat                     &lt;-- Included Tomcat configured ready to run with Scarab.
+  +- www                        &lt;-- Scarab Website
+      +- book                   &lt;-- xml versions of manuals (guides)
+      +- dtd                    &lt;-- DTD's
+      +- repository             &lt;-- The .jar repository for jars used by Scarab.
   +- site
-      +- xdocs             &lt;-- xml files for maven site (misc documentation files, howtos etc)
+      +- xdocs                  &lt;-- xml files for maven site (misc documentation files, howtos etc)
 </source>
 <p>
 Within the /src directory you find following subdirectories...
