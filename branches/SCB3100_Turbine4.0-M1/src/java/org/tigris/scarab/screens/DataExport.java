@@ -56,7 +56,7 @@ import org.apache.commons.lang.StringUtils;
 
 import org.apache.log4j.Logger;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.util.ScarabUtil;

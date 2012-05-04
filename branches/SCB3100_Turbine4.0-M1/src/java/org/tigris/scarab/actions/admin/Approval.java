@@ -57,7 +57,7 @@ import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.util.AccessControlList;
 import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.torque.om.NumberKey;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;

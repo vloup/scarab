@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.attribute.DateAttribute;

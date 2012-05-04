@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.TemplateScreen;
 import org.tigris.scarab.feeds.Feed;

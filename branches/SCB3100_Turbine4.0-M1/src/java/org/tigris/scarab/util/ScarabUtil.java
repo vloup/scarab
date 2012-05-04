@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.fulcrum.parser.StringValueParser;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
 import org.tigris.scarab.om.Module;

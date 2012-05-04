@@ -48,7 +48,7 @@ package org.tigris.scarab.actions.admin;
 
 // Turbine Stuff 
 import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;
 import org.tigris.scarab.om.GlobalParameter;

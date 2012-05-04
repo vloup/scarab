@@ -52,7 +52,7 @@ import java.util.Locale;
 // Turbine Stuff
 import org.apache.turbine.Turbine;
 import org.apache.velocity.context.Context;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.modules.ContextAdapter;
 
 import org.apache.fulcrum.security.TurbineSecurity;

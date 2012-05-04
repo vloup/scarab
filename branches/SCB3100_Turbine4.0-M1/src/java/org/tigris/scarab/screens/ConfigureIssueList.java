@@ -49,7 +49,7 @@ package org.tigris.scarab.screens;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.tools.ScarabRequestTool;

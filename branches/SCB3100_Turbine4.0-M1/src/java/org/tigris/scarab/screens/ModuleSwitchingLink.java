@@ -8,7 +8,7 @@ package org.tigris.scarab.screens;
 
 import java.util.ArrayList;
 
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.tool.TemplateLink;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;

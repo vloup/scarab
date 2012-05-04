@@ -49,7 +49,7 @@ package org.tigris.scarab.actions;
 import org.apache.fulcrum.security.entity.User;
 
 import org.apache.velocity.context.Context;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.modules.actions.TemplateSessionValidator;
 
 import org.tigris.scarab.util.Log;

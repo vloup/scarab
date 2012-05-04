@@ -51,7 +51,7 @@ package org.tigris.scarab.actions.base;
  // Turbine Stuff
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.TemplateAction;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;

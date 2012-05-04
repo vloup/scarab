@@ -48,7 +48,7 @@ package org.tigris.scarab.actions;
 
 // Turbine Stuff 
 import org.apache.velocity.context.Context;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
 
 // Scarab Stuff

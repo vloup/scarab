@@ -51,7 +51,7 @@ import java.util.Enumeration;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;

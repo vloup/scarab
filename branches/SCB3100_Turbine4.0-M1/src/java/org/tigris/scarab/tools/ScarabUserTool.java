@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.torque.TorqueException;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributeValue;
 import org.tigris.scarab.om.GlobalParameterManager;

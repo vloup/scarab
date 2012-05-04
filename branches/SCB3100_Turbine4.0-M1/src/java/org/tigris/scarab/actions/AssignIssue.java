@@ -58,7 +58,7 @@ import java.util.logging.Logger;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.BaseModifyIssue;
 import org.tigris.scarab.notification.NotificationManagerFactory;

@@ -50,7 +50,7 @@ import java.util.List;
 
 import org.apache.fulcrum.intake.model.Group;
 import org.apache.fulcrum.parser.ParameterParser;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;

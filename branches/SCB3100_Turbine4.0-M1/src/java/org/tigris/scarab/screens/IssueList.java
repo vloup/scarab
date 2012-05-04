@@ -49,7 +49,7 @@ package org.tigris.scarab.screens;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.tools.ScarabLocalizationTool;

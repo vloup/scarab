@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.ObjectKey;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.actions.base.ScarabTemplateAction;
 import org.tigris.scarab.notification.NotificationManagerFactory;

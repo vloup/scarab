@@ -54,7 +54,7 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 
 import org.tigris.scarab.om.ScarabUser;

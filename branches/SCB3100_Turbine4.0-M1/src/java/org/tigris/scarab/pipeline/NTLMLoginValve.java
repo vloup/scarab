@@ -13,7 +13,7 @@ import org.apache.fulcrum.security.util.DataBackendException;
 import org.apache.fulcrum.security.util.UnknownEntityException;
 import org.apache.log4j.Logger;
 import org.apache.torque.TorqueException;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.ValveContext;

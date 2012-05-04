@@ -56,7 +56,7 @@ import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.base.RequireLoginFirstAction;

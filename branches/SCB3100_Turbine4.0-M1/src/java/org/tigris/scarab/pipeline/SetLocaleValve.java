@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.fulcrum.localization.Localization;
 import org.apache.fulcrum.localization.LocalizationService;
 import org.apache.log4j.Logger;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.TurbineException;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.apache.turbine.ValveContext;

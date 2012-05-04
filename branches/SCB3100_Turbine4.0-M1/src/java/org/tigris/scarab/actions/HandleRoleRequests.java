@@ -56,7 +56,7 @@ import java.util.Iterator;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
 import org.apache.velocity.context.Context;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 
 import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Role;

@@ -57,7 +57,7 @@ import org.apache.fulcrum.security.TurbineSecurity;
 import org.apache.fulcrum.security.entity.Role;
 import org.apache.fulcrum.security.entity.User;
 import org.apache.fulcrum.security.util.AccessControlList;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.tool.IntakeTool;
 import org.tigris.scarab.actions.ForgotPassword;

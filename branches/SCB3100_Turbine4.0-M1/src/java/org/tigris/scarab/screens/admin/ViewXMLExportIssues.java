@@ -53,7 +53,7 @@ import java.util.ArrayList;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.fulcrum.velocity.TurbineVelocity;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.turbine.Turbine;
 import org.tigris.scarab.actions.Search;

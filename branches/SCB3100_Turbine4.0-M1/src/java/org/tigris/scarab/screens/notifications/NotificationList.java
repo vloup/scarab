@@ -52,7 +52,7 @@ import java.util.List;
 
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.Activity;
 import org.tigris.scarab.om.ActivitySet;

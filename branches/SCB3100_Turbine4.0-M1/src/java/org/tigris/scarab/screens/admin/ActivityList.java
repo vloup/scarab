@@ -54,7 +54,7 @@ import java.util.List;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.util.Criteria;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.tigris.scarab.om.ActivitySetPeer;
 import org.tigris.scarab.screens.Default;

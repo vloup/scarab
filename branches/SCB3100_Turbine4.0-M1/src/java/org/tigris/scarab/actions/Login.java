@@ -50,7 +50,7 @@ import java.util.List;
 
 // Turbine Stuff 
 import org.apache.velocity.context.Context;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.security.TurbineSecurity;

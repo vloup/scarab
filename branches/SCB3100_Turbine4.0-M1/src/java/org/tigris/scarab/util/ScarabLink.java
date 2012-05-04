@@ -52,7 +52,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
 import org.apache.turbine.DynamicURI;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.tool.TemplateLink;
 import org.tigris.scarab.om.Issue;

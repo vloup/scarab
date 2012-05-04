@@ -47,7 +47,7 @@ package org.tigris.scarab.util;
  */
 
 import org.apache.turbine.Turbine;
-import org.apache.turbine.RunData;
+import org.apache.turbine.util.RunData;
 import org.apache.turbine.modules.Module;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
