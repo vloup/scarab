@@ -93,7 +93,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
         switch (nObjectType)
         {
             case ScarabConstants.TRANSITION_OBJECT:
-            	Integer tranId = data.getParameters().getInteger("transition_id");
+            	Integer tranId = data.getParameters().getIntObject("transition_id");
             	crit.add(ConditionPeer.TRANSITION_ID, tranId);
             	TransitionManager.getMethodResult().remove(TransitionManager.getInstance(tranId), TransitionManager.GET_CONDITIONS);
                 break;
@@ -130,24 +130,24 @@ public class BaseConditionEdit extends RequireLoginFirstAction
     private void updateObject(RunData data, Context context, Integer aConditions[]) throws Exception
     {
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        Integer operator = data.getParameters().getInteger("combineWith");
+        Integer operator = data.getParameters().getIntObject("combineWith");
         switch (data.getParameters().getInt("obj_type"))
         {
             case ScarabConstants.TRANSITION_OBJECT:
-                Transition transition = scarabR.getTransition(data.getParameters().getInteger("transition_id"));
+                Transition transition = scarabR.getTransition(data.getParameters().getIntObject("transition_id"));
             	transition.setConditionsArray(aConditions, operator);
             	transition.save();
             	TransitionManager.getMethodResult().remove(transition, TransitionManager.GET_CONDITIONS);
                 AttributeManager.clear();        
                 break;
             case ScarabConstants.GLOBAL_ATTRIBUTE_OBJECT:
-                Attribute attribute = scarabR.getAttribute(data.getParameters().getInteger("attId"));
+                Attribute attribute = scarabR.getAttribute(data.getParameters().getIntObject("attId"));
             	attribute.setConditionsArray(aConditions, operator);
             	attribute.save();
                 AttributeManager.clear();        
                 break;
             case ScarabConstants.MODULE_ATTRIBUTE_OBJECT:
-            	RModuleAttribute rma = RModuleAttributePeer.retrieveByPK(data.getParameters().getInteger("moduleId"), data.getParameters().getInteger("attId"), data.getParameters().getInteger("issueTypeId"));
+            	RModuleAttribute rma = RModuleAttributePeer.retrieveByPK(data.getParameters().getIntObject("moduleId"), data.getParameters().getIntObject("attId"), data.getParameters().getIntObject("issueTypeId"));
                 rma.setConditionsArray(aConditions, operator);
                 RModuleAttributeManager.clear();
                 ConditionManager.clear();
@@ -155,7 +155,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
                 AttributeManager.clear();        
         		break;
         	case ScarabConstants.BLOCKED_MODULE_ISSUE_TYPE_OBJECT:
-        	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), data.getParameters().getInteger("issuetypeid"));
+        	    RModuleIssueType rmit = RModuleIssueTypePeer.retrieveByPK(scarabR.getCurrentModule().getModuleId(), data.getParameters().getIntObject("issuetypeid"));
         		rmit.setConditionsArray(aConditions, operator);
         	    rmit.save();
         	    RModuleIssueTypeManager.clear();

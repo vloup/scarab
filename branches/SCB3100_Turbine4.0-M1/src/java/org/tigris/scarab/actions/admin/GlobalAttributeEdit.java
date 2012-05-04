@@ -610,9 +610,9 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
                 !data.getParameters().getString("trans_new_FromId").equals("choose") &&
                 !data.getParameters().getString("trans_new_ToId").equals("choose"))
         {
-            Integer roleId = data.getParameters().getInteger("trans_new_RoleId");
-            Integer fromId = data.getParameters().getInteger("trans_new_FromId");
-            Integer toId = data.getParameters().getInteger("trans_new_ToId");
+            Integer roleId = data.getParameters().getIntObject("trans_new_RoleId");
+            Integer fromId = data.getParameters().getIntObject("trans_new_FromId");
+            Integer toId = data.getParameters().getIntObject("trans_new_ToId");
 
             if (roleId.intValue() == -1)
                 roleId = null;

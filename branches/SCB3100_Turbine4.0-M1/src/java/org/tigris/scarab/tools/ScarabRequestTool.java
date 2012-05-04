@@ -1363,7 +1363,7 @@ public class ScarabRequestTool
         IssueType curit = user.getCurrentIssueType();
         if (curit == null)
         {
-            Integer curitID = data.getParameters().getInteger(ScarabConstants.CURRENT_ISSUE_TYPE);
+            Integer curitID = data.getParameters().getIntObject(ScarabConstants.CURRENT_ISSUE_TYPE);
             if(curitID.intValue()!=0)
             {
                 curit = IssueTypeManager.getInstance(curitID);
