@@ -53,7 +53,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
-import org.apache.turbine.TurbineException;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.modules.Module;
 import org.apache.turbine.pipeline.AbstractValve;

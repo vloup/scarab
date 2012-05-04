@@ -54,7 +54,7 @@ import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.torque.TorqueException;
 import org.apache.torque.om.NumberKey;
 import org.apache.turbine.util.RunData;
-import org.apache.turbine.TurbineException;
+import org.apache.turbine.util.TurbineException;
 import org.apache.turbine.ValveContext;
 import org.apache.turbine.pipeline.AbstractValve;
 import org.tigris.scarab.om.IssueManager;
