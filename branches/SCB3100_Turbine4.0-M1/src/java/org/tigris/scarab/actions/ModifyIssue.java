@@ -1717,7 +1717,7 @@ public class ModifyIssue extends BaseModifyIssue
             data.getParameters().add("id", issue.getUniqueId());
             data.getParameters().add("issue_ids", issue.getUniqueId());
             scarabR.resetAssociatedUsers();
-            setTarget(data, "AssignIssue.vm");
+            data.setScreenTemplate("AssignIssue.vm");
         }
         else
         {
@@ -1755,12 +1755,12 @@ public class ModifyIssue extends BaseModifyIssue
             {
                 pp.add("issue_ids", currentIssueId);
             }
-            setTarget(data, "MoveIssue.vm");
+            data.setScreenTemplate("MoveIssue.vm");
         }
         else
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-            setTarget(data, "ViewIssue.vm");
+            data.setScreenTemplate("ViewIssue.vm");
         }
     }
 
@@ -1787,7 +1787,7 @@ public class ModifyIssue extends BaseModifyIssue
         {
             pp.add("issue_ids", currentIssueId);
         }
-        setTarget(data, "MoveIssue.vm");            
+        data.setScreenTemplate("MoveIssue.vm");            
     }
 
     /**

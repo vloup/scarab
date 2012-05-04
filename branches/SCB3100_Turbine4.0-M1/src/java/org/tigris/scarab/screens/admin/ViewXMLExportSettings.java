@@ -116,6 +116,6 @@ public class ViewXMLExportSettings extends Default
         context.remove("renderedFromScreen");
 
         // we already sent the response, there is no target to render
-        data.setTarget(null);
+        data.setScreenTemplate(null);
     }
 }

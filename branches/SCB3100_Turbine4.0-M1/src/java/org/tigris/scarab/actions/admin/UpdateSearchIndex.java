@@ -102,7 +102,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
 
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     public void doCancel(RunData data, Context context)
@@ -116,7 +116,7 @@ public class UpdateSearchIndex extends RequireLoginFirstAction
     
         String template = getCurrentTemplate(data, null);
         String nextTemplate = getNextTemplate(data, template);
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
     
 

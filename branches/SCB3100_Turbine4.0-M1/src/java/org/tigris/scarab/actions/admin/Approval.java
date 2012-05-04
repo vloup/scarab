@@ -353,7 +353,7 @@ public class Approval extends RequireLoginFirstAction
             }
             scarabR.setConfirmMessage(L10NKeySet.AllRolesProcessed);
         }
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     /**

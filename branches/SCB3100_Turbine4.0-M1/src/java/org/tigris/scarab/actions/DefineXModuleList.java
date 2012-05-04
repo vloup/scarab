@@ -121,7 +121,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
             user.setCurrentMITList(list);
             // reset selected users map
             scarabR.resetSelectedUsers();
-            setTarget(data, data.getParameters()
+            data.setScreenTemplate(data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE));
         }
     }        
@@ -139,7 +139,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
 
         if (currentList != null && !currentList.isEmpty()) 
         {
-            setTarget(data, user.getQueryTarget());
+            data.setScreenTemplate(user.getQueryTarget());
         }
         else
         {
@@ -160,7 +160,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
         if (!report.isEditable(user)) 
         {
             scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -176,12 +176,12 @@ public class DefineXModuleList extends RequireLoginFirstAction
                 report.setScopeId(Scope.PERSONAL__PK);
                 scarabR.setInfoMessage(L10NKeySet.ScopeChangedToPersonal);
             }
-            setTarget(data, "reports,Info.vm");
+            data.setScreenTemplate("reports,Info.vm");
         }
         catch (IncompatibleMITListException e)
         {
             scarabR.setAlertMessage(L10NKeySet.IncompatibleMITListReport);
-            setTarget(data, "reports,XModuleList.vm");
+            data.setScreenTemplate("reports,XModuleList.vm");
         }
     }
 
@@ -240,13 +240,13 @@ public class DefineXModuleList extends RequireLoginFirstAction
             String queryId = data.getParameters().getString("queryId");
             if (queryId != null && queryId.length() > 0) 
             {
-                setTarget(data, "EditQuery.vm");
+                data.setScreenTemplate("EditQuery.vm");
             }
         }
         else
         {
             list.setName(null);
-            setTarget(data, "EditXModuleList.vm");
+            data.setScreenTemplate("EditXModuleList.vm");
         }
     }
 
@@ -291,7 +291,7 @@ public class DefineXModuleList extends RequireLoginFirstAction
             user.setCurrentMITList(null);
  
             scarabR.setConfirmMessage(DEFAULT_MSG);
-            setTarget(data, data.getParameters()
+            data.setScreenTemplate(data.getParameters()
                       .getString(ScarabConstants.LAST_TEMPLATE));
         }
     }

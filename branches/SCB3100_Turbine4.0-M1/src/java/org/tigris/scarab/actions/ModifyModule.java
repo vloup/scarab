@@ -114,7 +114,7 @@ public class ModifyModule extends RequireLoginFirstAction
 
             if (moduleGroup == null)
             {
-                setTarget(data, template);
+                data.setScreenTemplate(template);
                 scarabR.setAlertMessage(
                     L10NKeySet.CouldNotLocateModuleGroup);
                 return;
@@ -129,7 +129,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 {
                     scarabR.setAlertMessage(NO_PERMISSION_MESSAGE);
                     intake.remove(moduleGroup);
-                    setTarget(data, nextTemplate);
+                    data.setScreenTemplate(nextTemplate);
                     return;
                 }
 
@@ -143,14 +143,14 @@ public class ModifyModule extends RequireLoginFirstAction
                 {
                     scarabR.setAlertMessage(L10NKeySet.CircularParentChildRelationship);
                     intake.remove(moduleGroup);
-                    setTarget(data, template);
+                    data.setScreenTemplate(template);
                     return;
                 }
                 else if (!user.hasPermission(ScarabSecurity.MODULE__EDIT, origParent) && 
                     origParent.getModuleId() != newParent.getModuleId())
                 {
                     scarabR.setAlertMessage(L10NKeySet.NoPermissionInParentModule);
-                    setTarget(data, template);
+                    data.setScreenTemplate(template);
                     return;
                 }
                 
@@ -192,7 +192,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 updateModuleParameters(data, me);
                 
                 intake.remove(moduleGroup);
-                setTarget(data, nextTemplate);
+                data.setScreenTemplate(nextTemplate);
                 scarabR.setConfirmMessage(L10NKeySet.ModuleUpdated);
             }
         }
@@ -302,7 +302,7 @@ public class ModifyModule extends RequireLoginFirstAction
                 catch(Exception e){
                 	if(e instanceof ScarabRuntimeException){
                 		scarabR.setAlertMessage(((ScarabRuntimeException)e).getMessage(l10n));  
-                		setTarget(data, template);
+                		data.setScreenTemplate(template);
                 		return;
                 	}
                 	else{
@@ -313,9 +313,9 @@ public class ModifyModule extends RequireLoginFirstAction
         }
         else
         {
-            setTarget(data, template);
+            data.setScreenTemplate(template);
             return;
         }
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 }

@@ -112,7 +112,7 @@ public class ScarabSessionValidator extends TemplateSessionValidator
                 .setAlertMessage( msg );
 
             data.setAction("");
-            setTarget(data, data.getParameters()
+            data.setScreenTemplate(data.getParameters()
                 .getString(ScarabConstants.CANCEL_TEMPLATE, null));
             
         }

@@ -131,7 +131,7 @@ public class ReportIssue extends RequireLoginFirstAction
         if (!isValid)
         {
           scarabR.setAlertMessage(L10NKeySet.IssueTypeUnavailable);
-          data.setTarget( ((ScarabUser)data.getUser()).getHomePage());
+          data.setScreenTemplate( ((ScarabUser)data.getUser()).getHomePage());
           cleanup(data, context);
         }
         return isValid;
@@ -171,7 +171,7 @@ public class ReportIssue extends RequireLoginFirstAction
             L10NMessage l10nMessage = new L10NMessage(L10NKeySet.ErrorExceptionMessage,e);
             scarabR.setAlertMessage(l10nMessage);
             Log.get().error("Error while checking for duplicates", e);
-            setTarget(data, "entry,Wizard1.vm");
+            data.setScreenTemplate("entry,Wizard1.vm");
             return;
         }
 
@@ -221,7 +221,7 @@ public class ReportIssue extends RequireLoginFirstAction
         }
         if (!hasSetValues)
         {
-            setTarget(data, nextTemplate);
+            data.setScreenTemplate(nextTemplate);
             return true;
         }
 
@@ -249,7 +249,7 @@ public class ReportIssue extends RequireLoginFirstAction
             template = nextTemplate;
         }
         
-        setTarget(data, template);
+        data.setScreenTemplate(template);
         return dupThresholdExceeded;
     }
     
@@ -839,7 +839,7 @@ public class ReportIssue extends RequireLoginFirstAction
     public void doGotowizard3(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "entry,Wizard3.vm");
+        data.setScreenTemplate("entry,Wizard3.vm");
     }
     
     public void doUsetemplates(RunData data, Context context)
@@ -953,7 +953,7 @@ public class ReportIssue extends RequireLoginFirstAction
                 }
                 break;
         } 
-        setTarget(data, template);
+        data.setScreenTemplate(template);
     }
 
     public void doStart(RunData data, Context context)

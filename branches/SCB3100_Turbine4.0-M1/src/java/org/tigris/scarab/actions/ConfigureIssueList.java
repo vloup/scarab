@@ -128,7 +128,7 @@ public class ConfigureIssueList extends RequireLoginFirstAction
 	        if (attributes.isEmpty())
 	        {
 	            scarabR.setAlertMessage(L10NKeySet.MustSelectAtLeastOneAttribute);
-	            setTarget(data, data.getParameters()
+	            data.setScreenTemplate(data.getParameters()
 	                            .getString(ScarabConstants.TEMPLATE, 
 	                                       "ConfigureIssueList.vm"));
 	            return;

@@ -89,7 +89,7 @@ public class Logout extends ScarabTemplateAction
                 scarabR.setConfirmMessage(L10NKeySet.YouHaveBeenLoggedOut);
             }
         }
-        setTarget(data, "Login.vm");
+        data.setScreenTemplate("Login.vm");
     }
 
     /**

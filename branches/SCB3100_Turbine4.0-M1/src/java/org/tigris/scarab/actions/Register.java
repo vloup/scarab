@@ -103,7 +103,7 @@ public class Register extends ScarabTemplateAction
 
         if (!password.equals(passwordConfirm))
         {
-            setTarget(data, template);
+            data.setScreenTemplate(template);
             scarabR.setAlertMessage(L10NKeySet.PasswordsDoNotMatch);
             return;
         }
@@ -113,7 +113,7 @@ public class Register extends ScarabTemplateAction
         
         if(!su.hasValidEmailAddress())
         {
-            setTarget(data,template);
+            data.setScreenTemplate(template);
             scarabR.setAlertMessage(L10NKeySet.EnterValidEmailAddress);
             return;
         }
@@ -121,13 +121,13 @@ public class Register extends ScarabTemplateAction
         ScarabUser existingUser=ScarabUserManager.getInstance(su.getUserName());
         if (existingUser!=null)
         {
-            setTarget(data, template);
+            data.setScreenTemplate(template);
             scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
             return;
         }
 
         data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, su);
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     public void doConfirmregistration(RunData data, Context context)
@@ -141,7 +141,7 @@ public class Register extends ScarabTemplateAction
 
         if (su == null)
         {
-            setTarget(data, "Register.vm");
+            data.setScreenTemplate("Register.vm");
             return;
         }
         
@@ -159,7 +159,7 @@ public class Register extends ScarabTemplateAction
                 {
                     Localizable msg = new L10NMessage(L10NKeySet.UsernameExistsAlready);
                     scarabR.setAlertMessage(msg);
-                    setTarget(data, "Login.vm");
+                    data.setScreenTemplate("Login.vm");
                     return;
                 }
                 else
@@ -172,7 +172,7 @@ public class Register extends ScarabTemplateAction
        scarabR.setUser(su);
         sendConfirmationEmail(su, context);
 
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     /**
@@ -181,7 +181,7 @@ public class Register extends ScarabTemplateAction
     public void doBack(RunData data, Context context) 
         throws Exception
     {
-        setTarget(data, data.getParameters().getString(
+        data.setScreenTemplate(data.getParameters().getString(
                 ScarabConstants.CANCEL_TEMPLATE, "Register.vm"));
     }
 
@@ -219,7 +219,7 @@ public class Register extends ScarabTemplateAction
         if (u.isConfirmed())
         {
             scarabR.setAlertMessage(L10NKeySet.AccountConfirmedSuccess);
-            setTarget(data, nextTemplate);
+            data.setScreenTemplate(nextTemplate);
         }
         else
         {
@@ -229,12 +229,12 @@ public class Register extends ScarabTemplateAction
                 data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, null);
 
                 scarabR.setConfirmMessage(L10NKeySet.AccountConfirmedSuccess);
-                setTarget(data, nextTemplate);
+                data.setScreenTemplate(nextTemplate);
             }
             else
             {
                 scarabR.setAlertMessage(L10NKeySet.InvalidConfirmationCode);
-                setTarget(data, template);
+                data.setScreenTemplate(template);
             }
         }
     }
@@ -258,7 +258,7 @@ public class Register extends ScarabTemplateAction
         {
             String template = getCurrentTemplate(data, null);
             scarabR.setAlertMessage(L10NKeySet.InvalidUsername);
-            setTarget(data, template);
+            data.setScreenTemplate(template);
             return;
         }
     
@@ -266,14 +266,14 @@ public class Register extends ScarabTemplateAction
         {
             String template = getCurrentTemplate(data, null);
             scarabR.setAlertMessage(L10NKeySet.AccountConfirmedSuccess);
-            setTarget(data, template);
+            data.setScreenTemplate(template);
             return;
         }
        scarabR.setUser(user);
         sendConfirmationEmail(user, context);
         scarabR.setConfirmMessage(L10NKeySet.ConfirmationCodeSent);
 
-        setTarget(data, "Confirm.vm");
+        data.setScreenTemplate("Confirm.vm");
     }
 
     /**

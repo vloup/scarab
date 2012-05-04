@@ -222,7 +222,7 @@ public class MoveIssue extends BaseModifyIssue
         context.put("newModuleId", newModuleId.toString());
         context.put("newIssueTypeId", newIssueTypeId.toString());
         String nextTemplate = getNextTemplate(data);
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     /**
@@ -240,7 +240,7 @@ public class MoveIssue extends BaseModifyIssue
         if (collisionOccurred)
         {
             // Report the collision to the user.
-            setTarget(data, "ViewIssue.vm");
+            data.setScreenTemplate("ViewIssue.vm");
             return;
         }
 
@@ -364,11 +364,11 @@ public class MoveIssue extends BaseModifyIssue
         {
             data.getParameters().remove("id");
             data.getParameters().add("id", newIssue.getUniqueId().toString());
-            setTarget(data, "ViewIssue.vm");
+            data.setScreenTemplate("ViewIssue.vm");
         }
         else
         {
-            setTarget(data, "IssueList.vm");
+            data.setScreenTemplate("IssueList.vm");
         }
 
         scarabR.setConfirmMessage(DEFAULT_MSG);
@@ -379,7 +379,7 @@ public class MoveIssue extends BaseModifyIssue
      */
     public void doBacktoone(RunData data, Context context) throws Exception
     {
-        setTarget(data, data.getParameters()
+        data.setScreenTemplate(data.getParameters()
             .getString(ScarabConstants.CANCEL_TEMPLATE, "MoveIssue.vm"));
     }
 }

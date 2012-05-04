@@ -128,7 +128,7 @@ public class ManageUser extends RequireLoginFirstAction
                     su = ScarabUserManager.reactivateUserIfDeleted(su);
                     if(su == null)
                     {
-                        setTarget(data, template);
+                        data.setScreenTemplate(template);
                         scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
                         data.getParameters().setString("errorLast","true");
                         data.getParameters().setString("state","showadduser");
@@ -150,12 +150,12 @@ public class ManageUser extends RequireLoginFirstAction
                 data.getParameters().setString("state","showadduser");
                 data.getParameters().setString("lastAction","addeduser");
                 
-                setTarget(data, nextTemplate);
+                data.setScreenTemplate(nextTemplate);
                 return;
             }
             catch (Exception e)
             {
-                setTarget(data, template);
+                data.setScreenTemplate(template);
                 data.getParameters().setString("lastAction","");
                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                 scarabR.setAlertMessage (msg);
@@ -298,7 +298,7 @@ public class ManageUser extends RequireLoginFirstAction
                     data.getParameters().setString("state", "showedituser");
                     data.getParameters().setString("lastAction", "editeduser");
                     
-                    setTarget(data, nextTemplate);
+                    data.setScreenTemplate(nextTemplate);
                     return;
                 }
                 else
@@ -310,7 +310,7 @@ public class ManageUser extends RequireLoginFirstAction
             }
             catch (Exception e)
             {
-                setTarget(data, template);
+                data.setScreenTemplate(template);
                 data.getParameters().setString("lastAction","");
                 Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
                 scarabR.setAlertMessage (msg);
@@ -358,14 +358,14 @@ public class ManageUser extends RequireLoginFirstAction
             data.getParameters().setString("state", "showedituser");
             data.getParameters().setString("lastAction", "editeduser");
             
-            setTarget(data, nextTemplate);
+            data.setScreenTemplate(nextTemplate);
             return;
             
            
         }
         catch (Exception e)
         {
-            setTarget(data, template);
+            data.setScreenTemplate(template);
             data.getParameters().setString("lastAction","");
             Localizable msg = new L10NMessage(L10NKeySet.ExceptionGeneric,e);
             scarabR.setAlertMessage (msg);
@@ -436,7 +436,7 @@ public class ManageUser extends RequireLoginFirstAction
         if ((userName != null) && (userName.length() > 0))
         {
             data.getParameters().setString("state","showedituser");
-            setTarget(data, "admin,EditUser.vm");
+            data.setScreenTemplate("admin,EditUser.vm");
         }
         else
         {
@@ -453,7 +453,7 @@ public class ManageUser extends RequireLoginFirstAction
         String userName = data.getParameters().getString("username");
         if ((userName != null) && (userName.length() > 0))
         {
-            setTarget(data, "admin,EditUserRoles.vm");
+            data.setScreenTemplate("admin,EditUserRoles.vm");
         }
         else
         {
@@ -467,7 +467,7 @@ public class ManageUser extends RequireLoginFirstAction
     public void doGotodeleteuser(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,DeleteUser.vm");
+        data.setScreenTemplate("admin,DeleteUser.vm");
     }
     
     /**
@@ -476,7 +476,7 @@ public class ManageUser extends RequireLoginFirstAction
     public void doGotoadduser(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,AddUser.vm");
+        data.setScreenTemplate("admin,AddUser.vm");
     }
 
     /**
@@ -499,7 +499,7 @@ public class ManageUser extends RequireLoginFirstAction
         scarabR.setGlobalUserSearchParam("ascOrDesc", ascOrDesc);
         scarabR.setGlobalUserSearchParam("resultsPerPage", resultsPerPage);
         
-        setTarget(data, "admin,ManageUserSearch.vm");
+        data.setScreenTemplate("admin,ManageUserSearch.vm");
     }
     
     /**

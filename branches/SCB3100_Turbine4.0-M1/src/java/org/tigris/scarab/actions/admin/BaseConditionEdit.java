@@ -193,7 +193,7 @@ public class BaseConditionEdit extends RequireLoginFirstAction
         String lastTemplate = getCancelTemplate(data);
         if (lastTemplate != null)
         {
-            setTarget(data, lastTemplate);
+            data.setScreenTemplate(lastTemplate);
         }
         else
         {

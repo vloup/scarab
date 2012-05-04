@@ -76,7 +76,7 @@ public class Redirect extends RequireLoginFirstAction
             .getString(ScarabConstants.NEXT_TEMPLATE, 
                        ((ScarabUser)data.getUser()).getHomePage());
 
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     /**

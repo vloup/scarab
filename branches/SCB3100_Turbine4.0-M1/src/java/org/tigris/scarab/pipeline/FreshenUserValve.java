@@ -120,7 +120,7 @@ public class FreshenUserValve
                 // Under no conditions an expired password will be
                 // accepted. The request is always forwarded to the
                 // password change mask until the password has been reset. [HD]
-                data.setTarget("ChangePassword.vm");
+                data.setScreenTemplate("ChangePassword.vm");
                 data.save();
                 context.invokeNext(data);
                 return;

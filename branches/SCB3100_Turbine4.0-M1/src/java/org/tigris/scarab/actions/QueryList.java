@@ -191,7 +191,7 @@ public class QueryList extends RequireLoginFirstAction
         user.setCurrentMITList(null);
         // reset selected users map
         getScarabRequestTool(context).resetSelectedUsers();
-        setTarget(data, user.getQueryTarget());
+        data.setScreenTemplate(user.getQueryTarget());
     }
     
 

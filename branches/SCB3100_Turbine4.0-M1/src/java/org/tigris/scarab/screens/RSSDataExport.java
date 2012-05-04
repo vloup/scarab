@@ -107,7 +107,7 @@ public class RSSDataExport extends VelocityScreen {
 		data.getResponse().setContentType(MIME_TYPE);
 
 		// we will send the response, so no target to render
-		data.setTarget(null);
+		data.setScreenTemplate(null);
 		
 		Writer writer = data.getResponse().getWriter();
 		

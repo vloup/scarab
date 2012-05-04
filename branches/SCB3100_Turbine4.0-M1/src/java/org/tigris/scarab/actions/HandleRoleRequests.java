@@ -168,7 +168,7 @@ public class HandleRoleRequests extends RequireLoginFirstAction
             scarabR.setInfoMessage(msg);                    
         }
 
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
     }
 
     private void deleteRoleRequests(ScarabUser user, ScarabModule module)

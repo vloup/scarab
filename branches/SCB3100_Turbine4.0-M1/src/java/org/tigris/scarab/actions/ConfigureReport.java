@@ -128,7 +128,7 @@ public class ConfigureReport
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");                        
+            data.setScreenTemplate("reports,ReportList.vm");                        
         }
         else if (intake.isAllValid()) 
         {
@@ -143,7 +143,7 @@ public class ConfigureReport
                            l10n.get(L10NKeySet.ReportUpdated) :
                            l10n.get(L10NKeySet.ReportUpdatedNotSaved);
                     scarabR.setConfirmMessage(msg);
-                    setTarget(data, "reports,Info.vm");     
+                    data.setScreenTemplate("reports,Info.vm");     
                 }
                 else 
                 {
@@ -151,7 +151,7 @@ public class ConfigureReport
                            l10n.get("ReportUpdatedPleaseAddRowAndColumnCriteria") :
                            l10n.get("ReportUpdatedNotSavedPleaseAddRowAndColumnCriteria");
                     scarabR.setConfirmMessage(msg);
-                    setTarget(data, "reports,AxisConfiguration.vm");
+                    data.setScreenTemplate("reports,AxisConfiguration.vm");
                 }
             }
             else 
@@ -160,14 +160,14 @@ public class ConfigureReport
                 // null, but since the conditional was here, don't fail silently
                 scarabR.setAlertMessage(
                 		L10NKeySet.ThisShouldNotHappenPleaseContactAdmin);
-                setTarget(data, "reports,Info.vm");
+                data.setScreenTemplate("reports,Info.vm");
             }            
         }
         else 
         {
             scarabR.setAlertMessage(
             		L10NKeySet.InvalidData);
-            setTarget(data, "reports,Info.vm");            
+            data.setScreenTemplate("reports,Info.vm");            
         }
     }
 
@@ -241,7 +241,7 @@ public class ConfigureReport
         if (!report.isEditable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");                        
+            data.setScreenTemplate("reports,ReportList.vm");                        
         }
         else if (intake.isAllValid()) 
         {
@@ -371,7 +371,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -431,7 +431,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -489,7 +489,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -562,7 +562,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -602,7 +602,7 @@ public class ConfigureReport
                 .getAxis(axis).getReportHeadings().get(level);
             if (heading.calculateType() == 0) 
             {
-                setTarget(data, "reports,EditGroups.vm");
+                data.setScreenTemplate("reports,EditGroups.vm");
             }
             else 
             {
@@ -626,7 +626,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -648,7 +648,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -714,7 +714,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
         
@@ -764,7 +764,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
         
@@ -805,7 +805,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -883,7 +883,7 @@ public class ConfigureReport
 
         if (success) 
         {
-            setTarget(data, "reports,AxisConfiguration.vm");
+            data.setScreenTemplate("reports,AxisConfiguration.vm");
         }
     }
 
@@ -895,7 +895,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -940,7 +940,7 @@ public class ConfigureReport
     	if (!report.isEditable(user)) 
     	{
     		setNoPermissionMessage();
-    		setTarget(data, "reports,ReportList.vm");
+    		data.setScreenTemplate("reports,ReportList.vm");
     		return;
     	}
 
@@ -1041,7 +1041,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
         
@@ -1073,7 +1073,7 @@ public class ConfigureReport
     	if (!report.isEditable(user)) 
     	{
     		setNoPermissionMessage();
-    		setTarget(data, "reports,ReportList.vm");
+    		data.setScreenTemplate("reports,ReportList.vm");
     		return;
     	}
     
@@ -1108,7 +1108,7 @@ public class ConfigureReport
         // list the current user's list.
         user.setCurrentMITList(
             report.getMITList());
-        setTarget(data, "reports,XModuleList.vm");
+        data.setScreenTemplate("reports,XModuleList.vm");
     }
 
     public void doConfinedataset(RunData data, Context context)
@@ -1119,7 +1119,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -1140,7 +1140,7 @@ public class ConfigureReport
             report.setDefaultDate(null);
         }
         scarabR.setConfirmMessage(L10NKeySet.ChangesSaved);
-        setTarget(data, "reports,ConfineDataset.vm");
+        data.setScreenTemplate("reports,ConfineDataset.vm");
     }
 
 
@@ -1152,7 +1152,7 @@ public class ConfigureReport
         if (!report.isEditable(user)) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");
+            data.setScreenTemplate("reports,ReportList.vm");
             return;
         }
 
@@ -1228,11 +1228,11 @@ public class ConfigureReport
         {
             // The ReportExport screen has no corresponding template.
             data.getParameters().setString(ExportFormat.KEY_NAME, format);
-            setTarget(data, "ReportExport.vm");
+            data.setScreenTemplate("ReportExport.vm");
         }
         else
         {
-            setTarget(data, "reports,Report_1.vm");
+            data.setScreenTemplate("reports,Report_1.vm");
         }
             
         }
@@ -1252,11 +1252,11 @@ public class ConfigureReport
         if (user.getCurrentMITList() == null) 
         {
             //context.add("report", Boolean.TRUE);  
-            setTarget(data, "reports,XModuleList.vm");
+            data.setScreenTemplate("reports,XModuleList.vm");
         }
         else 
         {
-            setTarget(data, "reports,Info.vm");
+            data.setScreenTemplate("reports,Info.vm");
         }
     }
     
@@ -1269,7 +1269,7 @@ public class ConfigureReport
         if (!report.isSavable((ScarabUser)data.getUser())) 
         {
             setNoPermissionMessage();
-            setTarget(data, "reports,ReportList.vm");                        
+            data.setScreenTemplate("reports,ReportList.vm");                        
         }
         else if (intake.isAllValid()) 
         {
@@ -1286,7 +1286,7 @@ public class ConfigureReport
             if (report.getName() == null || report.getName().trim().length() == 0) 
             {
                 scarabR.setAlertMessage(L10NKeySet.SavedReportsMustHaveName);
-                setTarget(data, "reports,Info.vm");
+                data.setScreenTemplate("reports,Info.vm");
             }
             else 
             {
@@ -1307,7 +1307,7 @@ public class ConfigureReport
                 else 
                 {
                     scarabR.setAlertMessage(L10NKeySet.ReportNameNotUnique);
-                    setTarget(data, "reports,Info.vm");
+                    data.setScreenTemplate("reports,Info.vm");
                 }
             }
         }

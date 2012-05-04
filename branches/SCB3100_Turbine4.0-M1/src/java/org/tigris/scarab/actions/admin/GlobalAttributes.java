@@ -80,7 +80,7 @@ public class GlobalAttributes extends RequireLoginFirstAction
     {
         String nextTemplate = data.getParameters().getString(
             ScarabConstants.OTHER_TEMPLATE, "admin, GlobalAttributeEdit.vm");
-        setTarget(data, nextTemplate);
+        data.setScreenTemplate(nextTemplate);
 
         ScarabRequestTool scarabR = getScarabRequestTool(context);
         scarabR.setAttribute(AttributeManager.getInstance());

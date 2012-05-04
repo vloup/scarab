@@ -102,7 +102,7 @@ public class MoveIssue extends Default
             else 
             {
                 scarabR.setAlertMessage(l10n.get("NoActionSpecified"));
-                setTarget(data, "ViewIssue.vm");
+                data.setScreenTemplate("ViewIssue.vm");
             }
         }
         catch (Exception e)

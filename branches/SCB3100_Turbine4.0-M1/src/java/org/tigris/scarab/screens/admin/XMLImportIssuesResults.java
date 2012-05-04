@@ -168,7 +168,7 @@ public class XMLImportIssuesResults extends Default
             data.getResponse().getOutputStream().print(result);
     
             // we already sent the response, there is no target to render
-            data.setTarget(null);
+            data.setScreenTemplate(null);
         }
     }
 

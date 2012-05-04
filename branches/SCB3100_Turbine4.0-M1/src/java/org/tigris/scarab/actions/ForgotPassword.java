@@ -90,7 +90,7 @@ public class ForgotPassword extends ScarabTemplateAction
         IntakeTool intake = getIntakeTool(context);
         if (intake.isAllValid() && forgotPassword(data, context))
         {
-            setTarget(data, "Login.vm");
+            data.setScreenTemplate("Login.vm");
         }
     }
     
@@ -135,7 +135,7 @@ public class ForgotPassword extends ScarabTemplateAction
             Localizable msg = new L10NMessage(L10NKeySet.InvalidUsername,username);
             getScarabRequestTool(context).setAlertMessage(msg);
             Log.get().error("ForgotPassword: ", e);
-            setTarget(data, "ForgotPassword.vm");
+            data.setScreenTemplate("ForgotPassword.vm");
             return false;
         }
         return true;

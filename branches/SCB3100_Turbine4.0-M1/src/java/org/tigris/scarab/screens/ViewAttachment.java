@@ -102,7 +102,7 @@ public class ViewAttachment extends Default
             LocalizationKey key = L10NKeySet.AttachmentDoesNotExist;
             L10NMessage msg = new L10NMessage(key,attachment.getFullPath());
             getScarabRequestTool(context).setAlertMessage(msg);
-            data.setTarget("Error.vm");
+            data.setScreenTemplate("Error.vm");
         }
         else
         {
@@ -138,7 +138,7 @@ public class ViewAttachment extends Default
             }
         }
         // we already sent the response, there is no target to render
-        data.setTarget(null);
+        data.setScreenTemplate(null);
     }
 }
 

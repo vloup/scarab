@@ -157,7 +157,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
             module.addIssueType(issueType);
             ScarabCache.clear();
             scarabR.setConfirmMessage(l10n.get("IssueTypeAddedToModule"));
-            setTarget(data, "admin,ManageArtifactTypes.vm");            
+            data.setScreenTemplate("admin,ManageArtifactTypes.vm");            
         }
     }
 
@@ -169,7 +169,7 @@ public class ManageArtifactTypes extends RequireLoginFirstAction
         throws Exception
     {
         data.getParameters().remove("issueTypeId");
-        setTarget(data, getOtherTemplate(data));
+        data.setScreenTemplate(getOtherTemplate(data));
     }
 
     /**

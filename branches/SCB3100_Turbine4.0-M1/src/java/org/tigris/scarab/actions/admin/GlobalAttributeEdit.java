@@ -204,7 +204,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
             attr.setDeleted(true);
             attr.save();
             scarabR.setConfirmMessage(getLocalizationTool(context).get(DEFAULT_MSG));  
-            setTarget(data, getCancelTemplate(data));
+            data.setScreenTemplate(getCancelTemplate(data));
         }
     }
 
@@ -583,7 +583,7 @@ public class GlobalAttributeEdit extends RequireLoginFirstAction
         String lastTemplate = getCancelTemplate(data);
         if (lastTemplate != null)
         {
-            setTarget(data, lastTemplate);
+            data.setScreenTemplate(lastTemplate);
         }
         else
         {

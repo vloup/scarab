@@ -139,7 +139,7 @@ class DataExport extends Default
         //writeRows(printer, mitlist, l10n, scarabR, rmuas);
 
         // Above we sent the response, so no target to render
-        data.setTarget(null);
+        data.setScreenTemplate(null);
     }
 
     /**

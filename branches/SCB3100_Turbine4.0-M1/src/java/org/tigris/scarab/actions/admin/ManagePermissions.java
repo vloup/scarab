@@ -82,7 +82,7 @@ public class ManagePermissions extends RequireLoginFirstAction
     public void doGotoaddpermission(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,AddPermission.vm");
+        data.setScreenTemplate("admin,AddPermission.vm");
     }
     
     /**
@@ -91,7 +91,7 @@ public class ManagePermissions extends RequireLoginFirstAction
     public void doGotodeletepermission(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,DeletePermission.vm");
+        data.setScreenTemplate("admin,DeletePermission.vm");
     }
     
     /** 
@@ -155,7 +155,7 @@ public class ManagePermissions extends RequireLoginFirstAction
         ScarabLocalizationTool l10n = getLocalizationTool(context);
         String msg = l10n.format("PermissionDeleted", name);
         getScarabRequestTool(context).setConfirmMessage(msg);
-        setTarget(data, data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE, "admin,ManagePermissions.vm"));
+        data.setScreenTemplate(data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE, "admin,ManagePermissions.vm"));
         
     }
     
@@ -165,7 +165,7 @@ public class ManagePermissions extends RequireLoginFirstAction
      */
     public void doCancel(RunData data, Context context) throws Exception
     {
-        setTarget(data, data.getParameters()
+        data.setScreenTemplate(data.getParameters()
                       .getString(ScarabConstants.CANCEL_TEMPLATE, "admin,AdminIndex.vm"));
     }
     

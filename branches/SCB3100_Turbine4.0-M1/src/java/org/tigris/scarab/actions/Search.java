@@ -133,7 +133,7 @@ public class Search extends RequireLoginFirstAction
         {
             // Send to the IssueListExport screen (which actually
             // has no corresponding Velocity template).
-            setTarget(data, "IssueListExport.vm");
+            data.setScreenTemplate("IssueListExport.vm");
         }
         else if (StringUtils.isNotEmpty(next))
         {
@@ -167,7 +167,7 @@ public class Search extends RequireLoginFirstAction
                     if (issueIds.size() <= ScarabConstants.ISSUE_MAX_ASSIGN)
                     {
                         scarabR.resetAssociatedUsers();
-                        setTarget(data, "AssignIssue.vm");
+                        data.setScreenTemplate("AssignIssue.vm");
                     }
                     else
                     {
@@ -192,7 +192,7 @@ public class Search extends RequireLoginFirstAction
                 {
                     if (issueIds.size() <= ScarabConstants.ISSUE_MAX_VIEW)
                     {
-                        setTarget(data, "ViewIssueLong.vm");
+                        data.setScreenTemplate("ViewIssueLong.vm");
                     }
                     else
                     {
@@ -218,7 +218,7 @@ public class Search extends RequireLoginFirstAction
                     if (issueIds.size() <= ScarabConstants.ISSUE_MAX_COPY)
                     {
                         data.getParameters().add("mv_0rb", "copy");
-                        setTarget(data, "MoveIssue.vm");
+                        data.setScreenTemplate("MoveIssue.vm");
                     }
                     else
                     {
@@ -243,7 +243,7 @@ public class Search extends RequireLoginFirstAction
                     if (issueIds.size() <= ScarabConstants.ISSUE_MAX_MOVE)
                     {
                         data.getParameters().add("mv_0rb", "move");
-                        setTarget(data, "MoveIssue.vm");
+                        data.setScreenTemplate("MoveIssue.vm");
                     }
                     else
                     {
@@ -267,7 +267,7 @@ public class Search extends RequireLoginFirstAction
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE,
                            getIssueListTarget());
-            setTarget(data, template);
+            data.setScreenTemplate(template);
         }
     }
 
@@ -300,7 +300,7 @@ public class Search extends RequireLoginFirstAction
 
         if (scarabR.hasPermission(ScarabSecurity.USER__EDIT_PREFERENCES))
         {
-            setTarget(data, "SaveQuery.vm");
+            data.setScreenTemplate("SaveQuery.vm");
         }
         else 
         {
@@ -312,7 +312,7 @@ public class Search extends RequireLoginFirstAction
          throws Exception
     {
         data.getParameters().setString("queryString", getQueryString(data));
-        setTarget(data, "IssueTypeList.vm");
+        data.setScreenTemplate("IssueTypeList.vm");
     }
 
     /**
@@ -442,7 +442,7 @@ public class Search extends RequireLoginFirstAction
                     //        l10n.format("NotifyPendingApproval",
                     //        l10n.get("Query").toLowerCase()));
                 }
-                setTarget(data, "QueryList.vm");
+                data.setScreenTemplate("QueryList.vm");
             }
         }
         else
@@ -484,7 +484,7 @@ public class Search extends RequireLoginFirstAction
                     //scarabR.setInfoMessage(
                     //                l10n.format("NotifyPendingApproval",
                     //                l10n.get("Query").toLowerCase()));
-                    setTarget(data, data.getParameters().getString(
+                    data.setScreenTemplate(data.getParameters().getString(
                                     ScarabConstants.CANCEL_TEMPLATE));
                 }
 
@@ -550,7 +550,7 @@ public class Search extends RequireLoginFirstAction
         
         translateSortorder(data, query.getValue());
 
-        setTarget(data, getIssueListTarget());
+        data.setScreenTemplate(getIssueListTarget());
     }
 
     private void translateSortorder(RunData data, String queryString) throws Exception
@@ -617,11 +617,11 @@ public class Search extends RequireLoginFirstAction
                 }
                 // reset selected users map
                 scarabR.resetSelectedUsers();                
-                setTarget(data, user.getQueryTarget());
+                data.setScreenTemplate(user.getQueryTarget());
             }
             else if (go.equals("mostRecent"))
             {
-                setTarget(data, getIssueListTarget());
+                data.setScreenTemplate(getIssueListTarget());
             }
             else if (go.equals("myIssuesThisModule"))
             {
@@ -635,7 +635,7 @@ public class Search extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
                 setRecentQuery(query);
-                setTarget(data, getIssueListTarget());
+                data.setScreenTemplate(getIssueListTarget());
             }
             else if (go.equals("myIssuesAllModules"))
             {
@@ -647,7 +647,7 @@ public class Search extends RequireLoginFirstAction
                     .append("&user_attr_").append(userId).append("=any")
                     .toString();
                 setRecentQuery(query);
-                setTarget(data, getIssueListTarget());
+                data.setScreenTemplate(getIssueListTarget());
             }
             else if (go.equals("quickSearch"))
             {
@@ -683,16 +683,16 @@ public class Search extends RequireLoginFirstAction
                     }
                     quickSearch(searchString, attributeMap, user);
                 }
-                setTarget(data, getIssueListTarget());
+                data.setScreenTemplate(getIssueListTarget());
             }
             else if (go.equals("privateQueries")
                    ||go.equals("publicQueries"))
             {
-                setTarget(data,"QueryList.vm");
+                data.setScreenTemplate("QueryList.vm");
             }
             else
             {
-                setTarget(data, go);
+                data.setScreenTemplate(go);
             }
         }
         else
@@ -702,7 +702,7 @@ public class Search extends RequireLoginFirstAction
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                 Turbine.getConfiguration()
                            .getString("template.homepage", "Index.vm"));
-            setTarget(data, nextTemplate);
+            data.setScreenTemplate(nextTemplate);
         }
     }
 
@@ -772,7 +772,7 @@ public class Search extends RequireLoginFirstAction
          throws Exception
     {        
         context.put("refine", "true");
-        setTarget(data, "AdvancedQuery.vm");    
+        data.setScreenTemplate("AdvancedQuery.vm");    
     }
 
 
@@ -994,7 +994,7 @@ public class Search extends RequireLoginFirstAction
         IssueSearch search = scarabR.getPopulatedSearch();
         if (search != null)
         {
-            setTarget(data, "UserList.vm");
+            data.setScreenTemplate("UserList.vm");
         }
     } 
 

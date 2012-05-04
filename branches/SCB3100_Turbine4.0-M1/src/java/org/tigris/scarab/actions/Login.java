@@ -205,7 +205,7 @@ public class Login extends ScarabTemplateAction
             String template = data.getParameters()
                 .getString(ScarabConstants.NEXT_TEMPLATE, 
                            "SelectModule.vm");
-            setTarget(data, template);
+            data.setScreenTemplate(template);
         }
     }
 
@@ -287,7 +287,7 @@ public class Login extends ScarabTemplateAction
                 setUser(scarabR, user);
                 setAlertMessage(scarabR,L10NKeySet.YourPasswordHasExpired);
 
-                setTarget(data, "ChangePassword.vm");
+                data.setScreenTemplate("ChangePassword.vm");
                 //change next screen to allow password reset.
                 data.save();
                 return false;
@@ -378,7 +378,7 @@ public class Login extends ScarabTemplateAction
     private static void failAction(RunData data, String template)
     {
         anonymousLogin(data);
-    	setTarget(data, template);
+    	data.setScreenTemplate(template);
     }
     
     /**

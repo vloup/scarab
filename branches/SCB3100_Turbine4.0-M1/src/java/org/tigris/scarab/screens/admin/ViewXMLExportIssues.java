@@ -139,7 +139,7 @@ public class ViewXMLExportIssues extends Default
         context.put("exportissues", ids);
         if (ids == null || ids.length() == 0)
         {
-            data.setTarget("admin,XMLExportIssues.vm");
+            data.setScreenTemplate("admin,XMLExportIssues.vm");
             scarabR.setAlertMessage(l10n.get("EnterIssues"));
             return;
         }
@@ -156,7 +156,7 @@ public class ViewXMLExportIssues extends Default
                 }
                 catch (Exception e)
                 {
-                    data.setTarget("admin,XMLExportIssues.vm");
+                    data.setScreenTemplate("admin,XMLExportIssues.vm");
                     scarabR.setAlertMessage(l10n.getMessage(e));
                     return;
                 }
@@ -183,13 +183,13 @@ public class ViewXMLExportIssues extends Default
             }
             if (issueIdList.isEmpty())
             {
-                data.setTarget("admin,XMLExportIssues.vm");
+                data.setScreenTemplate("admin,XMLExportIssues.vm");
                 scarabR.setAlertMessage(l10n.get("NoValidIssuesCouldBeLocated"));
                 return;
             }
             else if (!badIdList.isEmpty())
             {
-                data.setTarget("admin,XMLExportIssues.vm");
+                data.setScreenTemplate("admin,XMLExportIssues.vm");
                 scarabR.setAlertMessage(
                     l10n.format("FollowingIssueIdsAreInvalid", 
                     badIdList.toString()));
@@ -247,7 +247,7 @@ public class ViewXMLExportIssues extends Default
             }
     
             // we already sent the response, there is no target to render
-            data.setTarget(null);
+            data.setScreenTemplate(null);
         }
     }
 }

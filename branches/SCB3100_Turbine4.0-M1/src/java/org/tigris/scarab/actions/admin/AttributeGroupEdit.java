@@ -545,7 +545,7 @@ public class AttributeGroupEdit extends RequireLoginFirstAction
         Group attGroup = intake.get("Attribute", IntakeTool.DEFAULT_KEY);
         intake.remove(attGroup);
         scarabR.setAttribute(null);
-        setTarget(data, getOtherTemplate(data));
+        data.setScreenTemplate(getOtherTemplate(data));
     }
 
 

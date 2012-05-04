@@ -93,21 +93,21 @@ public class DetermineTargetValve
                 // Allows short link to public/personal queries
                 // $scarabRoot/issues/query/<queryId>/curmodule/<moduleId>                
                 if (target == null) target="IssueList.vm";
-                data.setTarget(target);
+                data.setScreenTemplate(target);
                 if (parameters.getString("tqk")      == null) parameters.setString("tqk", ""+0);
                 if (parameters.getString("action")   == null) data.setAction("Search");
                 if (parameters.getString("go")       == null) parameters.setString("go",query);
             }
             else if (target != null)
             {
-                data.setTarget(target);
+                data.setScreenTemplate(target);
                 Log.get().debug("Set target from request parameter");
             }
             else if (parameters.getString("id") != null)
             {
                 // Allows short link to issue
                 // $scarabRoot/issues/id/<issueId>
-                data.setTarget("ViewIssue.vm");
+                data.setScreenTemplate("ViewIssue.vm");
             }
             else
             {
@@ -141,7 +141,7 @@ public class DetermineTargetValve
                     target = Turbine.getConfiguration().getString(
                             Turbine.TEMPLATE_HOMEPAGE);                    
                 }
-                data.setTarget(target);
+                data.setScreenTemplate(target);
                 Log.get().debug("Set target to ["+target+"]");
 
             }

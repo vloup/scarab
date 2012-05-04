@@ -108,7 +108,7 @@ public class ChangePassword extends ScarabTemplateAction
             if (oldPassword.equals(password))
             {
                 scarabR.setInfoMessage(L10NKeySet.PasswordSame);
-                setTarget(data, template);
+                data.setScreenTemplate(template);
             } 
             else if (password.equals(passwordConfirm))
             {
@@ -130,24 +130,24 @@ public class ChangePassword extends ScarabTemplateAction
                     
                     // Remove NEXT_TEMPLATE, so we will start again from home after login
                     data.getParameters().remove(ScarabConstants.NEXT_TEMPLATE);
-                    setTarget(data, "Login.vm");
+                    data.setScreenTemplate("Login.vm");
                 }
                 catch (PasswordMismatchException pme)
                 {
                     scarabR.setAlertMessage(l10n.getMessage(pme));
-                    setTarget(data, template);
+                    data.setScreenTemplate(template);
                 }
             }
             else /* !password.equals(passwordConfirm) */
             {
                 scarabR.setAlertMessage(L10NKeySet.PasswordsDoNotMatch);
-                setTarget(data, template);
+                data.setScreenTemplate(template);
             }
         }
         else
         {
             scarabR.setAlertMessage("Failed to process form input.");
-            setTarget(data, template);
+            data.setScreenTemplate(template);
         }
     }
 }

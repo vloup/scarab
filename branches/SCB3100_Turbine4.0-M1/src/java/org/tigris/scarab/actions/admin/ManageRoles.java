@@ -83,7 +83,7 @@ public class ManageRoles extends RequireLoginFirstAction
     public void doGotoaddrole(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, "admin,AddRole.vm");
+        data.setScreenTemplate("admin,AddRole.vm");
     }
     
     /**
@@ -227,7 +227,7 @@ public class ManageRoles extends RequireLoginFirstAction
 
         String msg = l10n.format("RoleDeleted", name);
         getScarabRequestTool(context).setConfirmMessage(msg);
-        setTarget(data, data.getParameters()
+        data.setScreenTemplate(data.getParameters()
                       .getString(ScarabConstants.NEXT_TEMPLATE, "admin,ManageRoles.vm"));
     }
     
@@ -257,13 +257,13 @@ public class ManageRoles extends RequireLoginFirstAction
             ScarabLocalizationTool l10n = getLocalizationTool(context);
             String msg = l10n.get("NoRoleSelected");
             getScarabRequestTool(context).setConfirmMessage(msg);
-            setTarget(data, "admin,ManageRoles.vm");
+            data.setScreenTemplate("admin,ManageRoles.vm");
         }
         else
         {
             if (target != null)
             {
-                setTarget(data, target);
+                data.setScreenTemplate(target);
             }
         }
     }

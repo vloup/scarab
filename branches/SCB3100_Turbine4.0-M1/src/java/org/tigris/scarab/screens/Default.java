@@ -125,7 +125,7 @@ public class Default extends VelocitySecureScreen
         {
             // Pass control to the alternate target.
             scarabR.setAlertMessage(L10NKeySet.IssueTypeUnavailable);
-            setTarget(data, altTarget);
+            data.setScreenTemplate(altTarget);
         }
         else
         {
@@ -269,8 +269,7 @@ public class Default extends VelocitySecureScreen
             ScarabConstants.NEXT_TEMPLATE,
             data.getParameters().getString(ScarabConstants.NEXT_TEMPLATE));
 
-        setTarget(
-            data,
+        data.setScreenTemplate(
             Turbine.getConfiguration().getString(
                 "scarab.CurrentModuleTemplate",
                 "SelectModule.vm"));
@@ -281,7 +280,7 @@ public class Default extends VelocitySecureScreen
         getContext(data).put(
             ScarabConstants.NEXT_TEMPLATE,
             data.getParameters().getString("template"));
-        setTarget(data, "Login.vm");
+        data.setScreenTemplate("Login.vm");
     }
 
     /**

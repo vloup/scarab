@@ -185,7 +185,7 @@ public class TemplateList extends RequireLoginFirstAction
                         scarabR.setInfoMessage(
                             l10n.format("NotifyPendingApproval",
                             l10n.get("Template").toLowerCase()));
-                        setTarget(data, "TemplateList.vm");
+                        data.setScreenTemplate("TemplateList.vm");
                         doPerform(data, context);
                     }
                 }
@@ -339,7 +339,7 @@ public class TemplateList extends RequireLoginFirstAction
                     scarabR.setInfoMessage(
                                     l10n.format("NotifyPendingApproval",
                                     l10n.get("Template").toLowerCase()));
-                    setTarget(data, data.getParameters().getString(
+                    data.setScreenTemplate(data.getParameters().getString(
                                     ScarabConstants.CANCEL_TEMPLATE));
                 }
             }
@@ -415,7 +415,7 @@ public class TemplateList extends RequireLoginFirstAction
         {
             IssueType templateType = IssueManager.getInstance(
                 new Long(templateId)).getIssueType();
-            setTarget(data, scarabR.getNextEntryTemplate(
+            data.setScreenTemplate(scarabR.getNextEntryTemplate(
                 templateType.getIssueTypeForTemplateType()));
             ReportIssue.cleanOutStaleIssue(data, context);
         }

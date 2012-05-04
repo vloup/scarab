@@ -174,7 +174,7 @@ public class NTLMLoginValve extends AbstractValve
                     l10n.init(user.getLocale());
                     data.setMessage(mesg.getMessage(l10n));
                 }
-                data.setTarget("SelectModule.vm");
+                data.setScreenTemplate("SelectModule.vm");
             }
             catch (DataBackendException e)
             {

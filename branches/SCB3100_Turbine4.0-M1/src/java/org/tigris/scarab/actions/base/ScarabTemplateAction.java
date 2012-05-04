@@ -219,7 +219,7 @@ public abstract class ScarabTemplateAction extends VelocityAction
     public void doGonext(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getNextTemplate(data));
+        data.setScreenTemplate(getNextTemplate(data));
     }
 
     public void doGotoothertemplate(RunData data, 
@@ -228,13 +228,13 @@ public abstract class ScarabTemplateAction extends VelocityAction
     {
         data.getParameters().setString(ScarabConstants.CANCEL_TEMPLATE,
                                        getCurrentTemplate(data));
-        setTarget(data, getOtherTemplate(data));
+        data.setScreenTemplate(getOtherTemplate(data));
     }
 
     public void doRefresh(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getCurrentTemplate(data));
+        data.setScreenTemplate(getCurrentTemplate(data));
     }
 
     public void doReset(RunData data, Context context)
@@ -242,13 +242,13 @@ public abstract class ScarabTemplateAction extends VelocityAction
     {
         IntakeTool intake = getIntakeTool(context);
         intake.removeAll();
-        setTarget(data, getCurrentTemplate(data));
+        data.setScreenTemplate(getCurrentTemplate(data));
     }
         
     public void doCancel(RunData data, Context context)
         throws Exception
     {
-        setTarget(data, getCancelTemplate(data));
+        data.setScreenTemplate(getCancelTemplate(data));
     }
 
     public void doDone(RunData data, Context context)
@@ -280,6 +280,6 @@ public abstract class ScarabTemplateAction extends VelocityAction
         params.remove("oldResultsPerPage");
         params.remove("pageNum");
         params.add("pageNum", newPageNum);
-        setTarget(data, getCurrentTemplate(data));
+        data.setScreenTemplate(getCurrentTemplate(data));
     }
 }
