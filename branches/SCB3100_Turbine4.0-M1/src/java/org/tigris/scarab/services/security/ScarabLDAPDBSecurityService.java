@@ -29,7 +29,7 @@ package org.tigris.scarab.services.security;
 import java.util.Iterator;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.fulcrum.InitializationException;
+import org.apache.turbine.services.InitializationException;
 import org.apache.turbine.services.security.TurbineSecurity;
 import org.apache.turbine.om.security.User;
 import org.apache.turbine.util.security.DataBackendException;

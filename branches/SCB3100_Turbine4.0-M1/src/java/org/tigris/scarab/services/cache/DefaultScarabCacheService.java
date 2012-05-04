@@ -56,7 +56,7 @@ import org.apache.avalon.framework.activity.Initializable;
 import org.apache.avalon.framework.logger.AbstractLogEnabled;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.Serviceable;
-import org.apache.fulcrum.InitializationException;
+import org.apache.turbine.services.InitializationException;
 import org.apache.fulcrum.pool.PoolService;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;

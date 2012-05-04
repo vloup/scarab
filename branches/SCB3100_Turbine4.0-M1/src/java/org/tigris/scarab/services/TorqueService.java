@@ -48,7 +48,7 @@ package org.tigris.scarab.services;
 
 import org.apache.turbine.Turbine;
 import org.apache.fulcrum.BaseService;
-import org.apache.fulcrum.InitializationException;
+import org.apache.turbine.services.InitializationException;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.tigris.scarab.om.*;

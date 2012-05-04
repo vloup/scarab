@@ -65,7 +65,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationConverter;
-import org.apache.fulcrum.InitializationException;
+import org.apache.turbine.services.InitializationException;
 import org.apache.fulcrum.ServiceException;
 import org.apache.turbine.services.template.BaseTemplateEngineService;
 import org.apache.fulcrum.template.Context;
