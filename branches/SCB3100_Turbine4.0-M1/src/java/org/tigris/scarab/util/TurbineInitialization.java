@@ -53,7 +53,7 @@ import java.net.MalformedURLException;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.turbine.TurbineConfig;
+import org.apache.turbine.util.TurbineConfig;
 import org.tigris.scarab.tools.localization.L10NKey;
 
 /**
