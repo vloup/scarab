@@ -4,7 +4,7 @@
 
 <properties>
     <title>How to Build Scarab</title>
-    <author email="opensource@memocomp">Johannes HÃ¶chstÃ¤dter</author>
+    <author email="opensource@memocomp">Johannes Höchstädter</author>
 </properties>
 
 <body>
@@ -48,8 +48,9 @@ In most cases you will utilize Maven as follows:
 
 <source>
 1:> cd $SCARAB_ROOT
-2:> mvn clean package
+2:> mvn clean
 3:> mvn initialize scarab:create-db
+4:> mvn package
 </source>
 
 This will setup the database and build Scarab's webapp in target/ directory.
