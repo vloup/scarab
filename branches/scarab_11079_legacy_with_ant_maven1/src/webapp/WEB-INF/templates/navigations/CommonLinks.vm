@@ -19,6 +19,7 @@
 #set ($module = $scarabR.CurrentModule)
 #set ($user   = $scarabR.currentUser)
 #set ($moduleIssueTypes = $module.IssueTypes)
+#set ($queryCount = 15)
 
 #if ($moduleIssueTypes.isEmpty() || $module.isGlobalModule() )
    #set ($moduleHasIssueTypes = false)
@@ -113,13 +114,13 @@
     #if (!$module.isGlobalModule())
       #if ($scarabR.hasPermission($scarabG.Permission.ISSUE__SEARCH, $module))
         #set ($currentQueryId = $data.Parameters.go) 
-        <div style="font-weight:bold;">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries ...")</div>
+        <div class="list-header">$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("$l10n.EditPrivateQueries ...")</div>
        
         #set ($queries = $scarabR.UserAllQueries)
         #set ($counter = 0 )
         #foreach ($query in $queries)
           #set ($counter = $counter + 1 )
-          #if ($counter > 7 )
+          #if ($counter > $queryCount )
             <div class="sublist" >$link.addPathInfo("go","privateQueries").setPage("QueryList.vm").setLabel("...")</div>
             #break
           #else
@@ -127,13 +128,13 @@
           #end
         #end
        
-        <div style="font-weight:bold;">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries ...")</div>
+        <div class="list-header">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("$l10n.EditPublicQueries ...")</div>
 
         #set ($queries = $scarabR.GlobalQueries)
         #set ($counter = 0 )
         #foreach ($query in $queries)
           #set ($counter = $counter + 1 )
-          #if ($counter > 7 )
+          #if ($counter > $queryCount )
             <div class="sublist">$link.addPathInfo("go","publicQueries").setPage("QueryList.vm").setLabel("...")</div>
             #break
           #else
