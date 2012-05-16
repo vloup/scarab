@@ -65,6 +65,9 @@ public class DBInitMojo  extends PrepareDBScriptsMojo{
 	 */
 	protected boolean dropSchema;
 	
+	/**
+	 * General execution.
+	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		Connection con = null;
 		 Statement stmt = null;
@@ -113,7 +116,7 @@ public class DBInitMojo  extends PrepareDBScriptsMojo{
 	}
 	
 	/**
-	 * Creats database by script.
+	 * Creates database by script.
 	 * @return
 	 * @throws Exception
 	 */
@@ -157,8 +160,8 @@ public class DBInitMojo  extends PrepareDBScriptsMojo{
 	}
 	
 	/**
-	 * 
-	 * @param con
+	 * Execute list of given sql files.
+	 * @param stmt
 	 * @param files
 	 */
 	protected void executeScripts(Statement stmt, List files) throws Exception{
@@ -166,6 +169,7 @@ public class DBInitMojo  extends PrepareDBScriptsMojo{
 		while(iterFiels.hasNext()){
 			FileReader fr = new FileReader((File)iterFiels.next());  
 			
+			//read in all lines of sql except comment lines, which start with "--"
             BufferedReader br = new BufferedReader(fr);  
             String s = new String();
             StringBuffer sb = new StringBuffer();
