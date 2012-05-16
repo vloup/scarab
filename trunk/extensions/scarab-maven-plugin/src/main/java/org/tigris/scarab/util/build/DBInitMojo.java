@@ -182,14 +182,11 @@ public class DBInitMojo  extends PrepareDBScriptsMojo{
             }  
             br.close();  
   
-            // here is our splitter ! We use ";" as a delimiter for each request  
-            // then we are sure to have well formed statements  
+            //prepare and execute sql, (separated by ";")
             String[] inst = sb.toString().split(";");      
             for(int stmtIndex = 0; stmtIndex<inst.length; stmtIndex++)  
             {  
 	            try{          
-		                // we ensure that there is no spaces before or after the request string  
-		                // in order to not execute empty statements  
 		                if(!inst[stmtIndex].trim().equals(""))  
 		                {  
 		                	stmt.executeUpdate(inst[stmtIndex]);   
