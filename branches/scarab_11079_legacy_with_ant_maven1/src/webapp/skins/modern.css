@@ -370,7 +370,9 @@ span.displayValue {
 /* ==== From here on downwards the refactoring must still take place. ==== */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
+//div.axial {
+//        background-color:#bbbbbb;
+//}
 
 
 /* ============================================================== */
@@ -446,7 +448,18 @@ input[type='submit']{
 div div.sublist {
 	margin-left:10px;
 	background-image: none;
+        font-weight:normal;
 }
+
+.scarab-toolgroup div.list-header a {
+        font-weight:bold;
+}
+
+div#navcolumn div.list-header a { 
+        color:#000000;
+}
+
+
 
 
 
@@ -461,7 +474,7 @@ a:link .selfref,a:visited .selfref {
 }
 
 a:active,a:hover,#leftcol a:active,#leftcol a:hover {
-	color: #c60004 !important;
+	color: #b00000 !important;
 }
 
 #leftcol a {
@@ -887,7 +900,7 @@ dd {
 }
 
 .toolgroup {
-	background: #efefef;
+	background: #e0e0e0;
 	margin-bottom: 6px;
 }
 
@@ -1234,7 +1247,7 @@ ul {
 }
 
 .scarab-toolgroup {
-	background: #F8F8F8;
+	background: #f0f0f0;
 	margin-bottom: 6px;
 	margin-right: 3px;
 	margin-left: 0px;
@@ -1257,7 +1270,7 @@ ul {
 	background-image: url("../images/navbox-farleft.gif");
 	background-repeat: no-repeat;
 	padding: 4px;
-	color: #808080;
+	color: #604020;
 }
 
 .scarab-toolgroup .body div {
@@ -1272,11 +1285,10 @@ ul {
 
 .scarab-toolgroup a,.scarab-toolgroup a:visited,.scarab-toolgroup a:active,.scarab-toolgroup a:link,.collapsed a,.collapsed a:visited,.collapsed a:active,.collapsed a:link
 	{
-	color: #c60004;
+	color: #b00000;
 	margin-left: 0px;
 	cursor: pointer;
 	cursor: hand;
-        font-weight:bold;
 }
 
 .scarab-tooltip {
@@ -1378,7 +1390,7 @@ ul {
 
 
 a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
-	color:#c60004;
+	color:#b00000;
 }
 
 .app h3 {
@@ -1392,7 +1404,7 @@ a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
 }
 
 .app h3 a:link,.app h3 a:visited,.app h4 a:link,.app h4 a:visited {
-	color: #c60004 !important;
+	color: #b00000 !important;
 	text-decoration: underline;
 }
 
