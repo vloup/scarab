@@ -1,0 +1,3 @@
+/etc/default/scarab-@CONTEXT@
+/etc/cron.daily/scarab-@CONTEXT@-maint.sh
+/etc/@TOMCAT@/policy.d/@CONTEXT@.policy
