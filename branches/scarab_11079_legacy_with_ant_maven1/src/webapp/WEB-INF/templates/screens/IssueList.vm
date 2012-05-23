@@ -58,7 +58,7 @@
 <input type="hidden" name="pageNum" value="$pageNum" />
 <input type="hidden" name="$scarabG.Constant.CANCEL_TEMPLATE" value="IssueList.vm" />
 
-#queryFunctionBar("")
+#queryFunctionBar("2")
 
 <h3 style="height:18px;">
 
@@ -182,7 +182,7 @@
     #if ($issue.isOnHold() || $issue.isSealed())
       <td>
     #else
-      #indexedColumnsWithIdleHours($velocityCount $issue.HoursIdle)
+      #indexedRowsWithIdleHours($velocityCount $issue.HoursIdle)
     #end
   
     <a href="$link">$record.UniqueId</a></td>
@@ -203,7 +203,7 @@
 </table>
 ## END of RESULTS TABLE!
 
-<div class="axial" style="margin-left:2px;margin-right:2px;background-color:#abc4db;white-space:nowrap;">
+<div class="axial-footer" style="margin-left:2px;margin-right:2px;white-space:nowrap;">
     <span style="margin-left:15px;margin-right:10px;">
       #if ($paginated)
         #paginateIssueList($resultsPerPage $pageNum $sortColumn $sortPolarity $searchType)

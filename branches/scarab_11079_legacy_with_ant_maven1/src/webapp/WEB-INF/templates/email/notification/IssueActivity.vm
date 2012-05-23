@@ -48,13 +48,13 @@ $cr
 ${cr}-------------------------------------------------------------------------------
 #end
 #set ($currentDisplayName = $displayName)
-#set ($newValue    = $not.Activity.getNewValue($l10n) )
-#set ($oldValue    = $not.Activity.getOldValue($l10n) )
-#set ($fromValue   = "") #if ($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70) #set($fromValue = $oldValue) #end
-#set ($toValue     = "") #if ($newValue.length() > 0) #set ($toValue = $newValue) #end
-#set ($transit     = "") #if ($fromValue != "" && $toValue != "") #set ($transit = "-->") #end
-#set ($comment     = "") #if ($fromValue != "" && $toValue == "") #set ($comment = $l10n.Deleted) #elseif ($fromValue == "" && $toValue != "") #set ($comment = $l10n.New ) #end 
-  - $format.getDate($l10n.ShortTimePattern, $not.CreationDate) : $fromValue $transit $toValue #if ($comment != "") ($comment) #end
+#set ($newValue    = $not.Activity.getNewValue($l10n).toString())
+#set ($oldValue    = $not.Activity.getOldValue($l10n).toString())
+#set ($fromValue   = "")#if($oldValue.length() > 0 && $oldValue.length()+$newValue.length() < 70)#set($fromValue = $oldValue)#end
+#set ($toValue     = "")#if($newValue.length() > 0)#set ($toValue = $newValue)#end
+#set ($transit     = "")#if($fromValue != "" && $toValue != "")#set ($transit = " --> ")#end
+#set ($comment     = "")#if($fromValue != "" && $toValue == "")#set ($comment = $l10n.Deleted)#elseif ($fromValue == "" && $toValue != "")#set ($comment = $l10n.New )#end 
+  - $format.getDate($l10n.ShortTimePattern, $not.CreationDate) : $fromValue$transit$toValue #if ($comment != "")($comment)#end
 
 #end
 #end

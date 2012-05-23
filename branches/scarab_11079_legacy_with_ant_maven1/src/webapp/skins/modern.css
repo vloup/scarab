@@ -371,9 +371,15 @@ span.displayValue {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 //div.axial {
-//        background-color:#bbbbbb;
+//        background-color:#dddddd;
 //}
 
+div.axial-footer {
+    background-color:#dddddd;
+    margin-left:2px;
+    margin-right:2px;
+    white-space:nowrap;
+}
 
 /* ============================================================== */
 /* tigris.css                                                     */
@@ -413,11 +419,15 @@ input[type='text'], input[type='password'] {
         background-color:#fff;
 }
 
-select {
+treeview_button, select, input[type='submit'], input[type='reset'], input[type='file'] {
         border-radius: 5px;
+        padding:2px;
         border-style:solid;
-        border-color:#d0d0d0;
-        background-color:#fff;
+        border-color:#f0d0d0 #f0d0d0 #f0b0b0 #f0b0b0;
+        background-color:#f8f8f8;
+        border-width:2px;
+        color:#b00000;
+
 }
 
 
@@ -425,14 +435,14 @@ textarea{
         font-size: 1em;
 }
 
-input[type='submit']{
-        border-style:solid;
-        border-width:1px;
-        border-color:#808080;
-        border-radius: 5px;
-        cursor:pointer;
-        background-color:#fef8fe;
-}
+//input[type='submit']{
+//        border-style:solid;
+//        border-width:1px;
+//        border-color:#808080;
+//        border-radius: 5px;
+//        cursor:pointer;
+//        background-color:#fef8fe;
+//}
 
 .functnbar a,.functnbar2 a,.functnbar3 a {
 	color: #000;
@@ -900,7 +910,7 @@ dd {
 }
 
 .toolgroup {
-	background: #e0e0e0;
+	background: #e8e8e8;
 	margin-bottom: 6px;
 }
 
@@ -1247,7 +1257,7 @@ ul {
 }
 
 .scarab-toolgroup {
-	background: #f0f0f0;
+	background: #f8f8f8;
 	margin-bottom: 6px;
 	margin-right: 3px;
 	margin-left: 0px;
