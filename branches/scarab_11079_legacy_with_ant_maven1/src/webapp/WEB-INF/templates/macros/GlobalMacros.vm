@@ -47,6 +47,21 @@ $canMakeTransition
   $count
 #end
 
+#macro (AvailableTransitionsForOption $attrValue $optionFieldName $size $multiple)
+  #set ($count=0)
+  #set ($attr = $attrValue.Attribute)
+  #set ($issue = $attrValue.Issue)
+  #set ($module = $issue.Module)
+  #set ($issueType = $issue.IssueType)
+  #if ($issueType.ParentId > 0)
+     #set ($issueType = $issueType.IssueTypeForTemplateType)
+  #end
+  #set ($count  = $module.getOptionTree($attr, $issueType, false).size())
+  $count
+#end
+
+
+
 ## ===================================================================
 ## Helper macro
 ## $string : A string
@@ -85,18 +100,21 @@ $displayValue
       <span id="$cssId:Display">$newValues</span>
 
   #elseif ($count.trim() == "1" )
+    #set ($available = "#AvailableTransitionsForOption ( $attrValue $optionFieldName $size $multiple )" )
 
     #foreach ($option in $module.getOptionTree($attr, $issueType, false))
       #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
 
       #if ($canMakeTransition.trim()=="true")
-        #if ($templateInfo || (!$required && $newValues && $newValues.toString() == ''))
+        #if ($templateInfo || (!$required && $newValues && $available.trim() == "1"))
           <input id="$cssId" type="hidden" name="$attrInput.get($optionFieldName).Key" value="$newValues"/>
           #if ($newValues && $newValues != "" && $newValues > 0)
             #set ($checked = "checked")
+          #else
+            #set ($checked = "")
           #end
           #set ($oc = "javascript:this.form.${attrInput.get($optionFieldName).Key}.value=(this.checked)?$option.OptionId:''")
-	          <input type="checkbox" 
+	    <input type="checkbox" 
             name="${attrInput.get($optionFieldName).Key}_tmp" 
             onclick="$oc" ${checked} />
         #else
