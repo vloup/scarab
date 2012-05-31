@@ -182,7 +182,7 @@
     #if ($issue.isOnHold() || $issue.isSealed())
       <td>
     #else
-      #indexedRowsWithIdleHours($velocityCount $issue.HoursIdle)
+      #indexedColumnsWithIdleHours($velocityCount $issue.HoursIdle)
     #end
   
     <a href="$link">$record.UniqueId</a></td>
