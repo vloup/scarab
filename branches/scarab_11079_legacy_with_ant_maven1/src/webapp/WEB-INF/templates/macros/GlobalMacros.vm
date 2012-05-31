@@ -571,7 +571,7 @@ $displayValue
  #if    ($hours <=  0) #set ($extra = "")
  #elseif($hours < 120) #set ($extra = "_attention1")
  #elseif($hours < 240) #set ($extra = "_attention2")
- #elseif($hours < 480) #set ($extra = "_attention3")
+ #elseif($hours < 480) #set ($extra = "_attention4")
  #else
    #set ($extra = "_attention5")
  #end
@@ -586,8 +586,8 @@ $displayValue
 #macro (indexedRowsWithIdleHours $count $hours)
  #if    ($hours <=  0) #set ($extra = "")
  #elseif($hours < 120) #set ($extra = "")
- #elseif($hours < 240) #set ($extra = "_attention1")
- #elseif($hours < 480) #set ($extra = "_attention2")
+ #elseif($hours < 240) #set ($extra = "_attention2")
+ #elseif($hours < 480) #set ($extra = "_attention4")
  #else
    #set ($extra = "_attention5")
  #end
