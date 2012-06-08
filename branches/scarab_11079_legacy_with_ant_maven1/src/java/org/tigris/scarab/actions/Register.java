@@ -119,7 +119,7 @@ public class Register extends ScarabTemplateAction
         }
         
         ScarabUser existingUser=ScarabUserManager.getInstance(su.getUserName());
-        if (existingUser!=null)
+        if (existingUser!=null && !existingUser.isDeleted())
         {
             setTarget(data, template);
             scarabR.setAlertMessage(L10NKeySet.UsernameExistsAlready);
@@ -135,25 +135,32 @@ public class Register extends ScarabTemplateAction
     {
         String nextTemplate = getNextTemplate(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        ScarabUser su = null;
-
-        try
-        {
-            su = (ScarabUser) data.getUser().getTemp(ScarabConstants.SESSION_REGISTER);
-        }
-        catch (java.lang.ClassCastException cce)
-        {
-            su = null;
-            L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CanNotConvertUserName, data.getUser().toString());
-            scarabR.setAlertMessage(l10nMessage);
-        }
-
+        ScarabUser su = (ScarabUser) data.getUser();
         if (su == null)
         {
             setTarget(data, "Register.vm");
             return;
         }
         
+        Object ob = su.getTemp(ScarabConstants.SESSION_REGISTER);
+        if (ob == null)
+        {
+            setTarget(data, "Register.vm");
+            return;
+        }
+        
+        if(ob instanceof ScarabUser)
+        {
+            su = (ScarabUser)ob;
+        }
+        else
+        {
+            L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CanNotConvertUserName, ob.toString());
+            scarabR.setAlertMessage(l10nMessage);
+            return;
+        }
+        
+        String user_name = su.getUserName();
         try
         {
             su.createNewUser();
@@ -163,7 +170,7 @@ public class Register extends ScarabTemplateAction
             su = ScarabUserManager.reactivateUserIfDeleted(su);
             if (su == null)
             {
-                ScarabUser existingUser = ScarabUserManager.getInstance(su.getUserName());
+                ScarabUser existingUser = ScarabUserManager.getInstance(user_name);
                 if(existingUser.isConfirmed())
                 {
                     Localizable msg = new L10NMessage(L10NKeySet.UsernameExistsAlready);
@@ -197,7 +204,7 @@ public class Register extends ScarabTemplateAction
             }
             L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CouldNotSendEmail, msg);
             scarabR.setAlertMessage(l10nMessage);
-            setTarget(data, "Register.vm");
+            setTarget(data, "Login.vm");
             return;
         }
         setTarget(data, nextTemplate);

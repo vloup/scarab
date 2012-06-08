@@ -116,8 +116,17 @@ public class StaticLink
     public String toString()
     {
         String prefix = getPrefix();
-        return new StringBuffer(prefix.length()+path.length())
+        String result;
+        if(path == null)
+        {
+            result = prefix;
+        }
+        else
+        {
+            result = new StringBuffer(prefix.length()+path.length())
             .append(prefix).append(path).toString();
+        }
+        return result;
     }
 
     /**
