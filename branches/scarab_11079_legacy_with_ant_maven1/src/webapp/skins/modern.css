@@ -366,6 +366,15 @@ span.displayValue {
     margin-right:10px;
 }
 
+
+td.accessible {
+    background-color:#0f0;
+}
+
+td.restricted {
+    background-color:#eee;
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* ==== From here on downwards the refactoring must still take place. ==== */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

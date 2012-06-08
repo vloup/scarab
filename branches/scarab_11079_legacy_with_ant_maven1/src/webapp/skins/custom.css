@@ -53,7 +53,11 @@ td.status_assigned {
  color:green;
  background-image: url(images/closed.png);
 }
-  
+
+#scb_banner {
+ background-image: url(companylogo.png);  
+ height:80px;
+}
 
 .treeview_button {
  background-image: url(images/treeview_open.gif);
