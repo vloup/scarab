@@ -17,3 +17,4 @@
 #if ($allowA)
 	<div>$link.setPage("admin,Approval.vm").setLabel("$l10n.Approve")</div>
 #end
+

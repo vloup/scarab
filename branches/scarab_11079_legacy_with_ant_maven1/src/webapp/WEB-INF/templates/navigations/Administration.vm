@@ -42,7 +42,7 @@
 	     <div><strong>$l10n.CurrentModule</strong>
 	       $renderer.render("navigations", "ModuleAdmin.vm")
 	     </div>
-	    #else
+	    #else 
 		     #if ($allowMM)
 		      	<div>$link.setPage("SelectModule.vm").setPathInfo($scarabG.Constant.CURRENT_ADMIN_MENU, "3").setLabel("$l10n.CurrentModule")</div>
 		     #else
