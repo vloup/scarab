@@ -371,6 +371,7 @@ public class L10NKeySet
     public static final LocalizationKey PasswordChanged = new L10NKey("PasswordChanged");
     public static final LocalizationKey PasswordResetMessage = new L10NKey("PasswordResetMessage");
     public static final LocalizationKey InvalidConfirmationCode = new L10NKey("InvalidConfirmationCode");
+    public static final LocalizationKey CanNotConvertUserName = new L10NKey("CanNotConvertUserName");
     public static final LocalizationKey NoAttributesSelected = new L10NKey("NoAttributesSelected");
     public static final LocalizationKey DuplicateTemplateName = new L10NKey("DuplicateTemplateName");
     public static final LocalizationKey CommentAdded = new L10NKey("CommentAdded");

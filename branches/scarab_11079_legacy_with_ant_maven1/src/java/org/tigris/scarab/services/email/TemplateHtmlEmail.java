@@ -399,7 +399,20 @@ public class TemplateHtmlEmail
             {
                 keystring = keys[i].toString();
                 val = context.get(keystring);
-                log.info("    " + keystring + "=" + ((val==null)? "null (no value in context)":val.toString()) );                 
+                String msg = "null (no value in context)";
+                if (val != null)
+                {
+                    try
+                    {
+                        msg = val.toString();
+                    }
+                    catch (Exception ex)
+                    {
+                        // ignore conversion exception
+                        msg = " not convertable to String value ("+ex.getMessage()+")";
+                    }
+                }
+                log.info("    " + keystring + "=" + msg );                 
             }
         }
         catch(Exception ex)

@@ -135,9 +135,18 @@ public class Register extends ScarabTemplateAction
     {
         String nextTemplate = getNextTemplate(data);
         ScarabRequestTool scarabR = getScarabRequestTool(context);
-        
-        ScarabUser su = (ScarabUser) data.getUser()
-            .getTemp(ScarabConstants.SESSION_REGISTER);
+        ScarabUser su = null;
+
+        try
+        {
+            su = (ScarabUser) data.getUser().getTemp(ScarabConstants.SESSION_REGISTER);
+        }
+        catch (java.lang.ClassCastException cce)
+        {
+            su = null;
+            L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CanNotConvertUserName, data.getUser().toString());
+            scarabR.setAlertMessage(l10nMessage);
+        }
 
         if (su == null)
         {
@@ -169,9 +178,28 @@ public class Register extends ScarabTemplateAction
             }
         }
         data.getUser().setTemp(ScarabConstants.SESSION_REGISTER, null);
-       scarabR.setUser(su);
-        sendConfirmationEmail(su, context);
-
+        scarabR.setUser(su);
+        try
+        {
+           sendConfirmationEmail(su, context);
+        }
+        catch(Exception e)
+        {
+            Throwable th = e.getCause();
+            String msg = null;
+            if(th != null)
+            {
+                msg = th.getMessage();
+            }
+            if(msg == null)
+            {
+                msg = e.getMessage();
+            }
+            L10NMessage l10nMessage = new L10NMessage(L10NKeySet.CouldNotSendEmail, msg);
+            scarabR.setAlertMessage(l10nMessage);
+            setTarget(data, "Register.vm");
+            return;
+        }
         setTarget(data, nextTemplate);
     }
 
