@@ -1,8 +1,8 @@
 ##
 ## This template needs to get the following variables in the context:
-## · currentIssue: Issue object the user is trying to View.
-## · hasViewPermission: true if the user has view permissions for this issue. False if not.
-## · hasDeletePermission: true if the user has permission to delete issues in this modue.
+## ? currentIssue: Issue object the user is trying to View.
+## ? hasViewPermission: true if the user has view permissions for this issue. False if not.
+## ? hasDeletePermission: true if the user has permission to delete issues in this modue.
 ##
 ##
 
@@ -25,7 +25,7 @@ href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue
     #printCollisionInfo()
   #end
 
-#if ($currentIssue && $hasViewPermission && !$currentIssue.Deleted && !$currentIssue.Moved)
+#if ($currentIssue && $hasViewPermission && !$currentIssue.Deleted && !$currentIssue.Moved )
 
     #if ($currentIssue.Module != $scarabR.CurrentModule)
       <p class="infomark"><em>
@@ -162,9 +162,9 @@ href="$link.setPage('RSSDataExport.vm')/feedType/IssueFeed/issueId/$currentIssue
   #elseif (!$collisionDetectedOnMoveAttempt)
     <div align="right">
       #set ($currentIssue = $scarabR.getIssue($currentIssueId))
-      #set ($newIssue = $scarabR.getIssue($currentIssueId, true).IssueNewId)
+      #set ($newIssue = $scarabR.getIssue($currentIssueId).IssueNewId)
       #if ($newIssue && $newIssue!=$currentIssueId)  ## There's a newissueid, not the current one
-        $l10n.format("IssueIsNowLocatedIn", $link.getIssueIdLink($scarabR.getIssue($newIssue, true)), $newIssue)
+        $l10n.format("IssueIsNowLocatedIn", $link.getIssueIdLink($scarabR.getIssue($newIssue)), $newIssue)
       #elseif (!$currentIssue.Moved )
         <h3>$l10n.IssueSearchResults</h3>
          #if ($currentIssueId && $currentIssueId.length() > 0)
