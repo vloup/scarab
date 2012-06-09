@@ -272,7 +272,7 @@
   #end
 
 
-  #set ($extended_footer = $scarab.extended.footer)
+  #set ($extended_footer = $scarabG.getTurbineConfiguration().getString("scarab.extended.footer"))
   #if ($extended_footer == true)
 
   ## ==========================================================================
