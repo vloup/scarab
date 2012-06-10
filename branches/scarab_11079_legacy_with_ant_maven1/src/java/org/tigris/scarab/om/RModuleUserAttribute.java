@@ -136,7 +136,7 @@ public  class RModuleUserAttribute
     public static Attribute MODULE = new Attribute();
     public static Attribute ISSUE_TYPE = new Attribute();
     
-    public static Set internalAttributes = new HashSet();
+    public static Set<Attribute> internalAttributes = new HashSet();
     static
     {
         MODIFIED_BY.setName(L10NKeySet.ModifiedBy.toString());
@@ -145,6 +145,7 @@ public  class RModuleUserAttribute
         CREATED_DATE.setName(L10NKeySet.CreatedDate.toString());
         MODULE.setName(L10NKeySet.Module.toString());
         ISSUE_TYPE.setName( L10NKeySet.IssueType.toString());
+
         internalAttributes.add(MODIFIED_BY);
         internalAttributes.add(MODIFIED_DATE);
         internalAttributes.add(CREATED_BY);
@@ -153,6 +154,24 @@ public  class RModuleUserAttribute
         internalAttributes.add(ISSUE_TYPE);
     }
 
+    public static boolean isInternal(String name, boolean ignoreCase)
+    {
+        boolean bInternal = false;
+        if (name != null)
+        {
+            for (Iterator<Attribute> it = internalAttributes.iterator(); it.hasNext() && !bInternal; )
+            {
+                Attribute at = (Attribute)it.next();
+                if(ignoreCase)
+                    bInternal = at.getName().equalsIgnoreCase(name);
+                else
+                    bInternal = at.getName().equals(name);
+            }
+        }
+        return bInternal;
+    }
+    
+    
     public boolean isInternal()
     {
         boolean bInternal = false;
