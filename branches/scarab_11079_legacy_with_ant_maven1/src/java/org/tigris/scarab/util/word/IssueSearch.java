@@ -1229,10 +1229,10 @@ public class IssueSearch
                 Criteria.LEFT_JOIN 
             );
         }
-        if (sortInternal.equals(RModuleUserAttribute.MODIFIED_DATE.getName()) ||
-            sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
+        if (sortInternal.equalsIgnoreCase(RModuleUserAttribute.MODIFIED_DATE.getName()) ||
+            sortInternal.equalsIgnoreCase(RModuleUserAttribute.CREATED_DATE.getName()))
         {
-            if (sortInternal.equals(RModuleUserAttribute.CREATED_DATE.getName()))
+            if (sortInternal.equalsIgnoreCase(RModuleUserAttribute.CREATED_DATE.getName()))
             {
                 joinColumn  = IssuePeer.CREATED_TRANS_ID;
             }
@@ -1249,10 +1249,10 @@ public class IssueSearch
                 Criteria.LEFT_JOIN 
             );
         }
-        else if (sortInternal.equals(RModuleUserAttribute.MODIFIED_BY.getName()) ||
-            sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
+        else if (sortInternal.equalsIgnoreCase(RModuleUserAttribute.MODIFIED_BY.getName()) ||
+            sortInternal.equalsIgnoreCase(RModuleUserAttribute.CREATED_BY.getName()))
         {   
-            if (sortInternal.equals(RModuleUserAttribute.CREATED_BY.getName()))
+            if (sortInternal.equalsIgnoreCase(RModuleUserAttribute.CREATED_BY.getName()))
             {
                 joinColumn  = IssuePeer.CREATED_TRANS_ID;
             }
@@ -1275,7 +1275,7 @@ public class IssueSearch
                 Criteria.LEFT_JOIN 
             );
         }
-
+        
         addSortColumn(crit, sortColumn);
     }
 
