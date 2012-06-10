@@ -329,6 +329,46 @@ span.displayValue {
 	margin-left:15px;
 }
 
+a.next_issue, a.prev_issue, a.first_issue, a.last_issue, .current_issue {
+ text-decoration:none;
+ background-repeat: no-repeat;
+ background-position:center; 
+ display:inline-block;
+ vertical-align:middle;
+ 
+ border-color: #B08080 #B08080 #D0B0B0 #D0B0B0;
+ border-radius: 5px;
+ border-style:solid;
+ border-width:2px;
+ padding:2px 8px;
+}
+    
+a.next_issue {
+ background-image: url(images/icon_right.gif);
+}
+a.prev_issue {
+ background-image: url(images/icon_left.gif);
+}
+a.first_issue {
+ background-image: url(images/icon_first.gif);
+}
+a.last_issue {
+ background-image: url(images/icon_last.gif);
+}
+
+.issue_counter {
+ text-decoration:none;
+ background-repeat: no-repeat;
+ display:inline-block;
+ vertical-align:middle; 
+ padding:2px 8px;
+}
+
+.current_issue {
+ border-width:1px;
+ padding:2px 12px;
+}
+
 /* ============================================================== */
 /* Issue comments                                                 */
 /* ============================================================== */

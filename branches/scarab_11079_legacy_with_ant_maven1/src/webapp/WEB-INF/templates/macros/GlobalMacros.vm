@@ -737,14 +737,18 @@ $displayValue
    <p class="paginate">
   #set ($prevIssue=$scarabR.PrevIssue)
   #if($prevIssue)
+   #set ($prevLink = $link.setPathInfo("id", "$prevIssue").setPage($scarabR.getCurrentTemplate()).addPathInfo("posInList", 1))
+   <a href="$prevLink" class="first_issue">&nbsp;</a>
    #set ($prevLink = $link.setPathInfo("id", "$prevIssue").setPage($scarabR.getCurrentTemplate()).addPathInfo("posInList", $scarabR.PrevIssuePosInList))
-   <a href="$prevLink">$l10n.PaginatePrevious</a> |
+   <a href="$prevLink" class="prev_issue">&nbsp;</a>
   #end
-  $scarabR.IssuePosInList of $scarabR.CurrentSearchResultsSize
+  <span class="current_issue">$scarabR.IssuePosInList</span><span class="issue_counter">of $scarabR.CurrentSearchResultsSize</span>
   #set ($nextIssue=$scarabR.NextIssue)
   #if ($nextIssue)
    #set ($nextLink = $link.setPathInfo("id", "$nextIssue").setPage($scarabR.getCurrentTemplate()).addPathInfo("posInList", $scarabR.NextIssuePosInList))
-    | <a href="$nextLink">$l10n.PaginateNext</a>
+    <a href="$nextLink" class="next_issue">&nbsp;</a>
+   #set ($nextLink = $link.setPathInfo("id", "$nextIssue").setPage($scarabR.getCurrentTemplate()).addPathInfo("posInList", $scarabR.CurrentSearchResultsSize))
+    <a href="$nextLink" class="last_issue">&nbsp;</a> 
   #end
   </p>
  #end
