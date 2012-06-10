@@ -49,11 +49,15 @@ package org.tigris.scarab.screens;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.fulcrum.parser.ParameterParser;
+import org.apache.fulcrum.parser.StringValueParser;
 import org.apache.turbine.RunData;
 import org.apache.turbine.TemplateContext;
 
+import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
+import org.tigris.scarab.util.ScarabUtil;
 
 /**
  * The sole purpose of this class is to generate a page
@@ -72,11 +76,21 @@ public class IssueList extends Default {
         
     }
 
-    private void populateContextWithQueryResults(RunData data, TemplateContext context)
+    private void populateContextWithQueryResults(RunData data, TemplateContext context) throws Exception
     {
-        ScarabRequestTool scarabR = getScarabRequestTool(context);
+        ScarabRequestTool scarabR = getScarabRequestTool(context);        
+        
+        // =============================================
+        // Perform the search (or get it from the cache)
+        // =============================================
         
         List searchResults = scarabR.getCurrentSearchResults();
+        
+
+        // =============================================
+        // Prepare the display in IssueList.vm
+        // =============================================
+        
         int searchResultsSize = searchResults.size();
         int resultsPerPage = data.getParameters().getInt("resultsPerPage", 25);
         int pageNum = data.getParameters().getInt("pageNum", 1 );
@@ -95,6 +109,57 @@ public class IssueList extends Default {
         context.put("isueListSize", new Integer(isueListSize));
         context.put("paginated", new Boolean(paginated));
         context.put("resultsPerPage", new Integer(resultsPerPage));        
+
+        ScarabUser user = (ScarabUser)data.getUser();
+        String currentQueryString = user.getMostRecentQuery();
+        StringValueParser qp = ScarabUtil.parseURL(currentQueryString);
+        
+        ParameterParser pp = data.getParameters();
+
+        // =======================================================
+        // Add Sort parameters for usage in the Velocity template:
+        //
+        // $sortInternal
+        // $sortColumn
+        // $sortPolarity
+        // =======================================================
+        
+        String sortinternal = null;
+        if(pp.containsKey("sortcolumn"))
+        {
+            String sortcolumn = pp.get("sortcolumn");
+            if (sortcolumn == null || "null".equals(sortcolumn))
+            {
+                // for some reason sortintern is sometimes set to null
+                // this indicates the default behaviour: sort by IssueID
+                sortinternal = "issueid";
+            }
+            else
+            {
+                context.put("sortColumn", sortcolumn );
+            }
+        }
+        else
+        {
+            sortinternal = qp.get("sortinternal");
+        }
+        if(sortinternal != null) context.put("sortInternal", sortinternal );
+
+
+        
+        String sortpolarity;
+        if(pp.containsKey("sortpolarity"))
+        {
+            sortpolarity = pp.get("sortpolarity");
+        }
+        else
+        {
+            // Not sure where searcsp is used and why it exists.
+            // Maybe related to Intake ?
+            sortpolarity = qp.get("searchsp");
+        }  
+        if(sortpolarity != null) context.put("sortPolarity", sortpolarity);
+
     }
     
     /**

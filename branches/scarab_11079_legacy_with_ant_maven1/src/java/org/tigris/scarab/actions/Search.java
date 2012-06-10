@@ -813,11 +813,20 @@ public class Search extends RequireLoginFirstAction
                     String[] values = data.getParameters().getStrings(key);
                     for (int j=0; j<values.length; j++)
                     {
+                        String fkey  = key;
                         String value = values[j];
                         if (StringUtils.isNotEmpty(value))
-                        {
-                            buf.append('&').append(key);
+                        {                            
+                            if(key.startsWith("searchsai"))
+                            {
+                                if ("issueid".equals(value) ||  RModuleUserAttribute.isInternal(value, true))
+                                {
+                                    fkey="sortinternal";
+                                }
+                            }
+                            buf.append("&").append(fkey);
                             buf.append('=').append(ScarabUtil.urlEncode(value));
+                           
                         }
                     }
                 }

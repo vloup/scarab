@@ -90,8 +90,8 @@
 
 </h3>
 		
-#set ($sortColumn = $data.Parameters.getString('sortColumn'))
-#set ($sortInternal=$data.Parameters.getString('sortInternal'))
+#set ($sortColumn   = $data.Parameters.getString('sortColumn'))
+#set ($sortInternal = $data.Parameters.getString('sortInternal'))
 #set ($sortPolarity = $data.Parameters.getString('sortPolarity'))
 
 #if ($sortColumn)
@@ -117,7 +117,7 @@
   <th style="white-space:nowrap;">
      ## Issue ID column
      #prepIssueListPageLink()
-     #if ((!$sortColumn || $sortColumn == 'null') && !$sortInternal)
+     #if ( $sortInternal=="issueid" || (!$sortColumn || $sortColumn == 'null') && !$sortInternal)
         ## No sorting column is active, use issue ID
         #if ($sortPolarity.equals('desc'))
            #set ($sortLink = $link.setPathInfo('sortPolarity', 'asc').addPathInfo('sortColumn', 'null').addPathInfo('searchType', $searchType).addPathInfo("resultsPerPage","$resultsPerPage"))
@@ -151,7 +151,7 @@
     #end
     <th>
       #prepIssueListPageLink()
-      #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equals($pref.Name))
+      #if ($sortColumn.equals($pref.AttributeId.toString()) || $sortInternal.equalsIgnoreCase($pref.Name))
         ## This column is the one we are currently sorting on
         #if ($sortPolarity.equals("desc"))
           #set ($sortLink = $link.setPathInfo("sortPolarity", "asc").setPathInfo($sort, "$sortData").addPathInfo("searchType","$searchType").addPathInfo("resultsPerPage","$resultsPerPage").toString())

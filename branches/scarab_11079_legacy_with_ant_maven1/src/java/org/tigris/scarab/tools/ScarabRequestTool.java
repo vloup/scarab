@@ -120,6 +120,7 @@ import org.tigris.scarab.om.RModuleAttributeManager;
 import org.tigris.scarab.om.RModuleIssueType;
 import org.tigris.scarab.om.RModuleIssueTypePeer;
 import org.tigris.scarab.om.RModuleOption;
+import org.tigris.scarab.om.RModuleUserAttribute;
 import org.tigris.scarab.om.ROptionOption;
 import org.tigris.scarab.om.ReportManager;
 import org.tigris.scarab.om.ScarabUser;
@@ -1973,17 +1974,59 @@ public class ScarabRequestTool
             }
         }
 
-        String sortColumn = data.getParameters().getString("sortColumn");
-        if(isValidIssueSearchSortColumn(sortColumn))
+        // The query can be "modified" by URL Requests parameters:
+        // We can provide:
+        //
+        // sortcolumn     The ID of a new sort column
+        // sortinternal   The name of an internal sort column
+        // sortpolarity   "asc" or "desc"
+        // searchsp       "asc" or "desc" (not sure about what that is)
+        //
+        // There is one irregularity: sortcolumn can be existing and have the value "null"
+        // This means, that the sort shall use the IssueID as sort criterion (needs cleanup)
+        // Note, that if sortcolumn AND sortinternal are specified,
+        // then sortcolumn rules.
+        
+
+        // Here we either get a modified sortColumn:
+        String sortColumn = getModifiedQueryParameter("sortColumn", data, parser);
+        if("null".equals(sortColumn))
         {
-            search.setSortAttributeId( Integer.valueOf(sortColumn) );
+            // This is a sort by IssueId -> do nothing!
         }
-        search.setSortInternalAttribute(data.getParameters().getString("sortInternal"));
-        search.setSortPolarity(data.getParameters().getString("sortPolarity"));
+        else
+        {
+            if(isValidIssueSearchSortColumn(sortColumn))
+            {
+                search.setSortAttributeId( Integer.valueOf(sortColumn) );
+            }
+    
+            // or a modified sortInternal
+            else
+            {
+                String sortinternal = data.getParameters().getString("sortInternal");
+                if (!RModuleUserAttribute.isInternal(sortinternal, true))
+                {
+                    sortinternal = parser.get("sortinternal");
+                }
+                if (sortinternal != null) search.setSortInternalAttribute(sortinternal);
+            }
+        }
+        
+        String sortpolarity = data.getParameters().getString("sortPolarity");
+        if(sortpolarity == null)
+        {
+            sortpolarity = parser.get("sortpolarity");
+            if(sortpolarity == null)
+            {
+                sortpolarity = parser.get("searchsp");
+            }
+        }
+        if(sortpolarity != null) search.setSortPolarity(sortpolarity);
 
         return search;
-    }
-
+    }    
+    
     /**
      * Check if a sortColumn is a sortColumn of an user-search (always a String)
      * or a sortColumn of an issue-search (always an Integer)
@@ -2047,6 +2090,22 @@ public class ScarabRequestTool
         return queryResults;
     }
 
+    static public String getModifiedQueryParameter(String name, RunData theData, StringValueParser parser)
+    {
+        String result;
+        String vals[]   = theData.getParameters().getStrings(name);
+        if (vals != null && vals.length > 0)
+        {
+            result = vals[0];
+        }
+        else
+        {
+            result = parser.get(name);
+        }
+        return result;
+    }
+    
+    
     /**
      * Gets the Result of the current query
      * and caches it
@@ -2063,23 +2122,41 @@ public class ScarabRequestTool
         // <scarabHost>/scarab/issues/query/<queryId>
         // 
         // The queryId should be sufficient to setup the full query.
-        // But i have seen a problem, when the user has only limitted
+        // But i have seen a problem, when the user has only limited
         // module read permissions. In that case the LoginValve
-        // forces a login before the query can be perfromed.
+        // forces a login before the query can be performed.
         // Workaround: Also add the moduleId to the URL:
         //
         // <scarabHost>/scarab/issues/query/<queryId>/curmodule/<moduleId>
         // 
         // The current solution always uses the default MITList, hence it will
-        // not take care of user customized resultsets. 
+        // not take care of user customized result sets. 
         // I am not sure, where to place this code and how to actually
-        // control the search-Subsystem so that it will perfrom the correct
+        // control the search-Subsystem so that it will perform the correct
         // search. Any help and advice for a better solution is heavily welcome!!!
-		
+
+        
+        // The query can be "modified" by URL Requests parameters:
+        // We can provide:
+        //
+        // sortcolumn     The ID of a new sort column
+        // sortinternal   The name of an internal sort column
+        // sortpolarity   "asc" or "desc"
+        // searchsp       "asc" or "desc" (not sure about what that is)
+        //
+        // There is one irregularity: sortcolumn can be existing and have the value "null"
+        // This means, that the sort shall use the IssueID as sort criterion (needs cleanup)
+        // Note, that if sortcolumn AND sortinternal are specified,
+        // then sortcolumn rules.
+        
         String currentQueryString = user.getMostRecentQuery();
-        String sortColumn = data.getParameters().getString("sortColumn");
-        String sortInternal=data.getParameters().getString("sortInternal");
-        String sortPolarity = data.getParameters().getString("sortPolarity");
+        StringValueParser queryStringparser = ScarabUtil.parseURL(currentQueryString);
+        
+        String sortColumn   = getModifiedQueryParameter("sortColumn", data, queryStringparser);
+        String sortInternal = null;
+        if(sortColumn == null) 
+            sortInternal = getModifiedQueryParameter("sortinternal", data, queryStringparser);
+        String sortPolarity = getModifiedQueryParameter("sortpolarity", data, queryStringparser);
         String currentQueryAddition = "" + sortColumn + sortInternal + sortPolarity;
         String cachedQueryAddition = (String)data.getUser().getTemp("queryAddition");
 
@@ -2088,9 +2165,11 @@ public class ScarabRequestTool
         if (cachedQueryAddition==null || !cachedQueryAddition.equals(currentQueryAddition) || queryResult==null)
         {
             // currentQueryString gets lost if the session timed out. an empty search result is returned then.
-            queryResult = null != currentQueryString
-                    ? getSearchResults(currentQueryString)
-                    : Collections.emptyList();
+            // This needs review. If session timed out, then we should not get here.
+            if (currentQueryString != null)              
+                queryResult =  getSearchResults(currentQueryString);
+            else
+                queryResult =  Collections.emptyList();
 
             data.getUser().setTemp("queryAddition", currentQueryAddition );
             data.getUser().setTemp("queryResult", queryResult);

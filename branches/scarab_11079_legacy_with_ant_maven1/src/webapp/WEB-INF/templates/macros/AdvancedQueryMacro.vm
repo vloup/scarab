@@ -297,11 +297,20 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
   #set ( $issueType = $search.IssueType )
 #end
  <th width="120">$l10n.SortBy</th>
+
+#set ( $internalSort = $search.getSortInternalAttribute())
  <td>
  <select name="$searchGroup.SortAttributeId.Key">
     <option value="">$l10n.Choose</option>
+    <option value="issueid"      #if ($internalSort=="issueid")     selected="selected" #end>Issue ID</option>
+    <option value="createddate"  #if ($internalSort=="createddate") selected="selected" #end>Create Date</option>
+    <option value="modifieddate" #if ($internalSort=="modifieddate")selected="selected" #end>Change Date</option>
+    <option value="createdby"    #if ($internalSort=="createdby")   selected="selected" #end>Created by</option>
+    <option value="modifiedby"   #if ($internalSort=="modifiedby")  selected="selected" #end>Changed by</option>
+    <option class="select-dash" disabled="disabled">--------------------</option>
 #foreach ($rmua in $scarabR.RModuleUserAttributes)
 #set ($attribute = $rmua.Attribute)
+#if ( $attribute.AttributeId > 0 )
    <option value="$attribute.AttributeId"
      #if ($searchGroup.SortAttributeId.Value.equals($attribute.AttributeId))
           selected="selected" #end>
@@ -312,7 +321,10 @@ $l10n.TimeFrom:&#160;<input type="text" id="$searchGroup.MinChangeDate.Key"
      #end
    </option>
 #end
+#end
 </select>&#160;
+
+#set ( $sortPolarity = $searchGroup.SortPolarity.Value )
 <select name="$searchGroup.SortPolarity.Key">
     <option value="asc"
      #if ($searchGroup.SortPolarity.Value.equals("asc"))
