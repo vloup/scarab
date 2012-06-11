@@ -2022,6 +2022,7 @@ public class ScarabRequestTool
                 sortpolarity = parser.get("searchsp");
             }
         }
+        
         if(sortpolarity != null) search.setSortPolarity(sortpolarity);
 
         return search;
@@ -2199,7 +2200,8 @@ public class ScarabRequestTool
      */
     public int getCurrentSearchResultsSize()
     {
-        return getCurrentSearchResults().size();
+        List searchResults = (List)data.getUser().getTemp("queryResult");
+        return (searchResults != null) ? searchResults.size():0;
     }
 
     public boolean isIssuePartOfList()
@@ -2226,10 +2228,13 @@ public class ScarabRequestTool
     {
         String nextIssueId = null;
         int nextIssueIndex = getNextIssuePosInList() - 1;
-        List searchResults = getCurrentSearchResults();
-        if(nextIssueIndex>=0 && nextIssueIndex< searchResults.size() )
+        List searchResults = (List)data.getUser().getTemp("queryResult");
+        if(searchResults != null)
         {
-            nextIssueId = ((QueryResult)searchResults.get(nextIssueIndex)).getUniqueId();
+            if(nextIssueIndex>=0 && nextIssueIndex< searchResults.size() )
+            {
+                nextIssueId = ((QueryResult)searchResults.get(nextIssueIndex)).getUniqueId();
+            }
         }
         return nextIssueId;
     }
@@ -2238,6 +2243,7 @@ public class ScarabRequestTool
     {
         return getIssuePosInList() - 1;
     }
+    
     /**
      * Returns previous issue id in list.
      */
@@ -2246,10 +2252,14 @@ public class ScarabRequestTool
     {
         String prevIssueId = null;
         int prevIssueIndex = getPrevIssuePosInList() - 1;
-        List searchResults = getCurrentSearchResults();
-        if(prevIssueIndex>=0 && prevIssueIndex<searchResults.size() )
+        
+        List searchResults = (List)data.getUser().getTemp("queryResult");
+        if(searchResults != null)
         {
-            prevIssueId = ((QueryResult)searchResults.get(prevIssueIndex)).getUniqueId();
+            if(prevIssueIndex>=0 && prevIssueIndex<searchResults.size() )
+            {
+                prevIssueId = ((QueryResult)searchResults.get(prevIssueIndex)).getUniqueId();
+            }
         }
         return prevIssueId;
     }
