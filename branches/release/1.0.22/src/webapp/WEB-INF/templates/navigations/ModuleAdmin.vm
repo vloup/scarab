@@ -7,7 +7,7 @@
  <div>$link.setPage("admin,ManageArtifactTypes.vm").setLabel("$l10n.NavManageIssueTypes")</div>
 #end
 #if ($allowXML)
- <div>$link.setPage("admin,XMLImportIssues.vm").setLabel("$l10n.XMLImportIssues")</div>
+ ## SCB3101 commented as found not working properly ## <div>$link.setPage("admin,XMLImportIssues.vm").setLabel("$l10n.XMLImportIssues")</div>
  <div>$link.setPage("admin,XMLExportIssues.vm").setLabel("$l10n.XMLExportIssues")</div>
  <div>$link.setPage("admin,XMLExportSettings.vm").setLabel("$l10n.XMLExportSettings")</div>
 #end
