@@ -514,6 +514,13 @@
         <name>scarab</name>
         <url>file:${project.basedir}/www/repository</url>
     </repository>
+	<repository>
+		<!-- get some of the Sun' special jars -->
+		<id>maven2-repository.dev.java.net</id>
+		<name>Java.net Repository for Maven</name>
+		<url>http://download.java.net/maven/2/</url>
+		<layout>default</layout>
+	</repository>
 </repositories>
 <pluginRepositories>
     <!-- get local Scarab resository plugin jars -->
