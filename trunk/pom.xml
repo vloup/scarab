@@ -504,8 +504,17 @@
 	</reporting>
  
 <!--######################################################################################
-			Dependencies
+			Dependencies + repos
 ###########################################################################################-->
+
+<repositories>
+    <!-- get local Scarab respoitory jars -->
+    <repository>
+        <id>local.repository.scarab</id>
+        <name>scarab</name>
+        <url>file:${project.basedir}/www/repository</url>
+    </repository>
+</repositories>
 
  <dependencies>
 	<dependency>
