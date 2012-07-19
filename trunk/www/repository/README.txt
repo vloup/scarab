@@ -39,10 +39,17 @@ except the ones from Scarab's local repository, which will be taken directly fro
   
   http://java.sun.com/products/jndi/downloads/
 
-  
-Repositories
-============== 
-You may want to include
+
+ARTIFACT MANAGER
+==============
+
+Install any artifact manager like Artifactory or Nexus. 
+This might ease the task of development. See:
+
+-> http://www.jfrog.com/home/v_artifactory_opensource_overview
+-> http://www.sonatype.org/nexus/
+
+Then you may want to include
 
       <repositories>
         <repository>
@@ -53,15 +60,7 @@ You may want to include
         </repository>
       </repositories>
 	  
-into your maven build, too, to support Sun's special jars, e.g.: jdbc-stdext.
+into your maven repository, to support some of the Sun's special jars, e.g.: jdbc-stdext.
 
-
-HINT
-==============
-
-Install any artifact manager like Artifactory or Nexus. 
-This will ease the task of development. See:
-
--> http://www.jfrog.com/home/v_artifactory_opensource_overview
--> http://www.sonatype.org/nexus/
+You might have to upload all jars from the local www/repository, too.
 
