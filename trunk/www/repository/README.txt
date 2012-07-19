@@ -15,10 +15,10 @@ LIBRARIES
 These libraries are critical to the basic Scarab functionality and are
 required additionally to official Maven respositories.
 
-Please install the versions you get from this directory (www/repository)
-into your local maven repository first.
+Please install the versions of this special jars into your local repository, 
+except the ones from Scarab's local repository, which will be taken directly from there.
 
-* fulcrum*.jar
+* fulcrum*.jar (Scarab's repository)
 
   Singleton Services framework. Part of the Jakarta Turbine Project.
   Some parts of it were patched for Scarab. This is why you get it
@@ -26,7 +26,7 @@ into your local maven repository first.
   
   http://jakarta.apache.org/turbine/
 
-* turbine*.jar
+* turbine*.jar (Scarab's repository)
 
   Turbine 3 is our webapp framework. This was patched for Scarab.
 
@@ -38,5 +38,30 @@ into your local maven repository first.
   but you may need this dependency as well. Download it from:
   
   http://java.sun.com/products/jndi/downloads/
- 
+
+  
+Repositories
+============== 
+You may want to include
+
+      <repositories>
+        <repository>
+          <id>maven2-repository.dev.java.net</id>
+          <name>Java.net Repository for Maven</name>
+          <url>http://download.java.net/maven/2/</url>
+          <layout>default</layout>
+        </repository>
+      </repositories>
+	  
+into your maven build, too, to support Sun's special jars, e.g.: jdbc-stdext.
+
+
+HINT
+==============
+
+Install any artifact manager like Artifactory or Nexus. 
+This will ease the task of development. See:
+
+-> http://www.jfrog.com/home/v_artifactory_opensource_overview
+-> http://www.sonatype.org/nexus/
 
