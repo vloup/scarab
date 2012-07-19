@@ -320,7 +320,7 @@
 		  <plugin>
 			<groupId>org.tigris.scarab</groupId>
 			<artifactId>scarab-maven-plugin</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0</version>
 			<configuration>
 				<dbType>${scarab.database.type}</dbType>
 				<dbUser>${scarab.database.admin.username}</dbUser>
@@ -515,6 +515,14 @@
         <url>file:${project.basedir}/www/repository</url>
     </repository>
 </repositories>
+<pluginRepositories>
+    <!-- get local Scarab resository plugin jars -->
+    <pluginRepository>
+        <id>local.repository.scarab</id>
+        <name>scarab</name>
+        <url>file:${project.basedir}/www/repository</url>
+    </pluginRepository>
+</pluginRepositories>
 
  <dependencies>
 	<dependency>
