@@ -1,0 +1,10 @@
+<metadata>
+	<groupId>org.tigris.scarab</groupId>
+	<artifactId>scarab-maven-plugin</artifactId>
+	<versioning>
+		<latest>1.0</latest>
+		<versions>
+			<version>1.0</version>
+		</versions>
+	</versioning>
+</metadata>

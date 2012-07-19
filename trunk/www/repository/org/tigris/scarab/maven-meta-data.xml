@@ -1,0 +1,9 @@
+<metadata>
+	<plugins>
+		<plugin>
+			<name>scarab-maven-plugin Maven Mojo</name>
+			<prefix>scarab</prefix>
+			<artifactId>scarab-maven-plugin</artifactId>
+		</plugin>
+	</plugins>
+</metadata>
