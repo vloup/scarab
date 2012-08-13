@@ -727,7 +727,54 @@
      <artifactId>stratum</artifactId>
      <version>1.0</version>
    </dependency--> 
+
     
+  <!-- Avalon Container and Components -->
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-cache</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-localization</artifactId>
+      <version>1.0.5</version>
+    </dependency>    
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-pool</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-factory</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-mimetype</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-parser</artifactId>
+      <version>1.0.2-dev-r223202-patched</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-quartz</artifactId>
+      <version>1.0</version>
+    </dependency>
+   <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-upload</artifactId>
+      <version>1.0.3</version>
+    </dependency>        
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-yaafi</artifactId>
+      <version>1.0.3</version>
+    </dependency>    
    <dependency>
       <groupId>avalon-framework</groupId>
       <artifactId>avalon-framework-api</artifactId>
@@ -738,6 +785,16 @@
       <artifactId>avalon-framework-impl</artifactId>
       <version>4.2.0</version>
     </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-xmlrpc</artifactId>
+      <version>1.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum-testcontainer</artifactId>
+      <version>1.0.4</version>
+    </dependency> 
     
     <!-- hack to provide other velocity version during runtime as transitive depends say -->
     <dependency>
