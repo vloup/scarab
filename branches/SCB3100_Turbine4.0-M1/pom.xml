@@ -795,7 +795,14 @@
       <artifactId>fulcrum-testcontainer</artifactId>
       <version>1.0.4</version>
     </dependency> 
-    
+	<dependency>
+      <groupId>fulcrum</groupId>
+      <artifactId>fulcrum</artifactId>
+      <version>3.0-b1</version>
+	  <scope>provided</scope><!-- for compilation only -->
+    </dependency> 
+	
+	
     <!-- hack to provide other velocity version during runtime as transitive depends say -->
     <dependency>
     	<groupId>velocity</groupId>
