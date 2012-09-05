@@ -369,6 +369,16 @@ public class ScarabRequestTool
     }
 
     /**
+     * Removes current issue.
+     */
+    public void removeIssue()
+    {
+    	IntakeTool intake = getIntakeTool();
+    	intake.removeAll();
+    	setIssue(null);
+    }
+    
+    /**
      * Gets an instance of a ROptionOption from this tool.
      * if it is null it will return a new instance of an
      * empty ROptionOption and set it within this tool.

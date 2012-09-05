@@ -321,6 +321,19 @@ public class ModifyIssue extends BaseModifyIssue
     }
 
     /**
+     * Cancels template and clears request.
+     */
+    @Override
+	public void doCancel(RunData data, TemplateContext context)
+			throws Exception {
+    	
+    	final ScarabRequestTool scarabR = getScarabRequestTool(context);
+    	scarabR.removeIssue();
+		super.doCancel(data, context);
+	}
+
+
+    /**
      *  return 
      * @param data
      * @param isReasonRequired
