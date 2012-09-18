@@ -64,14 +64,18 @@ import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.ScarabModule;
+import org.tigris.scarab.om.ScarabModulePeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.services.security.ScarabSecurity;
 import org.tigris.scarab.tools.ScarabLocalizationTool;
 import org.tigris.scarab.tools.ScarabRequestTool;
 import org.tigris.scarab.tools.localization.L10NKeySet;
 import org.tigris.scarab.util.Log;
+import org.apache.torque.util.Criteria;
 import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabRuntimeException;
+import com.workingdogs.village.DataSetException;
+import com.workingdogs.village.Record;
 
 /**
  * This class is responsible for creating / updating Scarab Modules
@@ -170,16 +174,8 @@ public class ModifyModule extends RequireLoginFirstAction
                                 issue.save();
                             }
                         }
-                        //Update the ID table to reflect the module code r
-                        // FIXME: Using SQL because IDBroker doesn't have a Peer yet.
-                        String idTable = IDBroker.TABLE_NAME.substring(0, 
-                                IDBroker.TABLE_NAME.indexOf('.'));
-                        String instanceId = GlobalParameterManager
-                        .getString(ScarabConstants.INSTANCE_ID);
-                        String sql = "update " + idTable 
-                         + " SET TABLE_NAME='" + instanceId + "-" + newCode + "' WHERE TABLE_NAME='" +
-                         instanceId + "-" + origCode + "'";
-                        BasePeer.executeStatement(sql);                                                
+                        updateIDTableValues(origCode, newCode);
+                                                                  
                     }
                     else
                     {
@@ -199,6 +195,67 @@ public class ModifyModule extends RequireLoginFirstAction
     }
 
     /**
+     * Update the ID table to reflect the module code r
+     * FIXME: Using SQL because IDBroker doesn't have a Peer yet.
+     * @param origCode
+     * @param newCode
+     * @throws TorqueException
+     * @throws DataSetException
+     */
+    private void updateIDTableValues(String origCode, String newCode) throws TorqueException, DataSetException{
+    	 String idTable = IDBroker.TABLE_NAME.substring(0, 
+                 IDBroker.TABLE_NAME.indexOf('.'));
+         String instanceId = GlobalParameterManager
+         .getString(ScarabConstants.INSTANCE_ID);
+         
+         Criteria critOrigModules = new Criteria();
+         critOrigModules.add(ScarabModulePeer.MODULE_CODE, origCode);
+         List origModules = ScarabModulePeer.doSelect(critOrigModules);
+         List origTableIds = BasePeer.executeQuery("select NEXT_ID, QUANTITY  from " + idTable + 
+        		 " where TABLE_NAME='" + instanceId + "-" + origCode + "'");
+         List newTableIds = BasePeer.executeQuery("select NEXT_ID, QUANTITY  from " + idTable + 
+        		 " where TABLE_NAME='" + instanceId + "-" + newCode + "'");
+         int nextIdTable = getIntFromRecord((Record)(BasePeer.executeQuery("select NEXT_ID, QUANTITY  from " + idTable + 
+        		 " where TABLE_NAME='ID_TABLE'").get(0)), "NEXT_ID");
+    	 int newNextId = newTableIds.size() > 0 ? getIntFromRecord((Record) newTableIds.get(0), "NEXT_ID") : 0;
+    	 int origNextId = getIntFromRecord((Record) origTableIds.get(0), "NEXT_ID");
+    	 
+         if(origTableIds.size() > 0 && newTableIds.size() == 0){
+        	 if(origModules.size() == 1){//rename of module code
+            	 BasePeer.executeStatement( "update " + idTable 
+           	          + " SET TABLE_NAME='" + instanceId + "-" + newCode + "' WHERE TABLE_NAME='" +
+           	          instanceId + "-" + origCode + "'"); 
+        	 }
+        	 else{ // creation of module code
+        		 BasePeer.executeStatement( "insert into " + idTable 
+              	          + " values (" + nextIdTable + ", '" + instanceId + "-" + newCode + "', " + 
+        				 ((Record)origTableIds.get(0)).getValue("NEXT_ID").asInt() + ", " + 
+              	          ((Record)origTableIds.get(0)).getValue("QUANTITY").asInt() + ")"); 
+        		 BasePeer.executeStatement( "update " + idTable 
+             	          + " SET NEXT_ID=" + (nextIdTable+1) + " WHERE TABLE_NAME='ID_TABLE'"); 
+        	 }
+
+         }
+         else if(origTableIds.size() > 0 && newTableIds.size() > 0){
+        	 if(newNextId < origNextId){ // rename + already existing module code
+        		 BasePeer.executeStatement( "update " + idTable 
+              	          + " SET NEXT_ID=" + origNextId + " WHERE TABLE_NAME='" + instanceId + "-" + newCode + "'"); 
+        	 }
+        	 if(origModules.size() == 1){ // outdated item
+        		 BasePeer.executeStatement( "delete from " + idTable 
+              	          + " WHERE TABLE_NAME='" + instanceId + "-" + origCode + "'"); 
+        	 }
+        	
+        	 
+         }
+         
+    }
+    
+    private int getIntFromRecord(Record record, String fieldName) throws DataSetException{
+    	return record.getValue(fieldName).asInt();
+    }
+    
+	/**
      * This method will search for email-configuration in the received form, and will
      * update globalparameters acordingly.
      * 
