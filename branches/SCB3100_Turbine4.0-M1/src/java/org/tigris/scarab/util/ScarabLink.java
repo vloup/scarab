@@ -51,7 +51,6 @@ import java.util.Enumeration;
 import org.apache.fulcrum.parser.ParameterParser;
 import org.apache.fulcrum.parser.ValueParser;
 import org.apache.fulcrum.pool.InitableRecyclable;
-import org.apache.turbine.DynamicURI;
 import org.apache.turbine.util.RunData;
 import org.apache.turbine.Turbine;
 import org.apache.turbine.services.pull.tools.TemplateLink;
@@ -394,7 +393,7 @@ public class ScarabLink extends TemplateLink
      * @param name A String with the name to add.
      * @param value A double with the value to add.
      */
-    public DynamicURI addPathInfo(String name, boolean value)
+    public TemplateLink addPathInfo(String name, boolean value)
     {
         addPathInfo(name, (value ? "true" : "false"));
         return this;
