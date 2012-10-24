@@ -421,11 +421,13 @@ public class PropertyFileGenerator
         else if(newValue.equalsIgnoreCase("**generated**"))
         {
             String dbtype = (String)userProperties.get("scarab.database.type");
-            if(dbtype.equals(""))
+            if(dbtype.equalsIgnoreCase("**generated**"))
             {
                 dbtype="hypersonic";
             }
+
             newValue = "${"+propertyName+"."+dbtype+"}";
+            
         }
 
         if ( newValue.equals(templateValue))

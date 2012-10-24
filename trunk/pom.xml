@@ -320,7 +320,7 @@
 		  <plugin>
 			<groupId>org.tigris.scarab</groupId>
 			<artifactId>scarab-maven-plugin</artifactId>
-			<version>1.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<configuration>
 				<dbType>${scarab.database.type}</dbType>
 				<dbUser>${scarab.database.admin.username}</dbUser>

@@ -194,7 +194,7 @@
 
     <property>
       <name>scarab.database.type</name>
-      <default>hypersonic</default>
+      <default>**GENERATED**</default>
       <type>Build</type>
        <customization modification="optional">basic</customization>
       <file/>
@@ -2094,6 +2094,13 @@
       <property>
         <name>hsqldb.dbname</name>
         <default>${scarab.database.name}</default>
+        <type>Runtime</type>
+         <customization modification="optional">basic</customization>
+        <file/>
+      </property>
+	  <property>
+        <name>scarab.database.type.hypersonic</name>
+        <default>hypersonic</default>
         <type>Runtime</type>
          <customization modification="optional">basic</customization>
         <file/>
