@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Plugin Documentation</title>
+  </properties>
+  <body>
+    <section name="Goals">
+      <table border="0">
+          <tr>
+            <th>Goal</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><a href="check-l10n-mojo.html">scarab:check-l10n</a></td>
+            <td>Checks localization files for completeness. Result is printed out as xdoc files.</td>
+          </tr>
+		  <tr>
+            <td><a href="create-db-mojo.html">scarab:create-db</a></td>
+            <td>Creates Scarab's database.</td>
+          </tr>
+		  <tr>
+            <td><a href="update-properties-mojo.html">scarab:update-properties</a></td>
+            <td>Generates basic source property files for Scarab from scarab_properties.xml.</td>
+          </tr>
+		  <tr>
+            <td><a href="prepare-site-docs-mojo.html">scarab:prepare-site-docs</a></td>
+            <td>Generates Scarab's Property Guide and Torque's documentation files.</td>
+          </tr>
+		  <tr>
+            <td><a href="generate-custom-properties-mojo.html">scarab:generate-custom-properties</a></td>
+            <td>Generates custom build property files.</td>
+          </tr>
+        </table>
+    </section>
+  </body>
+</document>
