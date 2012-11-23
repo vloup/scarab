@@ -718,6 +718,32 @@ public  class AttributeGroup
         return role;
     }
     
+    /**
+     * Returns the role needed for "edit" this attributegroup.
+     * @return
+     */
+    public Role getRole4Edit()
+    {
+        Role role = null;
+        if (this.getEditRoleId() != null && this.getEditRoleId().intValue() != -1)
+        {
+            try
+            {
+                role = TurbineRolePeer.retrieveByPK(this.getEditRoleId());
+            }
+            catch (NoRowsException e)
+            {
+                // No error.
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }            
+        }
+        return role;
+    }
+    
     /** Can this AttributeGroup be viewed by the user. 
      * 
      * @param user can be null.
@@ -755,4 +781,43 @@ public  class AttributeGroup
         }
         return bRdo;	
     }
+    
+    /** Can this AttributeGroup be edited by the user. 
+     * 
+     * @param user can be null.
+     * @return
+     * @throws TorqueException
+     */
+    public boolean isEditable4User(ScarabUser user) throws TorqueException
+    {
+        Role role = this.getRole4Edit();
+        boolean bRdo = false;
+        if (role == null)
+        {
+            bRdo = true;
+        }
+        else
+        {
+            if (user != null)
+            {
+                try
+                {
+                AccessControlList acl = TurbineSecurity.getACL(user);
+                GroupSet allGroups = TurbineSecurity.getAllGroups();
+                    Group group = allGroups.getGroup(user.getCurrentModule().getName());
+                    bRdo = acl.hasRole(role, group);
+                }
+                catch(org.apache.fulcrum.security.util.DataBackendException dbe)
+                {
+                    throw new TorqueException("failed to get user's groups", dbe);
+                }
+                catch(org.apache.fulcrum.security.util.UnknownEntityException uee)
+                {
+                    throw new TorqueException("failed to get user's groups", uee);
+                }
+            }
+        }
+        return bRdo;    
+    }
+    
 }

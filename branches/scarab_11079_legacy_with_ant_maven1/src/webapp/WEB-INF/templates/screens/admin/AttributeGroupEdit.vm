@@ -52,23 +52,41 @@
     #end
  </td>
  </tr>
+ 
  <tr>
- <th>$l10n.Description</th>
- <td>
-    #if ($issueTypeLocked || $immutable)
-        $!group.Description
-    #else
-     #textAreaMedium("$agGroup.Description.Key" $agGroup.Description.Value)</td>
-    #end
+   <th>$l10n.Description</th>
+   <td colspan=3>
+      #if ($issueTypeLocked || $immutable)
+       $!group.Description
+      #else
+       #textAreaMedium("$agGroup.Description.Key" $agGroup.Description.Value)
+     #end
+   </td>
  </tr>
- <th>$l10n.RoleNeededForViewing</th>
- <td>
-	<select name="$agGroup.ViewRoleId.Key">
-	  <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
-	  #foreach ($role in $securityAdmin.Roles)
-	    <option value="$role.RoleId" #if ($role.roleId == $group.viewRoleId) selected #end>$role.Name</option>
-	  #end
-	</select> 
+ 
+ <tr>
+   <th style="white-space: nowrap;">$l10n.RoleNeededForViewing</th>
+   <td>
+    <select name="$agGroup.ViewRoleId.Key">
+      <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
+      #foreach ($role in $securityAdmin.Roles)
+          <option value="$role.RoleId" #if ($role.roleId == $group.viewRoleId) selected #end>$role.Name</option>
+        #end
+      </select> 
+   </td>
+   
+   <th style="white-space: nowrap;">$l10n.RoleNeededForEditing</th>
+   <td width="100%">
+    <select name="$agGroup.EditRoleId.Key">
+      <option selected="selected" value="-1" >$l10n.TransitionsAnyRole</option>
+      #foreach ($role in $securityAdmin.Roles)
+          <option value="$role.RoleId" #if ($role.roleId == $group.editRoleId) selected #end>$role.Name</option>
+        #end
+      </select> 
+   </td>
+   
+   
+   
  </tr> 
  </table>
 </div>

@@ -1232,7 +1232,7 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
 <div class="axial">
 #foreach ($group in $moduleAttributeGroups)
       #set ($attributes = $group.Attributes)
-      #if ($attributes && !$attributes.isEmpty() && $group.isVisible4User($user))
+  #if ($attributes && !$attributes.isEmpty() && $group.isVisible4User($user) && $group.isEditable4User($user))
   <h4>$group.Name #asterisk()</h4>
   <table cellpadding="3" cellspacing="2" border="0" width="100%">
     #set ($appendToNextLine = "")

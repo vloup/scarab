@@ -8,7 +8,7 @@
 ## MACRO SECTION
 ## =======================================================================================
 
-#macro (displayAttributeInCanvas $att $colspan)
+#macro (displayAttributeInCanvas $att $colspan $userCanEditGroup)
 
   ## =================================================================
   ## Note that this macro depends on 2 global variables:
@@ -82,7 +82,7 @@
     #end
 
 
-    #if ($isEditAttributes)
+    #if ($isEditAttributes && $userCanEditGroup)
       
       #if ($onSameLine)
         #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
@@ -260,7 +260,7 @@
           ## tell the macro where we are in the table and then execute it
           #set ($currentRow=0)
           #set ($currentColumn=0)
-          #displayAttributeInCanvas ($myStatusAttribute 1)
+          #displayAttributeInCanvas ($myStatusAttribute 1 true)
           </td></tr>
         #end
       </table>
@@ -282,7 +282,7 @@
           ## tell the macro where we are in the table and then execute it
           #set ($currentRow=0)
           #set ($currentColumn=1)
-          #displayAttributeInCanvas ($myOnHoldExpirationDate 2)
+          #displayAttributeInCanvas ($myOnHoldExpirationDate 2 true)
           </td></tr>
         #end 
       </table>
@@ -331,7 +331,7 @@
             #elseif ($att.equals($myOnHoldExpirationDate))
               ## Discard the ExpirationDate
             #else
-              #displayAttributeInCanvas ($att 1)
+              #displayAttributeInCanvas ($att 1 $group.isEditable4User($user))
             #end
           #end
           </td></tr>
