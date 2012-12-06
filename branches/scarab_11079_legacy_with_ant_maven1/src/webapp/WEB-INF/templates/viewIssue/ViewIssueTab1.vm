@@ -88,7 +88,7 @@
         #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
         #if ($currentRow==0)
           <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #else style="visibility:visible;" #end>
-          <th style="text-align:right;">
+          <th class="displayLabel">
         #else
           <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
         #end
@@ -103,7 +103,7 @@
           </tr>
         #end
         <tr>
-          <th style="text-align:right;"> 
+          <th class="displayLabel"> 
             <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
             #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
               <pre>$fieldExtraHeader</pre>
@@ -135,7 +135,7 @@
           #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
           #if ($currentRow==0)
             <tr id="${displayValue}:Container" #if ($isHidden) style="visibility:hidden;" #else style="visibility:visible;" #end>
-            <th style="text-align:right;">
+            <th class="displayLabel">
           #else
             <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
           #end
@@ -150,7 +150,7 @@
             </tr>
           #end
           <tr>
-            <th style="text-align:right;"> 
+            <th class="displayLabel">
               <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
               #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
                 <pre>$fieldExtraHeader</pre>
@@ -248,11 +248,11 @@
     <div class="group">
       <table>
         <tr>
-          <th style="text-align:right;">$currentIssue.RModuleIssueType.DisplayName</th>
+          <th class="displayLabel">$currentIssue.RModuleIssueType.DisplayName</th>
           <td>$currentIssue.UniqueId</td>
         </tr>
         <tr>
-          <th style="text-align:right;">$assignedRMA.DisplayValue</th>
+          <th class="displayLabel">$assignedRMA.DisplayValue</th>
           <td> #assignedUsers( $myself $isEditAttributes )</td>
         </tr>
         #set ($myStatusAttribute      = $currentIssue.MyStatusAttribute)
@@ -270,11 +270,11 @@
     <div class="group">
       <table>    
         <tr>
-          <th style="text-align:right;">$l10n.DateCommitted</th>
+          <th class="displayLabel">$l10n.DateCommitted</th>
           #userTimeStamp_td( $currentIssue.CreatedBy $currentIssue.CreatedDate)
         </tr>
         <tr>
-          <th style="text-align:right;">$l10n.LastModified</th>
+          <th class="displayLabel">$l10n.LastModified</th>
           #userTimeStamp_td( $currentIssue.ModifiedBy $currentIssue.ModifiedDate)
         </tr>
         #set ($myOnHoldExpirationDate = $currentIssue.MyOnHoldExpirationDate)

@@ -336,6 +336,9 @@ span.displayValue {
 	margin-left:15px;
 }
 
+th.displayLabel {
+        text-align:right;
+}
     
 a.next_issue {
  background-image: url(images/icon_right.gif);
