@@ -170,3 +170,8 @@ a.link_button, a.link_button:visited, a.link_button:active {
 #navcolumn a.activeQuery, #navcolumn a.activeQuery:visited, #navcolumn a.activeQuery:active {
     font-weight:bold;
 }
+
+th.displayLabel {
+        width:220px;
+}
+
