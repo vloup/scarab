@@ -1273,9 +1273,15 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
                 #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
                 #if ($linecount > 0 && $index > 6)
                   #set ($displayValue = $rma.DisplayValue.substring($index))
-          #else
+                #else
                   #set ($displayValue = $rma.DisplayValue)
                 #end
+                
+                #set ($sindex = $displayValue.indexOf("sticky:") + 7)
+                #if ($sindex > 6)
+                  #set ($displayValue = $displayValue.substring($sindex))
+                #end
+
 
                 #set ($display = true)
                 #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
@@ -1298,7 +1304,7 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
                     #end
                     #set ($linecount = $linecount + 1)
           <tr>
-                      <th> 
+                      <th class="displayLabel">
                         <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
                         #if($fieldExtraHeader)
                           <pre>$fieldExtraHeader</pre>
