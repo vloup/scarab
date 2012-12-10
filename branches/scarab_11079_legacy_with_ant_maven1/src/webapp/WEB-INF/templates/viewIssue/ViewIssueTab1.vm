@@ -81,6 +81,14 @@
       #set ($currentRow = $currentRow + 1)
     #end
 
+    #set ($index = $displayValue.indexOf("sticky:") + 7)
+    #if ($index > 6)
+      #set ($displayValue = $displayValue.substring($index))
+      #set ($sticky = true)
+    #else
+      #set ($sticky = false)
+    #end
+
 
     #if ($isEditAttributes && $userCanEditGroup)
       
@@ -129,7 +137,7 @@
         </span>
       #end
 
-    #elseif ($attVal.isSet())
+    #elseif ($attVal.isSet() || $sticky)
       #if ($display)
         #if ($onSameLine)
           #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
@@ -162,8 +170,8 @@
         <span style="display:inline;margin-left:0px; margin-right:10px;">
           #if ($att.isOptionAttribute())
             #if (!$attVal.AttributeOption)
-	                --
-	            #else
+	        
+	    #else
                 #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
                   $!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
                 #else
