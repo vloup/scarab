@@ -227,10 +227,9 @@ public class AttributeOption
         throws TorqueException
     {
         Criteria crit = new Criteria()
-            .add(ROptionOptionPeer.RELATIONSHIP_ID, 
-                 OptionRelationship.PARENT_CHILD)
-            .add(ROptionOptionPeer.OPTION1_ID,
-                 super.getOptionId());
+            .add(ROptionOptionPeer.RELATIONSHIP_ID, OptionRelationship.PARENT_CHILD)
+            .add(ROptionOptionPeer.OPTION1_ID, super.getOptionId())
+            .addAscendingOrderByColumn(ROptionOptionPeer.PREFERRED_ORDER);
 
         List relations = ROptionOptionPeer.doSelect(crit);
         sortedChildren = new ArrayList(relations.size());
