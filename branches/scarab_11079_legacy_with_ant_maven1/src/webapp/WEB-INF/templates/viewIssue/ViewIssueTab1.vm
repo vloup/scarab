@@ -100,7 +100,7 @@
         #else
           <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
         #end
-        <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+        <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:15px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
         #if ($currentRow==0)
           </th>
           <td colspan="$colspan">
@@ -147,7 +147,7 @@
           #else
             <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
           #end
-          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
+          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">$displayValue</span>
           #if ($currentRow==0)
             </th>
             <td colspan="$colspan">
