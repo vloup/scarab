@@ -127,6 +127,7 @@ $displayValue
   #else
 
     #if ($attributeClassName == "ComboTreeBoxAttribute")
+      #if ($editable)
       <input id="$attrInput.get($optionFieldName).Key" value="$newValues" name="$attrInput.get($optionFieldName).Key" type="hidden"/>  
       <span style="display:inline;">
         <input id="$attrInput.get($optionFieldName).Key:Display" 
@@ -138,7 +139,8 @@ $displayValue
            href="javascript:toggleTreePopup('$attrInput.get($optionFieldName).Key')"
         >&nbsp;&nbsp;&nbsp;&nbsp;</a>
       </span>
-  
+      #end
+ 
       #set ($attributeTreePopup = [])
       #set ($dummy = $attributeTreePopup.add($attrInput.get($optionFieldName).Key) )
       #set ($dummy = $attributeTreePopup.add($newValues) )
@@ -147,51 +149,50 @@ $displayValue
       #set ($dummy = $attributeTreePopupHelper.add($attributeTreePopup) )
 
     #elseif ($attributeClassName == "ComboBoxAttribute")
-
       #if ($editable)    
-      <select name="$attrInput.get($optionFieldName).Key"
-        #if($size.length())size="$size"#end #if($multiple.equals("true"))multiple="multiple"#end>
-        #if ($size.length() == 0 && (!$required || $newValues == '' ))
-          <option value="">$l10n.Choose</option>
-        #end
-        #foreach ($option in $module.getOptionTree($attr, $issueType, false))
-          #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
+        <select name="$attrInput.get($optionFieldName).Key"
+          #if($size.length())size="$size"#end #if($multiple.equals("true"))multiple="multiple"#end>
+          #if ($size.length() == 0 && (!$required || $newValues == '' ))
+            <option value="">$l10n.Choose</option>
+          #end
+          #foreach ($option in $module.getOptionTree($attr, $issueType, false))
+            #set ($canMakeTransition = "#CanMakeTransitionForOption ($newValues $option $issue $multiple)")
 
-          #if ($canMakeTransition.trim()=="true")
+            #if ($canMakeTransition.trim()=="true")
 
-            #set ($selected = false)
-            #if ($newValues && $newValues.toString() != '')
-              #if ($multiple.equals("true"))
-                #foreach ($value in $newValues)
-                  #if ($value.equals($option.OptionId))
+              #set ($selected = false)
+              #if ($newValues && $newValues.toString() != '')
+                #if ($multiple.equals("true"))
+                  #foreach ($value in $newValues)
+                    #if ($value.equals($option.OptionId))
+                      #set ($selected=true)
+                    #end
+                  #end
+                #else
+                  #if ($newValues.equals($option.OptionId))
                     #set ($selected=true)
                   #end
                 #end
-              #else
-                #if ($newValues.equals($option.OptionId))
-                  #set ($selected=true)
-                #end
               #end
-            #end
      
-	            #if($selected)
-	              <option value="$option.OptionId"#selected($selected)>
-            	    #foreach ($i in [0..$option.Level])#if($i != 0)&nbsp;&nbsp;&nbsp;&nbsp;#end#end
-		                #if ($option.Active) 
-                  		$option.DisplayValue
-		                #else
-                  		[I] $option.DisplayValue
-		                #end
-		              </option>
-	            #elseif($option.Active)
-	              <option value="$option.OptionId"#selected($selected)>
+              #if($selected)
+                <option value="$option.OptionId"#selected($selected)>
+                  #foreach ($i in [0..$option.Level])#if($i != 0)&nbsp;&nbsp;&nbsp;&nbsp;#end#end
+                  #if ($option.Active) 
+                    $option.DisplayValue
+                  #else
+                    [I] $option.DisplayValue
+                  #end
+		</option>
+	      #elseif($option.Active)
+	        <option value="$option.OptionId"#selected($selected)>
               	  #foreach ($i in [0..$option.Level])#if($i != 0)&nbsp;&nbsp;&nbsp;&nbsp;#end#end
-                $option.DisplayValue
-              </option>
-	            #end
+                  $option.DisplayValue
+                </option>
+	      #end
+            #end
           #end
-        #end
-      </select>
+        </select>
       #else
 
         #set ($optionid="")
