@@ -183,6 +183,7 @@
             ## Convert the raw text to formatted HTML before
             ## displaying it.
             $!scarabG.textToHTML($attrInput.Value.toString(), $link, $scarabR.CurrentModule)
+            <input type="hidden" name="$attrInput.Value.Key" value="$attrInput.Value" />
           #elseif ($att.isIntegerAttribute())
             #attrValueErrorMsg($attVal "NumericValue")
             #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
