@@ -122,7 +122,7 @@
       #end
       <span style="display:inline;margin-left:0px; margin-right:10px;">
         #if ($att.isOptionAttribute())
-          #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
+          #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired() $userCanEditGroup)
           #attrValueErrorMsg ($attVal $field)
         #elseif ($att.isIntegerAttribute())
           #attrValueText($attVal $attrInput.NumericValue $fieldSize $fieldHint)
@@ -147,7 +147,7 @@
           #else
             <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
           #end
-          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">$displayValue</span>
+          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
           #if ($currentRow==0)
             </th>
             <td colspan="$colspan">
@@ -159,7 +159,7 @@
           #end
           <tr>
             <th class="displayLabel">
-              <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">$displayValue</span>
+              <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
               #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
                 <pre>$fieldExtraHeader</pre>
               #end
@@ -169,6 +169,7 @@
         #end
         <span style="display:inline;margin-left:0px; margin-right:10px;">
           #if ($att.isOptionAttribute())
+            #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired() $userCanEditGroup)
             #if (!$attVal.AttributeOption)
 	        
 	    #else

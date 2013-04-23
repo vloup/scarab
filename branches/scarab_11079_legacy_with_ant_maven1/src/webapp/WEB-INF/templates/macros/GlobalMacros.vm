@@ -78,7 +78,7 @@ $canMakeTransition
 $displayValue
 #end
 
-#macro (attrValueLeafSelect $attrValue $optionFieldName $size $multiple $required)
+#macro (attrValueLeafSelect $attrValue $optionFieldName $size $multiple $required $editable)
   #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
   #set ($attr = $attrValue.Attribute)
   #set ($attributeType = $attr.AttributeType)
@@ -147,7 +147,8 @@ $displayValue
       #set ($dummy = $attributeTreePopupHelper.add($attributeTreePopup) )
 
     #elseif ($attributeClassName == "ComboBoxAttribute")
-    
+
+      #if ($editable)    
       <select name="$attrInput.get($optionFieldName).Key"
         #if($size.length())size="$size"#end #if($multiple.equals("true"))multiple="multiple"#end>
         #if ($size.length() == 0 && (!$required || $newValues == '' ))
@@ -191,7 +192,28 @@ $displayValue
           #end
         #end
       </select>
+      #else
 
+        #set ($optionid="")
+        #foreach ($option in $module.getOptionTree($attr, $issueType, false))
+          #if ($newValues && $newValues.toString() != '')
+            #if ($multiple.equals("true"))
+              #foreach ($value in $newValues)
+                #if ($value.equals($option.OptionId))
+                  #set ($optionid=$option.OptionId)
+                #end
+              #end
+            #else
+              #if ($newValues.equals($option.OptionId))
+                #set ($optionid=$option.OptionId)
+              #end
+            #end
+          #end
+        #end
+        #if ($optionid != "")
+        <input type="hidden" name="$attrInput.get($optionFieldName).Key" value ="$optionid" />
+        #end
+      #end
     #end
 
  #end
