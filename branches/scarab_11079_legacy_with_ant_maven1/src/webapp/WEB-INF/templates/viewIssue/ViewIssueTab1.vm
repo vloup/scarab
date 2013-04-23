@@ -169,7 +169,7 @@
         #end
         <span style="display:inline;margin-left:0px; margin-right:10px;">
           #if ($att.isOptionAttribute())
-            #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired() $userCanEditGroup)
+            #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired() false)
             #if (!$attVal.AttributeOption)
 	        
 	    #else
