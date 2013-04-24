@@ -266,7 +266,7 @@ $displayValue
 </select>
 #end
 
-#macro (attrValueText $attVal $attrValue $size $hint)
+#macro (attrValueText $attVal $attrValue $size $hint $editable)
 #set ($attrInput = $intake.AttributeValue.mapTo($attrValue))
         #if ($attVal.Attribute.AttributeType.Name == "long-string")
            #textAreaMedium("$attrInput.Value.Key" $attrInput.Value)
@@ -1196,6 +1196,7 @@ Prints out a date entry form.
 
 
 #macro(entryTemplateAndAttributes $issue $moduleAttributeGroups $buttonName $buttonEvent $showTemplates)
+
 #set ($module = $issue.Module)
 #set ($issueType = $issue.IssueType)
 
@@ -1253,120 +1254,120 @@ $link.setPage("TemplateList.vm").setLabel($l10n.format("ViewAllTemplates", $modu
   ## ===============================================================================
 
 <div class="axial">
-#foreach ($group in $moduleAttributeGroups)
-      #set ($attributes = $group.Attributes)
-  #if ($attributes && !$attributes.isEmpty() && $group.isVisible4User($user) && $group.isEditable4User($user))
-  <h4>$group.Name #asterisk()</h4>
-  <table cellpadding="3" cellspacing="2" border="0" width="100%">
-    #set ($appendToNextLine = "")
-          #set ($linecount = 0)
-          #foreach ($att in $attributes)
-    #set ($rma = $module.getRModuleAttribute($att, $issueType))
-      #if ($rma.Active)
-        ## reset to a new $attVal in the event the issue/template does not 
-        ## have it defined 
-        #set ($attVal = $scarabR.getNewAttributeValue($att, $issue))
-        ## this may leave the previous value, if RHS is null
-        #set ($attVal = $issue.getAttributeValue($att))
+  #foreach ($group in $moduleAttributeGroups)
+    #set ($attributes = $group.Attributes)
+    #if ($attributes && !$attributes.isEmpty() && $group.isVisible4User($user) && $group.isEditable4User($user))
+      <h4>$group.Name #asterisk()</h4>
+      <table cellpadding="3" cellspacing="2" border="0" width="100%">
+        #set ($appendToNextLine = "")
+        #set ($linecount = 0)
+        #foreach ($att in $attributes)
+          #set ($rma = $module.getRModuleAttribute($att, $issueType))
+          #if ($rma.Active)
+            ## reset to a new $attVal in the event the issue/template does not 
+            ## have it defined 
+            #set ($attVal = $scarabR.getNewAttributeValue($att, $issue))
+            ## this may leave the previous value, if RHS is null
+            #set ($attVal = $issue.getAttributeValue($att))
 
-        #if (!$attVal.Attribute.isUserAttribute())
-                #if ($att.AttributeType.ValidationKey)
-            #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
-                #elseif ($att.isOptionAttribute())
-            #set ($field = "OptionId")
-          #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.INTEGER)
-            #set ($field = "NumericValue")
-          #else
-            #set ($field = "Value")
-          #end
+            #if (!$attVal.Attribute.isUserAttribute())
+              #if ($att.AttributeType.ValidationKey)
+                #set ($field = $attVal.Attribute.AttributeType.ValidationKey)
+              #elseif ($att.isOptionAttribute())
+                #set ($field = "OptionId")
+              #elseif ($attVal.Attribute.AttributeType.Name == $scarabG.Constant.INTEGER)
+                #set ($field = "NumericValue")
+              #else
+                #set ($field = "Value")
+              #end
           
-                #set ($fieldSize = 0)
-                #set ($fieldSize = $!attVal.Attribute.FieldSize)
-                #set ($fieldHint  = "")
-                #set ($fieldHint  = $!attVal.Attribute.Hint)
-                #set ($fieldStyle = "")
-                #set ($fieldStyle = $!attVal.Attribute.Style)
+              #set ($fieldSize = 0)
+              #set ($fieldSize = $!attVal.Attribute.FieldSize)
+              #set ($fieldHint  = "")
+              #set ($fieldHint  = $!attVal.Attribute.Hint)
+              #set ($fieldStyle = "")
+              #set ($fieldStyle = $!attVal.Attribute.Style)
 
-                #set ($fieldExtraHeader = "")
-                #if  ($!attVal.Attribute.Description.startsWith("hint:"))
-                  #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
-                #end
+              #set ($fieldExtraHeader = "")
+              #if  ($!attVal.Attribute.Description.startsWith("hint:"))
+                #set ($fieldExtraHeader = "$!attVal.Attribute.Description.substring(5)")
+              #end
 
-                #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
-                #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
-                #if ($linecount > 0 && $index > 6)
-                  #set ($displayValue = $rma.DisplayValue.substring($index))
-                #else
-                  #set ($displayValue = $rma.DisplayValue)
-                #end
+              #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
+              #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
+              #if ($linecount > 0 && $index > 6)
+                #set ($displayValue = $rma.DisplayValue.substring($index))
+              #else
+                #set ($displayValue = $rma.DisplayValue)
+              #end
                 
-                #set ($sindex = $displayValue.indexOf("sticky:") + 7)
-                #if ($sindex > 6)
-                  #set ($displayValue = $displayValue.substring($sindex))
-                #end
+              #set ($sindex = $displayValue.indexOf("sticky:") + 7)
+              #if ($sindex > 6)
+                #set ($displayValue = $displayValue.substring($sindex))
+              #end
 
 
-                #set ($display = true)
-                #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
-                #if ($isOptionAttr)
-                  #set ($fieldStyle = $!attVal.AttributeOption.Style)
-                  #if ($attVal.AttributeOption.Deleted.toString().equals("true"))
-                    #set ($display = false)
-                  #end
+              #set ($display = true)
+              #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
+              #if ($isOptionAttr)
+                #set ($fieldStyle = $!attVal.AttributeOption.Style)
+                #if ($attVal.AttributeOption.Deleted.toString().equals("true"))
+                  #set ($display = false)
                 #end
+              #end
           
 
-                #if ($linecount > 0 && $index > 6)
-                    #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
-                    <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
-                    <span class="displayValue" style="white-space:nowrap;display:inline;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
-                #else
-                    #if ($linecount > 0)
-                      </td>
-                      </tr>
-                    #end
-                    #set ($linecount = $linecount + 1)
-          <tr>
-                      <th class="displayLabel">
-                        <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
-                        #if($fieldExtraHeader)
-                          <pre>$fieldExtraHeader</pre>
-                        #end
-                      </th>
-            <td>
-                    #set ($newline = false)
-                #end
-                <span style="display:inline;margin-left:0px; margin-right:10px;width:95%;">
-
-                #if ($att.isOptionAttribute())
-           #if ($templ)
-            #set ($templAttVal = $scarabR.getNewAttributeValue($att, $templ))
-            ## this may leave the previous value, if RHS is null
-            #set ($templAttVal = $templ.getAttributeValue($att))
-            #templateAttrValueLeafSelect ($attVal $templAttVal $field "" false)
-           #else
-            #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired())
-           #end
-          #else
-           #if ($templ)
-            #set ($templAttVal = $scarabR.getNewAttributeValue($att, $templ))
-            ## this may leave the previous value, if RHS is null
-            #set ($templAttVal = $templ.getAttributeValue($att))
-            #if ($templAttVal.Value)
-              #templateAttrValueText ( $attVal $attVal $fieldSize $templAttVal )
-            #else
-               #attrValueText ( $attVal $attVal $fieldSize $fieldHint)
-            #end
-           #else
-             #attrValueText ( $attVal $attVal $fieldSize $fieldHint)
-           #end
-          #end
-              #attrValueErrorMsg ($attVal $field)
+              #if ($linecount > 0 && $index > 6)
+                #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
+                <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
+                <span class="displayValue" style="white-space:nowrap;display:inline;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+              #else
+                #if ($linecount > 0)
+                  </td>
+                  </tr>
+              #end
+              #set ($linecount = $linecount + 1)
+              <tr>
+                <th class="displayLabel">
+                  <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;width:95%;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+                  #if($fieldExtraHeader)
+                    <pre>$fieldExtraHeader</pre>
                   #end
-                      #end
+                </th>
+                <td>
+                  #set ($newline = false)
+            #end
+            <span style="display:inline;margin-left:0px; margin-right:10px;width:95%;">
+
+            #if ($att.isOptionAttribute())
+              #if ($templ)
+                #set ($templAttVal = $scarabR.getNewAttributeValue($att, $templ))
+                ## this may leave the previous value, if RHS is null
+                #set ($templAttVal = $templ.getAttributeValue($att))
+                #templateAttrValueLeafSelect ($attVal $templAttVal $field "" true)
+              #else
+                #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired() true)
+              #end
+            #else
+              #if ($templ)
+                #set ($templAttVal = $scarabR.getNewAttributeValue($att, $templ))
+                ## this may leave the previous value, if RHS is null
+                #set ($templAttVal = $templ.getAttributeValue($att))
+                #if ($templAttVal.Value)
+                  #templateAttrValueText ( $attVal $attVal $fieldSize $templAttVal )
+                #else
+                  #attrValueText ( $attVal $attVal $fieldSize $fieldHint true)
+                #end
+              #else
+                #attrValueText ( $attVal $attVal $fieldSize $fieldHint true)
+              #end
+            #end
+            #attrValueErrorMsg ($attVal $field)
+          #end
+        #end
+      #end
+    </table>
   #end
-  </table>
- #end
 #end
 </div>
 #end  ## if
