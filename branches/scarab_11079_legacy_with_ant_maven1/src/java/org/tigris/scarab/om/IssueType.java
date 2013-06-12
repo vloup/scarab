@@ -219,7 +219,7 @@ public  class IssueType
         String displayName = getName();
         if (!moduleName.equals(displayName))
         {
-            displayName = moduleName +" (" + displayName + ")";
+            displayName = moduleName;// +" (" + displayName + ")";
         }
         return displayName;
     }
