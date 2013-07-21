@@ -325,7 +325,7 @@ public class ScarabModule
                              TurbineUserGroupRolePeer.USER_ID);
                 
                 crit.add(ScarabUserImplPeer.getColumnName(User.CONFIRM_VALUE),(Object)ScarabUser.DELETED,Criteria.NOT_EQUAL);
-                
+                crit.addAscendingOrderByColumn(ScarabUserImplPeer.FIRST_NAME);
 
                 try
                 {
