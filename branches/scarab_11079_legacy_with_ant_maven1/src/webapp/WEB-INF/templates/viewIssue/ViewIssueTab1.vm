@@ -113,7 +113,7 @@
         <tr>
           <th class="displayLabel"> 
             <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:0px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
-            #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
+            #if($fieldExtraHeader && $fieldExtraHeader.length()>0)
               <pre>$fieldExtraHeader</pre>
             #end
           </th>
@@ -160,7 +160,7 @@
           <tr>
             <th class="displayLabel">
               <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
-              #if($fieldExtraHeader && $fieldExtraHeader.size()>0)
+              #if($fieldExtraHeader && $fieldExtraHeader.length()>0)
                 <pre>$fieldExtraHeader</pre>
               #end
             </th>
