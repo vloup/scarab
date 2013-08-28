@@ -3,6 +3,7 @@
 #set ($isEditAttributes = $canEdit && $wantEdit)
 #set ($currentRow       = 0)
 #set ($currentColumn    = 0)
+#set ($display_value    = "")
 
 ## =======================================================================================
 ## MACRO SECTION
@@ -70,6 +71,7 @@
     ## define $onSameLine
     #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible ) )
     #set ($index = $rma.DisplayValue.indexOf("append:") + 7)
+    #set ($displayValue = "undefined")
     #if ($index > 6)
       #set ($displayValue = $rma.DisplayValue.substring($index))
       #set ($onSameLine = true)
@@ -89,9 +91,7 @@
       #set ($sticky = false)
     #end
 
-
     #if ($isEditAttributes && $userCanEditGroup)
-      
       #if ($onSameLine)
         #set ($isHidden =  !( $currentIssue.isRequiredAttributeFor($att, $user) || $rma.Visible || $currentColumn==1 ) )
         #if ($currentRow==0)
@@ -147,7 +147,7 @@
           #else
             <span id="${displayValue}:Container" #if ($isHidden) style="display:none;" #else style="display:inline;" #end>
           #end
-          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+          <span class="displayValue" style="white-space:nowrap;display:inline;margin-left:0px; margin-right:4px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
           #if ($currentRow==0)
             </th>
             <td colspan="$colspan">
@@ -159,7 +159,7 @@
           #end
           <tr>
             <th class="displayLabel">
-              <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:20px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
+              <span style="white-space:nowrap;display:inline;margin-left:0px; margin-right:4px;">#drawRequiredMarkupAsNeeded($user $currentIssue $att)$displayValue</span>
               #if($fieldExtraHeader && $fieldExtraHeader.length()>0)
                 <pre>$fieldExtraHeader</pre>
               #end
@@ -170,15 +170,7 @@
         <span style="display:inline;margin-left:0px; margin-right:10px;">
           #if ($att.isOptionAttribute())
             #attrValueLeafSelect ($attVal $field "" false $attVal.isRequired() false)
-            #if (!$attVal.AttributeOption)
-	        
-	    #else
-                #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
-                  $!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
-                #else
-                 [I]$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
-                #end
-            #end
+            ##setDisplayValue($module $issueType $attVal)
           #elseif ($att.AttributeType.Name == "long-string")
             ## Convert the raw text to formatted HTML before
             ## displaying it.
@@ -204,20 +196,21 @@
     #end
     
   #else
-	    #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
+    #set ($allAttrValues = $currentIssue.getModuleAttributeValuesMap(false))		
     #set ($attVal = $allAttrValues.get($att.getName().toUpperCase()))
     #set ($attrInput = $intake.AttributeValue.mapTo($attVal))
     #set ($isOptionAttr = $attVal.Attribute.isOptionAttribute())
     #if ($attVal.isSet() && (!$attrInput.Value.toString().trim().equals("") || !$attrInput.NumericValue))
+      #set ($displayValue = $rma.DisplayValue)
       <tr>
-    	  <th>[I] $displayValue</th>
+    	  <th class="scarab-inactive">$displayValue</th>
         <td colspan="$colspan">
           #if ($isOptionAttr)
-			            #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
+	    #if ($module.getRModuleOption($attVal.AttributeOption, $issueType).Active)
               	$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
-			            #else
-              	[I]$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue
-			            #end
+	    #else
+              	<span class="scarab-inactive">$!module.getRModuleOption($attVal.AttributeOption, $issueType).DisplayValue</span>
+	    #end
           #elseif ($att.AttributeType.Name == "integer")
             $!attrInput.NumericValue.value
           #else
@@ -229,6 +222,30 @@
 	    #end
   #end 
 #end
+
+#macro (setDisplayValue $module $issueType $attVal)
+    #set ($display_value = "")
+    #set ($opt = "None")
+    #set ($theClass = "scarab-active")
+    #if (!$attVal.AttributeOption)
+        #set ($display_value = "" )
+    #else
+      #set ($opt = $module.getRModuleOption($attVal.AttributeOption, $issueType))
+      #if ($opt != "None")
+        #if ($opt.Active)
+            #set ($display_value = $!opt.DisplayValue)
+        #else
+            #set ($theClass = "scarab-inactive")
+            #set ($display_value = $!opt.DisplayValue)
+        #end
+      #else
+        #set ($theClass = "scarab-inactive") 
+        #set ($display_value = "Option removed ?")
+      #end
+    #end
+    <span class="$theClass">$display_value</span>
+#end
+
 
 ## =========================================================================================
 ## Canvas Section
