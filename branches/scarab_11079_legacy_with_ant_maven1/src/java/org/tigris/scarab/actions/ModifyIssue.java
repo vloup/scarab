@@ -159,7 +159,6 @@ public class ModifyIssue extends BaseModifyIssue
     }
     
     
-    
     public void doSubmitattributes(RunData data, TemplateContext context)
         throws Exception
     {
@@ -204,13 +203,23 @@ public class ModifyIssue extends BaseModifyIssue
         final LinkedMap modMap = issue.getModuleAttributeValuesMap();
         
         boolean localFieldErrors = false;
+        boolean all_groups_valid = true;
+        
         for (Iterator iter = modMap.mapIterator(); iter.hasNext(); ) 
         {
             final AttributeValue aval = (AttributeValue)modMap.get(iter.next());
             final Group group = intake.get("AttributeValue", aval.getQueryKey(), false);
+            String attribute_name = aval.getAttribute().getName();
             Field field = null;
-            if (group != null) 
+            if(group == null)
+            {
+                Log.get().info("doSubmitattributes: group " + attribute_name + ":" + aval.getValueId() + " not in intake.");            
+            }
+            else 
             {   
+                Log.get().info("doSubmitattributes: group " + attribute_name + ":" + aval.getValueId() + " isValid:" + group.isAllValid());
+                all_groups_valid &= group.isAllValid();
+                
                 if (aval instanceof OptionAttribute) 
                 {
                     // use optionId instead
@@ -267,6 +276,14 @@ public class ModifyIssue extends BaseModifyIssue
                         }
                     }
                 }
+                else
+                {
+                    String cool = aval.getValue();
+                    if (cool != null)
+                    {
+                        int x = 0;
+                    }
+                }
                 
                 // check required attributes
                 for (int j=requiredAttributes.size()-1; j>=0; j--) 
@@ -306,8 +323,18 @@ public class ModifyIssue extends BaseModifyIssue
         final boolean attributeValuesValid = submitattributesCheckRequiredAttributes(
                 issue, conditionallyRequiredFields, selectedOptions);
 
-        if (intake.isAllValid() && attributeValuesValid && !localFieldErrors) 
+        if (intake.isAllValid() != all_groups_valid)
         {
+            Log.get().info("doSubmitattributes: intake.isAllValid:" + intake.isAllValid() + " allGroups:" + all_groups_valid);
+        }
+        
+        Log.get().info("doSubmitattributes:" 
+                + " intake.isAllValid:" + intake.isAllValid() 
+                + " attributeValuesValid:" + attributeValuesValid 
+                + " localFieldErrors:" + localFieldErrors);
+        if (is_all_valid(intake) && attributeValuesValid && !localFieldErrors) 
+        {
+            
             submitattributesPerform(context, user, data, reasonSaveMode);
         } 
         else
@@ -318,6 +345,14 @@ public class ModifyIssue extends BaseModifyIssue
             // preserve fullcomments mode
             data.getParameters().setString("fullcomments", data.getParameters().get("fullcomments"));
         }
+    }
+
+    private boolean is_all_valid(IntakeTool intake)
+    {
+        String groups = intake.declareGroups();
+        Log.get().info("doSubmitattributes: groups decalarion:");
+        Log.get().info(groups);
+        return intake.isAllValid();
     }
 
     /**
@@ -567,6 +602,7 @@ public class ModifyIssue extends BaseModifyIssue
             return;
         }
         final Attachment attachment = AttachmentManager.getInstance();
+        if(reasonGroup != null)
         reasonGroup.setProperties(attachment);
 
         try
