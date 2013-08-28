@@ -270,10 +270,13 @@ class DataExport extends Default
          */
         public void println()
         {
-            printer.println();  
+            //printer.println();  
+            printer.write(13);
+            printer.write(10);
             printer.flush();
             lineStart = true;
         }
+
 
         /**
          * Quote the string argument.
