@@ -80,7 +80,7 @@ div.tree_popup {
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: absolute;
-	width: 250px;
+	width: 330px;
 	border-style:dotted;
 	border-width:1px;
 	border-color:#92b9d8;
@@ -131,16 +131,16 @@ div.tree_popup ol.treeview li ol.treeview li.leaf a {
 //
 */
 
-td.a_attention1 {vertical-align:top;                                                                                     background-color:#dddddd;}
-td.b_attention1 {vertical-align:top;                                                                                     background-color:#efefef;}
-td.a_attention2 {vertical-align:top; background: url(images/attention_low.png)     no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
-td.b_attention2 {vertical-align:top; background: url(images/attention_low.png)     no-repeat scroll 95% 5px transparent; background-color:#efefef;}
-td.a_attention3 {vertical-align:top; background: url(images/attention_medium.png)  no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
-td.b_attention3 {vertical-align:top; background: url(images/attention_medium.png)  no-repeat scroll 95% 5px transparent; background-color:#efefef;}
-td.a_attention4 {vertical-align:top; background: url(images/attention_high.png)    no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
-td.b_attention4 {vertical-align:top; background: url(images/attention_high.png)    no-repeat scroll 95% 5px transparent; background-color:#efefef;}
-td.a_attention5 {vertical-align:top; background: url(images/attention_highest.png) no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
-td.b_attention5 {vertical-align:top; background: url(images/attention_highest.png) no-repeat scroll 95% 5px transparent; background-color:#efefef;}
+td.a_attention1 {padding-right:20px; vertical-align:top;                                                                                     background-color:#dddddd;}
+td.b_attention1 {padding-right:20px; vertical-align:top;                                                                                     background-color:#efefef;}
+td.a_attention2 {padding-right:20px; vertical-align:top; background: url(images/attention_low.png)     no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
+td.b_attention2 {padding-right:20px; vertical-align:top; background: url(images/attention_low.png)     no-repeat scroll 95% 5px transparent; background-color:#efefef;}
+td.a_attention3 {padding-right:20px; vertical-align:top; background: url(images/attention_medium.png)  no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
+td.b_attention3 {padding-right:20px; vertical-align:top; background: url(images/attention_medium.png)  no-repeat scroll 95% 5px transparent; background-color:#efefef;}
+td.a_attention4 {padding-right:20px; vertical-align:top; background: url(images/attention_high.png)    no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
+td.b_attention4 {padding-right:20px; vertical-align:top; background: url(images/attention_high.png)    no-repeat scroll 95% 5px transparent; background-color:#efefef;}
+td.a_attention5 {padding-right:20px; vertical-align:top; background: url(images/attention_highest.png) no-repeat scroll 95% 5px transparent; background-color:#dddddd;}
+td.b_attention5 {padding-right:20px; vertical-align:top; background: url(images/attention_highest.png) no-repeat scroll 95% 5px transparent; background-color:#efefef;}
 
 // experimental stuff will be removed later.
 
