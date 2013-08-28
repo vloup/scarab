@@ -240,7 +240,7 @@
         #end
       #else
         #set ($theClass = "scarab-inactive") 
-        #set ($display_value = "Option removed ?")
+        #set ($display_value = $attVal.AttributeOption.Name)
       #end
     #end
     <span class="$theClass">$display_value</span>
