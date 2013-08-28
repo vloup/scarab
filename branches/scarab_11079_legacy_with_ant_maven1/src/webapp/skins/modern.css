@@ -1442,6 +1442,7 @@ ul {
 	color: #003163;
 }
 
+
 .app h3,.app h4,.tabs td,.tabs th,.functnbar {
 	background-image: url("../images/nw_maj_rond.gif");
 	background-repeat: no-repeat;
@@ -1491,7 +1492,11 @@ a:link,#navcolumn a:visited,.app a:visited,.tasknav a:visited {
 	color: #003163
 }
 
-	
+span.scarab-inactive,
+th.scarab-inactive,
+td.scarab-inactive{
+        color: #aaa;
+}	
 
 /*
     Treeview related style definitions
