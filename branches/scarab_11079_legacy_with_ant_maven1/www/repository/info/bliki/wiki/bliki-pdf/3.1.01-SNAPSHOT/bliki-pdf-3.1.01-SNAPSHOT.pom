@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>info.bliki.wiki</groupId>
+        <artifactId>bliki</artifactId>
+        <version>3.1.01-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>bliki-pdf</artifactId>
+    <packaging>jar</packaging>
+    <name>Bliki (PDF)</name>
+    <version>3.1.01-SNAPSHOT</version>
+    <description>This is the Bliki PDF project.</description>
+    <dependencies>
+        <dependency>
+            <groupId>info.bliki.wiki</groupId>
+            <artifactId>bliki-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
+            <version>9.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.freeside.betamax</groupId>
+            <artifactId>betamax-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.freeside.betamax</groupId>
+            <artifactId>betamax-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.freeside.betamax</groupId>
+            <artifactId>betamax-proxy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+    </dependencies>
+</project>
