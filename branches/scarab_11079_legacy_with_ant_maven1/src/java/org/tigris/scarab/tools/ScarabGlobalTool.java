@@ -49,7 +49,6 @@ package org.tigris.scarab.tools;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -71,9 +70,6 @@ import org.apache.oro.text.perl.Perl5Util;
 import org.apache.turbine.services.pull.ApplicationTool;
 
 import org.apache.velocity.app.FieldMethodizer;
-import org.radeox.api.engine.RenderEngine;
-import org.radeox.api.engine.context.RenderContext;
-import org.radeox.engine.context.BaseRenderContext;
 
 import org.tigris.scarab.notification.ActivityType;
 import org.tigris.scarab.notification.Notification;
@@ -93,7 +89,9 @@ import org.tigris.scarab.om.ModuleManager;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.MITListManager;
 import org.tigris.scarab.services.security.ScarabSecurity;
-import org.tigris.scarab.tools.radeox.ScarabRenderEngine;
+import org.tigris.scarab.tools.bliki.BlikiRenderEngine;
+import org.tigris.scarab.tools.radeox.RadeoxRenderEngine;
+import org.tigris.scarab.tools.render.ScarabRenderAPI;
 import org.tigris.scarab.util.ReferenceInsertionFilter;
 import org.tigris.scarab.workflow.Workflow;
 import org.tigris.scarab.workflow.WorkflowFactory;
@@ -158,8 +156,8 @@ public class ScarabGlobalTool
     private static final String BUILD_VERSION = 
         Environment.getConfigurationProperty("scarab.build.version", "");
 
-    private static RenderContext context = new BaseRenderContext();
-    private static RenderEngine engine = new ScarabRenderEngine();
+    private static ScarabRenderAPI radeoxEngine = new RadeoxRenderEngine();
+    private static ScarabRenderAPI blikiEngine  = new BlikiRenderEngine();
 
     
     public void init(Object data)
@@ -182,10 +180,6 @@ public class ScarabGlobalTool
         parameterName = new FieldMethodizer(
             "org.tigris.scarab.om.GlobalParameter");
 
-    	if(context.getRenderEngine() == null)
-    	{
-    	    context.setRenderEngine(engine);
-    	}
     }
 
     /**
@@ -772,7 +766,11 @@ public class ScarabGlobalTool
         String txt;
         if(renderEngine.equals("radeox"))
         {
-            txt = engine.render(text, context);
+            txt = radeoxEngine.render(text);
+        }
+        if(renderEngine.equals("bliki"))
+        {
+            txt = blikiEngine.render(text);
         }
         else if(renderEngine.equals("html")){
         	 txt = text;
