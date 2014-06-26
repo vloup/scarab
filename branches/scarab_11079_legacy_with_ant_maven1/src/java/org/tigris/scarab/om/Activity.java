@@ -167,7 +167,8 @@ public class Activity
             }
         }
         // If they have just deleted a user assignment, set end date
-        if (getAttribute().isUserAttribute() && this.getNewUserId() == null && this.getOldUserId() != null)
+        Attribute attribute = getAttribute();
+        if (attribute != null && attribute.isUserAttribute() && this.getNewUserId() == null && this.getOldUserId() != null)
         {
             this.setEndDate(getActivitySet().getCreatedDate());
         }

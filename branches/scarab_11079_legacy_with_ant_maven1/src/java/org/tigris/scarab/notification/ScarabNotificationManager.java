@@ -452,14 +452,18 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                 NotificationStatus ns = iter.next();
                 Activity activity = ns.getActivity();
                 Calendar endDate = new GregorianCalendar();
-                endDate.setTime(activity.getEndDate()); // that is the onHoldExpiration date
+                Date date = activity.getEndDate();
+                if(date == null)
+                {
+                    continue;
+                }
+                endDate.setTime(date); // that is the onHoldExpiration date
                 if (endDate.before(now)) // onHold expired
                 {
                     Issue issue = activity.getIssue();
                     // onHoldTimeout reached.
                     boolean notificationNeeded = false;
                     
-                    Calendar changeDate = new GregorianCalendar();
                     Date lastChangeAt = ns.getChangeDate();
                     if(lastChangeAt == null)
                     {
