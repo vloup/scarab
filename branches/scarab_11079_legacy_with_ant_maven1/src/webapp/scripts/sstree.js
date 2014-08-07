@@ -89,8 +89,9 @@ function renderJSONTree(attributeId, key, value, root, imgpath)
 {
 	if (root.optionId == value) 
 	{
-		document.getElementById(key + ':Display').value = root.displayValue;
-		var data = function(){clickTree(attributeId,key,value,root.displayValue)};
+		//document.getElementById(key + ':Display').value = root.displayValue;
+                document.getElementById(key + ':Display').value = root.displayValue.replace(/&amp;/, '&');
+		var data = function(){clickTree(attributeId,key,value,root.displayValue.replace(/&amp;/, '&'))};
 		treeviewInit.push(data);
 	}
 	
