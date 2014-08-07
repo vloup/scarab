@@ -175,6 +175,28 @@
 /* Button section ...                                       */
 /* ====================================================== */
 
+.wikisyntax {
+    margin-top:-2px;
+    float:left;
+    min-height:200px;
+    border-style:solid;
+    border-color:#ccc;
+    border-width:1px;
+}
+
+.wikibutton {
+    float:right;
+    margin-right:6px;
+    border-style:solid;
+    border-width:1px;
+    border-color:grey;
+    border-radius:4px;
+    padding:2px;
+    font-size:0.6em;
+    background:#e8e8e8;
+    cursor:pointer;
+}
+
 a.button, input.button, input.button3, input.buttonActive, input.buttonPassive, input.buttonNotify, .watch_on, .watch_off {
     width:auto;
     padding-right: 5px;
@@ -410,6 +432,14 @@ td.accessible {
 
 td.restricted {
     background-color:#eee;
+}
+
+div.content pre {
+   display:inline-block;
+   background-color:#ffd;
+   padding:10px;
+   margin-left:10px;
+   white-space:pre-wrap;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
