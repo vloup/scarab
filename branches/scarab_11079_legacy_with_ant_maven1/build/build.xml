@@ -420,7 +420,9 @@
                debug="on"
                deprecation="off"
                includeantruntime="false"
+               verbose="false"
                optimize="off">
+             
             <classpath refid="classpath"/>
             <classpath>
                 <fileset dir="${build.project.webinf.lib}">
