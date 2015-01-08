@@ -100,18 +100,21 @@ public class AttributeOption
         {
             public int compare(Object obj1, Object obj2)
             {
-                int result = 1;
-                AttributeOption opt1 = (AttributeOption)obj1; 
-                AttributeOption opt2 = (AttributeOption)obj2;
-                if (opt1.getName().equals(opt2.getName()))
-                {
-                    result = 0;
-                }
-                else
-                {
-                    result = -1;
-                }
-                return result;
+                //int result = 1;
+                //AttributeOption opt1 = (AttributeOption)obj1; 
+                //AttributeOption opt2 = (AttributeOption)obj2;
+                String name1 = ((AttributeOption)obj1).getName();
+                String name2 = ((AttributeOption)obj2).getName();
+                return name1.compareTo(name2);
+                //if (opt1.getName().equals(opt2.getName()))
+                //{
+                //    result = 0;
+                //}
+                //else
+                //{
+                //    result = -1;
+                //}
+                //return result;
             }
         };
 
