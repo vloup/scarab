@@ -3539,6 +3539,21 @@ public class ScarabRequestTool
      */
     public String formatDate(String value)
     {
+        return formatDate(value, false);
+    }
+
+    /**
+     * Format a date from internal timestamp value to the user's locale format.
+     * If the value is not set, use current Date
+     * @param value
+     * @param defaultToNow
+     * @return
+     */
+    
+    public String formatDate(String value, boolean defaultToNow)
+    {
+        if (defaultToNow && (value==null || value.length()==0))
+            value = Format.getNow("yyyyMMdd00000000");
         return DateAttribute.dateFormat(value, getLocalizationTool().get(L10NKeySet.ShortDatePattern));
     }
 
