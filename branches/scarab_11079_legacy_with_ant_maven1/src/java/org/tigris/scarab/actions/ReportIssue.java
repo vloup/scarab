@@ -503,7 +503,7 @@ public class ReportIssue extends RequireLoginFirstAction
                             {
                                 field    = group.get("Value");
                             }
-                            newValue = field.toString();
+                            newValue = field.toString().trim();
 
                             if (newValue.length() != 0)
                             {
