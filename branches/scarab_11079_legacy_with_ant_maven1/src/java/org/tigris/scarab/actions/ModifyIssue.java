@@ -244,7 +244,7 @@ public class ModifyIssue extends BaseModifyIssue
                 Object fieldValue = field.getValue();
                 if(fieldValue != null)
                 {
-                    String fieldValueAsString = fieldValue.toString();
+                    String fieldValueAsString = fieldValue.toString().trim();
                     if (fieldValueAsString != null && fieldValueAsString.length() > 0) 
                     {
                         boolean exactMatch = true;
