@@ -203,6 +203,11 @@ public class IssueListExport extends DataExport
                 }
                 else
                 {
+                    if (type.equals("long-string"))
+                    {
+                        val=val.replaceAll("\\\\\\\\\\.\\.", "\n"); // For the bliki wiki engine
+                        val=val.replaceAll("\\\\\\\\$", "");        // TODO: check if the Bliki engine is used after all
+                    }
                     printer.print(val);
                 }
             }
