@@ -132,3 +132,9 @@ audio/x-pn-au au
 audio/aiff aiff af
 audio/x-aiff aiff af
 audio/x-pn-aiff aiff af
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet	xlsx
+application/vnd.openxmlformats-officedocument.spreadsheetml.template	xltx
+application/vnd.ms-excel.sheet.macroEnabled.12				xlsm
+application/vnd.ms-excel.template.macroEnabled.12			xltm
+application/vnd.ms-excel.addin.macroEnabled.12				xlam
+application/vnd.ms-excel.sheet.binary.macroEnabled.12			xlsb
