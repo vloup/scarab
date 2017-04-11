@@ -159,6 +159,7 @@ public class ScarabGlobalTool
     private static ScarabRenderAPI radeoxEngine = new RadeoxRenderEngine();
     private static ScarabRenderAPI blikiEngine  = new BlikiRenderEngine();
 
+    private static final List<Object> emptyList = new ArrayList<Object>();
     
     public void init(Object data)
     {
@@ -986,6 +987,19 @@ public class ScarabGlobalTool
     public static String getTurbineProperty(String key)
     {
         return getTurbineProperty(key, null);
+    }
+
+    /**
+     * @param key
+     * @return Returns a list of values for this property. 
+     * Note: The List can be empty and should not be modified
+     * in the caller's environment!
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Object> getTurbinePropertyValues(String key)
+    {
+        Configuration config = getTurbineConfiguration();
+        return config.getList(key, emptyList);
     }
     
     private static String getTurbineProperty(String key, String def)
