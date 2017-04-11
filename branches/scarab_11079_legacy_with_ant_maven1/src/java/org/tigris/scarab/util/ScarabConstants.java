@@ -203,7 +203,11 @@ public interface ScarabConstants
 
     final String ATTACHMENTS_REPO_KEY = "scarab.attachments.repository";
 
+    final String AUTOCLOSE_EMAIL_ADDRESS = "scarab.email.autoclose.fromAddress";
     final String ARCHIVE_EMAIL_ADDRESS = "scarab.email.archive.toAddress";
+    final String AUTOCLOSE_MODULES = "scarab.common.autoclose.modules";
+    final String AUTOCLOSE_STATES = "scarab.common.autoclose.states";
+    final String AUTOCLOSE_PERIODS = "scarab.common.autoclose.periods";
     
     final String IMPORT_ADD_USERS = "scarab.import.addNewUsers";
 
