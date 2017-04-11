@@ -654,6 +654,13 @@
         <file/>
       </property>
       <property>
+        <name>scarab.email.autoclose.fromAddress</name>
+        <default>${scarab.email.default.fromName}@${scarab.email.domain}</default>
+        <type>Runtime</type>
+         <customization modification="required">advanced</customization>
+        <file/>
+      </property>      
+      <property>
         <name>scarab.email.default.fromAddress</name>
         <default>${scarab.email.default.fromName}@${scarab.email.domain}</default>
         <details>
@@ -1076,6 +1083,114 @@
       </property>
 
       <property>
+        <name>scarab.common.autoclose.modules</name>
+        <default></default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager which Modules are enabled 
+          for autoclose (see scarab.common.autoclose.states). The modules are
+          given in a comma separated list, using the module prefixes.
+          Leading/trailing whitespaces will be truncated.
+
+          This attribute is global (valid for all issue types).
+          By default no tickets will change their state automatically (this attribute is empty)
+        </details>
+      </property>
+      <property>
+        <name>scarab.common.autoclose.states</name>
+        <default></default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager which Issue states are
+          due to automatic closing after a specific period. The states are
+          given in a comma separated list, leading/trailing whitespaces will be truncated
+
+          This attribute is global (valid for all modules and all issue types).
+          By default no tickets will change their state automatically (this attribute is empty)
+        </details>
+      </property>
+      <property>
+        <name>scarab.common.autoclose.periods</name>
+        <default>20160</default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager how long to wait (in minutes)
+          until Issues get automatically closed. Issues are only affected when 
+          
+          1.) they are assigned to a module listed in the property
+
+              scarab.common.autoclose.modules
+
+          2.) They are in a state listed in the property
+
+              scarab.common.autoclose.states
+              
+          Note: This attribute may contain a comma separated list of numbers, where
+          each of the numbers listed here correspond to the state listed at the same
+          place in the autoclose.states property. If this list is smaller than
+          the list of autoclose.states then the last entry in this list will be taken
+          for all remaining entries in the autoclose.states list. If this list
+          is longer than the autoclose.states list, then the unused entries
+          are ignored.
+
+          This attribute is global (valid for all modules and all issue types)
+          By default this attribute is set to 20160 (14 days)
+        </details>
+      </property>      
+      <property>
+        <name>scarab.common.autoclose.finals</name>
+        <default></default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager to which state an issue 
+          shall be propagated when it is eligible for getting autoclosed.
+          This property must contain a comma separated list of states, 
+          where each state listed corresponds to the state at the same index position 
+          in the property
+          
+          scarab.common.autoclose.states
+          
+          Issues are only affected when:
+          
+          1.) they are assigned to a module listed in the property
+
+              scarab.common.autoclose.modules
+
+          2.) They are in a state listed in the property
+
+              scarab.common.autoclose.states
+              
+          3.) The autoclose time is reached as determined in the property
+          
+              scarab.common.autoclose.periods
+          
+          Note: This attribute is global
+          
+        </details>
+      </property>
+
+      <property>
+        <name>scarab.common.autoclose.user</name>
+        <default></default>
+         <type>Runtime</type> 
+         <customization modification="optional">advanced</customization>
+        <file/>
+        <details>
+          This attribute tells the NotificationManager which Scarab User it should assign
+          when an autoclose is performed. When this option is empty or the configured user
+          is not defined, then Scarab assignes the Issue creator to the autoclose event.
+        </details>
+      </property>
+
+      <property>
         <name>scarab.common.status.activity.reminder.exclude.states</name>
         <default>onhold,closed</default>
          <type>Runtime</type> 
@@ -1083,16 +1198,16 @@
         <file/>
         <details>
           Whenever an issue hangs during the course of its processing, a reminder
-		  notification shall be sent out to the participants. This property
-		  defines a comma separated list of $state values for which the reminder
-		  shall NOT be issued. By default we exclude "onhold" and "closed" for
-		  following reasons: "closed" issues are meant to keep idle forever. 
-		  So there is no need to remind anybody of that!
-		  "onhold" issues are handled elsewhere and again there is no reason to
-		  reind anybody either.
+          notification shall be sent out to the participants. This property
+          defines a comma separated list of $state values for which the reminder
+          shall NOT be issued. By default we exclude "onhold" and "closed" for
+          following reasons: "closed" issues are meant to keep idle forever. 
+          So there is no need to remind anybody of that!
+          "onhold" issues are handled elsewhere and again there is no reason to
+          remind anybody either.
         </details>
       </property>
-	  	  	  	  
+
       <property>
         <name>scarab.common.status.activity.reminder.include.states</name>
         <default></default>
@@ -1101,25 +1216,25 @@
         <file/>
         <details>
           Whenever an issue hangs during the course of its processing, a reminder
-		  notification shall be sent out to the participants. This property
-		  defines a comma separated list of $state values for which the reminder
-		  MUST be performed. By default this property is empty. Hence we process
-		  issues in ANY state except those mentioned above in
-		  
-		  scarab.common.status.activity.reminder.exclude.states. 
-		  
-		  If you want to explicitly define the states for which a reminder must be sent,
-		  you can create a comma separated list of state values here.
+          notification shall be sent out to the participants. This property
+          defines a comma separated list of $state values for which the reminder
+          MUST be performed. By default this property is empty. Hence we process
+          issues in ANY state except those mentioned above in
 
-		  IMPORTANT: 
-		  - If include.states AND exclude.states both are empty, then no reminder
-		  is sent out at all.
-		  - If only one of the two properties is set then the according inclusion/exclusion
-		  takes place.
+          scarab.common.status.activity.reminder.exclude.states. 
+
+          If you want to explicitly define the states for which a reminder must be sent,
+          you can create a comma separated list of state values here.
+
+          IMPORTANT: 
+          - If include.states AND exclude.states both are empty, then no reminder
+          is sent out at all.
+          - If only one of the two properties is set then the according inclusion/exclusion
+          takes place.
 		  - If both properties are set, then the exclusion property is ignored!
         </details>
       </property>
-	  	  	  	  
+
       <property>
         <name>scarab.common.status.activity.reminder.period</name>
         <default>1440</default>
@@ -1128,9 +1243,9 @@
         <file/>
         <details>
           This attribute tells the NotificationManager how long to wait
-		  utnil it sends a reminder notification for issues in any state found in the
-		  includes.state list or not found in the excludes.state list (see above).
-		  The default setting is 1440 (1 day)
+          until it sends a reminder notification for issues in any state found in the
+          includes.state list or not found in the excludes.state list (see above).
+          The default setting is 1440 (1 day)
         </details>
       </property>
 

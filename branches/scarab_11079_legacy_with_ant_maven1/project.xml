@@ -233,10 +233,11 @@
       </properties>
       <url>http://jakarta.apache.org/commons/configuration/</url>
     </dependency>
+
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
-      <version>1.5</version>
+      <version>1.8.1</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -283,7 +284,26 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.3</version>
+      <version>2.6</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-api</artifactId>
+      <version>1.1.1</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -292,12 +312,13 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.1-sources</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
@@ -833,10 +854,19 @@
       <type>jar</type>
     </dependency>        
 
-	<dependency>
+    <dependency>
+      <groupId>commons-compress</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.8.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>2.0.2</version>
+      <version>3.1</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -905,6 +935,7 @@
        <war.bundle>true</war.bundle>
      </properties>      
    </dependency> 
+
    <dependency>
      <groupId>radeox</groupId>
      <artifactId>radeox-api</artifactId>
@@ -914,6 +945,49 @@
        <war.bundle>true</war.bundle>
      </properties>
    </dependency>
+
+
+   <dependency>
+     <groupId>bliki</groupId>
+     <artifactId>bliki-core</artifactId>
+     <version>3.1.01-SNAPSHOT</version>
+     <type>jar</type>
+     <properties>
+       <war.bundle>true</war.bundle>
+     </properties>
+   </dependency>
+
+   <dependency>
+     <groupId>bliki</groupId>
+     <artifactId>bliki-core</artifactId>
+     <version>3.1.01-SNAPSHOT-sources</version>
+     <type>jar</type>
+     <properties>
+       <war.bundle>true</war.bundle>
+     </properties>
+   </dependency>
+
+
+   <dependency>
+      <groupId>slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.7</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
+
+   <dependency>
+      <groupId>slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.7</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
+
   </dependencies>
 
   <build>
