@@ -228,6 +228,7 @@ public class IssueState
         return result;
     }
     
+        
     /**
      * Check if this issue is active (not on hold and not sealed).
      * @param issue
@@ -238,7 +239,19 @@ public class IssueState
     {
         return !(isOnHold() || isSealed());
     }
-    
+
+    /**
+     * Returns the name of the attribute instance, which contains the issues status.
+     * Note:  Currently Scarab expects that the Attribute is a drop down list
+     * (i.e. its data type is AttributeOptionValue)
+     * @return
+     * @throws TorqueException
+     */    
+    public static String getStatusAttributeName() throws TorqueException
+    {
+        return Environment.getConfigurationProperty("scarab.common.status.id", null);
+    }
+
     /**
      * Returns the attribute instance, which contains the issues status.
      * Note:  Currently Scarab expects that the Attribute is a drop down list
@@ -249,14 +262,14 @@ public class IssueState
     public Attribute getStatusAttribute() throws TorqueException
     {
         Attribute attribute = null;
-        String attributeName = Environment.getConfigurationProperty("scarab.common.status.id", null);
+        String attributeName = getStatusAttributeName();
         if(attributeName != null)
         {
             attribute = issue.getAttribute(attributeName);
         }
         return attribute;
     }
-    
+
     /**
      * Returns the attribute instance, which contains the issues onHoldExpirationDate.
      * Note:  Currently Scarab expects that the Attribute is a DateAttribute
