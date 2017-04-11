@@ -62,7 +62,7 @@
 
       <div class="axial">
         <table cellpadding="3" cellspacing="2" border="1" width="100%">
-
+          <tr><th colspan="2" style="text-align:left;padding:20px;"><h4>$l10n.ModuleConfiguration</h4></th></tr>
           #* MODULE NAME *#
           <tr>
             <th>* $l10n.ModuleName</th>
@@ -162,6 +162,7 @@
             </tr>
           *#
 
+          <tr><th colspan="2" style="text-align:left;padding:20px;"><h4>$l10n.EmailConfiguration</h4></th></tr>
           #* ARCHIVE EMAIL ADDRESS *#
           <tr>
             <th>$l10n.ArchiveEmail</th>
@@ -173,6 +174,44 @@
 
 
           #if ($scarabG.Parameter.getBoolean($scarabG.ParameterName.EMAIL_ALLOW_MODULE_OVERRIDE)) 
+
+            #set ($autocloseModules = $scarabG.getTurbinePropertyValues($scarabG.Constant.AUTOCLOSE_MODULES))
+            #set ($autocloseStates = $scarabG.getTurbineProperty($scarabG.Constant.AUTOCLOSE_STATES))
+            #set ($autoclosePeriods = $scarabG.getTurbineProperty($scarabG.Constant.AUTOCLOSE_PERIODS))
+            #set ($autocloseEmail = $scarabG.getTurbineProperty($scarabG.Constant.AUTOCLOSE_EMAIL_ADDRESS))
+            #set ($autocloseModule = "Disabled")
+            
+            #foreach ($mod in $scarabG.getTurbinePropertyValues("scarab.common.autoclose.modules"))
+                #if ($moduleGroup.Code == $mod)
+                    #set ($autocloseModule = "Enabled")
+                #end
+            #end
+            #* AUTOCLOSE (text field) *#
+            <tr>
+              <th>Autoclose</th>
+              <td>
+                $scarabG.getTurbineProperty($scarabG.Constant.AUTOCLOSE_EMAIL_ADDRESS)
+              </td>
+            </tr>
+            <tr>
+              <th>Autoclose Modules</th>
+              <td>
+                $scarabG.getTurbinePropertyValues("scarab.common.autoclose.modules")
+              </td>
+            </tr>
+            <tr>
+              <th>Autoclose States</th>
+              <td>
+                $scarabG.getTurbineProperty("scarab.common.autoclose.states")
+              </td>
+            </tr>
+            <tr>
+              <th>Autoclose Periods</th>
+              <td>
+                $scarabG.getTurbineProperty("scarab.common.autoclose.periods")
+              </td>
+            </tr>
+
             #* ENABLE EMAIL (checkmark) *#
             <tr>
               <th nowrap="nowrap">$l10n.EmailEnable</th>
@@ -207,6 +246,7 @@
           #end
 
           #* RENDER ENGINE *#
+          <tr><th colspan="2" style="text-align:left;padding:20px;"><h4>$l10n.MiscConfiguration</h4></th></tr>
           <tr>
             <th nowrap="nowrap">$l10n.RenderEngine</th>
             <td> 

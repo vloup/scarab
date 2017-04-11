@@ -2,6 +2,7 @@
 #set ($issueType      = $currentIssue.IssueType)
 #set ($fullHistory    = $data.Parameters.getString("fullhistory",""))
 #set ($fullComments   = $data.Parameters.getString("fullcomments",""))
+#set ($changedUserId  = $data.Parameters.getString("add_user",""))
 #set ($rmit           = $module.getRModuleIssueType($issueType))
 #set ($permission     = $scarabG.getRequiredModifyPermission($currentIssue) )
 #set ($canEdit        = $scarabR.hasPermission($permission, $module) && $rmit.Active)
@@ -89,6 +90,15 @@
 ## This macro is called from the initialisation code below.
 ## --------------------------------------------------------------
 
+#macro (isSelected $userId $assignedUserId $changedUserId)
+#if ($changedUserId != '')
+  #set ($b=($userId == $changedUserId))
+#else 
+  #set ($b=($userId == $assignedUserId))
+#end
+#if ($b)selected=selected#end
+#end
+
 #macro (assignedUsers $myself $isEditAttributes)
     #set ($users = $module.getUsers("Issue | Edit"))
     #if ($isEditAttributes)
@@ -112,8 +122,8 @@
 
       #foreach ($user in $users)
         #if (!$archivingScarabUsers.contains($user))
-          #set ($selected = ($user.UserId == $assignedUserId))
-          <option value="$user.UserId" #selected($selected) >$user.Name</option> 
+          #set ($selected = "#isSelected($user.UserId $assignedUserId $changedUserId)" )
+          <option value="$user.UserId" $selected >$user.Name</option> 
         #end
       #end
       </select>
@@ -191,12 +201,12 @@
 ## Toggles event handler, which makes it possible to the user
 ## to switch current tab on or off.
 #macro (tabHeading $tabId $title)
-	#if($tab.equals("all"))
-		#set($imgName = $tabId.concat(".state"))
-		<h3 onClick=smartToggleVisibility('$tabId')><img name="$imgName" src="$staticLink.setPath($iconCollapse)"/>$title</h3>
-	#else
-		<h3>$title</h3>
-	#end
+    #if($tab.equals("all"))
+        #set($imgName = $tabId.concat(".state"))
+        <h3 onClick=smartToggleVisibility('$tabId')><img name="$imgName" src="$staticLink.setPath($iconCollapse)"/>$title</h3>
+    #else
+        <h3>$title</h3>
+    #end
 #end
 
 <input type="hidden" name="action" value="ModifyIssue" />
