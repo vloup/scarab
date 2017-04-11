@@ -1,5 +1,7 @@
 package org.tigris.scarab.tools;
 
+import java.util.List;
+
 /* ================================================================
  * Copyright (c) 2010 CollabNet.  All rights reserved.
  * 
@@ -68,6 +70,12 @@ public class Environment
             result = def;
         }
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Object> getConfigurationValues(String prop, List<Object> def)
+    {
+        return Turbine.getConfiguration().getList(prop, def);
     }
 
 }

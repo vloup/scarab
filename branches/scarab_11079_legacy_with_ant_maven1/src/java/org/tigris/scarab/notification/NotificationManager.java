@@ -100,6 +100,13 @@ public interface NotificationManager
      * the NM should sends out "wakeup notifications" to all observers and assignees.
      */
     public void wakeupOnHoldTimeouts();
+    
+    /**
+     * Implementations of this method should the means to change the Issue state of issues
+     * according to a use case specific algorithm. The NM Should perform a state switch
+     * according to the use case specific rules.
+     */
+    public void autocloseNotifications();
 
     /**
      * Create a new onHoldNotification. This notification will only be sent out AFTER

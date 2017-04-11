@@ -47,7 +47,10 @@ package org.tigris.scarab.om;
  */ 
 
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 // Village
 import com.workingdogs.village.Record;
@@ -56,6 +59,7 @@ import com.workingdogs.village.DataSetException;
 // Turbine classes
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.Criteria;
+import org.tigris.scarab.tools.Environment;
 
 /** 
  * The Peer class for an AttributeValue
@@ -143,5 +147,63 @@ public class AttributeValuePeer
         
         return c;
     }
+    
+    public static List<AttributeValue> getAutocloseCandidates() throws TorqueException
+    {
+        // Find all issues having + one of the defined autoclose states
+        List<Object> autocloseInitialStates = Environment.getConfigurationValues("scarab.common.autoclose.states", null);
+        String statusAttributeName = Environment.getConfigurationProperty("scarab.common.status.id", null);
+        Attribute statusAttribute = Attribute.getInstance(statusAttributeName);
+        
+        if (statusAttribute == null)
+        {
+            log.error("getAutocloseCandidates(): No attribute with name '"+statusAttributeName+"' found");
+            log.error("Please check config attribute 'scarab.common.status.id' for validity");
+            return null;
+        }
+
+        Criteria crit = new Criteria();
+        Iterator<Object> stateiter = autocloseInitialStates.iterator();
+        while(stateiter.hasNext())
+        {
+            crit.or(AttributeValuePeer.VALUE, stateiter.next());
+        }
+        
+        List avs = statusAttribute.getAttributeValues(crit);
+        List<AttributeValue> candidates = new ArrayList<AttributeValue>();
+
+        List<Object> moduleCodes = Environment.getConfigurationValues("scarab.common.autoclose.modules", null);
+        if (moduleCodes == null)
+        {
+            log.error("getAutocloseCandidates(): config attribute 'scarab.common.autoclose.modules' not defined");
+            return null;
+        }
+
+        Iterator<AttributeValue> iterav = avs.iterator();
+        while(iterav.hasNext())
+        {
+            AttributeValue av = iterav.next();
+            Issue issue = av.getIssue();
+            Module module = issue.getModule();
+            String code = module.getCode();
+            Iterator<Object> iterm = moduleCodes.iterator();
+            boolean isCandidate = false;
+            while (iterm.hasNext())
+            {
+                String modid = (String)iterm.next();
+                if(modid.equalsIgnoreCase(code))
+                {
+                    isCandidate = true;
+                    break;
+                }
+            }
+
+            if (isCandidate)
+            {
+                candidates.add(av);
+            }
+        }
+        return candidates;
+    }    
 }
 

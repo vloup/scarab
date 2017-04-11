@@ -951,12 +951,23 @@ public class ScarabModule
         return name2.compareTo(name1);
     }
 
+    /**
+    * All emails related to this module will have a copy sent to
+    * this address.  A system-wide default email address can be specified in 
+    * Scarab.properties with the key: scarab.email.autoclose.fromAddress
+    */
+    public String getAutocloseEmail()
+    {
+        String email = Turbine.getConfiguration()
+                .getString(ScarabConstants.AUTOCLOSE_EMAIL_ADDRESS, null);
+        return email;
+    }
 
     /**
-     * All emails related to this module will have a copy sent to
-     * this address.  A system-wide default email address can be specified in 
-     * Scarab.properties with the key: scarab.email.archive.toAddress
-     */
+    * All emails related to this module will have a copy sent to
+    * this address.  A system-wide default email address can be specified in 
+    * Scarab.properties with the key: scarab.email.archive.toAddress
+    */
     public String getArchiveEmail()
     {
         String email = super.getArchiveEmail();
@@ -965,10 +976,9 @@ public class ScarabModule
             email = Turbine.getConfiguration()
                 .getString(ScarabConstants.ARCHIVE_EMAIL_ADDRESS, null);
         }
-        
         return email;
     }
-    
+
     /** 
      * Examines the modules archiveEmail string (which may contain multiple
      * email targets) and returns only those entries, which are recognized as

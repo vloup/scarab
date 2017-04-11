@@ -76,14 +76,17 @@ import org.tigris.scarab.om.AttachmentManager;
 import org.tigris.scarab.om.Attribute;
 import org.tigris.scarab.om.AttributePeer;
 import org.tigris.scarab.om.AttributeValue;
+import org.tigris.scarab.om.AttributeValuePeer;
 import org.tigris.scarab.om.Issue;
 import org.tigris.scarab.om.IssueManager;
+import org.tigris.scarab.om.IssuePeer;
 import org.tigris.scarab.om.Module;
 import org.tigris.scarab.om.NotificationRuleManager;
 import org.tigris.scarab.om.NotificationStatus;
 import org.tigris.scarab.om.NotificationStatusPeer;
 import org.tigris.scarab.om.ScarabUser;
 import org.tigris.scarab.om.ScarabUserManager;
+import org.tigris.scarab.om.Transition;
 import org.tigris.scarab.services.cache.ScarabCache;
 import org.tigris.scarab.tools.Environment;
 import org.tigris.scarab.tools.localization.L10NKey;
@@ -92,8 +95,10 @@ import org.tigris.scarab.tools.localization.LocalizationKey;
 import org.tigris.scarab.util.Email;
 import org.tigris.scarab.util.EmailContext;
 import org.tigris.scarab.util.Log;
+import org.tigris.scarab.util.ScarabConstants;
 import org.tigris.scarab.util.ScarabException;
 import org.tigris.scarab.util.ScarabLink;
+import org.tigris.scarab.workflow.IssueState;
 
 /**
  * This class provides the default implementation for the Notification Manager.
@@ -246,6 +251,52 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         }
     }
 
+    public void autocloseNotifications()
+    {
+        ScarabCache.clear();
+        log.debug("sendPendingNotifications(): Collect pending notifications ...");
+        // It is now guaranteed, that the notifications arrive in order of CreationDate!
+        try
+        {
+            List<AttributeValue> candidates = AttributeValuePeer.getAutocloseCandidates();
+            Iterator<AttributeValue> iter = candidates.iterator();
+            while(iter.hasNext())
+            {
+                AttributeValue av = iter.next();
+                Issue issue = av.getIssue();
+                @SuppressWarnings("unchecked")
+                List<Activity> activities = issue.getActivity(false);
+                
+                Iterator<Activity> itera = activities.iterator();
+                Date mostRecentDate = null;
+                while (itera.hasNext()) {
+                    Activity activity = itera.next();
+                    Date date = activity.getEndDate();
+                    if (mostRecentDate == null)
+                        mostRecentDate = date;
+                    else
+                    {
+                        if (date != null && date.after(mostRecentDate))
+                        {
+                            mostRecentDate = date;
+                        }
+                    }
+                }
+                
+                if (mostRecentDate != null)
+                {
+                    Date now = new Date();
+                    Long issueTime = now.getTime() - mostRecentDate.getTime();
+                    checkAutoclose(av, issueTime);
+                }
+            }
+        }
+        catch (TorqueException te)
+        {
+            log.error("autocloseNotifications(): ...Could not retrieve autoclose candidates from Database. Try again later.");
+        }
+            
+    }
 
     /**
      * This method process the pending notifications and send them
@@ -346,11 +397,12 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             
             /*
              * Now we got all notifications for current issue sorted by receivers
-             * and collected in issueActivities. We now can iterate throug the 
+             * and collected in issueActivities. We now can iterate through the 
              * issueActivities and send one E-Mail per receiver for this issue: 
              */
             
             Long issueTime = lastNotification.getCreationDate().getTime();
+            
             if (isOldEnough(issueTime))
             {
                 processedIssueCount += 1;
@@ -1098,7 +1150,66 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         return issueMap;
     }    
     
+    private void checkAutoclose(AttributeValue aval, long issueTime)
+    {
 
+        List<Object> autocloseInitialStates = Environment.getConfigurationValues("scarab.common.autoclose.states", null);
+        List<Object> autoclosePeriods = Environment.getConfigurationValues("scarab.common.autoclose.periods", null);
+
+        long period = 0;
+        for (int index=0; index < autocloseInitialStates.size(); index++)
+        {
+            String state = (String)autocloseInitialStates.get(index);
+            if (state.equalsIgnoreCase(aval.getValue()))
+            {
+                int periods_index = (index < autoclosePeriods.size()) ? index: autoclosePeriods.size() - 1;
+                String periods = (String)autoclosePeriods.get(periods_index);
+                period = 1000*1000*60*24*Long.parseLong(periods);
+                if (issueTime > period)
+                {
+                    String finalState = Environment.getConfigurationProperty("scarab.common.autoclose.finalstate", null);
+                    if(finalState == null)
+                    {
+                        log.error("checkAutoclose(): config attribute 'scarab.common.autoclose.finalstate' not defined");
+                        return;
+                    }
+
+                    AttributeValue aval2;
+                    try {
+                        Issue issue = aval.getIssue();
+
+                        String username = Environment.getConfigurationProperty("scarab.common.autoclose.user", null);
+                        ScarabUser user = null;
+                        if (username != null)
+                        {
+                            user = ScarabUserManager.getInstance(username);
+                        }
+                        if (user == null)
+                        {
+                            user = issue.getCreatedBy();
+                        }
+
+                        aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), issue);
+                        aval2.setValue(finalState);
+
+                        HashMap<Integer,AttributeValue> newAttVals = new HashMap<Integer,AttributeValue>();
+                        newAttVals.put(aval.getAttributeId(), aval2);
+                        issue.setAttributeValues(null, newAttVals, null, user);
+                    }
+                    catch (TorqueException e) {
+                        log.error("checkAutoclose(): Could not change State value", e);
+                        return;
+                    } catch (ScarabException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+                return;
+            }
+        }
+        return;
+    }
+    
     /**
      * Will return 'true' if the time since the passed timestamp is at least
      * the minimal quiet time configured for issues.
