@@ -1169,6 +1169,20 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                 int finals_index = (index < autocloseFinalStates.size())? index: autocloseFinalStates.size() - 1;
                 String periods = (String)autoclosePeriods.get(periods_index);
                 period = 1000*60*Long.parseLong(periods); // expect period in minutes
+                
+                Issue issue = null;
+                String issueId = "...";
+                
+                try {
+                    issue = aval.getIssue();
+                    issueId = issue.getUniqueId();
+                } catch (TorqueException e2) 
+                {
+                    log.error("checkAutoclose(): aval has no issue");
+                    e2.printStackTrace();
+                    return 0;
+                }
+                
                 if (issueTime > period)
                 {
                     String finalState = (String)autocloseFinalStates.get(finals_index);
@@ -1180,7 +1194,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
 
                     AttributeValue aval2;
                     try {
-                        Issue issue = aval.getIssue();
+                        
                         String username = Environment.getConfigurationProperty("scarab.common.autoclose.user", null);
                         ScarabUser user = null;
                         if (username != null)
@@ -1203,23 +1217,17 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                         return 1;
                     }
                     catch (TorqueException e) {
-                        log.error("checkAutoclose(): Could not change State value", e);
+                        log.error("checkAutoclose(): Got TorqueException", e);
                         return 0;
                     } catch (ScarabException e) {
-                        // TODO Auto-generated catch block
+                        log.error("checkAutoclose(): Got ScarabException", e);
                         e.printStackTrace();
                     }
                 }
                 else 
                 {
-                    Issue issue;
-                    try {
-                        issue = aval.getIssue();
-                        log.info("autoclose: issue " + issue.getUniqueId() + " fires in " + (period-issueTime)/1000 + " seconds" );
-                        return 1;
-                    } catch (TorqueException e) {
-                        e.printStackTrace();
-                    }                    
+                    log.info("autoclose: issue " + issueId + " fires in " + (period-issueTime)/1000 + " seconds" );
+                    return 1;                  
                 }
                 return 0;
             }
