@@ -1156,6 +1156,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
     {
 
         List<Object> autocloseInitialStates = Environment.getConfigurationValues("scarab.common.autoclose.states", null);
+        List<Object> autocloseFinalStates = Environment.getConfigurationValues("scarab.common.autoclose.finals", null);
         List<Object> autoclosePeriods = Environment.getConfigurationValues("scarab.common.autoclose.periods", null);
 
         long period = 0;
@@ -1165,14 +1166,16 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             if (state.equalsIgnoreCase(aval.getValue()))
             {
                 int periods_index = (index < autoclosePeriods.size()) ? index: autoclosePeriods.size() - 1;
+                int finals_index = (index < autocloseFinalStates.size())? index: autocloseFinalStates.size() - 1;
                 String periods = (String)autoclosePeriods.get(periods_index);
+                String finalState = (String)autocloseFinalStates.get(finals_index);
                 period = 1000*60*Long.parseLong(periods); // expect period in minutes
                 if (issueTime > period)
                 {
-                    String finalState = Environment.getConfigurationProperty("scarab.common.autoclose.finalstate", null);
+                    //String finalState = Environment.getConfigurationProperty("scarab.common.autoclose.finalstate", null);
                     if(finalState == null)
                     {
-                        log.error("checkAutoclose(): config attribute 'scarab.common.autoclose.finalstate' not defined");
+                        log.error("checkAutoclose(): config attribute 'scarab.common.autoclose.finals' not defined");
                         return 0;
                     }
 
