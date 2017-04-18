@@ -1166,7 +1166,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             {
                 int periods_index = (index < autoclosePeriods.size()) ? index: autoclosePeriods.size() - 1;
                 String periods = (String)autoclosePeriods.get(periods_index);
-                period = 1000*1000*60*24*Long.parseLong(periods);
+                period = 1000*60*Long.parseLong(periods); // expect period in minutes
                 if (issueTime > period)
                 {
                     String finalState = Environment.getConfigurationProperty("scarab.common.autoclose.finalstate", null);
