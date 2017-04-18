@@ -287,7 +287,9 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                 if (mostRecentDate != null)
                 {
                     Date now = new Date();
+                    String issueId = issue.getUniqueId();
                     Long issueTime = now.getTime() - mostRecentDate.getTime();
+                    log.info("Issue ID: " + issueId + "last changed at: " + mostRecentDate + "has triggertime " + issueTime);
                     closed += checkAutoclose(av, issueTime);
                 }
             }
