@@ -260,6 +260,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         {
             List<AttributeValue> candidates = AttributeValuePeer.getAutocloseCandidates();
             Iterator<AttributeValue> iter = candidates.iterator();
+            int closed = 0;
             while(iter.hasNext())
             {
                 AttributeValue av = iter.next();
@@ -287,9 +288,10 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                 {
                     Date now = new Date();
                     Long issueTime = now.getTime() - mostRecentDate.getTime();
-                    checkAutoclose(av, issueTime);
+                    closed += checkAutoclose(av, issueTime);
                 }
             }
+            log.info("Autoclose managed " + closed + " Issues");
         }
         catch (TorqueException te)
         {
@@ -1150,7 +1152,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         return issueMap;
     }    
     
-    private void checkAutoclose(AttributeValue aval, long issueTime)
+    private int checkAutoclose(AttributeValue aval, long issueTime)
     {
 
         List<Object> autocloseInitialStates = Environment.getConfigurationValues("scarab.common.autoclose.states", null);
@@ -1171,13 +1173,12 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                     if(finalState == null)
                     {
                         log.error("checkAutoclose(): config attribute 'scarab.common.autoclose.finalstate' not defined");
-                        return;
+                        return 0;
                     }
 
                     AttributeValue aval2;
                     try {
                         Issue issue = aval.getIssue();
-
                         String username = Environment.getConfigurationProperty("scarab.common.autoclose.user", null);
                         ScarabUser user = null;
                         if (username != null)
@@ -1189,25 +1190,39 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                             user = issue.getCreatedBy();
                         }
 
+                        log.info("autoclose: issue " + issue.getUniqueId() + " set to state " + finalState + " by user " + username );
+
                         aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), issue);
                         aval2.setValue(finalState);
 
                         HashMap<Integer,AttributeValue> newAttVals = new HashMap<Integer,AttributeValue>();
                         newAttVals.put(aval.getAttributeId(), aval2);
                         issue.setAttributeValues(null, newAttVals, null, user);
+                        return 1;
                     }
                     catch (TorqueException e) {
                         log.error("checkAutoclose(): Could not change State value", e);
-                        return;
+                        return 0;
                     } catch (ScarabException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
-                return;
+                else 
+                {
+                    Issue issue;
+                    try {
+                        issue = aval.getIssue();
+                        log.info("autoclose: issue " + issue.getUniqueId() + " fires in " + (period-issueTime)/1000 + " seconds" );
+                        return 1;
+                    } catch (TorqueException e) {
+                        e.printStackTrace();
+                    }                    
+                }
+                return 0;
             }
         }
-        return;
+        return 0;
     }
     
     /**
