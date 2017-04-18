@@ -1162,8 +1162,8 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         long period = 0;
         for (int index=0; index < autocloseInitialStates.size(); index++)
         {
-            String state = (String)autocloseInitialStates.get(index);
-            if (state.equalsIgnoreCase(aval.getValue()))
+            String current_state = (String)autocloseInitialStates.get(index);
+            if (current_state.equalsIgnoreCase(aval.getValue()))
             {
                 int periods_index = (index < autoclosePeriods.size()) ? index: autoclosePeriods.size() - 1;
                 int finals_index = (index < autocloseFinalStates.size())? index: autocloseFinalStates.size() - 1;
@@ -1206,7 +1206,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                             user = issue.getCreatedBy();
                         }
 
-                        log.info("autoclose: issue " + issue.getUniqueId() + " set to state " + finalState + " by user " + username );
+                        log.info("autoclose: issue " + issue.getUniqueId() + " set from state " +current_state+ " to state " + finalState + " by user " + username );
 
                         aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), issue);
                         aval2.setValue(finalState);
