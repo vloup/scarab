@@ -168,6 +168,7 @@ public class AttributeValuePeer
         {
             crit.or(AttributeValuePeer.VALUE, stateiter.next());
         }
+        crit.and(AttributeValuePeer.DELETED, false);
         
         List avs = statusAttribute.getAttributeValues(crit);
         List<AttributeValue> candidates = new ArrayList<AttributeValue>();
@@ -184,23 +185,22 @@ public class AttributeValuePeer
         {
             AttributeValue av = iterav.next();
             Issue issue = av.getIssue();
+            if (issue.getDeleted())
+            {
+                continue;
+            }
+
             Module module = issue.getModule();
             String code = module.getCode();
             Iterator<Object> iterm = moduleCodes.iterator();
-            boolean isCandidate = false;
             while (iterm.hasNext())
             {
                 String modid = (String)iterm.next();
                 if(modid.equalsIgnoreCase(code))
                 {
-                    isCandidate = true;
+                    candidates.add(av);
                     break;
                 }
-            }
-
-            if (isCandidate)
-            {
-                candidates.add(av);
             }
         }
         return candidates;
