@@ -295,5 +295,4 @@ public class ActivitySet
         }
         return result;
     }
-
 }

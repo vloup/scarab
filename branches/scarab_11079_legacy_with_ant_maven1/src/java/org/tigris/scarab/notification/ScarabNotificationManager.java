@@ -58,6 +58,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 import javax.servlet.http.HttpServlet;
 
@@ -250,6 +251,20 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
             log.error("queueNotifications(): while dumping notificationData: " + e.getMessage(),e);
         }
     }
+    
+    private String time_hr(long millis)
+    {
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        
+        if (days != 0)
+        {
+            return String.format("%d days",days);
+        }
+        
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours);        
+        return String.format("%02d h %02d min", hours, minutes);
+    }
 
     public void autocloseNotifications()
     {
@@ -260,46 +275,27 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         {
             List<AttributeValue> candidates = AttributeValuePeer.getAutocloseCandidates();
             Iterator<AttributeValue> iter = candidates.iterator();
-            int closed = 0;
+            int processed = 0;
             while(iter.hasNext())
             {
                 AttributeValue av = iter.next();
                 Issue issue = av.getIssue();
-                @SuppressWarnings("unchecked")
-                List<Activity> activities = issue.getActivity(false);
-                
-                Iterator<Activity> itera = activities.iterator();
-                Date mostRecentDate = null;
-                while (itera.hasNext()) {
-                    Activity activity = itera.next();
-                    Date date = activity.getEndDate();
-                    if (mostRecentDate == null)
-                        mostRecentDate = date;
-                    else
-                    {
-                        if (date != null && date.after(mostRecentDate))
-                        {
-                            mostRecentDate = date;
-                        }
-                    }
-                }
-                
+                ActivitySet activitySet = issue.getLastActivitySet();
+                Date mostRecentDate = activitySet.getCreatedDate();
                 if (mostRecentDate != null)
                 {
                     Date now = new Date();
                     String issueId = issue.getUniqueId();
                     Long issueTime = now.getTime() - mostRecentDate.getTime();
-                    log.info("Issue ID: " + issueId + "last changed at: " + mostRecentDate + "has triggertime " + issueTime);
-                    closed += checkAutoclose(av, issueTime);
+                    processed += checkAutoclose(av, issueTime);
                 }
             }
-            log.info("Autoclose managed " + closed + " Issues");
+            log.info("autoclose: processed " + processed + " Issues");
         }
         catch (TorqueException te)
         {
-            log.error("autocloseNotifications(): ...Could not retrieve autoclose candidates from Database. Try again later.");
+            log.error("Could not retrieve autoclose candidates from Database.", te);
         }
-            
     }
 
     /**
@@ -1154,6 +1150,25 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         return issueMap;
     }    
     
+    private boolean isEmptyList(List<Object> list)
+    {
+        if (list == null || list.size() == 0)
+        {
+            return true;
+        }
+        if (list.size() > 1)
+        {
+            return false;
+        }
+        
+        String entry = (String) list.get(0);
+        if(entry.length() == 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
     private int checkAutoclose(AttributeValue aval, long issueTime)
     {
 
@@ -1161,6 +1176,24 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
         List<Object> autocloseFinalStates = Environment.getConfigurationValues("scarab.common.autoclose.finals", null);
         List<Object> autoclosePeriods = Environment.getConfigurationValues("scarab.common.autoclose.periods", null);
 
+        if (isEmptyList(autocloseInitialStates))
+        {
+            log.error("checkAutoclose(): Custom var 'scarab.common.autoclose.states' is empty. Check build.properties");
+            return 0;
+        }
+        
+        if (isEmptyList(autocloseFinalStates))
+        {
+            log.error("checkAutoclose(): Custom var 'scarab.common.autoclose.finals' is empty. Check build.properties");
+            return 0;
+        }
+        
+        if (isEmptyList(autoclosePeriods))
+        {
+            log.error("checkAutoclose(): Custom var 'scarab.common.autoclose.periods' is empty. Check build.properties");
+            return 0;
+        }
+        
         long period = 0;
         for (int index=0; index < autocloseInitialStates.size(); index++)
         {
@@ -1185,15 +1218,9 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                     return 0;
                 }
                 
+                String finalState = (String)autocloseFinalStates.get(finals_index);
                 if (issueTime > period)
                 {
-                    String finalState = (String)autocloseFinalStates.get(finals_index);
-                    if(finalState == null)
-                    {
-                        log.error("checkAutoclose(): config attribute 'scarab.common.autoclose.finals' not defined");
-                        return 0;
-                    }
-
                     AttributeValue aval2;
                     try {
                         
@@ -1208,7 +1235,7 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                             user = issue.getCreatedBy();
                         }
 
-                        log.info("autoclose: issue " + issue.getUniqueId() + " set from state " +current_state+ " to state " + finalState + " by user " + username );
+                        log.info("autoclose: issue " + issue.getUniqueId() + " changed from [" +current_state+ "] to [" + finalState + "] by " + username );
 
                         aval2 = AttributeValue.getNewInstance(aval.getAttributeId(), issue);
                         aval2.setValue(finalState);
@@ -1227,8 +1254,8 @@ public class ScarabNotificationManager extends HttpServlet implements Notificati
                     }
                 }
                 else 
-                {
-                    log.info("autoclose: issue " + issueId + " fires in " + (period-issueTime)/1000 + " seconds" );
+                {              
+                    log.info("Issue " + issueId + " autoset to [" + finalState + "] in ~" + time_hr(period-issueTime) );
                     return 1;                  
                 }
                 return 0;
